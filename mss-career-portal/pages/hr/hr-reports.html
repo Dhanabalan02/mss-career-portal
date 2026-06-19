@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports Dashboard - TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <script src="portal-layout.js"></script>
+  <link rel="stylesheet" href="portal-layout.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --success: #16a34a;
+      --success-light: #f0fdf4;
+      --warning: #d97706;
+      --warning-light: #fffbeb;
+      --purple: #7c3aed;
+      --purple-light: #f5f3ff;
+      --cyan: #0891b2;
+      --cyan-light: #ecfeff;
+
+      --bg: #f3f4f8;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --text: #111827;
+      --text-secondary: #6b7280;
+      --text-muted: #9ca3af;
+      --input-bg: #f9fafb;
+      --surface: #f3f4f8;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, .06), 0 2px 6px rgba(0, 0, 0, .04);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --font-body: 'DM Sans', 'Inter', system-ui, sans-serif;
+      --bg1: #ffffff;
+      --text3: #9ca3af;
+    }
+
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg: #0d0d0d;
+      --card: #0d0d0d;
+      --border: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f0efe8;
+      --text-secondary: #b4b2a9;
+      --text-muted: #666560;
+      --input-bg: #0d0d0d;
+      --surface: #0d0d0d;
+      --primary-light: #26215C;
+      --success-light: #173404;
+      --warning-light: #412402;
+      --purple-light: #26215C;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --bg1: #0d0d0d;
+      --text3: #666560;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background .25s, color .25s;
+    }
+
+    .page-shell {
+      transition: padding-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .page-header {
+      background: var(--bg1);
+      border-bottom: 1px solid var(--border);
+      padding: 11px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: var(--text);
+    }
+
+    .page-subtitle {
+      font-size: 12.5px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-content {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      max-width: 1400px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid transparent;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .18s;
+    }
+
+    .btn svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border-color: var(--border-strong);
+      color: var(--text-secondary);
+    }
+
+    body.dark-theme .btn-outline {
+      background: var(--card);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, .35);
+    }
+
+    .btn-success {
+      background: var(--success);
+      border-color: var(--success);
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #15803d;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(22, 163, 74, .3);
+    }
+
+    /* ── Filter Bar ── */
+    .filter-bar {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    body.dark-theme .filter-bar {
+      background: var(--card);
+    }
+
+    .filter-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      background-color: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 13px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    body.dark-theme .filter-bar input,
+    body.dark-theme .filter-bar select {
+      background-color: var(--input-bg);
+    }
+
+    .filter-bar input:focus,
+    .filter-bar select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .filter-bar input {
+      padding-right: 32px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'/%3E%3Cline x1='16' y1='2' x2='16' y2='6'/%3E%3Cline x1='8' y1='2' x2='8' y2='6'/%3E%3Cline x1='3' y1='10' x2='21' y2='10'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 14px;
+    }
+
+    .filter-bar select {
+      padding-right: 32px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='m4 6 4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 14px;
+    }
+
+    /* ── Unit Comparison Grid ── */
+    .unit-comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+      width: 100%;
+    }
+    
+    .unit-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .unit-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--success);
+    }
+    
+    .unit-progress-container {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .unit-progress-svg {
+      width: 64px;
+      height: 64px;
+      transform: rotate(-90deg);
+    }
+    
+    .unit-progress-circle-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 4px;
+    }
+    
+    .unit-progress-circle-fill {
+      fill: none;
+      stroke-linecap: round;
+      stroke-width: 4px;
+      transition: stroke-dashoffset 0.6s ease;
+    }
+    
+    .unit-progress-text {
+      position: absolute;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    
+    .unit-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 32px;
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    /* ── KPI Grid ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform .2s cubic-bezier(.4, 0, .2, 1), box-shadow .2s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .kpi-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .kpi-number {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      line-height: 1;
+      margin-bottom: 5px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .kpi-label {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .kpi-delta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .kpi-card.blue {
+      border-top-color: var(--primary);
+    }
+
+    .kpi-card.blue .kpi-icon {
+      background: var(--primary-light);
+    }
+
+    .kpi-card.blue .kpi-icon svg {
+      stroke: var(--primary);
+    }
+
+    .kpi-card.green {
+      border-top-color: var(--success);
+    }
+
+    .kpi-card.green .kpi-icon {
+      background: var(--success-light);
+    }
+
+    .kpi-card.green .kpi-icon svg {
+      stroke: var(--success);
+    }
+
+    .kpi-card.orange {
+      border-top-color: var(--warning);
+    }
+
+    .kpi-card.orange .kpi-icon {
+      background: var(--warning-light);
+    }
+
+    .kpi-card.orange .kpi-icon svg {
+      stroke: var(--warning);
+    }
+
+    .kpi-card.purple {
+      border-top-color: var(--purple);
+    }
+
+    .kpi-card.purple .kpi-icon {
+      background: var(--purple-light);
+    }
+
+    .kpi-card.purple .kpi-icon svg {
+      stroke: var(--purple);
+    }
+
+    .kpi-card.cyan {
+      border-top-color: var(--cyan);
+    }
+
+    .kpi-card.cyan .kpi-icon {
+      background: var(--cyan-light);
+    }
+
+    .kpi-card.cyan .kpi-icon svg {
+      stroke: var(--cyan);
+    }
+
+    /* ── Charts Grid ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow .2s;
+    }
+
+    body.dark-theme .card {
+      background: var(--card);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.15px;
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: #f3f4f8;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    body.dark-theme .card-badge {
+      background: var(--surface);
+    }
+
+    /* ── Bar Charts ── */
+    .chart-row {
+      margin-bottom: 16px;
+    }
+
+    .chart-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .chart-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .chart-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .chart-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .bar-track {
+      height: 8px;
+      background: #f3f4f8;
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    body.dark-theme .bar-track {
+      background: var(--surface);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .bar-fill.blue {
+      background: linear-gradient(90deg, var(--primary), #60a5fa);
+    }
+
+    .bar-fill.green {
+      background: linear-gradient(90deg, var(--success), #4ade80);
+    }
+
+    .bar-fill.orange {
+      background: linear-gradient(90deg, var(--warning), #fbbf24);
+    }
+
+    .bar-fill.purple {
+      background: linear-gradient(90deg, var(--purple), #a78bfa);
+    }
+
+    .bar-fill.cyan {
+      background: linear-gradient(90deg, var(--cyan), #67e8f9);
+    }
+
+    .empty-msg {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    /* ── Budget Card ── */
+    .budget-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .budget-box {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 12px;
+      text-align: center;
+    }
+
+    body.dark-theme .budget-box {
+      background: var(--surface);
+    }
+
+    .budget-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.4px;
+    }
+
+    .budget-lbl {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    .budget-bar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .budget-bar {
+      height: 10px;
+      background: #f3f4f8;
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    body.dark-theme .budget-bar {
+      background: var(--surface);
+    }
+
+    .budget-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--warning), #fbbf24);
+      border-radius: 99px;
+      width: 85%;
+      transition: width .8s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* ── Insights Card ── */
+    .insights-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 20px;
+    }
+
+    body.dark-theme .insights-card {
+      background: var(--card);
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .insight-item {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      transition: border-color .18s, transform .18s;
+    }
+
+    body.dark-theme .insight-item {
+      background: var(--surface);
+    }
+
+    .insight-item:hover {
+      border-color: var(--primary);
+      transform: translateX(2px);
+    }
+
+    .insight-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .insight-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .insight-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .insight-item.blue .insight-icon {
+      background: var(--primary-light);
+    }
+
+    .insight-item.blue .insight-icon svg {
+      stroke: var(--primary);
+    }
+
+    .insight-item.green .insight-icon {
+      background: var(--success-light);
+    }
+
+    .insight-item.green .insight-icon svg {
+      stroke: var(--success);
+    }
+
+    .insight-item.orange .insight-icon {
+      background: var(--warning-light);
+    }
+
+    .insight-item.orange .insight-icon svg {
+      stroke: var(--warning);
+    }
+
+    .insight-item.purple .insight-icon {
+      background: var(--purple-light);
+    }
+
+    .insight-item.purple .insight-icon svg {
+      stroke: var(--purple);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: var(--bg);
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 900px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .insights-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-content {
+        padding: 16px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .budget-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-shell">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Recruitment Reports</div>
+        <div class="page-subtitle">Analytics and insights across your hiring pipeline</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="exportCSV()">
+          <svg viewBox="0 0 24 24">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Export CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <div class="filter-bar">
+        <span class="filter-label">Filters</span>
+        <div class="filter-divider"></div>
+        <input type="date" id="startDate" placeholder="Start Date" title="Start date">
+        <input type="date" id="endDate" placeholder="End Date" title="End date">
+        <div class="filter-divider"></div>
+        <select id="unitFilter">
+          <option value="">All Units</option>
+          <option>Lady Andal School</option>
+          <option>Sir Mutha School (CBSE)</option>
+          <option>MSS Higher Secondary School</option>
+          <option>Shanthi Sadan</option>
+          <option>ORCA Swimming Pool</option>
+          <option>Head Office</option>
+          <option>Garuda Cricket Academy</option>
+          <option>Prem Vihar</option>
+        </select>
+        <select id="categoryFilter">
+          <option value="">All Categories</option>
+          <option>Teaching Staff</option>
+          <option>Administration</option>
+          <option>Physical Education</option>
+          <option>Arts &amp; Music</option>
+          <option>Sports Coaching</option>
+          <option>Support Staff</option>
+          <option>Management</option>
+        </select>
+        <select id="jobTypeFilter">
+          <option value="">All Job Types</option>
+          <option>Full Time</option>
+          <option>Part Time</option>
+          <option>Contract</option>
+        </select>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card blue" onclick="showToast('Drill-down: Total Hires')">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+          </div>
+          <div class="kpi-number" id="kpi-hires">—</div>
+          <div class="kpi-label">Total Hires</div>
+          <div class="kpi-delta" id="kpi-hires-delta">Loading…</div>
+        </div>
+        <div class="kpi-card green" onclick="showToast('Drill-down: Open Vacancies')">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="7" width="20" height="14" rx="2" />
+              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+              <line x1="12" y1="12" x2="12" y2="16" />
+              <line x1="10" y1="14" x2="14" y2="14" />
+            </svg>
+          </div>
+          <div class="kpi-number" id="kpi-open">—</div>
+          <div class="kpi-label">Open Vacancies</div>
+          <div class="kpi-delta" id="kpi-open-delta">Loading…</div>
+        </div>
+        <div class="kpi-card orange" onclick="showToast('Drill-down: Closed Jobs')">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <div class="kpi-number" id="kpi-closed">—</div>
+          <div class="kpi-label">Closed Jobs</div>
+          <div class="kpi-delta" id="kpi-closed-delta">Loading…</div>
+        </div>
+        <div class="kpi-card purple" onclick="showToast('Drill-down: Fulfillment Rate')">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+          </div>
+          <div class="kpi-number" id="kpi-rate">—</div>
+          <div class="kpi-label">Fulfillment Rate</div>
+          <div class="kpi-delta" id="kpi-rate-delta">Loading…</div>
+        </div>
+        <div class="kpi-card cyan" onclick="showToast('Drill-down: Hiring Budget')">
+          <div class="kpi-icon">
+            <svg viewBox="0 0 24 24">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+          </div>
+          <div class="kpi-number">₹48L</div>
+          <div class="kpi-label">Hiring Budget</div>
+          <div class="kpi-delta">₹7L remaining</div>
+        </div>
+      </div>
+
+      <div class="card" id="pipeline-card">
+        <div class="card-header">
+          <div class="card-title">Recruitment Pipeline</div>
+          <span class="card-badge" id="pipeline-badge">Loading…</span>
+        </div>
+        <div id="pipeline-rows"></div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Monthly Hiring Trend</div>
+            <span class="card-badge">2025</span>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">January</span><span class="chart-val">18 hires</span></div>
+            <div class="bar-track">
+              <div class="bar-fill blue" style="width:40%"></div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">February</span><span class="chart-val">24 hires</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill blue" style="width:55%"></div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">March</span><span class="chart-val">31 hires</span></div>
+            <div class="bar-track">
+              <div class="bar-fill blue" style="width:70%"></div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">April</span><span class="chart-val">42 hires</span></div>
+            <div class="bar-track">
+              <div class="bar-fill blue" style="width:95%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" id="unitComparisonCard">
+          <div class="card-header">
+            <div class="card-title">Unit Comparison</div>
+            <span class="card-badge">All time</span>
+          </div>
+          <div class="unit-comparison-grid" id="unitComparisonGrid">
+            <div class="unit-card">
+              <div class="unit-progress-container">
+                <svg class="unit-progress-svg">
+                  <circle class="unit-progress-circle-bg" r="26" cx="32" cy="32"/>
+                  <circle class="unit-progress-circle-fill" r="26" cx="32" cy="32" stroke-dasharray="163.36" stroke-dashoffset="40.84" style="stroke: var(--success);"/>
+                </svg>
+                <div class="unit-progress-text">58</div>
+              </div>
+              <div class="unit-card-name" title="Lady Andal School">Lady Andal School</div>
+            </div>
+            
+            <div class="unit-card">
+              <div class="unit-progress-container">
+                <svg class="unit-progress-svg">
+                  <circle class="unit-progress-circle-bg" r="26" cx="32" cy="32"/>
+                  <circle class="unit-progress-circle-fill" r="26" cx="32" cy="32" stroke-dasharray="163.36" stroke-dashoffset="73.51" style="stroke: var(--success);"/>
+                </svg>
+                <div class="unit-progress-text">32</div>
+              </div>
+              <div class="unit-card-name" title="Sir Mutha School">Sir Mutha School</div>
+            </div>
+            
+            <div class="unit-card">
+              <div class="unit-progress-container">
+                <svg class="unit-progress-svg">
+                  <circle class="unit-progress-circle-bg" r="26" cx="32" cy="32"/>
+                  <circle class="unit-progress-circle-fill" r="26" cx="32" cy="32" stroke-dasharray="163.36" stroke-dashoffset="106.18" style="stroke: var(--success);"/>
+                </svg>
+                <div class="unit-progress-text">18</div>
+              </div>
+              <div class="unit-card-name" title="MSS HS School">MSS HS School</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Budget vs Hiring</div>
+            <span class="card-badge">FY 2025</span>
+          </div>
+          <div class="budget-stats">
+            <div class="budget-box">
+              <div class="budget-val">₹48L</div>
+              <div class="budget-lbl">Allocated</div>
+            </div>
+            <div class="budget-box">
+              <div class="budget-val">₹41L</div>
+              <div class="budget-lbl">Utilized</div>
+            </div>
+            <div class="budget-box">
+              <div class="budget-val">₹7L</div>
+              <div class="budget-lbl">Remaining</div>
+            </div>
+          </div>
+          <div class="budget-bar-label"><span>Budget utilization</span><span>85%</span></div>
+          <div class="budget-bar">
+            <div class="budget-bar-fill"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Vacancy Gap Analysis</div>
+            <span class="card-badge">By category</span>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">Teaching Staff</span><span class="chart-val">8 vacancies</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill purple" style="width:70%"></div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">Administration</span><span class="chart-val">4 vacancies</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill purple" style="width:30%"></div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-meta"><span class="chart-name">Arts &amp; Music</span><span class="chart-val">2 vacancies</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill purple" style="width:15%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insights-card">
+        <div class="card-header">
+          <div class="card-title">HR Head Insights</div>
+          <span class="card-badge">4 highlights</span>
+        </div>
+        <div class="insights-grid">
+          <div class="insight-item blue">
+            <div class="insight-icon">
+              <svg viewBox="0 0 24 24">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div class="insight-text">Hiring increased by 21% compared to the previous quarter.</div>
+          </div>
+          <div class="insight-item green">
+            <div class="insight-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </div>
+            <div class="insight-text">ABC Public School achieved the highest fulfillment rate at 94%.</div>
+          </div>
+          <div class="insight-item orange">
+            <div class="insight-icon">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <div class="insight-text">Science department has the largest vacancy gap — needs priority recruitment.</div>
+          </div>
+          <div class="insight-item purple">
+            <div class="insight-icon">
+              <svg viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
+            </div>
+            <div class="insight-text">Average time-to-hire reduced from 18 days to 12 days this quarter.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /page-shell -->
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    if (localStorage.getItem('user_type') !== 'hr_head') {
+      window.location.replace('/mss-career-portal/hr/dashboard');
+    }
+
+    const API_BASE = window.AUTH_API_BASE || 'http://localhost:8000';
+    const _token = () => localStorage.getItem('access_token') || '';
+
+    let _reportData = null;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function updateChartCard(title, dataObj, suffix, colorClass) {
+      const card = Array.from(document.querySelectorAll('.card')).find(
+        c => c.querySelector('.card-title')?.textContent === title
+      );
+      if (!card) return;
+      card.querySelectorAll('.chart-row, .empty-msg').forEach(r => r.remove());
+      const entries = Object.entries(dataObj || {});
+      if (!entries.length) {
+        const p = document.createElement('p');
+        p.className = 'empty-msg';
+        p.textContent = 'No data for selected filters';
+        card.appendChild(p);
+        return;
+      }
+      const maxVal = Math.max(...entries.map(e => e[1])) || 1;
+      entries.forEach(([name, val]) => {
+        const pct = Math.round((val / maxVal) * 100);
+        const row = document.createElement('div');
+        row.className = 'chart-row';
+        row.innerHTML =
+          `<div class="chart-meta"><span class="chart-name">${name}</span>` +
+          `<span class="chart-val">${val} ${suffix}</span></div>` +
+          `<div class="bar-track"><div class="bar-fill ${colorClass}" style="width:${pct}%"></div></div>`;
+        card.appendChild(row);
+      });
+    }
+
+    function updateUnitComparisonCard(dataObj) {
+      const grid = document.getElementById('unitComparisonGrid');
+      if (!grid) return;
+      grid.innerHTML = '';
+      const entries = Object.entries(dataObj || {});
+      if (!entries.length) {
+        grid.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px;grid-column:1/-1;">No data available</div>';
+        return;
+      }
+      const maxVal = Math.max(...entries.map(e => e[1])) || 1;
+      
+      entries.forEach(([name, val]) => {
+        const pct = Math.round((val / maxVal) * 100);
+        const offset = 163.36 - (163.36 * pct / 100);
+        const card = document.createElement('div');
+        card.className = 'unit-card';
+        card.innerHTML = `
+          <div class="unit-progress-container">
+            <svg class="unit-progress-svg">
+              <circle class="unit-progress-circle-bg" r="26" cx="32" cy="32"/>
+              <circle class="unit-progress-circle-fill" r="26" cx="32" cy="32" stroke-dasharray="163.36" stroke-dashoffset="${offset}" style="stroke: var(--success);"/>
+            </svg>
+            <div class="unit-progress-text">${val}</div>
+          </div>
+          <div class="unit-card-name" title="${name}">${name}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function updatePipelineStages(stages, total) {
+      const container = document.getElementById('pipeline-rows');
+      if (!container) return;
+      container.innerHTML = '';
+      const colorMap = {
+        Applied: 'blue', Screened: 'blue', Interview: 'cyan',
+        Offer: 'orange', 'Offer Accepted': 'green', Onboarding: 'purple', Rejected: 'orange'
+      };
+      const totalVal = total || 1;
+      Object.entries(stages).forEach(([stage, count]) => {
+        const pct = Math.min(Math.round((count / totalVal) * 100), 100);
+        const row = document.createElement('div');
+        row.className = 'chart-row';
+        row.innerHTML =
+          `<div class="chart-meta"><span class="chart-name">${stage}</span>` +
+          `<span class="chart-val">${count}</span></div>` +
+          `<div class="bar-track"><div class="bar-fill ${colorMap[stage] || 'blue'}" style="width:${pct}%"></div></div>`;
+        container.appendChild(row);
+      });
+      const badge = document.getElementById('pipeline-badge');
+      if (badge) badge.textContent = `${total ?? 0} total applicants`;
+    }
+
+    function updateInsights(d) {
+      const grid = document.querySelector('.insights-grid');
+      if (!grid) return;
+      const items = [];
+
+      if (d.total_hires != null) {
+        items.push({
+          color: 'blue',
+          icon: '<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+          text: `${d.total_hires} total hire${d.total_hires !== 1 ? 's' : ''} recorded with a ${d.fulfillment_rate ?? 0}% overall fulfillment rate.`
+        });
+      }
+
+      const schoolEntries = Object.entries(d.school_comparison || {}).filter(([, v]) => v > 0);
+      if (schoolEntries.length) {
+        const [topSchool, topCount] = schoolEntries.reduce((a, b) => b[1] > a[1] ? b : a);
+        items.push({
+          color: 'green',
+          icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+          text: `${topSchool} leads with ${topCount} hire${topCount !== 1 ? 's' : ''} — highest across all units.`
+        });
+      }
+
+      const gapEntries = Object.entries(d.vacancy_gap || {}).filter(([, v]) => v > 0);
+      if (gapEntries.length) {
+        const [criticalDept, criticalCount] = gapEntries.reduce((a, b) => b[1] > a[1] ? b : a);
+        items.push({
+          color: 'orange',
+          icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+          text: `${criticalDept} department has the largest vacancy gap (${criticalCount}) — priority recruitment needed.`
+        });
+      } else if (d.vacancy_gap != null) {
+        items.push({
+          color: 'green',
+          icon: '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>',
+          text: 'No open vacancy gaps detected across departments.'
+        });
+      }
+
+      if (d.onboarded != null) {
+        items.push({
+          color: 'purple',
+          icon: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+          text: `${d.onboarded} candidate${d.onboarded !== 1 ? 's' : ''} successfully onboarded via MASSET sync.`
+        });
+      }
+
+      if (!items.length) {
+        items.push({
+          color: 'blue',
+          icon: '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>',
+          text: 'No data available for the selected filters.'
+        });
+      }
+
+      grid.innerHTML = '';
+      items.forEach(({ color, icon, text }) => {
+        const el = document.createElement('div');
+        el.className = `insight-item ${color}`;
+        el.innerHTML =
+          `<div class="insight-icon"><svg viewBox="0 0 24 24">${icon}</svg></div>` +
+          `<div class="insight-text">${text}</div>`;
+        grid.appendChild(el);
+      });
+
+      const badge = document.querySelector('.insights-card .card-badge');
+      if (badge) badge.textContent = `${items.length} highlights`;
+    }
+
+    function exportCSV() {
+      if (!_reportData) { showToast('No report data loaded'); return; }
+      const d = _reportData;
+      const rows = [
+        ['Recruitment Report'],
+        ['Generated', new Date().toLocaleDateString()],
+        [],
+        ['KPI Summary'],
+        ['Metric', 'Value'],
+        ['Total Hires', d.total_hires ?? ''],
+        ['Open Vacancies', d.open_jobs ?? ''],
+        ['Closed Jobs', d.closed_jobs ?? ''],
+        ['Fulfillment Rate (%)', d.fulfillment_rate ?? ''],
+        ['Total Applicants', d.total_applicants ?? ''],
+        ['Selected', d.selected ?? ''],
+        ['On Hold', d.on_hold ?? ''],
+        ['Rejected', d.rejected ?? ''],
+        ['Offer Sent', d.offer_sent ?? ''],
+        ['Offer Accepted', d.offer_accepted ?? ''],
+        ['Onboarded', d.onboarded ?? ''],
+        [],
+        ['Pipeline Stages'],
+        ['Stage', 'Count'],
+        ...Object.entries(d.stages || {}).map(([k, v]) => [k, v]),
+        [],
+        ['Monthly Hiring Trend'],
+        ['Month', 'Hires'],
+        ...Object.entries(d.monthly_trend || {}).map(([k, v]) => [k, v]),
+        [],
+        ['School Comparison'],
+        ['School', 'Hires'],
+        ...Object.entries(d.school_comparison || {}).map(([k, v]) => [k, v]),
+        [],
+        ['Vacancy Gap by Department'],
+        ['Department', 'Open Vacancies'],
+        ...Object.entries(d.vacancy_gap || {}).map(([k, v]) => [k, v]),
+      ];
+      const csv = rows.map(r =>
+        r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')
+      ).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `recruitment-report-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Report exported as CSV');
+    }
+
+    async function loadReports() {
+      try {
+        const params = new URLSearchParams();
+        const startVal = document.getElementById('startDate').value;
+        const endVal = document.getElementById('endDate').value;
+        const schoolVal = document.getElementById('unitFilter').value;
+        const deptVal = document.getElementById('categoryFilter').value;
+        const typeVal = document.getElementById('jobTypeFilter').value;
+        if (startVal) params.append('start_date', startVal);
+        if (endVal) params.append('end_date', endVal);
+        if (schoolVal) params.append('school_name', schoolVal);
+        if (deptVal) params.append('department', deptVal);
+        if (typeVal) params.append('job_type', typeVal);
+
+        const res = await fetch(`${API_BASE}/hr/reports?${params}`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        if (!res.ok) throw new Error(res.status);
+        const d = await res.json();
+        _reportData = d;
+
+        // KPI cards
+        document.getElementById('kpi-hires').textContent = d.total_hires ?? '—';
+        document.getElementById('kpi-open').textContent = d.open_jobs ?? '—';
+        document.getElementById('kpi-closed').textContent = d.closed_jobs ?? '—';
+        document.getElementById('kpi-rate').textContent =
+          d.fulfillment_rate != null ? d.fulfillment_rate + '%' : '—';
+
+        // KPI delta rows — derived from live data
+        document.getElementById('kpi-hires-delta').textContent =
+          `${d.offer_accepted ?? 0} offers accepted`;
+        document.getElementById('kpi-open-delta').textContent =
+          `${d.total_applicants ?? 0} total applicants`;
+        document.getElementById('kpi-closed-delta').textContent =
+          `${d.rejected ?? 0} candidates rejected`;
+        document.getElementById('kpi-rate-delta').textContent =
+          `${d.onboarded ?? 0} onboarded`;
+
+        // Pipeline stages funnel
+        if (d.stages) updatePipelineStages(d.stages, d.total_applicants);
+
+        // Bar charts
+        if (d.monthly_trend) updateChartCard('Monthly Hiring Trend', d.monthly_trend, 'hires', 'blue');
+        if (d.school_comparison) updateUnitComparisonCard(d.school_comparison);
+        if (d.vacancy_gap) updateChartCard('Vacancy Gap Analysis', d.vacancy_gap, 'vacancies', 'purple');
+
+        // Budget card
+        if (d.budget) {
+          const budgetCard = Array.from(document.querySelectorAll('.card')).find(
+            c => c.querySelector('.card-title')?.textContent === 'Budget vs Hiring'
+          );
+          if (budgetCard) {
+            const vals = budgetCard.querySelectorAll('.budget-val');
+            if (vals.length === 3) {
+              vals[0].textContent = d.budget.allocated;
+              vals[1].textContent = d.budget.utilized;
+              vals[2].textContent = d.budget.remaining;
+            }
+            const pctLabel = budgetCard.querySelector('.budget-bar-label span:last-child');
+            if (pctLabel) pctLabel.textContent = d.budget.percentage + '%';
+            const barFill = budgetCard.querySelector('.budget-bar-fill');
+            if (barFill) barFill.style.width = d.budget.percentage + '%';
+          }
+        }
+
+        // Insights
+        updateInsights(d);
+
+      } catch (e) {
+        console.warn('Reports API unavailable', e);
+      }
+    }
+
+    loadReports();
+
+    document.querySelectorAll('.filter-bar input, .filter-bar select').forEach(el => {
+      el.addEventListener('change', loadReports);
+    });
+
+    if (localStorage.getItem('portalTheme') === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+  </script>
+
+</body>
+
+</html>

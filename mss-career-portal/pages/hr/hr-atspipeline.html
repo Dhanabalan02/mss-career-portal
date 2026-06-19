@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATS Pipeline - TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+  <link rel="stylesheet" href="../../assets/css/portal-layout.css">
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #dbeafe;
+      --primary-dark: #1d4ed8;
+      --success: #16a34a;
+      --success-light: #dcfce7;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --teal: #0d9488;
+      --teal-light: #ccfbf1;
+      --orange: #c2410c;
+      --orange-light: #ffedd5;
+
+      --bg: #f0f2f7;
+      --surface: #ffffff;
+      --surface-2: #f8f9fc;
+      --border: #e4e7ef;
+      --border-strong: #c9cede;
+      --text: #0f1623;
+      --text-2: #4b5568;
+      --text-3: #8492a6;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+      --shadow-sm: 0 1px 3px rgba(15, 22, 35, .07), 0 1px 2px rgba(15, 22, 35, .04);
+      --shadow-md: 0 4px 16px rgba(15, 22, 35, .10), 0 2px 6px rgba(15, 22, 35, .06);
+      --shadow-lg: 0 12px 40px rgba(15, 22, 35, .14), 0 4px 12px rgba(15, 22, 35, .08);
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+      --transition: .2s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg: #0d0d0d;
+      --surface: #0d0d0d;
+      --surface-2: #111111;
+      --border: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f0efe8;
+      --text-2: #b4b2a9;
+      --text-3: #666560;
+      --primary-light: #26215C;
+      --success-light: #173404;
+      --warning-light: #412402;
+      --danger-light: #501313;
+      --purple-light: #26215C;
+      --teal-light: #04342C;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* ── Layout ── */
+    .layout {
+      display: flex;
+      min-height: 100vh;
+      height: auto;
+      overflow: visible;
+    }
+
+    html,
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      border-radius: var(--radius-xs);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .brand-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.3px;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 10px 10px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 10px;
+      border-radius: var(--radius-xs);
+      color: var(--text-2);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 400;
+      transition: var(--transition);
+      cursor: pointer;
+      margin-bottom: 2px;
+    }
+
+    .nav-item i {
+      font-size: 17px;
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .nav-item.active i {
+      color: var(--primary);
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .user-card:hover {
+      background: var(--bg);
+    }
+
+    .user-av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .user-name {
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .user-role {
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+      min-height: 0;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 73px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .page-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.3px;
+    }
+
+    .page-sub {
+      font-size: 12px;
+      color: var(--text-3);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 11px;
+      color: var(--text-3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding: 8px 14px 8px 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      width: 220px;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+      width: 260px;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-3);
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:active {
+      transform: scale(.98);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-2);
+      transition: var(--transition);
+    }
+
+    .icon-btn:hover {
+      background: #fff;
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .icon-btn i {
+      font-size: 17px;
+    }
+
+    /* ── Stat Cards ── */
+    .stats-grid-wrap {
+      padding: 22px 24px 0;
+      flex-shrink: 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card.active-filter {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      line-height: 1;
+      margin-bottom: 5px;
+      font-family: var(--mono);
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .stat-delta {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    .sc-total {
+      border-top-color: var(--primary);
+    }
+
+    .sc-applied {
+      border-top-color: var(--primary);
+    }
+
+    .sc-interview {
+      border-top-color: #ea580c;
+    }
+
+    .sc-offer {
+      border-top-color: var(--purple);
+    }
+
+    .sc-onboarding {
+      border-top-color: var(--warning);
+    }
+
+    .sc-match {
+      border-top-color: var(--teal);
+    }
+
+    .column.highlighted {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
+      transition: border-color .3s, box-shadow .3s;
+    }
+
+    /* ── Kanban ── */
+    .kanban-area {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .kanban-scroll {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 20px 24px;
+      min-height: 0;
+    }
+
+    @media (max-width: 900px) {
+      .kanban-scroll {
+        padding: 16px 14px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+      }
+
+      .kanban-container {
+        gap: 14px;
+      }
+
+      .column {
+        width: calc(100vw - 28px);
+        min-width: calc(100vw - 28px);
+        scroll-snap-align: start;
+      }
+
+      .card-list {
+        max-height: calc(100vh - 360px);
+        overflow-y: auto;
+        touch-action: pan-y;
+      }
+
+      .column-header {
+        padding: 12px 12px 10px;
+      }
+    }
+
+    .kanban-container {
+      display: flex;
+      gap: 16px;
+      height: 100%;
+      min-height: 0;
+    }
+
+    .column {
+      width: 290px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface-2);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .column.drag-over {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
+    }
+
+    .column-header {
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      background: var(--surface);
+    }
+
+    .col-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .col-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .col-dot-applied {
+      background: var(--primary);
+    }
+
+    .col-dot-screened {
+      background: var(--success);
+    }
+
+    .col-dot-interview {
+      background: #ea580c;
+    }
+
+    .col-dot-offer {
+      background: var(--purple);
+    }
+
+    .col-dot-accepted {
+      background: var(--teal);
+    }
+
+    .col-dot-onboarding {
+      background: var(--warning);
+    }
+
+    .column-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .badge {
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--mono);
+    }
+
+    .b-applied {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .b-screened {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .b-interview {
+      background: var(--orange-light);
+      color: var(--orange);
+    }
+
+    .b-offer {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    .b-accepted {
+      background: var(--teal-light);
+      color: var(--teal);
+    }
+
+    .b-onboarding {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .card-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+
+    .card-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .card-list::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    /* ── Candidate Card ── */
+    .candidate-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 13px;
+      cursor: grab;
+      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+      position: relative;
+      animation: cardIn .25s ease forwards;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .candidate-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .candidate-card:active {
+      cursor: grabbing;
+    }
+
+    .candidate-card.dragging {
+      opacity: .35;
+      cursor: grabbing;
+    }
+
+    .candidate-card.drop-ghost {
+      border: 2px dashed var(--primary);
+      background: rgba(37, 99, 235, .04);
+      height: 70px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cand-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cand-pos {
+      font-size: 11.5px;
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-menu-btn {
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .card-menu-btn:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 9px;
+    }
+
+    .tag {
+      font-size: 11px;
+      padding: 2px 7px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .tag i {
+      font-size: 11px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 9px;
+    }
+
+    .days-ago {
+      font-size: 11px;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .days-ago i {
+      font-size: 12px;
+    }
+
+    .match-badge {
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--mono);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .match-high {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .match-mid {
+      background: var(--warning-light);
+      color: var(--warning);
+    }
+
+    .match-low {
+      background: var(--danger-light);
+      color: var(--danger);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 30px 16px;
+      color: var(--text-3);
+      text-align: center;
+    }
+
+    .empty-state i {
+      font-size: 28px;
+      opacity: .35;
+    }
+
+    .empty-state span {
+      font-size: 12px;
+    }
+
+    /* ── Drawer ── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 22, 35, .4);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -480px;
+      width: 460px;
+      height: 100%;
+      background: var(--surface);
+      box-shadow: var(--shadow-lg);
+      z-index: 101;
+      display: flex;
+      flex-direction: column;
+      transition: right .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .drawer.active {
+      right: 0;
+    }
+
+    .drawer-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 2;
+    }
+
+    .drawer-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .drawer-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .drawer-name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .drawer-pos {
+      font-size: 12px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .drawer-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--bg);
+      cursor: pointer;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      font-size: 16px;
+    }
+
+    .drawer-close:hover {
+      background: var(--danger-light);
+      color: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .drawer-tabs {
+      display: flex;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--surface);
+      gap: 2px;
+    }
+
+    .dtab {
+      padding: 11px 14px;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-3);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dtab i {
+      font-size: 15px;
+    }
+
+    .dtab:hover {
+      color: var(--text);
+    }
+
+    .dtab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 500;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      scrollbar-width: thin;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn .2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .ai-card {
+      background: linear-gradient(135deg, #f0effe 0%, #e8f1ff 100%);
+      border: 1px solid #c4b5fd;
+      border-radius: var(--radius-sm);
+      padding: 13px 14px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #4c1d95;
+      line-height: 1.6;
+      display: flex;
+      gap: 10px;
+    }
+
+    .ai-card i {
+      font-size: 18px;
+      color: var(--purple);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .section {
+      margin-bottom: 22px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--text-3);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .info-table tr td {
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    .info-table tr:last-child td {
+      border: none;
+    }
+
+    .info-table .lbl {
+      font-size: 12px;
+      color: var(--text-3);
+      width: 90px;
+      padding-right: 12px;
+    }
+
+    .info-table .val {
+      font-size: 13px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .info-table .val.link {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .info-table .val.link:hover {
+      text-decoration: underline;
+    }
+
+    .skills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .skill-chip {
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+    }
+
+    /* Timeline */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      padding-bottom: 18px;
+      position: relative;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 22px;
+      bottom: 0;
+      width: 1.5px;
+      background: var(--border);
+    }
+
+    .tl-item:last-child::before {
+      display: none;
+    }
+
+    .tl-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .tl-dot.done {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .tl-dot.current {
+      background: var(--primary);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .2);
+    }
+
+    .tl-dot.pending {
+      background: var(--surface);
+      border-color: var(--border-strong);
+    }
+
+    .tl-text {
+      flex: 1;
+    }
+
+    .tl-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .tl-date {
+      font-size: 11.5px;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+
+    .tl-badge {
+      font-size: 10.5px;
+      padding: 1px 7px;
+      border-radius: 10px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+
+    .tl-badge.ok {
+      background: var(--success-light);
+      color: var(--success);
+    }
+
+    .tl-badge.act {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* Actions tab */
+    .stage-move-section {
+      margin-bottom: 20px;
+    }
+
+    .stage-label {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+
+    .stage-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .stage-pill {
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text-2);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .stage-pill:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .stage-pill.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .action-grid {
+      display: grid;
+      gap: 8px;
+    }
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 14px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
+    }
+
+    .action-btn i {
+      font-size: 17px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .action-btn:active {
+      transform: scale(.98);
+    }
+
+    .ab-interview {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .ab-offer {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    .ab-hold {
+      background: var(--warning-light);
+      color: var(--warning);
+      border: 1px solid #fcd34d;
+    }
+
+    .ab-reject {
+      background: var(--danger-light);
+      color: var(--danger);
+      border: 1px solid #fca5a5;
+    }
+
+    .notes-area {
+      width: 100%;
+      min-height: 90px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      resize: vertical;
+      transition: var(--transition);
+    }
+
+    .notes-area:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--text);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg);
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast i {
+      font-size: 16px;
+    }
+
+    .toast.success i {
+      color: #4ade80;
+    }
+
+    .toast.warning i {
+      color: #fbbf24;
+    }
+
+    .toast.danger i {
+      color: #f87171;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .drawer {
+        width: 100%;
+        right: -100%;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kanban-scroll {
+        padding: 16px 14px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+      }
+
+      .kanban-container {
+        gap: 14px;
+        width: max-content;
+      }
+
+      .column {
+        width: calc(100vw - 28px);
+        min-width: calc(100vw - 28px);
+        scroll-snap-align: start;
+        min-height: 240px;
+      }
+
+      .card-list {
+        max-height: calc(100vh - 340px);
+        overflow-y: auto;
+        touch-action: pan-y;
+      }
+
+      .column-header {
+        padding: 12px 12px 10px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kanban-scroll {
+        padding: 14px 12px;
+      }
+
+      .column {
+        width: calc(100vw - 24px);
+        min-width: calc(100vw - 24px);
+      }
+
+      .card-list {
+        max-height: calc(100vh - 320px);
+      }
+
+      .candidate-card {
+        touch-action: pan-y;
+      }
+
+      .drag-clone {
+        position: fixed;
+        width: calc(100vw - 56px);
+        max-width: 360px;
+        pointer-events: none;
+        opacity: .98;
+        border-radius: 12px;
+        box-shadow: 0 18px 46px rgba(15, 22, 35, .18);
+        transform: translate(-50%, -50%) scale(1.02);
+        user-select: none;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 14px;
+      }
+
+      .search-input {
+        width: 140px;
+      }
+
+      .search-input:focus {
+        width: 160px;
+      }
+
+      .kanban-scroll {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="layout">
+    <!-- ── Main Content ── -->
+    <main class="main">
+
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="topbar-left">
+          <div>
+            <div class="page-title">ATS Pipeline</div>
+            <div class="page-sub">Recruitment Tracker</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-wrap">
+            <i class="ti ti-search" aria-hidden="true"></i>
+            <input class="search-input" type="text" id="searchInput" placeholder="Search candidate…"
+              oninput="filterCards()">
+          </div>
+          <select class="filter-select" id="jobFilter" onchange="filterCards()">
+            <option value="">All Jobs</option>
+            <option>Mathematics Teacher</option>
+            <option>Science Teacher</option>
+            <option>English Teacher</option>
+          </select>
+          <select class="filter-select" id="schoolFilter" onchange="filterCards()">
+            <option value="">All Schools</option>
+            <option>ABC School</option>
+            <option>XYZ School</option>
+            <option>Sunrise Academy</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Stat Cards -->
+      <div class="stats-grid-wrap">
+        <div class="stats-grid" id="statsGrid"></div>
+      </div>
+
+      <!-- Kanban -->
+      <div class="kanban-area">
+        <div class="kanban-scroll" ondragover="onKanbanDragOver(event)">
+          <div class="kanban-container" id="kanban"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+  <!-- Drawer -->
+  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Candidate Profile">
+    <div class="drawer-header">
+      <div class="drawer-header-left">
+        <div class="drawer-avatar" id="dAvatar"></div>
+        <div>
+          <div class="drawer-name" id="dName"></div>
+          <div class="drawer-pos" id="dPos"></div>
+        </div>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">
+        <i class="ti ti-x" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="drawer-tabs">
+      <div class="dtab active" onclick="switchTab('overview')"><i class="ti ti-user" aria-hidden="true"></i> Overview
+      </div>
+      <div class="dtab" onclick="switchTab('timeline')"><i class="ti ti-timeline" aria-hidden="true"></i> Timeline</div>
+      <div class="dtab" onclick="switchTab('actions')"><i class="ti ti-bolt" aria-hidden="true"></i> Actions</div>
+    </div>
+
+    <div class="drawer-body">
+
+      <!-- Overview tab -->
+      <div class="tab-panel active" id="tab-overview">
+        <div class="ai-card" id="aiCard">
+          <i class="ti ti-sparkles" aria-hidden="true"></i>
+          <div id="aiText"></div>
+        </div>
+        <div class="section">
+          <div class="section-title">Personal Info</div>
+          <table class="info-table" id="infoTable"></table>
+        </div>
+        <div class="section">
+          <div class="section-title">Skills</div>
+          <div class="skills-wrap" id="skillsWrap"></div>
+        </div>
+      </div>
+
+      <!-- Timeline tab -->
+      <div class="tab-panel" id="tab-timeline">
+        <div class="section">
+          <div class="section-title">Activity</div>
+          <div class="timeline" id="timelineEl"></div>
+        </div>
+      </div>
+
+      <!-- Actions tab -->
+      <div class="tab-panel" id="tab-actions">
+        <div class="section stage-move-section">
+          <div class="section-title">Move to Stage</div>
+          <div class="stage-pills" id="stagePills"></div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Quick Actions</div>
+          <div class="action-grid">
+            <button class="action-btn ab-interview" onclick="doAction('interview')">
+              <i class="ti ti-calendar-plus" aria-hidden="true"></i> Schedule Interview
+            </button>
+            <button class="action-btn ab-offer" onclick="doAction('offer')">
+              <i class="ti ti-file-invoice" aria-hidden="true"></i> Send Offer Letter
+            </button>
+            <button class="action-btn ab-hold" onclick="doAction('hold')">
+              <i class="ti ti-player-pause" aria-hidden="true"></i> Put On Hold
+            </button>
+            <button class="action-btn ab-reject" onclick="doAction('reject')">
+              <i class="ti ti-user-x" aria-hidden="true"></i> Reject Candidate
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Notes</div>
+          <textarea class="notes-area" id="notesArea" placeholder="Add notes about this candidate…"></textarea>
+          <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="saveNotes()">
+            <i class="ti ti-device-floppy" aria-hidden="true"></i> Save Notes
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script src="portal-layout.js"></script>
+  <script>
+    /* ── Data ── */
+    const STAGES = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
+
+    const STAGE_META = {
+      'Applied': { dot: 'applied', badge: 'b-applied', border: '#2563eb', av: ['#dbeafe', '#1d4ed8'] },
+      'Screened': { dot: 'screened', badge: 'b-screened', border: '#16a34a', av: ['#dcfce7', '#15803d'] },
+      'Interview': { dot: 'interview', badge: 'b-interview', border: '#ea580c', av: ['#ffedd5', '#c2410c'] },
+      'Offer': { dot: 'offer', badge: 'b-offer', border: '#7c3aed', av: ['#ede9fe', '#6d28d9'] },
+      'Offer Accepted': { dot: 'accepted', badge: 'b-accepted', border: '#0d9488', av: ['#ccfbf1', '#0f766e'] },
+      'Onboarding': { dot: 'onboarding', badge: 'b-onboarding', border: '#d97706', av: ['#fef3c7', '#b45309'] },
+    };
+
+    const API_BASE = window.AUTH_API_BASE || 'http://localhost:8000';
+    const _token = () => localStorage.getItem('access_token') || '';
+
+    let candidates = [];
+
+    const TIMELINES = {
+      'Applied': [{ t: 'Application Received', d: '2 days ago', s: 'done' }, { t: 'Initial Review', d: 'In progress', s: 'current' }, { t: 'Phone Screen', d: 'Upcoming', s: 'pending' }],
+      'Screened': [{ t: 'Application Received', d: '5 days ago', s: 'done' }, { t: 'Resume Screened', d: '4 days ago', s: 'done' }, { t: 'Phone Screen', d: 'Scheduled', s: 'current' }, { t: 'Interview', d: 'Pending', s: 'pending' }],
+      'Interview': [{ t: 'Application Received', d: '8 days ago', s: 'done' }, { t: 'Screened', d: '7 days ago', s: 'done' }, { t: 'Round 1 Interview', d: '3 days ago', s: 'done' }, { t: 'Technical Assessment', d: 'Ongoing', s: 'current' }, { t: 'Final Decision', d: 'Pending', s: 'pending' }],
+      'Offer': [{ t: 'Applied & Screened', d: '12 days ago', s: 'done' }, { t: 'Interviews Cleared', d: '5 days ago', s: 'done' }, { t: 'Offer Sent', d: '2 days ago', s: 'done' }, { t: 'Awaiting Acceptance', d: 'Pending', s: 'current' }],
+      'Offer Accepted': [{ t: 'All Rounds Cleared', d: '15 days ago', s: 'done' }, { t: 'Offer Accepted', d: '3 days ago', s: 'done' }, { t: 'Onboarding Initiated', d: 'Tomorrow', s: 'current' }],
+      'Onboarding': [{ t: 'All Rounds Cleared', d: '20 days ago', s: 'done' }, { t: 'Offer Accepted', d: '10 days ago', s: 'done' }, { t: 'Onboarding Started', d: '3 days ago', s: 'done' }, { t: 'Joining Confirmed', d: 'Next week', s: 'current' }],
+    };
+
+    /* ── State ── */
+    let activeId = null;
+    let dragSrcId = null;
+    let toastTimer = null;
+    let dragAllowed = false;
+    let holdTimer = null;
+    let preventClick = false;
+    const MOBILE_BREAKPOINT = 768;
+
+    const mobileDrag = {
+      active: false,
+      pointerId: null,
+      id: null,
+      startX: 0,
+      startY: 0,
+      sourceStage: null,
+      targetStage: null,
+      clone: null,
+      originEl: null
+    };
+
+    const isMobileView = () => window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
+
+    /* ── Helpers ── */
+    const initials = name => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const scoreClass = s => s >= 90 ? 'match-high' : s >= 75 ? 'match-mid' : 'match-low';
+
+    /* ── Render ── */
+    function buildCard(c) {
+      const m = STAGE_META[c.stage];
+      const [avBg, avFg] = m.av;
+      return `
+  <div class="candidate-card" id="card-${c.id}"
+    draggable="true"
+    style="border-left-color:${m.border}"
+    onclick="openDrawer(event, ${c.id})"
+    ondragstart="onDragStart(event,${c.id})"
+    ondragend="onDragEnd(event)"
+    onpointerdown="onCardPointerDown(event, ${c.id})"
+    onpointermove="onCardPointerMove(event)"
+    onpointerup="onCardPointerUp(event)"
+    onpointercancel="onCardPointerCancel(event)">
+    <div class="card-top">
+      <div class="avatar" style="background:${avBg};color:${avFg}">${initials(c.name)}</div>
+      <div class="card-info">
+        <div class="cand-name">${c.name}</div>
+        <div class="cand-pos">${c.position}</div>
+      </div>
+      <button class="card-menu-btn" onclick="event.stopPropagation();showToast('Card menu coming soon','warning')" aria-label="Card options">
+        <i class="ti ti-dots-vertical" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="card-tags">
+      <span class="tag"><i class="ti ti-briefcase" aria-hidden="true"></i>${c.exp}</span>
+      <span class="tag"><i class="ti ti-building" aria-hidden="true"></i>${c.school}</span>
+    </div>
+    <div class="card-footer">
+      <span class="days-ago"><i class="ti ti-clock" aria-hidden="true"></i>${c.daysAgo}d ago</span>
+      <span class="match-badge ${scoreClass(c.match)}">${c.match}% match</span>
+    </div>
+  </div>`;
+    }
+
+    function renderKanban(data) {
+      const container = document.getElementById('kanban');
+      container.innerHTML = '';
+
+      STAGES.forEach(stage => {
+        const cards = data.filter(c => c.stage === stage);
+        const m = STAGE_META[stage];
+        const colId = 'col-' + stage.replace(/\s+/g, '-');
+
+        const colEl = document.createElement('div');
+        colEl.className = 'column';
+        colEl.id = colId;
+        colEl.dataset.stage = stage;
+        colEl.setAttribute('ondragover', `onDragOver(event,'${stage}')`);
+        colEl.setAttribute('ondragleave', 'onDragLeave(event)');
+        colEl.setAttribute('ondrop', `onDrop(event,'${stage}')`);
+
+        const empty = cards.length === 0
+          ? `<div class="empty-state"><i class="ti ti-inbox" aria-hidden="true"></i><span>No candidates</span></div>`
+          : '';
+
+        colEl.innerHTML = `
+      <div class="column-header">
+        <div class="col-title-wrap">
+          <div class="col-dot col-dot-${m.dot}"></div>
+          <span class="column-title">${stage}</span>
+        </div>
+        <span class="badge ${m.badge}">${cards.length}</span>
+      </div>
+      <div class="card-list">${cards.map(buildCard).join('')}${empty}</div>`;
+
+        container.appendChild(colEl);
+      });
+
+      updateStats(data);
+    }
+
+    function updateStats(data) {
+      const grid = document.getElementById('statsGrid');
+      const total = data.length;
+      const applied = data.filter(c => c.stage === 'Applied').length;
+      const interview = data.filter(c => c.stage === 'Interview').length;
+      const offers = data.filter(c => c.stage === 'Offer' || c.stage === 'Offer Accepted').length;
+      const onboarding = data.filter(c => c.stage === 'Onboarding').length;
+
+      grid.innerHTML = `
+    <div class="stat-card sc-total" onclick="scrollToStage(null)">
+      <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-users" aria-hidden="true"></i></div>
+      <div class="stat-value">${total}</div>
+      <div class="stat-label">Total Candidates</div>
+      <div class="stat-delta">+3 this week</div>
+    </div>
+    <div class="stat-card sc-applied" onclick="scrollToStage('Applied')">
+      <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+      <div class="stat-value">${applied}</div>
+      <div class="stat-label">Applied</div>
+      <div class="stat-delta">New applications</div>
+    </div>
+    <div class="stat-card sc-interview" onclick="scrollToStage('Interview')">
+      <div class="stat-icon" style="background:var(--orange-light);color:var(--orange)"><i class="ti ti-microphone-2" aria-hidden="true"></i></div>
+      <div class="stat-value">${interview}</div>
+      <div class="stat-label">In Interview</div>
+      <div class="stat-delta">+1 today</div>
+    </div>
+    <div class="stat-card sc-offer" onclick="scrollToStage('Offer')">
+      <div class="stat-icon" style="background:var(--purple-light);color:var(--purple)"><i class="ti ti-file-invoice" aria-hidden="true"></i></div>
+      <div class="stat-value">${offers}</div>
+      <div class="stat-label">Offers Active</div>
+      <div class="stat-delta">Offer + Accepted</div>
+    </div>
+    <div class="stat-card sc-onboarding" onclick="scrollToStage('Onboarding')">
+      <div class="stat-icon" style="background:var(--warning-light);color:var(--warning)"><i class="ti ti-user-check" aria-hidden="true"></i></div>
+      <div class="stat-value">${onboarding}</div>
+      <div class="stat-label">Onboarding</div>
+      <div class="stat-delta">On track</div>
+    </div>`;
+    }
+
+    function scrollToStage(stage) {
+      document.querySelectorAll('.column').forEach(c => c.classList.remove('highlighted'));
+      if (!stage) return;
+      const col = document.getElementById('col-' + stage.replace(/\s+/g, '-'));
+      if (!col) return;
+      col.classList.add('highlighted');
+      col.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      setTimeout(() => col.classList.remove('highlighted'), 2000);
+    }
+
+    /* ── Filter ── */
+    function getFiltered() {
+      const q = document.getElementById('searchInput').value.trim().toLowerCase();
+      const job = document.getElementById('jobFilter').value;
+      const school = document.getElementById('schoolFilter').value;
+      return candidates.filter(c =>
+        (!q || c.name.toLowerCase().includes(q) || c.position.toLowerCase().includes(q)) &&
+        (!job || c.position === job) &&
+        (!school || c.school === school)
+      );
+    }
+    function filterCards() { renderKanban(getFiltered()); }
+
+    /* ── Drawer ── */
+    function openDrawer(event, id) {
+      if (preventClick) {
+        preventClick = false;
+        return;
+      }
+      const c = candidates.find(x => x.id === id);
+      if (!c) return;
+      activeId = id;
+
+      const [avBg, avFg] = STAGE_META[c.stage].av;
+      const avEl = document.getElementById('dAvatar');
+      avEl.textContent = initials(c.name);
+      avEl.style.cssText = `background:${avBg};color:${avFg};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600`;
+
+      document.getElementById('dName').textContent = c.name;
+      document.getElementById('dPos').textContent = c.position + ' · ' + c.school;
+
+      // AI insight
+      const matchLabel = c.match >= 90 ? 'Excellent' : c.match >= 75 ? 'Good' : 'Fair';
+      document.getElementById('aiText').innerHTML =
+        `<strong>AI Summary:</strong> ${c.notes} — Match score: <strong>${c.match}% (${matchLabel})</strong>.`;
+
+      // Info table
+      document.getElementById('infoTable').innerHTML = `
+    <tr><td class="lbl">Experience</td><td class="val">${c.exp}</td></tr>
+    <tr><td class="lbl">School</td><td class="val">${c.school}</td></tr>
+    <tr><td class="lbl">Email</td><td class="val"><a class="link" href="mailto:${c.email}">${c.email}</a></td></tr>
+    <tr><td class="lbl">Phone</td><td class="val">${c.phone}</td></tr>
+    <tr><td class="lbl">Stage</td><td class="val"><span class="badge ${STAGE_META[c.stage].badge}">${c.stage}</span></td></tr>`;
+
+      // Skills
+      document.getElementById('skillsWrap').innerHTML =
+        c.skills.map(s => `<span class="skill-chip">${s}</span>`).join('');
+
+      // Timeline
+      const tl = TIMELINES[c.stage] || [];
+      document.getElementById('timelineEl').innerHTML = tl.map(t => `
+    <div class="tl-item">
+      <div class="tl-dot ${t.s === 'done' ? 'done' : t.s === 'current' ? 'current' : 'pending'}"></div>
+      <div class="tl-text">
+        <div class="tl-title">${t.t}</div>
+        <div class="tl-date">${t.d}</div>
+        ${t.s === 'done' ? '<span class="tl-badge ok">Completed</span>' : ''}
+        ${t.s === 'current' ? '<span class="tl-badge act">In Progress</span>' : ''}
+      </div>
+    </div>`).join('');
+
+      // Stage pills
+      document.getElementById('stagePills').innerHTML = STAGES.map(s =>
+        `<div class="stage-pill ${s === c.stage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
+      ).join('');
+
+      // Notes
+      document.getElementById('notesArea').value = c.notes || '';
+
+      switchTab('overview');
+      document.getElementById('drawer').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawer').classList.remove('active');
+      document.getElementById('overlay').classList.remove('active');
+      activeId = null;
+    }
+
+    function switchTab(tab) {
+      const tabs = ['overview', 'timeline', 'actions'];
+      document.querySelectorAll('.dtab').forEach((el, i) => el.classList.toggle('active', tabs[i] === tab));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+    }
+
+    function moveStage(newStage) {
+      const c = candidates.find(x => x.id === activeId);
+      if (!c || c.stage === newStage) return;
+      c.stage = newStage;
+      renderKanban(getFiltered());
+      // Refresh pills
+      document.getElementById('stagePills').innerHTML = STAGES.map(s =>
+        `<div class="stage-pill ${s === newStage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
+      ).join('');
+      showToast(`${c.name} moved to ${newStage}`, 'success');
+    }
+
+    function doAction(type) {
+      const c = candidates.find(x => x.id === activeId);
+      if (!c) return;
+      const actions = {
+        interview: { stage: 'Interview', msg: `Interview scheduled for ${c.name}`, icon: 'success' },
+        offer: { stage: 'Offer', msg: `Offer letter sent to ${c.name}`, icon: 'success' },
+        hold: { stage: null, msg: `${c.name} put on hold`, icon: 'warning' },
+        reject: { stage: null, msg: `${c.name} has been rejected`, icon: 'danger' },
+      };
+      const a = actions[type];
+      if (a.stage) { c.stage = a.stage; renderKanban(getFiltered()); }
+      showToast(a.msg, a.icon);
+      if (type === 'reject') { closeDrawer(); }
+      else {
+        document.getElementById('stagePills').innerHTML = STAGES.map(s =>
+          `<div class="stage-pill ${s === c.stage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
+        ).join('');
+      }
+    }
+
+    function saveNotes() {
+      const c = candidates.find(x => x.id === activeId);
+      if (!c) return;
+      c.notes = document.getElementById('notesArea').value;
+      showToast('Notes saved', 'success');
+    }
+
+    /* ── Toast ── */
+    function showToast(msg, type = 'success') {
+      const icons = { success: 'ti-circle-check', warning: 'ti-alert-triangle', danger: 'ti-circle-x' };
+      const t = document.getElementById('toast');
+      t.className = `toast ${type}`;
+      t.innerHTML = `<i class="ti ${icons[type]}" aria-hidden="true"></i>${msg}`;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function getStageFromPoint(x, y) {
+      const el = document.elementFromPoint(x, y);
+      return el ? el.closest('.column')?.dataset.stage : null;
+    }
+
+    function highlightDropTarget(stage) {
+      document.querySelectorAll('.column').forEach(c => c.classList.toggle('drag-over', c.dataset.stage === stage));
+    }
+
+    function createDragClone(el, x, y) {
+      const clone = el.cloneNode(true);
+      clone.classList.add('drag-clone');
+      clone.style.width = `${el.offsetWidth}px`;
+      clone.style.top = `${y}px`;
+      clone.style.left = `${x}px`;
+      clone.style.position = 'fixed';
+      clone.style.margin = '0';
+      clone.style.zIndex = '9999';
+      clone.style.pointerEvents = 'none';
+      document.body.appendChild(clone);
+      mobileDrag.clone = clone;
+    }
+
+    function clearMobileDrag() {
+      dragAllowed = false;
+      if (mobileDrag.clone) {
+        mobileDrag.clone.remove();
+        mobileDrag.clone = null;
+      }
+      if (mobileDrag.originEl) {
+        mobileDrag.originEl.classList.remove('dragging');
+        mobileDrag.originEl.style.opacity = '';
+        mobileDrag.originEl.style.pointerEvents = '';
+        mobileDrag.originEl = null;
+      }
+      mobileDrag.active = false;
+      mobileDrag.pointerId = null;
+      mobileDrag.id = null;
+      mobileDrag.startX = 0;
+      mobileDrag.startY = 0;
+      mobileDrag.sourceStage = null;
+      mobileDrag.targetStage = null;
+      highlightDropTarget(null);
+    }
+
+    function finishMobileDrop() {
+      if (!mobileDrag.active) return;
+      const targetStage = mobileDrag.targetStage || mobileDrag.sourceStage;
+      const card = candidates.find(c => c.id === mobileDrag.id);
+      if (card && targetStage && card.stage !== targetStage) {
+        card.stage = targetStage;
+        renderKanban(getFiltered());
+        showToast(`${card.name} moved to ${targetStage}`, 'success');
+      }
+      clearMobileDrag();
+    }
+
+    function onCardPointerDown(e, id) {
+      if (!isMobileView() || e.pointerType !== 'touch') return;
+      clearHoldTimer();
+      mobileDrag.pointerId = e.pointerId;
+      mobileDrag.id = id;
+      mobileDrag.sourceStage = e.currentTarget.closest('.column')?.dataset.stage || null;
+      mobileDrag.startX = e.clientX;
+      mobileDrag.startY = e.clientY;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      holdTimer = setTimeout(() => {
+        dragAllowed = true;
+        preventClick = true;
+        mobileDrag.active = true;
+        const el = document.getElementById('card-' + id);
+        mobileDrag.originEl = el;
+        if (el) {
+          el.classList.add('dragging');
+          el.style.opacity = '0.35';
+          el.style.pointerEvents = 'none';
+          createDragClone(el, e.clientX, e.clientY);
+        }
+      }, 250);
+    }
+
+    function onCardPointerMove(e) {
+      if (mobileDrag.pointerId !== e.pointerId && !holdTimer) return;
+      if (holdTimer) {
+        if (Math.abs(e.clientX - mobileDrag.startX) > 10 || Math.abs(e.clientY - mobileDrag.startY) > 10) {
+          clearHoldTimer();
+        }
+      }
+      if (!mobileDrag.active || mobileDrag.pointerId !== e.pointerId) return;
+      e.preventDefault();
+      if (mobileDrag.clone) {
+        mobileDrag.clone.style.top = `${e.clientY}px`;
+        mobileDrag.clone.style.left = `${e.clientX}px`;
+      }
+      const newStage = getStageFromPoint(e.clientX, e.clientY);
+      if (newStage !== mobileDrag.targetStage) {
+        mobileDrag.targetStage = newStage;
+        highlightDropTarget(newStage);
+      }
+      const wrapper = document.querySelector('.kanban-scroll');
+      if (wrapper) {
+        const rect = wrapper.getBoundingClientRect();
+        const edge = 80;
+        const speed = 14;
+        if (e.clientX > rect.right - edge) {
+          wrapper.scrollBy({ left: speed, behavior: 'smooth' });
+        } else if (e.clientX < rect.left + edge) {
+          wrapper.scrollBy({ left: -speed, behavior: 'smooth' });
+        }
+      }
+    }
+
+    function onCardPointerUp(e) {
+      if (mobileDrag.pointerId && e.currentTarget?.releasePointerCapture) {
+        e.currentTarget.releasePointerCapture(mobileDrag.pointerId);
+      }
+      if (mobileDrag.active) {
+        finishMobileDrop();
+      }
+      clearHoldTimer();
+    }
+
+    function onCardPointerCancel(e) {
+      if (mobileDrag.pointerId && e.currentTarget?.releasePointerCapture) {
+        e.currentTarget.releasePointerCapture(mobileDrag.pointerId);
+      }
+      if (mobileDrag.active) {
+        clearMobileDrag();
+      }
+      clearHoldTimer();
+    }
+
+    function clearHoldTimer() {
+      if (holdTimer) {
+        clearTimeout(holdTimer);
+        holdTimer = null;
+      }
+    }
+
+    /* ── Drag & Drop ── */
+    function onDragStart(e, id) {
+      dragSrcId = id;
+      if (isMobileView() && !dragAllowed) {
+        e.preventDefault();
+        return;
+      }
+      e.dataTransfer.effectAllowed = 'move';
+      if (isMobileView()) {
+        try { e.dataTransfer.setData('text/plain', String(id)); } catch (err) { }
+      }
+      if (!isMobileView()) {
+        setTimeout(() => {
+          const el = document.getElementById('card-' + id);
+          if (el) el.classList.add('dragging');
+        }, 0);
+      }
+    }
+
+    function onDragEnd() {
+      clearHoldTimer();
+      dragAllowed = false;
+      dragSrcId = null;
+      clearMobileDrag();
+      document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('dragging'));
+      document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
+    }
+
+    function onDragOver(e, stage) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
+      const col = document.getElementById('col-' + stage.replace(/\s+/g, '-'));
+      if (col) col.classList.add('drag-over');
+    }
+
+    function onKanbanDragOver(e) {
+      if (!isMobileView() || !dragSrcId) return;
+      e.preventDefault();
+      const wrapper = document.querySelector('.kanban-scroll');
+      if (!wrapper) return;
+      const rect = wrapper.getBoundingClientRect();
+      const edge = 80;
+      const speed = 12;
+      if (e.clientX > rect.right - edge) {
+        wrapper.scrollBy({ left: speed, behavior: 'smooth' });
+      } else if (e.clientX < rect.left + edge) {
+        wrapper.scrollBy({ left: -speed, behavior: 'smooth' });
+      }
+    }
+
+    function onDragLeave(e) {
+      if (!e.currentTarget.contains(e.relatedTarget)) {
+        e.currentTarget.classList.remove('drag-over');
+      }
+    }
+
+    function onDrop(e, stage) {
+      e.preventDefault();
+      const c = candidates.find(x => x.id === dragSrcId);
+      if (c && c.stage !== stage) {
+        c.stage = stage;
+        renderKanban(getFiltered());
+        showToast(`${c.name} moved to ${stage}`, 'success');
+      }
+      document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
+    }
+
+    /* ── Init ── */
+    async function loadCandidates() {
+      try {
+        const res = await fetch(`${API_BASE}/hr/ats-pipeline`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.candidates)) {
+            candidates = data.candidates;
+            // Populate filter dropdowns from live data
+            const jobs = [...new Set(candidates.map(c => c.position).filter(Boolean))];
+            const schools = [...new Set(candidates.map(c => c.school).filter(Boolean))];
+            const jobSel = document.getElementById('jobFilter');
+            const schSel = document.getElementById('schoolFilter');
+            jobSel.innerHTML = '<option value="">All Jobs</option>' + jobs.map(j => `<option>${j}</option>`).join('');
+            schSel.innerHTML = '<option value="">All Schools</option>' + schools.map(s => `<option>${s}</option>`).join('');
+          }
+        }
+      } catch (e) { /* keep sample data if API unreachable */ }
+      renderKanban(candidates);
+    }
+    loadCandidates();
+  </script>
+
+</body>
+
+</html>

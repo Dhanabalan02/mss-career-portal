@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Dashboard - MSS Careers</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/projects/mss-career-portal/assets/css/style.css" rel="stylesheet">
+
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #1E40AF 100%);
+            padding: 7rem 0 5rem 0;
+            color: #fff;
+            position: relative;
+        }
+
+        /* Offset Profile Card */
+        .profile-card {
+            margin-top: -60px;
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 10;
+        }
+
+        .profile-avatar-wrapper {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fff;
+            padding: 6px;
+            box-shadow: var(--shadow-md);
+            position: absolute;
+            top: -60px;
+            left: 2.5rem;
+        }
+
+        .profile-avatar {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Dashboard Stat Cards */
+        .stat-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            padding: 1.8rem;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(30, 58, 138, 0.1);
+        }
+
+        .stat-icon {
+            width: 54px;
+            height: 54px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        /* Application List */
+        .application-item {
+            display: flex;
+            align-items: center;
+            padding: 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            background: #fff;
+        }
+
+        .application-item:hover {
+            border-color: var(--primary-light);
+            background: var(--primary-light);
+        }
+
+        /* Status Pills */
+        .status-pill {
+            padding: 0.35rem 0.8rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .status-review {
+            background: var(--warning-bg);
+            color: #B45309;
+        }
+
+        .status-interview {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .status-offer {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .status-rejected {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        /* Document Tag */
+        .doc-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-pill);
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        /* Tabs */
+        .nav-tabs-custom {
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .nav-tabs-custom .nav-link {
+            border: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-family: 'Plus Jakarta Sans';
+            padding: 1rem 1.5rem;
+            position: relative;
+        }
+
+        .nav-tabs-custom .nav-link.active {
+            color: var(--primary);
+            background: transparent;
+        }
+
+        .nav-tabs-custom .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+
+        @media (max-width: 767px) {
+            .profile-card {
+                margin-top: -40px;
+                padding: 1.5rem;
+                text-align: center;
+            }
+
+            .profile-avatar-wrapper {
+                left: 50%;
+                transform: translateX(-50%);
+                top: -60px;
+            }
+
+            .application-item {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .application-item .flex-grow-1 {
+                margin: 1rem 0;
+            }
+
+            .application-item .text-end {
+                text-align: left !important;
+                width: 100%;
+            }
+
+            .nav-tabs-custom {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-tabs-custom .nav-item {
+                white-space: nowrap;
+            }
+
+            .profile-card ul.list-unstyled {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+
+<body style="background-color: var(--bg-body);">
+
+    <div id="candidate-navbar"></div>
+
+    <!-- Minimal Header -->
+    <div class="dashboard-header">
+        <div class="container pb-2">
+            <h1 class="display-5 fw-bold font-Outfit text-white mb-2">My Portal</h1>
+            <p class="fs-5 text-white opacity-75 font-Plus Jakarta Sans">Manage your profile, documents, and track
+                applications.</p>
+        </div>
+    </div>
+
+    <!-- Main Container Layout -->
+    <div class="container section-padding pb-5" style="padding-top: 0;">
+        <div class="row g-5">
+
+            <!-- Left Column: Profile Card & Quick Stats -->
+            <div class="col-lg-4 col-xl-3">
+                <div class="profile-card">
+                    <div class="profile-avatar-wrapper">
+                        <img src="https://ui-avatars.com/api/?name=Jane+Doe&background=EFF6FF&color=1E3A8A&size=150"
+                            alt="Avatar" class="profile-avatar">
+                    </div>
+
+                    <div style="margin-top: 60px;">
+                        <span class="badge-soft badge-success mb-2"><i class="bi bi-shield-check me-1"></i> Verified
+                            Educator</span>
+                        <h4 class="fw-bold font-Outfit text-dark mb-1">Jane Doe</h4>
+                        <p class="text-muted font-Plus Jakarta Sans small mb-4">Senior Science Curriculum Coordinator
+                        </p>
+
+                        <div class="mb-4">
+                            <div
+                                class="d-flex justify-content-between text-muted small mb-1 fw-bold font-Plus Jakarta Sans">
+                                <span>Profile Strength</span>
+                                <span class="text-primary">85%</span>
+                            </div>
+                            <div class="progress"
+                                style="height: 6px; border-radius: var(--radius-pill); background-color: var(--border-color);">
+                                <div class="progress-bar bg-primary" role="progressbar"
+                                    style="width: 85%; border-radius: var(--radius-pill);"></div>
+                            </div>
+                        </div>
+
+                        <ul class="list-unstyled font-Plus Jakarta Sans small mb-4 border-bottom pb-4">
+                            <li class="mb-3 d-flex align-items-center text-muted"><i
+                                    class="bi bi-envelope text-primary me-3 fs-5"></i> jane.doe@example.com</li>
+                            <li class="mb-3 d-flex align-items-center text-muted"><i
+                                    class="bi bi-telephone text-primary me-3 fs-5"></i> +91 98765 43210</li>
+                            <li class="mb-3 d-flex align-items-center text-muted"><i
+                                    class="bi bi-geo-alt text-danger me-3 fs-5"></i> Chennai, Tamil Nadu</li>
+                            <li class="d-flex align-items-center text-muted"><i
+                                    class="bi bi-linkedin text-secondary me-3 fs-5"
+                                    style="color:#0a66c2 !important;"></i> /in/janedoe</li>
+                        </ul>
+
+                        <button class="btn btn-outline-primary w-100 rounded-pill fw-bold bg-white">Edit
+                            Profile</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Activity & Dashboard -->
+            <div class="col-lg-8 col-xl-9 pt-lg-2">
+
+                <!-- Welcome Alert (Triggered via query string for demo) -->
+                <div id="success-alert"
+                    class="alert alert-success d-flex align-items-center border-0 shadow-sm d-none mb-4"
+                    style="background-color: var(--success-bg);" role="alert">
+                    <i class="bi bi-check-circle-fill text-success fs-3 me-3"></i>
+                    <div>
+                        <strong>Application Submitted Successfully!</strong>
+                        <div class="small text-muted mt-1 font-Plus Jakarta Sans">Your profile and screening answers
+                            have been recorded for the hiring team. We will be in touch shortly.</div>
+                    </div>
+                </div>
+
+                <!-- Bento Grid Metrics -->
+                <div class="row g-4 mb-5 mt-1">
+                    <div class="col-sm-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-primary-light text-primary"><i class="bi bi-briefcase-fill"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold m-0 font-Outfit text-dark">3</h3>
+                                <p
+                                    class="text-muted small m-0 fw-bold font-Plus Jakarta Sans text-uppercase tracking-wide">
+                                    Applied Roles</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background-color: var(--warning-bg); color: #B45309;"><i
+                                    class="bi bi-clock-history"></i></div>
+                            <div>
+                                <h3 class="fw-bold m-0 font-Outfit text-dark">2</h3>
+                                <p
+                                    class="text-muted small m-0 fw-bold font-Plus Jakarta Sans text-uppercase tracking-wide">
+                                    In Review</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="stat-card">
+                            <div class="stat-icon bg-success-bg text-success"><i class="bi bi-calendar-event-fill"></i>
+                            </div>
+                            <div>
+                                <h3 class="fw-bold m-0 font-Outfit text-dark">1</h3>
+                                <p
+                                    class="text-muted small m-0 fw-bold font-Plus Jakarta Sans text-uppercase tracking-wide">
+                                    Interviews</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Activity Tabs -->
+                <div class="card-neo shadow-sm border-0 p-0 overflow-hidden">
+                    <ul class="nav nav-tabs nav-tabs-custom px-4 pt-3 bg-white" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="applications-tab" data-bs-toggle="tab"
+                                data-bs-target="#applications" type="button" role="tab">My Applications</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="documents-tab" data-bs-toggle="tab" data-bs-target="#documents"
+                                type="button" role="tab">Resumes & Documents</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content p-4" id="myTabContent">
+                        <!-- Active Applications -->
+                        <div class="tab-pane fade show active" id="applications" role="tabpanel">
+
+                            <!-- Dynamic Item from Apply Flow if q1 exists -->
+                            <div id="new-app-item" class="d-none">
+                                <div class="application-item">
+                                    <div class="rounded bg-primary-light text-primary d-flex align-items-center justify-content-center me-3"
+                                        style="width: 50px; height: 50px; font-size: 1.25rem;">
+                                        <i class="bi bi-building"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h5 class="fw-bold text-dark font-Outfit m-0"><a href="#"
+                                                class="text-dark text-decoration-none hover-text-primary">Science
+                                                Program Coordinator</a></h5>
+                                        <p class="text-muted small m-0 font-Plus Jakarta Sans">Lady Andal School •
+                                            Applied Just Now</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="status-pill status-review mb-2"><span
+                                                class="rounded-circle bg-warning me-1"
+                                                style="width:6px;height:6px;display:inline-block;"></span> Under
+                                            Review</span>
+                                        <br><a href="#"
+                                            class="small text-primary fw-bold text-decoration-none view-status-btn">View
+                                            Status</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Existing App 1 -->
+                            <div class="application-item">
+                                <div class="rounded bg-success-bg text-success d-flex align-items-center justify-content-center me-3"
+                                    style="width: 50px; height: 50px; font-size: 1.25rem;">
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold text-dark font-Outfit m-0"><a href="#"
+                                            class="text-dark text-decoration-none hover-text-primary">Senior Biology
+                                            Teacher</a></h5>
+                                    <p class="text-muted small m-0 font-Plus Jakarta Sans">Sir Mutha School • Applied
+                                        March 1st</p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill status-interview mb-2"><i
+                                            class="bi bi-camera-video-fill me-1"></i> Interview Scheduled</span>
+                                    <br><a href="#"
+                                        class="small text-primary fw-bold text-decoration-none view-status-btn">Join
+                                        Call (Mar 14)</a>
+                                </div>
+                            </div>
+
+                            <!-- Existing App 2 -->
+                            <div class="application-item">
+                                <div class="rounded bg-light text-muted d-flex align-items-center justify-content-center me-3"
+                                    style="width: 50px; height: 50px; font-size: 1.25rem;">
+                                    <i class="bi bi-book-half"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="fw-bold text-dark font-Outfit m-0"><a href="#"
+                                            class="text-dark text-decoration-none hover-text-primary">English Literature
+                                            Faculty</a></h5>
+                                    <p class="text-muted small m-0 font-Plus Jakarta Sans">Sir & Lady M.V.R • Applied
+                                        Feb 15th</p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="status-pill status-rejected mb-2"><i
+                                            class="bi bi-x-circle-fill me-1"></i> Not Selected</span>
+                                    <br><a href="#" class="small text-muted fw-bold text-decoration-none">Archived</a>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <a href="/mss-career-portal/jobs"
+                                    class="btn btn-outline-primary rounded-pill fw-bold">Find more opportunities</a>
+                            </div>
+                        </div>
+
+                        <!-- Document Management -->
+                        <div class="tab-pane fade" id="documents" role="tabpanel">
+                            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                                <div>
+                                    <h5 class="fw-bold font-Outfit text-dark m-0">My Resumes</h5>
+                                    <p class="text-muted small m-0 font-Plus Jakarta Sans">Upload up to 3 variants to
+                                        use for different roles.</p>
+                                </div>
+                                <button class="btn btn-primary rounded-pill btn-sm fw-bold px-3 py-2"><i
+                                        class="bi bi-upload me-2"></i> Upload New</button>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="border p-4 rounded-lg bg-body position-relative">
+                                        <span
+                                            class="badge bg-success position-absolute top-0 end-0 m-3 shadow-sm rounded-pill"><i
+                                                class="bi bi-check2"></i> Default</span>
+                                        <div class="text-primary fs-1 mb-2"><i class="bi bi-file-earmark-pdf-fill"></i>
+                                        </div>
+                                        <h6 class="fw-bold text-dark font-Outfit">Jane_Doe_Resume_2026.pdf</h6>
+                                        <p class="text-muted small font-Plus Jakarta Sans mb-3">Updated 2 months ago •
+                                            1.2 MB</p>
+                                        <div class="d-flex gap-2">
+                                            <button
+                                                class="btn btn-white btn-sm fw-bold border text-primary flex-grow-1"><i
+                                                    class="bi bi-eye"></i> View</button>
+                                            <button class="btn btn-white btn-sm fw-bold border text-danger"><i
+                                                    class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="border p-4 rounded-lg bg-body position-relative">
+                                        <div class="text-danger fs-1 mb-2"><i class="bi bi-file-earmark-word-fill"></i>
+                                        </div>
+                                        <h6 class="fw-bold text-dark font-Outfit">Jane_Cover_Letter_Leadership.docx</h6>
+                                        <p class="text-muted small font-Plus Jakarta Sans mb-3">Updated 15 days ago •
+                                            0.8 MB</p>
+                                        <div class="d-flex gap-2">
+                                            <button
+                                                class="btn btn-white btn-sm fw-bold border text-primary flex-grow-1"><i
+                                                    class="bi bi-eye"></i> View</button>
+                                            <button class="btn btn-white btn-sm fw-bold border text-dark">Make
+                                                Default</button>
+                                            <button class="btn btn-white btn-sm fw-bold border text-danger"><i
+                                                    class="bi bi-trash"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/mss-career-portal/assets/js/main.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#candidate-navbar").load("/mss-career-portal/components/candidate-navbar.html");
+
+            // Demo Logic: If coming from the Apply page successfully
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('q1') === 'yes') {
+                // The user just submitted an application! 
+                // Show the success alert at top
+                $('#success-alert').removeClass('d-none');
+
+                // Show the newly injected application item
+                $('#new-app-item').removeClass('d-none');
+            }
+        });
+    </script>
+</body>
+
+</html>

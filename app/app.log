@@ -1,0 +1,2383 @@
+[2026-06-18 23:40:39] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:40:39] INFO in database: Database engine created successfully.
+[2026-06-18 23:40:40] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:40:49] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:40:49] INFO in database: Database engine created successfully.
+[2026-06-18 23:40:50] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:40:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:40:52] INFO in database: Database engine created successfully.
+[2026-06-18 23:40:52] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:41:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:41:08] INFO in database: Database engine created successfully.
+[2026-06-18 23:41:09] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:41:33] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:41:34] INFO in database: Database engine created successfully.
+[2026-06-18 23:42:00] INFO in jobs_crud: Job post created by admin 3
+[2026-06-18 23:52:23] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:52:23] INFO in database: Database engine created successfully.
+[2026-06-18 23:52:24] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:52:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:52:40] INFO in database: Database engine created successfully.
+[2026-06-18 23:52:40] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:52:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:52:50] INFO in database: Database engine created successfully.
+[2026-06-18 23:52:51] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:53:48] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:53:48] INFO in database: Database engine created successfully.
+[2026-06-19 00:08:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:08:43] INFO in database: Database engine created successfully.
+[2026-06-19 00:08:43] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:10:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:10:10] INFO in database: Database engine created successfully.
+[2026-06-19 00:11:04] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-19 00:11:21] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:11:39] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:12:22] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:12:42] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:14:14] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:14:14] INFO in database: Database engine created successfully.
+[2026-06-19 00:14:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:14:28] INFO in database: Database engine created successfully.
+[2026-06-19 00:14:36] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:14:36] INFO in database: Database engine created successfully.
+[2026-06-19 00:15:57] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:15:57] INFO in database: Database engine created successfully.
+[2026-06-19 00:15:58] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:00] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:00] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:00] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:01] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:02] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:02] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:10] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:11] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:11] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:30] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:42] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:42] INFO in database: Database engine created successfully.
+[2026-06-19 00:17:00] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:21:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:41] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:41] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:21:45] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:45] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:45] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:21:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:51] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:51] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:21:56] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:56] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:56] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:03] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:03] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:08] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:09] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:15] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:16] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:22] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:22] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:22] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:26] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:26] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:27] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:30] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:31] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:35] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:35] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:35] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:41] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:41] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:46] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:46] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:46] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:55] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:55] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:56] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:23:01] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:23:01] INFO in database: Database engine created successfully.
+[2026-06-19 00:23:01] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:23:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:23:43] INFO in database: Database engine created successfully.
+[2026-06-19 00:23:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:23:51] INFO in database: Database engine created successfully.
+[2026-06-19 00:24:06] INFO in auth_crud: Admin ID 5 logged out from IP: 127.0.0.1
+[2026-06-19 00:24:16] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:27:04] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:29:01] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:29:01] INFO in database: Database engine created successfully.
+[2026-06-19 00:29:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:29:03] INFO in database: Database engine created successfully.
+[2026-06-19 00:29:03] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:32:00] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 10:05:19] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:05:19] INFO in database: Database engine created successfully.
+[2026-06-19 10:06:13] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:06:13] INFO in database: Database engine created successfully.
+[2026-06-19 10:07:04] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:07:04] INFO in database: Database engine created successfully.
+[2026-06-19 10:07:27] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:07:27] INFO in database: Database engine created successfully.
+[2026-06-19 10:08:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:08:52] INFO in database: Database engine created successfully.
+[2026-06-19 10:12:49] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:12:49] INFO in database: Database engine created successfully.
+[2026-06-19 10:13:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:13:28] INFO in database: Database engine created successfully.
+[2026-06-19 10:14:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:14:43] INFO in database: Database engine created successfully.
+[2026-06-19 10:15:14] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:15:14] INFO in database: Database engine created successfully.
+[2026-06-19 10:15:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:15:15] INFO in database: Database engine created successfully.
+[2026-06-19 10:15:15] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:17:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:17:44] INFO in database: Database engine created successfully.
+[2026-06-19 10:17:44] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:17:54] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:17:54] INFO in database: Database engine created successfully.
+[2026-06-19 10:18:34] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:18:34] INFO in database: Database engine created successfully.
+[2026-06-19 10:18:35] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:18:35] INFO in database: Database engine created successfully.
+[2026-06-19 10:18:35] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:22:06] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:22:06] INFO in database: Database engine created successfully.
+[2026-06-19 10:22:06] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:22:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:22:15] INFO in database: Database engine created successfully.
+[2026-06-19 10:29:45] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:29:46] INFO in database: Database engine created successfully.
+[2026-06-19 10:29:46] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:29:55] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:29:55] INFO in database: Database engine created successfully.
+[2026-06-19 10:30:29] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:30:29] INFO in database: Database engine created successfully.
+[2026-06-19 10:30:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:30:30] INFO in database: Database engine created successfully.
+[2026-06-19 10:30:30] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:31:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:31:09] INFO in database: Database engine created successfully.
+[2026-06-19 10:31:10] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:32:49] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:32:49] INFO in database: Database engine created successfully.
+[2026-06-19 10:32:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:32:50] INFO in database: Database engine created successfully.
+[2026-06-19 10:32:50] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:26] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:26] INFO in database: Database engine created successfully.
+[2026-06-19 10:37:26] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:34] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:34] INFO in database: Database engine created successfully.
+[2026-06-19 10:37:34] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:50] INFO in database: Database engine created successfully.
+[2026-06-19 10:37:51] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:59] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:59] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:00] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:07] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:07] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:07] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:13] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:13] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:14] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:22] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:22] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:23] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:29] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:29] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:29] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:38] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:38] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:38] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:44] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:45] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:39:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:39:08] INFO in database: Database engine created successfully.
+[2026-06-19 10:42:58] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:42:58] INFO in database: Database engine created successfully.
+[2026-06-19 10:43:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:43:40] INFO in database: Database engine created successfully.
+[2026-06-19 10:43:42] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:43:42] INFO in database: Database engine created successfully.
+[2026-06-19 10:43:42] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:45:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:45:40] INFO in database: Database engine created successfully.
+[2026-06-19 10:45:40] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:46:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:46:09] INFO in database: Database engine created successfully.
+[2026-06-19 10:46:17] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:46:17] INFO in database: Database engine created successfully.
+[2026-06-19 10:46:18] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:50:19] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:50:19] INFO in database: Database engine created successfully.
+[2026-06-19 10:50:20] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:51:00] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:51:00] INFO in database: Database engine created successfully.
+[2026-06-19 10:53:57] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:53:57] INFO in database: Database engine created successfully.
+[2026-06-19 10:53:57] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:54:17] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:54:17] INFO in database: Database engine created successfully.
+[2026-06-19 11:01:59] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:01:59] INFO in database: Database engine created successfully.
+[2026-06-19 11:01:59] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:09:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:09:41] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:30] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:31] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:31] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:32] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:11:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:43] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:44] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:44] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:12:57] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:12:57] INFO in database: Database engine created successfully.
+[2026-06-19 11:12:58] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:12:58] INFO in database: Database engine created successfully.
+[2026-06-19 11:12:58] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:12:58] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 11:13:06] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-19 11:24:48] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:24:48] INFO in database: Database engine created successfully.
+[2026-06-19 11:24:48] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:25:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:25:09] INFO in database: Database engine created successfully.
+[2026-06-19 11:25:10] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:48:26] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:48:26] INFO in database: Database engine created successfully.
+[2026-06-19 11:48:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:48:28] INFO in database: Database engine created successfully.
+[2026-06-19 11:48:28] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:48:43] ERROR in main: Unhandled error on GET /jobs/public: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\jobs_route.py", line 158, in get_public_job_posts_route
+    job_posts = get_published_job_posts(db)
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\jobs_crud.py", line 38, in get_published_job_posts
+    .all()
+     ~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:48:52] ERROR in main: Unhandled error on GET /jobs/public: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\jobs_route.py", line 158, in get_public_job_posts_route
+    job_posts = get_published_job_posts(db)
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\jobs_crud.py", line 38, in get_published_job_posts
+    .all()
+     ~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:49:06] ERROR in main: Unhandled error on GET /jobs/public: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\jobs_route.py", line 158, in get_public_job_posts_route
+    job_posts = get_published_job_posts(db)
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\jobs_crud.py", line 38, in get_published_job_posts
+    .all()
+     ~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:49:21] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\auth_route.py", line 117, in user_login
+    return authenticate_user_roles(
+        db=db,
+    ...<2 lines>...
+        ip_address=client_ip
+    )
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:50:15] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\auth_route.py", line 117, in user_login
+    return authenticate_user_roles(
+        db=db,
+    ...<2 lines>...
+        ip_address=client_ip
+    )
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:50:20] ERROR in main: Unhandled error on GET /jobs/public: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\jobs_route.py", line 158, in get_public_job_posts_route
+    job_posts = get_published_job_posts(db)
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\jobs_crud.py", line 38, in get_published_job_posts
+    .all()
+     ~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:50:41] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\auth_route.py", line 117, in user_login
+    return authenticate_user_roles(
+        db=db,
+    ...<2 lines>...
+        ip_address=client_ip
+    )
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:51:44] ERROR in main: Unhandled error on GET /jobs/public: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\jobs_route.py", line 158, in get_public_job_posts_route
+    job_posts = get_published_job_posts(db)
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\jobs_crud.py", line 38, in get_published_job_posts
+    .all()
+     ~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:51:52] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.OperationalError: (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\xampp\htdocs\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1650, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 2102, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1670, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 1218, in handle
+    await app(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 683, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\fastapi\routing.py", line 339, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 2592, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\anyio\_backends\_asyncio.py", line 1029, in run
+    result = context.run(func, *args)
+  File "C:\xampp\htdocs\mss-career-portal\app\routes\auth_route.py", line 117, in user_login
+    return authenticate_user_roles(
+        db=db,
+    ...<2 lines>...
+        ip_address=client_ip
+    )
+  File "C:\xampp\htdocs\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+        params,
+        ^^^^^^^
+        execution_options={"_sa_orm_load_options": self.load_options},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2373, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2261, in _execute_internal
+    conn = self._connection_for_bind(bind)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 2113, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\orm\session.py", line 1191, in _connection_for_bind
+    conn = bind.connect()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        err, dialect, engine
+        ^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 712, in checkout
+    rec = pool._do_get()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\impl.py", line 176, in _do_get
+    return self._create_connection()
+           ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 674, in __init__
+    self.__connect()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 361, in __init__
+    self.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 669, in connect
+    self._request_authentication()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 957, in _request_authentication
+    auth_packet = self._read_packet()
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\connections.py", line 775, in _read_packet
+    packet.raise_for_error()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\protocol.py", line 219, in raise_for_error
+    err.raise_mysql_exception(self._data)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "C:\Users\sdhan\AppData\Local\Programs\Python\Python314\Lib\site-packages\pymysql\err.py", line 150, in raise_mysql_exception
+    raise errorclass(errno, errval)
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (1045, "Access denied for user 'root'@'localhost' (using password: NO)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-19 11:52:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:52:03] INFO in database: Database engine created successfully.
+[2026-06-19 11:52:04] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:52:04] INFO in database: Database engine created successfully.
+[2026-06-19 11:52:05] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:52:36] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 11:57:48] INFO in auth_crud: Admin ID 5 logged out from IP: 127.0.0.1
+[2026-06-19 11:58:13] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1
+[2026-06-19 11:58:34] INFO in auth_crud: Admin ID 4 logged out from IP: 127.0.0.1

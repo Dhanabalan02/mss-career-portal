@@ -1,0 +1,54 @@
+<aside class="admin-sidebar d-flex flex-column">
+    <div class="sidebar-header d-flex align-items-center justify-content-center">
+        MSS <span>HR.Admin</span>
+    </div>
+    <ul class="nav flex-column mt-4 w-100 mb-auto px-3">
+        <li class="nav-item mb-2">
+            <a href="/mss-career-portal/hr/dashboard" class="nav-link rounded-pill text-dark fw-bold" id="nav-dash">
+                <i class="bi bi-grid-fill"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/mss-career-portal/hr/jobpost-list" class="nav-link rounded-pill text-dark fw-bold" id="nav-jobs">
+                <i class="bi bi-briefcase-fill"></i> Job Management
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/mss-career-portal/hr/jobapplicants-list" class="nav-link rounded-pill text-dark fw-bold" id="nav-cands">
+                <i class="bi bi-people-fill"></i> Candidate Pool
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/mss-career-portal/hr/ats-pipeline" class="nav-link rounded-pill text-dark fw-bold" id="nav-ats">
+                <i class="bi bi-kanban"></i> ATS Pipeline
+            </a>
+        </li>
+        <li class="nav-item mb-2">
+            <a href="/mss-career-portal/hr/reports" class="nav-link rounded-pill text-dark fw-bold" id="nav-rep">
+                <i class="bi bi-graph-up-arrow"></i> Reports
+            </a>
+        </li>
+    </ul>
+
+    <!-- Admin profile sticky bottom -->
+    <div class="p-4 border-top border-light mt-auto">
+        <div class="d-flex align-items-center gap-3">
+            <img src="https://ui-avatars.com/api/?name=HR+Admin&background=1E3A8A&color=fff&rounded=true" alt="profile"
+                width="45">
+            <div>
+                <h6 class="mb-0 fw-bold font-Jost text-dark">Super Admin</h6>
+                <small class="text-secondary font-Poppins tracking-wide">HR Department</small>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<script>
+    // simple bolding logic
+    let path = window.location.pathname;
+    if (path.includes("dashboard")) document.getElementById('nav-dash').classList.add('bg-primary', 'bg-opacity-10', 'text-primary');
+    if (path.includes("jobs") || path.includes("create-job")) document.getElementById('nav-jobs').classList.add('bg-primary', 'bg-opacity-10', 'text-primary');
+    if (path.includes("candidates")) document.getElementById('nav-cands').classList.add('bg-primary', 'bg-opacity-10', 'text-primary');
+    if (path.includes("ats")) document.getElementById('nav-ats').classList.add('bg-primary', 'bg-opacity-10', 'text-primary');
+    if (path.includes("reports")) document.getElementById('nav-rep').classList.add('bg-primary', 'bg-opacity-10', 'text-primary');
+</script>

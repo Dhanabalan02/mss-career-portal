@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Offer Management – TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="portal-layout.css">
+  <script src="portal-layout.js" defer></script>
+  <style>
+    /* ── Base & Tokens ─────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f1;
+      --surface: #ffffff;
+      --surface2: #f9f8f6;
+      --border: #e8e6e1;
+      --border2: #d4d1cb;
+      --text: #1a1917;
+      --text2: #4a4844;
+      --text3: #8a8782;
+      --accent: #2563eb;
+      --accent-bg: #eff6ff;
+      --accent-bd: #bfdbfe;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --green-bd: #bbf7d0;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --amber-bd: #fde68a;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --red-bd: #fecaca;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --purple-bd: #ddd6fe;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, .06), 0 1px 2px rgba(0, 0, 0, .04);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, .09), 0 2px 4px rgba(0, 0, 0, .05);
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg: #0d0d0d;
+      --surface: #0d0d0d;
+      --surface2: #111111;
+      --border: rgba(255, 255, 255, 0.10);
+      --border2: rgba(255, 255, 255, 0.16);
+      --text: #f0efe8;
+      --text2: #b4b2a9;
+      --text3: #666560;
+      --accent-bg: #26215C;
+      --green-bg: #173404;
+      --amber-bg: #412402;
+      --red-bg: #501313;
+      --purple-bg: #26215C;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .scrollbar-thin-1::-webkit-scrollbar {
+      width: 0px;
+      height: 8px;
+    }
+
+    .scrollbar-thin-1::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .scrollbar-thin-1::-webkit-scrollbar-thumb {
+
+      border-radius: 4px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ── Layout shell (portal wired) ────────────────── */
+    .main-wrap {
+      padding: 0;
+      max-width: none;
+      margin: 0;
+    }
+
+    .page-content {
+      padding: 22px 24px 64px;
+      /* max-width: 1160px; */
+    }
+
+    /* ── Page Header ────────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 11px 28px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-family: 'Sora', var(--font);
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      color: var(--text);
+    }
+
+    .page-subtitle {
+      font-size: 12.5px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* ── Buttons ─────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s ease;
+      white-space: nowrap;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary:hover {
+      background: #2d2c2a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, .14);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px;
+    }
+
+    .btn-issue {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-issue:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    /* ── Stat Cards ─────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card.active-filter {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border2);
+    }
+
+    /* Color variants — top border */
+    .stat-card.c-total   { border-top-color: var(--accent); }
+    .stat-card.c-awaiting { border-top-color: var(--red); }
+    .stat-card.c-pending { border-top-color: var(--amber); }
+    .stat-card.c-sent    { border-top-color: var(--purple); }
+    .stat-card.c-accepted { border-top-color: var(--green); }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .stat-icon.blue   { background: var(--accent-bg);  color: var(--accent); }
+    .stat-icon.amber  { background: var(--amber-bg);   color: var(--amber); }
+    .stat-icon.purple { background: var(--purple-bg);  color: var(--purple); }
+    .stat-icon.green  { background: var(--green-bg);   color: var(--green); }
+    .stat-icon.red    { background: var(--red-bg);     color: var(--red); }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      font-family: var(--mono);
+      letter-spacing: -.5px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--text3);
+      font-weight: 400;
+    }
+
+    .stat-delta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    .stat-delta.up   { color: var(--green); }
+    .stat-delta.warn { color: var(--amber); }
+
+    /* ── Toolbar ─────────────────────────────────────── */
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+      max-width: 280px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text3);
+      pointer-events: none;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 8px 10px 8px 34px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .search-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+    }
+
+    .filter-select {
+      padding: 8px 32px 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text2);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8782' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color .15s;
+    }
+
+    .filter-select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .filter-select:hover {
+      border-color: var(--border2);
+    }
+
+    /* ── Table ───────────────────────────────────────── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-head-row {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .table-title {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -.2px;
+    }
+
+    .table-count {
+      font-size: 12px;
+      color: var(--text3);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-family: var(--mono);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: 11px 16px;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    thead th:first-child {
+      padding-left: 20px;
+    }
+
+    thead th:last-child {
+      padding-right: 20px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .1s;
+      cursor: default;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--surface2);
+    }
+
+    td {
+      padding: 13px 16px;
+      font-size: 13.5px;
+      color: var(--text2);
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      padding-left: 20px;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    td:last-child {
+      padding-right: 20px;
+    }
+
+    /* ── Avatar ──────────────────────────────────────── */
+    .avatar-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .av-blue {
+      background: var(--accent-bg);
+      color: var(--accent);
+    }
+
+    .av-green {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .av-amber {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .av-purple {
+      background: var(--purple-bg);
+      color: var(--purple);
+    }
+
+    .av-red {
+      background: var(--red-bg);
+      color: var(--red);
+    }
+
+    .cname {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .crole {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    /* ── Status Badges ───────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .badge-awaiting {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid var(--red-bd);
+    }
+
+    .badge-awaiting::before {
+      background: var(--red);
+    }
+
+    .badge-pending {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid var(--amber-bd);
+    }
+
+    .badge-pending::before {
+      background: var(--amber);
+    }
+
+    .badge-sent {
+      background: var(--purple-bg);
+      color: var(--purple);
+      border: 1px solid var(--purple-bd);
+    }
+
+    .badge-sent::before {
+      background: var(--purple);
+    }
+
+    .badge-accepted {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid var(--green-bd);
+    }
+
+    .badge-accepted::before {
+      background: var(--green);
+    }
+
+    .badge-draft {
+      background: var(--surface2);
+      color: var(--text3);
+      border: 1px solid var(--border2);
+    }
+
+    .badge-draft::before {
+      background: var(--text3);
+    }
+
+    /* ── Action buttons in table ─────────────────────── */
+    .action-btns {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      color: var(--text3);
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:hover {
+      color: var(--text);
+      border-color: var(--border2);
+      background: var(--surface2);
+    }
+
+    .icon-btn.danger:hover {
+      color: var(--red);
+      border-color: var(--red-bd);
+      background: var(--red-bg);
+    }
+
+    /* ── Modal ───────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .4);
+      backdrop-filter: blur(3px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1100;
+      padding: 20px;
+      animation: fadeIn .15s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 640px;
+      max-height: 92vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-md);
+      animation: modalIn .22s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-header {
+      padding: 20px 24px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      z-index: 1;
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+    }
+
+    .modal-sub {
+      font-size: 12.5px;
+      color: var(--text3);
+      margin-top: 3px;
+    }
+
+    .modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text3);
+      background: none;
+      border: 1px solid transparent;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      position: sticky;
+      bottom: 0;
+      background: var(--surface);
+    }
+
+    .modal-footer-right {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ── Form inside modal ───────────────────────────── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.span2 {
+      grid-column: span 2;
+    }
+
+    label.fl {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text2);
+      letter-spacing: .35px;
+      text-transform: uppercase;
+    }
+
+    .req {
+      color: var(--red);
+      margin-left: 2px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="email"],
+    select.inp,
+    textarea.inp {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input:focus,
+    select.inp:focus,
+    textarea.inp:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
+      background: var(--surface);
+    }
+
+    input::placeholder,
+    textarea.inp::placeholder {
+      color: var(--text3);
+    }
+
+    input[readonly],
+    select.inp[disabled] {
+      background: var(--bg);
+      color: var(--text3);
+      cursor: not-allowed;
+    }
+
+    select.inp {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8782' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+
+    textarea.inp {
+      resize: vertical;
+      min-height: 70px;
+      line-height: 1.6;
+    }
+
+    /* ── Auto-filled chip ────────────────────────────── */
+    .autofill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 14px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-bd);
+      border-radius: var(--radius-sm);
+      margin-bottom: 18px;
+    }
+
+    .af-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: #fff;
+      border: 1px solid var(--accent-bd);
+      color: var(--accent);
+    }
+
+    .af-chip svg {
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ── Section title inside modal ──────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 14px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Template cards ──────────────────────────────── */
+    .template-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .template-card {
+      padding: 14px;
+      background: var(--surface2);
+      border: 1.5px solid var(--border2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .template-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    .template-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-bg);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, .15);
+    }
+
+    .template-card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .tpl-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tpl-desc {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .tpl-tag {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text3);
+    }
+
+    /* ── Preview panel ───────────────────────────────── */
+    .preview-panel {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 18px 20px;
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text2);
+      display: none;
+      position: relative;
+    }
+
+    .preview-panel.visible {
+      display: block;
+    }
+
+    .preview-panel h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .preview-panel .ph {
+      display: inline-block;
+      background: var(--amber-bg);
+      border: 1px solid var(--amber-bd);
+      color: var(--amber);
+      padding: 0 5px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .preview-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--green-bg);
+      border: 1px solid var(--green-bd);
+      color: var(--green);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── Toast ───────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: #fff;
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .2s, transform .2s;
+      pointer-events: none;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 340px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Empty state ─────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 20px;
+      color: var(--text3);
+    }
+
+    .empty-state svg {
+      opacity: .35;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 13.5px;
+    }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 720px) {
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.span2 {
+        grid-column: span 1;
+      }
+
+      .template-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* .main-wrap {
+        padding: 18px 16px 56px;
+      } */
+
+      .modal {
+        border-radius: var(--radius);
+      }
+    }
+
+    @media (max-width: 460px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Table responsive scroll */
+    .table-scroll {
+      overflow-x: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="sidebar-placeholder"></div>
+
+  <div class="main-wrap">
+
+    <!-- ── Page Header ── -->
+    <header class="page-header">
+      <div>
+        <div class="page-title">Offer Management</div>
+        <div class="page-subtitle">Issue, track and manage offer letters for selected candidates</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+
+      <!-- ── Stats Cards ── -->
+      <div class="stats-grid">
+        <div class="stat-card c-total" onclick="filterByStatus('')">
+          <div class="stat-icon blue"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
+          <div class="stat-value" id="sc-total">0</div>
+          <div class="stat-label">Total Offers</div>
+          <div class="stat-delta"></div>
+        </div>
+        <div class="stat-card c-awaiting" onclick="filterByStatus('awaiting')">
+          <div class="stat-icon red"><i class="ti ti-hourglass" aria-hidden="true"></i></div>
+          <div class="stat-value" id="sc-awaiting">0</div>
+          <div class="stat-label">Awaiting Offer</div>
+          <div class="stat-delta warn"></div>
+        </div>
+        <div class="stat-card c-pending" onclick="filterByStatus('pending')">
+          <div class="stat-icon amber"><i class="ti ti-upload" aria-hidden="true"></i></div>
+          <div class="stat-value" id="sc-pending">0</div>
+          <div class="stat-label">Offer Letter Pending</div>
+          <div class="stat-delta"></div>
+        </div>
+        <div class="stat-card c-accepted" onclick="filterByStatus('accepted')">
+          <div class="stat-icon green"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+          <div class="stat-value" id="sc-accepted">0</div>
+          <div class="stat-label">Offer Accepted</div>
+          <div class="stat-delta up"></div>
+        </div>
+      </div>
+
+      <!-- ── Toolbar ── -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input type="text" id="searchInput" placeholder="Search candidate or job…" oninput="applyFilters()">
+        </div>
+        <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+          <option value="">All Status</option>
+          <option value="awaiting">Awaiting Offer</option>
+          <option value="pending">Offer Pending</option>
+          <option value="sent">Offer Sent</option>
+          <option value="accepted">Accepted</option>
+          <option value="draft">Draft</option>
+        </select>
+        <select class="filter-select" id="jobFilter" onchange="applyFilters()">
+          <option value="">All Positions</option>
+        </select>
+      </div>
+
+      <!-- ── Table ── -->
+      <div class="table-card">
+        <div class="table-head-row">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="table-title">Candidates</span>
+            <span class="table-count" id="rowCount">0 records</span>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table id="offerTable">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Position</th>
+                <th>Department</th>
+                <th>School / Campus</th>
+                <th>Exp.</th>
+                <th>Offer Status</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <p>No Candidate waiting for the offer</p>
+        </div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /main-wrap -->
+
+  <!-- ── Issue Offer Modal ── -->
+  <div class="modal-overlay" id="offerModal" style="display:none;">
+    <div class="modal scrollbar-thin-1">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modalTitle">Issue Offer Letter</div>
+          <div class="modal-sub" id="modalSub">Fill in compensation details and select a template</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Auto-filled info -->
+        <div class="section-label">Auto-filled from application</div>
+        <div class="autofill-row" id="autofillRow"></div>
+
+        <!-- Compensation -->
+        <div class="section-label">Compensation Details</div>
+        <div class="form-grid" style="margin-bottom:18px;">
+          <div class="form-group">
+            <label class="fl">Offered Salary (₹ LPA) <span class="req">*</span></label>
+            <input type="number" id="offSalary" placeholder="e.g. 9.5" min="1" step="0.5">
+          </div>
+          <div class="form-group">
+            <label class="fl">Probation Period <span class="req">*</span></label>
+            <select class="inp" id="offProbation">
+              <option value="">Select period</option>
+              <option>3 Months</option>
+              <option>6 Months</option>
+              <option>No Probation</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="fl">Expected Joining Date <span class="req">*</span></label>
+            <input type="date" id="offJoining">
+          </div>
+          <div class="form-group">
+            <label class="fl">Offer Expiry Date <span class="req">*</span></label>
+            <input type="date" id="offExpiry">
+          </div>
+          <div class="form-group span2">
+            <label class="fl">Additional Terms / Notes</label>
+            <textarea class="inp" id="offNotes"
+              placeholder="Any additional clauses, benefits, or remarks to include in the offer letter…"
+              rows="3"></textarea>
+          </div>
+        </div>
+
+        <!-- Template -->
+        <div class="section-label">Select Offer Letter Template</div>
+        <div class="template-grid" id="templateGrid">
+          <div class="template-card" data-tpl="standard" onclick="selectTemplate(this)">
+            <div class="tpl-name">Standard Employment</div>
+            <div class="tpl-desc">General full-time offer with salary, probation and joining date clauses.</div>
+            <span class="tpl-tag">Full-time</span>
+          </div>
+          <div class="template-card" data-tpl="teaching" onclick="selectTemplate(this)">
+            <div class="tpl-name">Teaching Staff Offer</div>
+            <div class="tpl-desc">Designed for teaching roles — includes academic calendar terms and curriculum
+              responsibilities.</div>
+            <span class="tpl-tag">Teachers</span>
+          </div>
+          <div class="template-card" data-tpl="admin" onclick="selectTemplate(this)">
+            <div class="tpl-name">Administrative Offer</div>
+            <div class="tpl-desc">For non-teaching administrative and coordination positions.</div>
+            <span class="tpl-tag">Admin</span>
+          </div>
+          <div class="template-card" data-tpl="contract" onclick="selectTemplate(this)">
+            <div class="tpl-name">Contract / Part-time</div>
+            <div class="tpl-desc">Fixed-term or part-time engagement with specific duration and deliverables.</div>
+            <span class="tpl-tag">Contract</span>
+          </div>
+        </div>
+
+        <!-- Live Preview -->
+        <div style="margin-top:18px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <span class="section-label" style="margin-bottom:0;">Letter Preview</span>
+            <button class="btn btn-ghost btn-sm" id="previewBtn" onclick="togglePreview()" style="font-size:11.5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              Preview Letter
+            </button>
+          </div>
+          <div class="preview-panel" id="previewPanel"></div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" onclick="saveOfferDraft()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+            </svg>
+            Save Draft
+          </button>
+          <button class="btn btn-issue" onclick="sendOffer()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            Send Offer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── View Offer Modal ── -->
+  <div class="modal-overlay" id="viewOfferModal" style="display:none;">
+    <div class="modal scrollbar-thin-1">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="viewModalTitle">Offer Letter</div>
+          <div class="modal-sub" id="viewModalSub"></div>
+        </div>
+        <button class="modal-close" onclick="closeViewModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="autofill-row" id="viewAutofillRow" style="margin-bottom:18px;"></div>
+        <div class="section-label">Offer Letter</div>
+        <div class="preview-panel visible" id="viewOfferBody" style="display:block;"></div>
+      </div>
+      <div class="modal-footer">
+        <span id="viewStatusBadge" class="badge"></span>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" onclick="closeViewModal()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+
+  <script>
+    /* ── Init sidebar ──────────────────────────── */
+    if (typeof initSidebar === 'function') initSidebar('offer-management');
+
+    const API_BASE = window.API_BASE || 'http://192.168.0.12:8000';
+    const _token = () => localStorage.getItem('access_token') || '';
+
+    /* ── Data ──────────────────────────────────── */
+    let CANDIDATES = [];
+
+    const STATUS_META = {
+      awaiting: { label: 'Awaiting Offer', cls: 'badge-awaiting' },
+      pending: { label: 'Offer Pending', cls: 'badge-pending' },
+      sent: { label: 'Offer Sent', cls: 'badge-sent' },
+      accepted: { label: 'Accepted', cls: 'badge-accepted' },
+      draft: { label: 'Draft', cls: 'badge-draft' },
+    };
+
+    const TEMPLATES = {
+      standard: {
+        name: 'Standard Employment',
+        body: `Dear <span class="ph">[Candidate Name]</span>,<br><br>
+We are pleased to offer you the position of <span class="ph">[Job Title]</span> at <span class="ph">[School Name]</span>, under the <span class="ph">[Department]</span> department.<br><br>
+This is a full-time position with a gross annual compensation of <span class="ph">[Offered Salary]</span> LPA. Your expected date of joining is <span class="ph">[Joining Date]</span>. You will be subject to a probationary period of <span class="ph">[Probation Period]</span>.<br><br>
+Please confirm your acceptance by <span class="ph">[Expiry Date]</span>. If you have any questions, feel free to reach out to our HR team.<br><br>
+We look forward to welcoming you to the team.<br><br>
+Warm regards,<br><strong>School Admin — TMSS</strong>`
+      },
+      teaching: {
+        name: 'Teaching Staff Offer',
+        body: `Dear <span class="ph">[Candidate Name]</span>,<br><br>
+Congratulations! We are delighted to extend this offer for the role of <span class="ph">[Job Title]</span> at <span class="ph">[School Name]</span>.<br><br>
+As a member of our academic faculty under <span class="ph">[Department]</span>, your responsibilities will include curriculum delivery, student assessment, and participation in school events as per the academic calendar.<br><br>
+Compensation: <span class="ph">[Offered Salary]</span> LPA | Joining: <span class="ph">[Joining Date]</span> | Probation: <span class="ph">[Probation Period]</span><br><br>
+Kindly confirm your acceptance by <span class="ph">[Expiry Date]</span>.<br><br>
+Regards,<br><strong>School Admin — TMSS</strong>`
+      },
+      admin: {
+        name: 'Administrative Offer',
+        body: `Dear <span class="ph">[Candidate Name]</span>,<br><br>
+We are pleased to offer you the administrative role of <span class="ph">[Job Title]</span> within the <span class="ph">[Department]</span> at <span class="ph">[School Name]</span>.<br><br>
+Your role will include coordination, reporting, and administrative support across departments. Compensation package: <span class="ph">[Offered Salary]</span> LPA.<br><br>
+Date of Joining: <span class="ph">[Joining Date]</span> | Probation: <span class="ph">[Probation Period]</span> | Offer valid until: <span class="ph">[Expiry Date]</span>.<br><br>
+Sincerely,<br><strong>School Admin — TMSS</strong>`
+      },
+      contract: {
+        name: 'Contract / Part-time',
+        body: `Dear <span class="ph">[Candidate Name]</span>,<br><br>
+This letter confirms a fixed-term engagement for the role of <span class="ph">[Job Title]</span> at <span class="ph">[School Name]</span>.<br><br>
+Nature: Contract / Part-time | Department: <span class="ph">[Department]</span> | Remuneration: <span class="ph">[Offered Salary]</span> LPA (pro-rated).<br><br>
+Start Date: <span class="ph">[Joining Date]</span>. This offer expires on <span class="ph">[Expiry Date]</span>.<br><br>
+Please sign and return this letter as acceptance.<br><br>
+Best regards,<br><strong>School Admin — TMSS</strong>`
+      }
+    };
+
+    /* ── State ─────────────────────────────────── */
+    let currentCandidate = null;
+    let selectedTemplate = null;
+    let data = [...CANDIDATES];
+
+    /* ── Render Table ──────────────────────────── */
+    function renderTable(rows) {
+      const tbody = document.getElementById('tableBody');
+      const empty = document.getElementById('emptyState');
+      document.getElementById('rowCount').textContent = rows.length + ' record' + (rows.length !== 1 ? 's' : '');
+      if (!rows.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
+      tbody.innerHTML = rows.map(c => {
+        const s = STATUS_META[c.status];
+        const isAwaiting = c.status === 'awaiting';
+        return `<tr data-id="${c.id}">
+      <td>
+        <div class="avatar-cell">
+          <div class="avatar ${c.av}">${c.initials}</div>
+          <div>
+            <div class="cname">${c.name}</div>
+            <div class="crole">${c.exp} experience</div>
+          </div>
+        </div>
+      </td>
+      <td>${c.role}</td>
+      <td>${c.dept}</td>
+      <td style="font-size:12.5px;">${c.school}</td>
+      <td style="font-family:var(--mono);font-size:12.5px;">${c.exp}</td>
+      <td><span class="badge ${s.cls}">${s.label}</span></td>
+      <td style="color:var(--text3);font-size:12.5px;">${c.updated}</td>
+      <td>
+        <div class="action-btns">
+          ${isAwaiting ? `<button class="btn btn-issue btn-sm" onclick="openIssueModal(${c.id})">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Issue Offer
+          </button>` : `
+          <div class="icon-btn" title="View Offer" onclick="viewOffer(${c.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="icon-btn" title="Download PDF" onclick="downloadOffer(${c.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </div>`}
+        </div>
+      </td>
+    </tr>`;
+      }).join('');
+    }
+
+    /* ── Filters ────────────────────────────────── */
+    function applyFilters() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const statusCheck = document.getElementById('statusFilter').value;
+      const roleCheck = document.getElementById('jobFilter').value;
+      
+      let res = CANDIDATES.filter(c => {
+        let match = true;
+        if (q) match = match && (c.name.toLowerCase().includes(q) || (c.school && c.school.toLowerCase().includes(q)));
+        if (statusCheck) {
+          if (statusCheck === 'pending' && !['pending','draft','awaiting'].includes(c.status)) match = false;
+          else if (statusCheck !== 'pending' && c.status !== statusCheck) match = false;
+        }
+        if (roleCheck) match = match && c.role === roleCheck;
+        return match;
+      });
+      data = res;
+      renderTable(data);
+    }
+
+    function filterByStatus(status) {
+      document.getElementById('statusFilter').value = status;
+      document.querySelectorAll('.stat-card').forEach(el => el.classList.remove('active-filter'));
+      applyFilters();
+    }
+
+    /* ── Open Issue Offer Modal ─────────────────── */
+    function openIssueModal(id) {
+      currentCandidate = CANDIDATES.find(c => c.id === id);
+      selectedTemplate = null;
+      if (!currentCandidate) return;
+
+      document.getElementById('modalTitle').textContent = 'Issue Offer — ' + currentCandidate.name;
+      document.getElementById('modalSub').textContent = currentCandidate.role + ' · ' + currentCandidate.school;
+
+      // Auto-fill chips
+      const chips = [
+        { icon: personIcon(), text: currentCandidate.name },
+        { icon: briefcaseIcon(), text: currentCandidate.role },
+        { icon: deptIcon(), text: currentCandidate.dept },
+        { icon: schoolIcon(), text: currentCandidate.school },
+      ];
+      document.getElementById('autofillRow').innerHTML = chips.map(ch =>
+        `<span class="af-chip">${ch.icon}${ch.text}</span>`
+      ).join('');
+
+      // Reset fields
+      ['offSalary', 'offProbation', 'offJoining', 'offExpiry', 'offNotes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.querySelectorAll('.template-card').forEach(el => el.classList.remove('selected'));
+      document.getElementById('previewPanel').classList.remove('visible');
+      document.getElementById('previewPanel').innerHTML = '';
+      document.getElementById('previewBtn').innerHTML = previewBtnInner('Preview Letter');
+
+      document.getElementById('offerModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('offerModal').style.display = 'none';
+      document.body.style.overflow = '';
+      currentCandidate = null;
+      selectedTemplate = null;
+    }
+
+    /* ── Template Select ────────────────────────── */
+    function selectTemplate(el) {
+      document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedTemplate = el.dataset.tpl;
+      // auto-refresh preview if open
+      if (document.getElementById('previewPanel').classList.contains('visible')) buildPreview();
+    }
+
+    /* ── Preview ────────────────────────────────── */
+    function previewBtnInner(label) {
+      return `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${label}`;
+    }
+
+    function togglePreview() {
+      const panel = document.getElementById('previewPanel');
+      if (panel.classList.contains('visible')) {
+        panel.classList.remove('visible');
+        document.getElementById('previewBtn').innerHTML = previewBtnInner('Preview Letter');
+      } else {
+        buildPreview();
+      }
+    }
+
+    function generateOfferLetterHTML() {
+      if (!selectedTemplate) return "";
+      const tpl = TEMPLATES[selectedTemplate];
+      const c = currentCandidate;
+      const sal = document.getElementById('offSalary').value || '[Offered Salary]';
+      const prob = document.getElementById('offProbation').value || '[Probation Period]';
+      const join = fmtDate(document.getElementById('offJoining').value) || '[Joining Date]';
+      const exp = fmtDate(document.getElementById('offExpiry').value) || '[Expiry Date]';
+
+      let body = tpl.body
+        .replace(/\[Candidate Name\]/g, c.name)
+        .replace(/\[Job Title\]/g, c.role)
+        .replace(/\[School Name\]/g, c.school)
+        .replace(/\[Department\]/g, c.dept)
+        .replace(/\[Offered Salary\]/g, sal)
+        .replace(/\[Probation Period\]/g, prob)
+        .replace(/\[Joining Date\]/g, join)
+        .replace(/\[Expiry Date\]/g, exp);
+
+      const notes = document.getElementById('offNotes').value.trim();
+      if (notes) body += `<br><br><em style="color:var(--text3);font-size:12px;">Additional terms: ${notes}</em>`;
+      return body;
+    }
+
+    function buildPreview() {
+      if (!selectedTemplate) { showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Please select a template first.'); return; }
+      const tpl = TEMPLATES[selectedTemplate];
+      const body = generateOfferLetterHTML();
+
+      const panel = document.getElementById('previewPanel');
+      panel.innerHTML = `
+    <span class="preview-badge">Preview</span>
+    <h4>${tpl.name}</h4>
+    ${body}
+  `;
+      panel.classList.add('visible');
+      document.getElementById('previewBtn').innerHTML = previewBtnInner('Hide Preview');
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /* ── Collect form data ──────────────────────── */
+    function collectOfferData() {
+      return {
+        salary: document.getElementById('offSalary').value,
+        probation: document.getElementById('offProbation').value,
+        joining: document.getElementById('offJoining').value,
+        expiry: document.getElementById('offExpiry').value,
+        notes: document.getElementById('offNotes').value.trim(),
+        template: selectedTemplate,
+      };
+    }
+
+    /* ── Save Draft ─────────────────────────────── */
+    async function saveOfferDraft() {
+      if (!validateForm(false)) return;
+      const d = collectOfferData();
+      try {
+        const payload = {
+          offered_salary: d.salary || null,
+          joining_date: d.joining || null,
+          probation_period: d.probation || null,
+          offer_expiry_date: d.expiry || null,
+          offer_remarks: d.notes || null,
+          offer_template: d.template || 'standard',
+          offer_letter_doc: generateOfferLetterHTML()
+        };
+        const res = await fetch(`${API_BASE}/school/offers/${currentCandidate.id}/issue`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${_token()}` },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(res.status);
+        await loadCandidates();
+        closeModal();
+        showToast('<i class="ti ti-device-floppy" aria-hidden="true"></i> Offer saved for ' + currentCandidate.name);
+      } catch(e) {
+        console.warn('API error', e);
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error saving offer', 'error');
+      }
+    }
+
+    /* ── Send Offer ─────────────────────────────── */
+    async function sendOffer() {
+      if (!validateForm(true)) return;
+      const d = collectOfferData();
+      try {
+        const payload = {
+          offered_salary: d.salary || null,
+          joining_date: d.joining || null,
+          probation_period: d.probation || null,
+          offer_expiry_date: d.expiry || null,
+          offer_remarks: d.notes || null,
+          offer_template: d.template || 'standard',
+          offer_letter_doc: generateOfferLetterHTML()
+        };
+        const res = await fetch(`${API_BASE}/school/offers/${currentCandidate.id}/issue`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${_token()}` },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error(res.status);
+        await loadCandidates();
+        closeModal();
+        showToast('<i class="ti ti-rocket" aria-hidden="true"></i> Offer issued to ' + currentCandidate.name + ' via system!');
+      } catch(e) {
+        console.warn('API error', e);
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error issuing offer', 'error');
+      }
+    }
+
+    function validateForm(requireTemplate) {
+      const sal = document.getElementById('offSalary').value;
+      const prob = document.getElementById('offProbation').value;
+      const join = document.getElementById('offJoining').value;
+      const exp = document.getElementById('offExpiry').value;
+      if (!sal || !prob || !join || !exp) {
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Please fill in all required compensation fields.'); return false;
+      }
+      if (requireTemplate && !selectedTemplate) {
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Please select an offer letter template.'); return false;
+      }
+      return true;
+    }
+
+    /* ── Update status (local + API) ────────────── */
+    async function updateCandidateStatus(id, newStatus) {
+      try {
+        const res = await fetch(`${API_BASE}/school/offers/${id}/update-status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${_token()}` },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (!res.ok) throw new Error(res.status);
+        await loadCandidates();
+        showToast('Offer status updated to ' + newStatus);
+      } catch(e) {
+        console.warn('API error', e);
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error updating status', 'error');
+      }
+    }
+
+    function recalcStats() {
+      document.getElementById('sc-total').textContent = CANDIDATES.length;
+      document.getElementById('sc-awaiting').textContent = CANDIDATES.filter(c => c.status === 'awaiting').length;
+      document.getElementById('sc-pending').textContent = CANDIDATES.filter(c => c.status === 'pending' || c.status === 'draft').length;
+      document.getElementById('sc-accepted').textContent = CANDIDATES.filter(c => c.status === 'accepted').length;
+    }
+
+    /* ── View Offer Modal ───────────────────────── */
+    let _viewCandidateId = null;
+
+    function viewOffer(id) {
+      const c = CANDIDATES.find(c => c.id === id);
+      if (!c) return;
+      _viewCandidateId = id;
+
+      // Auto-pick template by role
+      const r = c.role.toLowerCase();
+      const tplKey = r.includes('vice') || r.includes('principal') || r.includes('admin')
+        ? 'admin'
+        : r.includes('counsel') || r.includes('coordinator')
+          ? 'admin'
+          : r.includes('teacher')
+            ? 'teaching'
+            : 'standard';
+
+      const tpl = TEMPLATES[tplKey];
+      const s = STATUS_META[c.status];
+
+      // Build offer body — replace placeholders with stored or indicated values
+      const offerData = c.offerData || {};
+      const sal = offerData.salary ? `₹ ${offerData.salary} LPA` : '<em style="color:var(--text3)">On file</em>';
+      const prob = offerData.probation || 'Per terms';
+      const join = offerData.joining ? fmtDate(offerData.joining) : '<em style="color:var(--text3)">As agreed</em>';
+      const exp = offerData.expiry ? fmtDate(offerData.expiry) : '<em style="color:var(--text3)">As agreed</em>';
+
+      let body = tpl.body
+        .replace(/\[Candidate Name\]/g, c.name)
+        .replace(/\[Job Title\]/g, c.role)
+        .replace(/\[School Name\]/g, c.school)
+        .replace(/\[Department\]/g, c.dept)
+        .replace(/\[Offered Salary\]/g, sal)
+        .replace(/\[Probation Period\]/g, prob)
+        .replace(/\[Joining Date\]/g, join)
+        .replace(/\[Expiry Date\]/g, exp);
+
+      if (offerData.notes) {
+        body += `<br><br><em style="color:var(--text3);font-size:12px;">Additional terms: ${offerData.notes}</em>`;
+      }
+
+      // Populate modal
+      document.getElementById('viewModalTitle').textContent = 'Offer Letter — ' + c.name;
+      document.getElementById('viewModalSub').textContent = c.role + ' · ' + c.school;
+
+      const chips = [
+        { icon: personIcon(), text: c.name },
+        { icon: briefcaseIcon(), text: c.role },
+        { icon: deptIcon(), text: c.dept },
+        { icon: schoolIcon(), text: c.school },
+      ];
+      document.getElementById('viewAutofillRow').innerHTML = chips.map(ch =>
+        `<span class="af-chip">${ch.icon}${ch.text}</span>`
+      ).join('');
+
+      const badge = document.getElementById('viewStatusBadge');
+      badge.className = 'badge ' + s.cls;
+      badge.textContent = s.label;
+
+      document.getElementById('viewOfferBody').innerHTML =
+        `<span class="preview-badge">Issued</span><h4>${tpl.name}</h4>${body}`;
+
+      document.getElementById('viewOfferModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeViewModal() {
+      document.getElementById('viewOfferModal').style.display = 'none';
+      document.body.style.overflow = '';
+      _viewCandidateId = null;
+    }
+
+    function downloadOfferFromView() {
+      if (_viewCandidateId === null) return;
+      downloadOffer(_viewCandidateId);
+    }
+
+    /* ── Download (stub) ────────────────────────── */
+    function downloadOffer(id) {
+      const c = CANDIDATES.find(c => c.id === id);
+      showToast('<i class="ti ti-file-text" aria-hidden="true"></i> Downloading offer PDF for ' + c.name);
+    }
+
+    function exportOffers() {
+      showToast('<i class="ti ti-download" aria-hidden="true"></i> Exporting offer records…');
+    }
+
+    /* ── Toast ──────────────────────────────────── */
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.innerHTML = msg;
+      el.classList.add('show');
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.classList.remove('show'), 2800);
+    }
+
+    /* ── Helpers ─────────────────────────────────── */
+    function fmtDate(val) {
+      if (!val) return '';
+      const d = new Date(val);
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+    function personIcon() {
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+    }
+    function briefcaseIcon() {
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>`;
+    }
+    function deptIcon() {
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+    }
+    function schoolIcon() {
+      return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`;
+    }
+
+    /* ── Close modal on overlay click ───────────── */
+    document.getElementById('offerModal').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
+    });
+    document.getElementById('viewOfferModal').addEventListener('click', function (e) {
+      if (e.target === this) closeViewModal();
+    });
+
+    /* ── Load from API ──────────────────────────── */
+    async function loadCandidates() {
+      try {
+        const jobsRes = await fetch(`${API_BASE}/jobs/`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        const fJob = document.getElementById('jobFilter');
+        if (jobsRes.ok) {
+          const jobsData = await jobsRes.json();
+          if (jobsData && jobsData.length > 0) {
+            fJob.innerHTML = '<option value="">All Positions</option>';
+            jobsData.forEach(j => { 
+              const o = document.createElement('option'); 
+              o.value = j.job_title; 
+              o.textContent = j.job_title; 
+              fJob.appendChild(o); 
+            });
+          } else {
+            fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
+          }
+        } else {
+          fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
+        }
+      } catch(e) {
+        const fJob = document.getElementById('jobFilter');
+        if (fJob && fJob.options.length <= 1) {
+          fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
+        }
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/school/offers`, {
+          headers: { 'Authorization': `Bearer ${_token()}` }
+        });
+        if (!response.ok) throw new Error('Failed to load offers');
+        const json = await response.json();
+        
+        CANDIDATES = json.candidates.map(c => {
+           return {
+             id: c.id,
+             name: c.name,
+             initials: c.initials,
+             av: c.av,
+             role: c.role,
+             dept: c.dept,
+             school: c.school,
+             exp: c.exp,
+             status: c.status,
+             updated: c.updated,
+             offerData: {
+               salary: c.offered_salary,
+               probation: c.probation_period,
+               joining: c.joining_date,
+               expiry: c.offer_expiry_date,
+               notes: c.offer_remarks,
+               template: c.offer_template
+             }
+           };
+        });
+        
+        data = [...CANDIDATES];
+        recalcStats();
+        applyFilters();
+      } catch (error) {
+        console.error('Error loading candidates:', error);
+      }
+    }
+
+    // Init
+    loadCandidates();
+
+  </script>
+</body>
+
+</html>

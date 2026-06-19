@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Posts – TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <link rel="stylesheet" href="portal-layout.css">
+  <style>
+    /* ─── RESET & BASE ─────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-size: 14px;
+    }
+
+    /* ─── DESIGN TOKENS ────────────────────────────────────────── */
+    :root {
+      --blue: #185FA5;
+      --blue-mid: #378ADD;
+      --blue-light: #E6F1FB;
+      --blue-dark: #0C447C;
+      --green: #3B6D11;
+      --green-light: #EAF3DE;
+      --green-mid: #639922;
+      --amber: #854F0B;
+      --amber-light: #FAEEDA;
+      --amber-mid: #EF9F27;
+      --red: #A32D2D;
+      --red-light: #FCEBEB;
+      --red-mid: #E24B4A;
+      --purple: #534AB7;
+      --purple-light: #EEEDFE;
+      --teal: #0F6E56;
+      --teal-light: #E1F5EE;
+
+      --bg1: #FFFFFF;
+      --bg2: #F8F8F7;
+      --bg3: #F1EFE8;
+      --text1: #1A1A18;
+      --text2: #5F5E5A;
+      --text3: #888780;
+      --border: rgba(0, 0, 0, 0.08);
+      --border2: rgba(0, 0, 0, 0.14);
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 3px 12px rgba(0, 0, 0, 0.09);
+
+      --sidebar-w: 220px;
+      --topbar-h: 56px;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+    }
+
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg1: #0d0d0d;
+      --bg2: #111111;
+      --bg3: #181818;
+      --text1: #f0efe8;
+      --text2: #b4b2a9;
+      --text3: #666560;
+      --border: rgba(255, 255, 255, 0.10);
+      --border2: rgba(255, 255, 255, 0.16);
+      --green-light: #173404;
+      --amber-light: #412402;
+      --red-light: #501313;
+      --purple-light: #26215C;
+      --teal-light: #04342C;
+    }
+
+    /* ─── PORTAL SIDEBAR ───────────────────────────────────────── */
+    .portal-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--bg1);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 200;
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow-y: auto;
+      font-family: var(--font-body);
+    }
+
+    .portal-sidebar.is-open {
+      transform: translateX(0);
+      box-shadow: var(--shadow-md);
+    }
+
+    @media (min-width: 960px) {
+      .portal-sidebar {
+        transform: translateX(0);
+        box-shadow: none;
+      }
+    }
+
+    .portal-sidebar__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 16px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .portal-sidebar__title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.3px;
+    }
+
+    .portal-sidebar__close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-xs);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    @media (min-width: 960px) {
+      .portal-sidebar__close {
+        display: none;
+      }
+    }
+
+    .portal-sidebar nav {
+      display: flex;
+      flex-direction: column;
+      padding: 10px 8px;
+      gap: 2px;
+      flex: 1;
+    }
+
+    .portal-sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 12px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      text-decoration: none;
+      transition: background 0.14s, color 0.14s;
+      white-space: nowrap;
+    }
+
+    .portal-sidebar nav a:hover {
+      background: var(--bg2);
+      color: var(--text1);
+    }
+
+    .portal-sidebar nav a.is-active {
+      background: var(--blue-light);
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .portal-sidebar nav a:nth-child(4) {
+      margin-top: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 11px;
+    }
+
+    .portal-sidebar nav a:last-child {
+      margin-top: auto;
+      border-top: 1px solid var(--border);
+      padding-top: 11px;
+    }
+
+    /* ─── PORTAL TOPBAR ────────────────────────────────────────── */
+    .portal-topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-h);
+      background: var(--bg1);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 100;
+      font-family: var(--font-body);
+      gap: 12px;
+    }
+
+    .portal-topbar__left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .portal-brand {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+    }
+
+    .portal-topbar__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+
+    .portal-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.14s, color 0.14s;
+      position: relative;
+      line-height: 1;
+    }
+
+    .portal-icon-btn:hover {
+      background: var(--bg3);
+      color: var(--text1);
+    }
+
+    .portal-hamburger {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .portal-hamburger span {
+      display: block;
+      width: 16px;
+      height: 1.5px;
+      background: currentColor;
+      border-radius: 2px;
+    }
+
+    @media (min-width: 960px) {
+      .portal-hamburger {
+        display: none;
+      }
+    }
+
+    .portal-sun-icon {
+      display: none;
+    }
+
+    body.dark-theme .portal-sun-icon {
+      display: inline;
+    }
+
+    body.dark-theme .portal-moon-icon {
+      display: none;
+    }
+
+    .portal-badge {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--red-mid);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid var(--bg1);
+      font-family: var(--font-body);
+      line-height: 1;
+    }
+
+    .portal-badge[data-count="0"] {
+      display: none;
+    }
+
+    .portal-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .portal-logout {
+      font-size: 18px;
+    }
+
+    /* ─── SIDEBAR BACKDROP ─────────────────────────────────────── */
+    .portal-sidebar-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 190;
+    }
+
+    .portal-sidebar-backdrop.is-open {
+      display: block;
+    }
+
+    @media (min-width: 960px) {
+      .portal-sidebar-backdrop {
+        display: none !important;
+      }
+    }
+
+    /* ─── TOAST ────────────────────────────────────────────────── */
+    .portal-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--text1);
+      color: var(--bg1);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: var(--font-body);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 500;
+      white-space: nowrap;
+    }
+
+    .portal-toast.is-visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─── PAGE SHELL ───────────────────────────────────────────── */
+    body {
+      font-family: var(--font-body);
+      background: var(--bg3);
+      color: var(--text1);
+      min-height: 100vh;
+    }
+
+    .page-shell {
+      transition: padding-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ─── PAGE HEADER ──────────────────────────────────────────── */
+    .page-header {
+      background: var(--bg1);
+      border-bottom: 1px solid var(--border);
+      padding: 15px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      /* margin-left: 30px; */
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+
+    .page-subtitle {
+      font-size: 12.5px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ─── BUTTONS ──────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: var(--bg1);
+      color: var(--text1);
+      transition: all 0.14s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--bg2);
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      font-weight: 600;
+    }
+
+    .btn-primary:hover {
+      background: var(--blue-dark);
+      border-color: var(--blue-dark);
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red);
+      font-weight: 600;
+    }
+
+    .btn-danger:hover {
+      background: #7A1F1F;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: var(--radius-xs);
+    }
+
+    .btn-icon {
+      padding: 5px 8px;
+    }
+
+    /* ─── PAGE CONTENT ─────────────────────────────────────────── */
+    .page-content {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      /* margin-left: 25px; */
+    }
+
+    /* ─── FILTERS BAR ──────────────────────────────────────────── */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      background: var(--bg1);
+      color: var(--text1);
+      font-family: var(--font-body);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.14s, box-shadow 0.14s;
+    }
+
+    .search-input:focus {
+      border-color: var(--blue-mid);
+      box-shadow: 0 0 0 3px rgba(55, 138, 221, 0.12);
+    }
+
+    .search-input::placeholder {
+      color: var(--text3);
+    }
+
+    .filter-select {
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      background: var(--bg1);
+      color: var(--text1);
+      font-family: var(--font-body);
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.14s;
+      min-width: 140px;
+    }
+
+    .filter-select:focus {
+      border-color: var(--blue-mid);
+    }
+
+    /* ─── STAT CHIPS ───────────────────────────────────────────── */
+    .stat-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid;
+      cursor: pointer;
+      transition: opacity 0.14s, transform 0.14s;
+      white-space: nowrap;
+    }
+
+    .stat-chip:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    .chip-blue {
+      background: rgba(24, 95, 165, 0.1);
+      border-color: rgba(24, 95, 165, 0.3);
+      color: var(--blue);
+    }
+
+    .chip-amber {
+      background: rgba(133, 79, 11, 0.1);
+      border-color: rgba(133, 79, 11, 0.3);
+      color: var(--amber);
+    }
+
+    .chip-red {
+      background: rgba(162, 45, 45, 0.1);
+      border-color: rgba(162, 45, 45, 0.3);
+      color: var(--red);
+    }
+
+    .chip-gray {
+      background: rgba(136, 135, 128, 0.1);
+      border-color: rgba(136, 135, 128, 0.3);
+      color: var(--text2);
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ─── STATS GRID ──────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: var(--bg1);
+      border: 1px solid var(--border2);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      line-height: 1;
+      margin-bottom: 5px;
+      color: var(--text1);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stat-label { font-size: 12.5px; color: var(--text3); font-weight: 400; }
+
+    .stat-card.sc-all { border-top-color: var(--blue); }
+    .stat-card.sc-all .stat-icon { background: var(--blue-light); color: var(--blue); }
+    .stat-card.sc-active { border-top-color: var(--green); }
+    .stat-card.sc-active .stat-icon { background: var(--green-light); color: var(--green); }
+    .stat-card.sc-draft { border-top-color: var(--amber); }
+    .stat-card.sc-draft .stat-icon { background: var(--amber-light); color: var(--amber); }
+    .stat-card.sc-closed { border-top-color: var(--red); }
+    .stat-card.sc-closed .stat-icon { background: var(--red-light); color: var(--red); }
+
+    /* ─── TABLE WRAP ───────────────────────────────────────────── */
+    .table-wrap {
+      background: var(--bg1);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .table-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .result-count {
+      font-size: 12px;
+      color: var(--text3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      font-family: var(--font-body);
+    }
+
+    thead th {
+      text-align: left;
+      padding: 9px 14px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    thead th:first-child {
+      padding-left: 18px;
+      width: 40px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    tbody tr:hover {
+      background: var(--bg2);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 10px 14px;
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      padding-left: 18px;
+    }
+
+    /* ─── CHECKBOX ─────────────────────────────────────────────── */
+    .checkbox {
+      width: 15px;
+      height: 15px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border2);
+      accent-color: var(--blue);
+      cursor: pointer;
+    }
+
+    /* ─── BADGE ────────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .badge-green {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .badge-amber {
+      background: var(--amber-light);
+      color: var(--amber);
+    }
+
+    .badge-red {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    .badge-blue {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .badge-purple {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    .badge-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ─── TD HELPERS ───────────────────────────────────────────── */
+    .td-flex {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .td-job-title {
+      font-weight: 600;
+      color: var(--blue);
+      font-size: 13px;
+    }
+
+    .td-job-title:hover {
+      text-decoration: underline;
+    }
+
+    .td-muted {
+      color: var(--text2);
+      font-size: 12.5px;
+    }
+
+    .td-loc {
+      color: var(--text2);
+      font-size: 12.5px;
+    }
+
+    .td-count {
+      font-weight: 700;
+      color: var(--blue);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ─── ACTION BUTTONS IN TABLE ──────────────────────────────── */
+    .table-actions {
+      display: flex;
+      gap: 5px;
+      flex-wrap: nowrap;
+    }
+
+    .act-btn {
+      padding: 4px 10px;
+      border-radius: var(--radius-xs);
+      font-size: 11.5px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      border: 1px solid var(--border2);
+      background: var(--bg2);
+      color: var(--text1);
+      transition: all 0.12s;
+      white-space: nowrap;
+    }
+
+    .act-btn:hover {
+      background: var(--bg3);
+    }
+
+    .act-btn-blue {
+      background: var(--blue-light);
+      color: var(--blue);
+      border-color: rgba(24, 95, 165, 0.25);
+      font-weight: 600;
+    }
+
+    .act-btn-blue:hover {
+      background: rgba(24, 95, 165, 0.18);
+    }
+
+    .act-btn-red {
+      background: var(--red-light);
+      color: var(--red);
+      border-color: rgba(162, 45, 45, 0.25);
+    }
+
+    .act-btn-red:hover {
+      background: rgba(162, 45, 45, 0.18);
+    }
+
+    /* ─── PAGINATION ───────────────────────────────────────────── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      background: var(--bg1);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      transition: all 0.12s;
+    }
+
+    .page-btn:hover {
+      background: var(--bg3);
+      color: var(--text1);
+    }
+
+    .page-btn.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+      font-weight: 700;
+    }
+
+    .page-btn-nav {
+      width: auto;
+      padding: 0 12px;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    /* ─── MODAL ────────────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s;
+    }
+
+    .modal-overlay.is-open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--bg1);
+      border-radius: var(--radius);
+      border: 1px solid var(--border2);
+      padding: 24px;
+      min-width: 340px;
+      max-width: 440px;
+      width: 90%;
+      box-shadow: var(--shadow-md);
+      transform: translateY(8px) scale(0.98);
+      transition: transform 0.18s;
+      font-family: var(--font-body);
+    }
+
+    .modal-overlay.is-open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text1);
+    }
+
+    .modal-body {
+      font-size: 13.5px;
+      color: var(--text2);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .modal-alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      background: var(--amber-light);
+      border: 1px solid rgba(133, 79, 11, 0.2);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- portal-layout.js injects header, sidebar, backdrop, notifications -->
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modalBox"></div>
+  </div>
+
+  <!-- PAGE SHELL -->
+  <div class="page-shell">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Job Posts</div>
+        <div class="page-subtitle">Manage all job postings</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-primary" onclick="location.href='/mss-career-portal/hr/jobpost-create'">+ Create Job Post</button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- FILTERS -->
+      <div class="filters-bar">
+        <input class="search-input" type="text" id="searchInput" placeholder="Search by title, department…"
+          oninput="filterJobs()">
+        <select class="filter-select" id="fStatus" onchange="filterJobs()">
+          <option value="">All Status</option>
+          <option>Active</option>
+          <option>Draft</option>
+          <option>Closed</option>
+        </select>
+        <select class="filter-select" id="fDept" onchange="filterJobs()">
+          <option value="">All Departments</option>
+          <option>Science &amp; Math</option>
+          <option>Languages</option>
+          <option>Administration</option>
+          <option>Student Affairs</option>
+          <option>Sports &amp; Fitness</option>
+        </select>
+        <select class="filter-select" id="fType" onchange="filterJobs()">
+          <option value="">All Types</option>
+          <option>Full-time</option>
+          <option>Contract</option>
+          <option>Part-time</option>
+        </select>
+      </div>
+
+      <!-- STAT CARDS -->
+      <div class="stats-grid">
+        <div class="stat-card sc-all" onclick="quickFilter('')">
+          <div class="stat-icon"><i class="ti ti-briefcase"></i></div>
+          <div class="stat-value" id="statAllJobs">0</div>
+          <div class="stat-label">All Jobs</div>
+        </div>
+        <div class="stat-card sc-active" onclick="quickFilter('Active')">
+          <div class="stat-icon"><i class="ti ti-circle-check"></i></div>
+          <div class="stat-value" id="statActiveJobs">0</div>
+          <div class="stat-label">Active</div>
+        </div>
+        <div class="stat-card sc-draft" onclick="quickFilter('Draft')">
+          <div class="stat-icon"><i class="ti ti-pencil"></i></div>
+          <div class="stat-value" id="statDraftJobs">0</div>
+          <div class="stat-label">Draft</div>
+        </div>
+        <div class="stat-card sc-closed" onclick="quickFilter('Closed')">
+          <div class="stat-icon"><i class="ti ti-archive"></i></div>
+          <div class="stat-value" id="statClosedJobs">0</div>
+          <div class="stat-label">Closed</div>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">All Job Posts</span>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="result-count" id="resultCount">Showing 6 results</span>
+            <button class="btn btn-sm" onclick="clearFilters()">Clear Filters</button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Job Title</th>
+                <th>Department</th>
+                <th style="text-align:center;">Vacancies</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Published</th>
+                <th style="text-align:center;">Applicants</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="jobListBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /page-shell -->
+
+  <script src="portal-layout.js"></script>
+  <script>
+    /* ── DATA ────────────────────────────────────────────────────── */
+    let JOBS = [];
+
+    const STATUS_META = {
+      Active: { badge: 'badge-green', dot: '#3B6D11' },
+      Draft: { badge: 'badge-amber', dot: '#854F0B' },
+      Closed: { badge: 'badge-red', dot: '#A32D2D' },
+    };
+
+    /* ── MODAL ───────────────────────────────────────────────────── */
+    function openModal(html) {
+      document.getElementById('modalBox').innerHTML = html;
+      document.getElementById('modalOverlay').classList.add('is-open');
+    }
+    function closeModal() { document.getElementById('modalOverlay').classList.remove('is-open'); }
+    document.getElementById('modalOverlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    /* ── FETCH JOBS FROM BACKEND ─────────────────────────────────── */
+    async function fetchJobs() {
+      const pendingToast = sessionStorage.getItem('toastMessage');
+      if (pendingToast) {
+        showToast(pendingToast);
+        sessionStorage.removeItem('toastMessage');
+      }
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        showToast('❌ Session expired. Please log in.');
+        setTimeout(() => { window.location.replace('/mss-career-portal/home'); }, 1500);
+        return;
+      }
+
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      };
+
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const res = await fetch(`${apiBase}/jobs/`, {
+          method: 'GET',
+          headers: headers
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          
+          JOBS = data.map(j => {
+            // Format start_date to "DD MMM YYYY"
+            let formattedDate = 'N/A';
+            if (j.start_date) {
+              const d = new Date(j.start_date);
+              if (!isNaN(d)) {
+                const day = d.getDate();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const month = months[d.getMonth()];
+                const year = d.getFullYear();
+                formattedDate = `${day} ${month} ${year}`;
+              }
+            }
+            
+            // Map backend status to frontend Active / Draft / Closed
+            let mappedStatus = 'Draft';
+            if (j.job_status === 'publish') {
+              mappedStatus = 'Active';
+            } else if (j.job_status === 'expired' || j.job_status === 'closed') {
+              mappedStatus = 'Closed';
+            }
+
+            return {
+              id: j.job_id,
+              title: j.job_title || 'Untitled Job',
+              dept: j.department || 'N/A',
+              type: j.job_type || 'Full-time',
+              vacancies: j.vacancy_count || 1,
+              status: mappedStatus,
+              date: formattedDate,
+              applicants: 0,
+              location: j.school_name || 'Lady Andal School',
+              is_clone: j.is_clone
+            };
+          });
+
+          // Update stats grid
+          updateStatCards();
+
+          // Render jobs list
+          currentPageNum = 1;
+          filterJobs();
+        } else {
+          showToast('❌ Failed to fetch job posts.');
+        }
+      } catch (err) {
+        console.error('Fetch Jobs Error:', err);
+        showToast('❌ Connection error while fetching jobs.');
+      }
+    }
+
+    function updateStatCards() {
+      const allCount = JOBS.length;
+      const activeCount = JOBS.filter(j => j.status === 'Active').length;
+      const draftCount = JOBS.filter(j => j.status === 'Draft').length;
+      const closedCount = JOBS.filter(j => j.status === 'Closed').length;
+
+      const statAllJobs = document.getElementById('statAllJobs');
+      const statActiveJobs = document.getElementById('statActiveJobs');
+      const statDraftJobs = document.getElementById('statDraftJobs');
+      const statClosedJobs = document.getElementById('statClosedJobs');
+
+      if (statAllJobs) statAllJobs.textContent = allCount;
+      if (statActiveJobs) statActiveJobs.textContent = activeCount;
+      if (statDraftJobs) statDraftJobs.textContent = draftCount;
+      if (statClosedJobs) statClosedJobs.textContent = closedCount;
+    }
+
+    /* ── RENDER ──────────────────────────────────────────────────── */
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
+
+    function renderJobs(jobs) {
+      const tbody = document.getElementById('jobListBody');
+      tbody.innerHTML = '';
+
+      if (!jobs.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--text3);font-size:13px;">No job posts match your filters.</td></tr>`;
+        document.getElementById('resultCount').textContent = 'No results';
+        document.getElementById('pagination').innerHTML = '';
+        return;
+      }
+
+      // Pagination slice
+      const startIdx = (currentPageNum - 1) * itemsPerPage;
+      const endIdx = startIdx + itemsPerPage;
+      const paginatedJobs = jobs.slice(startIdx, endIdx);
+
+      paginatedJobs.forEach(j => {
+        const meta = STATUS_META[j.status] || { badge: 'badge-blue', dot: '#185FA5' };
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td>
+        <div class="td-flex">
+          <span class="status-dot" style="background:${meta.dot};"></span>
+          <span class="td-job-title" style="cursor:pointer;" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.id}'">${j.title}</span>
+        </div>
+      </td>
+      <td class="td-muted">${j.dept}</td>
+      <td style="text-align:center;font-weight:700;">${j.vacancies}</td>
+      <td class="td-muted">${j.type}</td>
+      <td><span class="badge ${meta.badge}"><span class="badge-dot"></span>${j.status}</span></td>
+      <td class="td-muted">${j.date}</td>
+      <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
+      <td>
+        <div class="table-actions">
+          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.id}'">View</button>
+          ${j.status === 'Draft'
+            ? `<button class="act-btn"
+          onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-create?id=${j.id}'">
+          Edit
+        </button>`
+            : ''
+          }
+          <button class="act-btn" onclick="event.stopPropagation();duplicateJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Clone">Clone</button>
+          ${j.status === 'Active' ? `<button class="act-btn act-btn-red" onclick="event.stopPropagation();closeJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')">Close</button>` : ''}
+          ${j.is_clone ? '<span class="cloned-star" style="color:#EF9F27;font-weight:bold;font-size:18px;margin-left:6px;cursor:help;display:inline-block;vertical-align:middle;" title="Cloned Job">*</span>' : ''}
+        </div>
+      </td>`;
+
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('resultCount').textContent = `Showing ${startIdx + 1}-${Math.min(endIdx, jobs.length)} of ${jobs.length} result${jobs.length !== 1 ? 's' : ''}`;
+      
+      const selectAllEl = document.getElementById('selectAll');
+      if (selectAllEl) selectAllEl.checked = false;
+
+      buildPagination(jobs.length, itemsPerPage);
+    }
+
+    /* ── FILTER ──────────────────────────────────────────────────── */
+    function filterJobs() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      
+      const fStatusEl = document.getElementById('fStatus');
+      const st = fStatusEl ? fStatusEl.value : '';
+
+      const fDeptEl = document.getElementById('fDept');
+      const dt = fDeptEl ? fDeptEl.value : '';
+
+      const fLocEl = document.getElementById('fLoc');
+      const lt = fLocEl ? fLocEl.value : '';
+
+      const fTypeEl = document.getElementById('fType');
+      const tt = fTypeEl ? fTypeEl.value : '';
+
+      const filtered = JOBS.filter(j =>
+        (!q || j.title.toLowerCase().includes(q) || j.dept.toLowerCase().includes(q) || (j.location && j.location.toLowerCase().includes(q))) &&
+        (!st || j.status === st) &&
+        (!dt || j.dept === dt) &&
+        (!lt || (j.location && j.location === lt)) &&
+        (!tt || j.type === tt)
+      );
+      renderJobs(filtered);
+    }
+
+    function quickFilter(status) {
+      const fStatusEl = document.getElementById('fStatus');
+      if (fStatusEl) {
+        fStatusEl.value = status;
+      }
+      currentPageNum = 1;
+      filterJobs();
+    }
+
+    function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      ['fStatus', 'fDept', 'fLoc', 'fType'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      currentPageNum = 1;
+      filterJobs();
+    }
+
+    /* ── BULK SELECT ─────────────────────────────────────────────── */
+    function toggleAll(cb) {
+      document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+    }
+
+    /* ── ACTIONS ─────────────────────────────────────────────────── */
+    function duplicateJob(jobId, title) {
+      openModal(`
+    <div class="modal-title">Clone Job Post</div>
+    <p class="modal-body">Create a copy of "<strong>${title}</strong>"? You can publish it immediately or save it as a draft.</p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-outline" style="border: 1px solid var(--border); background: var(--card-bg); color: var(--text);" onclick="executeClone(${jobId}, false)">Save as Draft</button>
+      <button class="btn btn-primary" onclick="executeClone(${jobId}, true)">Clone &amp; Publish</button>
+    </div>`);
+    }
+
+    async function executeClone(jobId, publish) {
+      closeModal();
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        showToast('❌ Session expired. Please log in.');
+        return;
+      }
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const res = await fetch(`${apiBase}/jobs/${jobId}/clone?publish=${publish}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (res.ok) {
+          sessionStorage.setItem('toastMessage', `✅ Job post cloned successfully as ${publish ? 'Active' : 'Draft'}!`);
+          window.location.reload();
+        } else {
+          const errData = await res.json();
+          showToast(`❌ Failed to clone job: ${errData.detail || 'Server error'}`);
+        }
+      } catch (err) {
+        console.error('Clone Error:', err);
+        showToast('❌ Connection error.');
+      }
+    }
+
+    function closeJob(jobId, title) {
+      openModal(`
+    <div class="modal-title">Close Job Post</div>
+    <p class="modal-body">Are you sure you want to close "<strong>${title}</strong>"?</p>
+    <div class="modal-alert"><i class="ti ti-alert-triangle" aria-hidden="true"></i> &nbsp;This will stop accepting new applications immediately.</div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-danger" onclick="executeClose(${jobId})">Close Job</button>
+    </div>`);
+    }
+
+    async function executeClose(jobId) {
+      closeModal();
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        showToast('❌ Session expired. Please log in.');
+        return;
+      }
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const res = await fetch(`${apiBase}/jobs/${jobId}/close`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+        if (res.ok) {
+          sessionStorage.setItem('toastMessage', '✅ Job post marked as Closed!');
+          window.location.reload();
+        } else {
+          const errData = await res.json();
+          showToast(`❌ Failed to close job: ${errData.detail || 'Server error'}`);
+        }
+      } catch (err) {
+        console.error('Close Error:', err);
+        showToast('❌ Connection error.');
+      }
+    }
+
+    function exportJobs() {
+      const rows = [['Title', 'Department', 'Location', 'Type', 'Vacancies', 'Status', 'Published', 'Applicants']];
+      JOBS.forEach(j => rows.push([j.title, j.dept, j.location || '', j.type, j.vacancies, j.status, j.date, j.applicants]));
+      const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+      const a = document.createElement('a');
+      a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+      a.download = 'job-posts.csv';
+      a.click();
+    }
+
+    /* ── PAGINATION ──────────────────────────────────────────────── */
+    function buildPagination(total, perPage) {
+      const totalPages = Math.ceil(total / perPage) || 1;
+      const pg = document.getElementById('pagination');
+      pg.innerHTML = '';
+
+      if (totalPages <= 1) {
+        return;
+      }
+
+      const prev = document.createElement('button');
+      prev.className = 'page-btn page-btn-nav';
+      prev.innerHTML = '← Prev';
+      prev.disabled = (currentPageNum === 1);
+      prev.onclick = () => {
+        if (currentPageNum > 1) {
+          currentPageNum--;
+          filterJobs();
+        }
+      };
+      pg.appendChild(prev);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i === currentPageNum ? ' active' : '');
+        b.textContent = i;
+        b.onclick = function () {
+          currentPageNum = i;
+          filterJobs();
+        };
+        pg.appendChild(b);
+      }
+
+      const next = document.createElement('button');
+      next.className = 'page-btn page-btn-nav';
+      next.innerHTML = 'Next →';
+      next.disabled = (currentPageNum === totalPages);
+      next.onclick = () => {
+        if (currentPageNum < totalPages) {
+          currentPageNum++;
+          filterJobs();
+        }
+      };
+      pg.appendChild(next);
+    }
+
+    /* ── INIT ────────────────────────────────────────────────────── */
+    fetchJobs();
+  </script>
+</body>
+
+</html>

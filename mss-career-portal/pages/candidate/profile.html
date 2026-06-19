@@ -1,0 +1,1913 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Profile – TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.svg" type="image/svg+xml">
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.cdnfonts.com/css/satoshi" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"><!-- BOOTSTRAP STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"><!-- FONTAWESOME STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/feather.css"><!-- FEATHER ICON SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/owl.carousel.min.css"><!-- OWL CAROUSEL STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/magnific-popup.min.css"><!-- MAGNIFIC POPUP STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/lc_lightbox.css"><!-- Lc light box popup -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css"><!-- BOOTSTRAP SLECT BOX STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap5.min.css"><!-- DATA table STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap5.min.css">
+    <!-- DASHBOARD select bootstrap  STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/dropzone.css"><!-- DROPZONE STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/scrollbar.css"><!-- CUSTOM SCROLL BAR STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/flaticon.css"> <!-- Flaticon -->
+    <link rel="stylesheet" type="text/css" href="css/swiper-bundle.min.css"><!-- Swiper Slider -->
+    <link rel="stylesheet" type="text/css" href="css/style.css"><!-- MAIN STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="../../assets/css/shared-header.css"><!-- SHARED HEADER + MODALS -->
+
+
+  <style>
+    /* ============================================================
+     CANDIDATE PROFILE – scoped styles
+     ============================================================ */
+
+    :root {
+      --cp-accent: #1A56DB;
+      --cp-accent-soft: #EBF2FF;
+      --cp-accent-mid: #BFDBFE;
+      --cp-accent-glow: rgba(26, 86, 219, .16);
+      --cp-green: #0EA05A;
+      --cp-green-soft: #EDFBF3;
+      --cp-green-mid: #A3E9C6;
+      --cp-red: #DC2626;
+      --cp-red-soft: #FEF2F2;
+      --cp-surface: #FFFFFF;
+      --cp-surface-2: #F7F8FC;
+      --cp-surface-3: #F0F2FA;
+      --cp-border: #E4E8F4;
+      --cp-border-soft: #ECF0FA;
+      --cp-text: #0D1117;
+      --cp-muted: #556080;
+      --cp-subtle: #8E9BBF;
+      --cp-radius: 16px;
+      --cp-radius-sm: 10px;
+      --cp-radius-xs: 6px;
+      --cp-radius-full: 999px;
+      --cp-shadow-sm: 0 2px 8px rgba(13, 17, 60, .07), 0 1px 2px rgba(13, 17, 60, .04);
+      --cp-shadow-md: 0 8px 28px rgba(13, 17, 60, .10), 0 2px 6px rgba(13, 17, 60, .05);
+      --cp-transition: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"],
+    body.dark-theme {
+      --cp-accent-soft: #26215C;
+      --cp-green-soft: #173404;
+      --cp-red-soft: #501313;
+      --cp-surface: #0d0d0d;
+      --cp-surface-2: #111111;
+      --cp-surface-3: #181818;
+      --cp-border: rgba(255, 255, 255, 0.10);
+      --cp-border-soft: rgba(255, 255, 255, 0.10);
+      --cp-text: #f0efe8;
+      --cp-muted: #b4b2a9;
+      --cp-subtle: #666560;
+      --cp-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+      --cp-shadow-md: 0 8px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ── Page wrapper ── */
+    .cp-wrap {
+      background: #EFF1F8;
+      padding: 40px 0 72px;
+      min-height: 60vh;
+      position: relative;
+    }
+
+    .cp-wrap::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, #C5CEEA 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: .28;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .cp-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 28px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Layout ── */
+    .cp-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* ── Card base ── */
+    .cp-card {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border-soft);
+      border-radius: var(--cp-radius);
+      padding: 26px;
+      box-shadow: var(--cp-shadow-sm);
+      transition: box-shadow var(--cp-transition);
+    }
+
+    .cp-card:hover {
+      box-shadow: var(--cp-shadow-md);
+    }
+
+    /* ── Sidebar ── */
+    .cp-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 24px;
+      animation: cp-fadeUp .45s .07s ease both;
+    }
+
+    /* Avatar */
+    .cp-avatar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .cp-avatar-ring {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--cp-accent) 0%, #7B9FF8 50%, #A78BFA 100%);
+      cursor: pointer;
+      position: relative;
+      transition: transform var(--cp-transition), box-shadow var(--cp-transition);
+    }
+
+    .cp-avatar-ring::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--cp-accent);
+      border: 2.5px solid white;
+      box-shadow: var(--cp-shadow-sm);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M12.146 1.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-9.5 9.5A.5.5 0 0 1 5 13.5H3a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .146-.354l9.5-9.5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 11px;
+    }
+
+    .cp-avatar-ring:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 28px var(--cp-accent-glow);
+    }
+
+    .cp-avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--cp-surface-2);
+      overflow: hidden;
+      border: 2.5px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--cp-accent);
+      font-family: 'DM Serif Display', serif;
+    }
+
+    .cp-avatar-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cp-avatar-hint {
+      font-size: 11px;
+      color: var(--cp-subtle);
+      margin-top: 8px;
+    }
+
+    .cp-profile-name {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--cp-text);
+      text-align: center;
+      margin-top: 16px;
+      letter-spacing: -.02em;
+    }
+
+    .cp-profile-role {
+      font-size: 12px;
+      color: var(--cp-muted);
+      text-align: center;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Stats */
+    .cp-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-top: 20px;
+    }
+
+    .cp-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 13px;
+      border: 1px solid var(--cp-border-soft);
+      border-radius: var(--cp-radius-sm);
+      background: var(--cp-surface-2);
+      transition: background var(--cp-transition), border-color var(--cp-transition);
+    }
+
+    .cp-stat-row:hover {
+      background: var(--cp-accent-soft);
+      border-color: var(--cp-accent-mid);
+    }
+
+    .cp-stat-label {
+      font-size: 10.5px;
+      color: var(--cp-subtle);
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .cp-stat-val {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--cp-text);
+    }
+
+    /* Completion */
+    .cp-completion {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--cp-green-soft), #F0FBF6);
+      border: 1px solid var(--cp-green-mid);
+      border-radius: var(--cp-radius-sm);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cp-completion::before {
+      content: '';
+      position: absolute;
+      top: -16px;
+      right: -16px;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(14, 160, 90, .1);
+    }
+
+    .cp-completion-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .cp-completion-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--cp-green);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .cp-completion-pct {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--cp-green);
+    }
+
+    .cp-progress {
+      height: 7px;
+      background: var(--cp-green-mid);
+      border-radius: var(--cp-radius-full);
+      overflow: hidden;
+    }
+
+    .cp-progress-bar {
+      height: 100%;
+      width: 60%;
+      background: linear-gradient(90deg, var(--cp-green), #34D399);
+      border-radius: var(--cp-radius-full);
+      transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Contact card */
+    .cp-contact-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--cp-text);
+      margin-bottom: 14px;
+    }
+
+    .cp-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--cp-border-soft);
+    }
+
+    .cp-contact-item:last-child {
+      border-bottom: none;
+    }
+
+    .cp-contact-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--cp-radius-xs);
+      background: var(--cp-accent-soft);
+      border: 1px solid var(--cp-accent-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background var(--cp-transition), transform var(--cp-transition);
+      color: var(--cp-accent);
+      font-size: 13px;
+    }
+
+    .cp-contact-item:hover .cp-contact-icon {
+      background: var(--cp-accent);
+      color: white;
+      transform: scale(1.08);
+    }
+
+    .cp-contact-text {
+      font-size: 12px;
+      color: var(--cp-muted);
+      word-break: break-all;
+      font-weight: 500;
+    }
+
+    /* Sidebar link */
+    .cp-sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 16px;
+      border-radius: var(--cp-radius-sm);
+      background: var(--cp-accent-soft);
+      border: 1px solid var(--cp-accent-mid);
+      color: var(--cp-accent);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background var(--cp-transition), transform var(--cp-transition), box-shadow var(--cp-transition);
+    }
+
+    .cp-sidebar-link:hover {
+      background: var(--cp-accent);
+      color: white;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px var(--cp-accent-glow);
+    }
+
+    /* ── Main / right content ── */
+    .cp-main {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      animation: cp-fadeUp .45s .12s ease both;
+    }
+
+    /* Section card */
+    .cp-section {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border-soft);
+      border-radius: var(--cp-radius);
+      padding: 26px;
+      box-shadow: var(--cp-shadow-sm);
+      transition: box-shadow var(--cp-transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cp-section:hover {
+      box-shadow: var(--cp-shadow-md);
+    }
+
+    .cp-section::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      width: 3px;
+      height: calc(100% - 40px);
+      border-radius: 0 3px 3px 0;
+      /* background: linear-gradient(to bottom, var(--cp-accent), var(--cp-accent-mid)); */
+      background: linear-gradient(135deg, #0a014f, #14008a);
+      opacity: 0;
+      transition: opacity var(--cp-transition);
+    }
+
+    .cp-section:hover::before {
+      opacity: 1;
+    }
+
+    .cp-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .cp-section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--cp-text);
+      letter-spacing: -.02em;
+    }
+
+    .cp-section-sub {
+      font-size: 11.5px;
+      color: var(--cp-subtle);
+      margin-top: 3px;
+    }
+
+    /* Form controls */
+    .cp-field-label {
+      display: block;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--cp-subtle);
+      margin-bottom: 7px;
+    }
+
+    .cp-section input,
+    .cp-section textarea,
+    .cp-section select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--cp-border);
+      border-radius: var(--cp-radius-sm);
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      color: var(--cp-text);
+      background: var(--cp-surface);
+      transition: border-color var(--cp-transition), box-shadow var(--cp-transition), background var(--cp-transition);
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .cp-section input::placeholder,
+    .cp-section textarea::placeholder {
+      color: var(--cp-subtle);
+      font-weight: 400;
+    }
+
+    .cp-section input:hover,
+    .cp-section textarea:hover,
+    .cp-section select:hover {
+      border-color: var(--cp-accent-mid);
+      background: var(--cp-surface-2);
+    }
+
+    .cp-section input:focus,
+    .cp-section textarea:focus,
+    .cp-section select:focus {
+      border-color: var(--cp-accent);
+      box-shadow: 0 0 0 3.5px rgba(26, 86, 219, .12);
+      background: var(--cp-surface);
+    }
+
+    .cp-section textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.75;
+    }
+
+    .cp-section select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238E9BBF' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 13px center;
+      padding-right: 34px;
+      cursor: pointer;
+    }
+
+    /* Grids */
+    .cp-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .cp-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .cp-full {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Buttons ── */
+    .cp-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: none;
+      cursor: pointer;
+      border-radius: var(--cp-radius-sm);
+      padding: 9px 18px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      transition: background var(--cp-transition), color var(--cp-transition),
+        box-shadow var(--cp-transition), transform var(--cp-transition);
+      white-space: nowrap;
+    }
+
+    .cp-btn:active {
+      transform: translateY(0) scale(.98) !important;
+    }
+
+    .cp-btn-primary {
+      background: var(--cp-accent);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--cp-accent-glow);
+    }
+
+    .cp-btn-primary:hover {
+      background: #1344BF;
+      box-shadow: 0 6px 18px var(--cp-accent-glow);
+      transform: translateY(-1px);
+    }
+
+    .cp-btn-outline {
+      background: var(--cp-surface);
+      border: 1.5px solid var(--cp-border);
+      color: var(--cp-muted);
+    }
+
+    .cp-btn-outline:hover {
+      border-color: var(--cp-accent);
+      color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+    }
+
+    .cp-btn-success {
+      background: var(--cp-green);
+      color: #fff;
+      padding: 13px 32px;
+      font-size: 13.5px;
+      border-radius: 11px;
+      box-shadow: 0 4px 14px rgba(14, 160, 90, .25);
+    }
+
+    .cp-btn-success:hover {
+      background: #0C8A4C;
+      box-shadow: 0 8px 24px rgba(14, 160, 90, .32);
+      transform: translateY(-2px);
+    }
+
+    /* ── Skills / Language chips ── */
+    .cp-chip-row {
+      display: flex;
+      gap: 9px;
+    }
+
+    .cp-chip-row input {
+      flex: 1;
+    }
+
+    .cp-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .cp-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+      border: 1px solid var(--cp-accent-mid);
+      padding: 6px 13px;
+      border-radius: var(--cp-radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      transition: background var(--cp-transition), transform var(--cp-transition);
+    }
+
+    .cp-chip:hover {
+      background: #DDE8FF;
+      transform: translateY(-1px);
+    }
+
+    .cp-chip-remove {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      background: rgba(26, 86, 219, .16);
+      cursor: pointer;
+      font-size: 13px;
+      line-height: 1;
+      transition: background var(--cp-transition), transform var(--cp-transition);
+      flex-shrink: 0;
+    }
+
+    .cp-chip-remove:hover {
+      background: rgba(220, 38, 38, .2);
+      color: var(--cp-red);
+      transform: scale(1.15);
+    }
+
+    /* ── Item cards (experience / education) ── */
+    .cp-item-card {
+      border: 1.5px solid var(--cp-border-soft);
+      border-radius: var(--cp-radius-sm);
+      padding: 18px;
+      gap: 16px;
+      margin-top: 14px;
+      background: var(--cp-surface-3);
+      display: grid;
+      transition: border-color var(--cp-transition), box-shadow var(--cp-transition);
+    }
+
+    .cp-item-card:hover {
+      border-color: var(--cp-accent-mid);
+      box-shadow: 0 4px 16px rgba(26, 86, 219, .07);
+    }
+
+    .cp-item-card.removable {
+      padding-top: 46px;
+      position: relative;
+    }
+
+    .cp-delete-item {
+      position: absolute;
+      top: 11px;
+      right: 11px;
+      width: 30px;
+      height: 30px;
+      border: 1.5px solid var(--cp-border);
+      border-radius: var(--cp-radius-xs);
+      background: var(--cp-surface);
+      color: var(--cp-red);
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--cp-transition), border-color var(--cp-transition), transform var(--cp-transition);
+    }
+
+    .cp-delete-item:hover {
+      background: var(--cp-red-soft);
+      border-color: var(--cp-red);
+      transform: scale(1.08);
+    }
+
+    /* ── Resume box ── */
+    .cp-resume-box {
+      border: 2px dashed var(--cp-border);
+      padding: 32px 20px;
+      border-radius: var(--cp-radius-sm);
+      text-align: center;
+      cursor: pointer;
+      background: var(--cp-surface-2);
+      transition: border-color var(--cp-transition), background var(--cp-transition), transform var(--cp-transition);
+    }
+
+    .cp-resume-box:hover {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .cp-resume-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+    }
+
+    .cp-resume-label i {
+      font-size: 32px;
+      color: var(--cp-subtle);
+      margin-bottom: 4px;
+      transition: color var(--cp-transition), transform var(--cp-transition);
+    }
+
+    .cp-resume-box:hover .cp-resume-label i {
+      color: var(--cp-accent);
+      transform: translateY(-3px);
+    }
+
+    .cp-resume-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cp-muted);
+    }
+
+    .cp-resume-hint {
+      font-size: 11px;
+      color: var(--cp-subtle);
+    }
+
+    .cp-resume-file {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      padding: 13px 15px;
+      background: var(--cp-surface);
+      border: 1.5px solid var(--cp-border-soft);
+      border-radius: var(--cp-radius-sm);
+      transition: border-color var(--cp-transition);
+    }
+
+    .cp-resume-file:hover {
+      border-color: var(--cp-accent-mid);
+    }
+
+    .cp-resume-file-info {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .cp-resume-file-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--cp-radius-xs);
+      background: var(--cp-accent-soft);
+      border: 1px solid var(--cp-accent-mid);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--cp-accent);
+      font-size: 16px;
+    }
+
+    .cp-resume-file-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--cp-text);
+    }
+
+    .cp-resume-file-size {
+      font-size: 11px;
+      color: var(--cp-subtle);
+      margin-top: 1px;
+    }
+
+    /* ── Skills autocomplete dropdown ── */
+    .cp-autocomplete-wrap {
+      flex: 1;
+      position: relative;
+    }
+
+    .cp-autocomplete-wrap input {
+      width: 100%;
+    }
+
+    .cp-autocomplete-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 3px);
+      left: 0;
+      right: 0;
+      background: var(--cp-surface);
+      border: 1.5px solid var(--cp-border);
+      border-radius: var(--cp-radius-sm);
+      box-shadow: var(--cp-shadow-md);
+      z-index: 50;
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .cp-autocomplete-dropdown.open {
+      display: block;
+    }
+
+    .cp-autocomplete-dropdown::-webkit-scrollbar { width: 4px; }
+    .cp-autocomplete-dropdown::-webkit-scrollbar-thumb { background: var(--cp-border); border-radius: 4px; }
+
+    .cp-autocomplete-group {
+      padding: 5px 14px 3px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--cp-subtle);
+      background: var(--cp-surface-2);
+      border-bottom: 1px solid var(--cp-border-soft);
+      position: sticky;
+      top: 0;
+    }
+
+    .cp-autocomplete-option {
+      padding: 8px 14px;
+      font-size: 12.5px;
+      color: var(--cp-muted);
+      cursor: pointer;
+      transition: background var(--cp-transition), color var(--cp-transition);
+    }
+
+    .cp-autocomplete-option:hover {
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+    }
+
+    /* ── Save bar ── */
+    .cp-save-bar {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
+
+    /* ── Animation ── */
+    @keyframes cp-fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1020px) {
+      .cp-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cp-sidebar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+
+      .cp-grid-2,
+      .cp-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .cp-inner {
+        padding: 0 16px;
+      }
+
+      .cp-section {
+        padding: 20px 18px;
+      }
+
+      .cp-wrap {
+        padding: 24px 0 56px;
+      }
+    }
+  </style>
+
+  <style>
+    .mss-inner-banner {
+        position: relative;
+        /* background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 55%, #1D4ED8 100%); */
+        background: linear-gradient(135deg, #0A1628 0%, #0F172A 45%, #0D1B3E 100%);
+        padding: 3rem 0;
+        overflow: hidden;
+        margin-top: 0;
+    }
+    .mss-inner-banner-bg {
+        position: absolute; inset: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+    }
+    .mss-inner-banner-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(60px);
+        pointer-events: none;
+    }
+    .mss-ib-orb-l {
+        width: 400px; height: 400px;
+        background: rgba(59,130,246,0.18);
+        top: -150px; left: -100px;
+    }
+    .mss-ib-orb-r {
+        width: 300px; height: 300px;
+        background: rgba(99,102,241,0.15);
+        bottom: -100px; right: 5%;
+    }
+    .mss-inner-banner-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+    .mss-inner-banner-left { flex: 1; min-width: 0; }
+    .mss-inner-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 50px;
+        padding: 5px 14px;
+        font-family: 'Rubik', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: rgba(255,255,255,0.85);
+        margin-bottom: 0.75rem;
+        backdrop-filter: blur(8px);
+    }
+    .mss-inner-title {
+        font-family: 'Rubik', sans-serif;
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 800;
+        color: #fff;
+        margin: 0 0 0.5rem;
+        letter-spacing: -0.3px;
+        line-height: 1.2;
+    }
+    .mss-inner-sub {
+        font-family: 'Rubik', sans-serif;
+        font-size: 0.95rem;
+        color: rgba(255,255,255,0.65);
+        margin: 0;
+        max-width: 460px;
+        line-height: 1.6;
+    }
+    .mss-breadcrumb-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 50px;
+        padding: 8px 18px;
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+    .mss-bc-item {
+        font-family: 'Rubik', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: rgba(255,255,255,0.75);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: color 0.15s;
+    }
+    .mss-bc-item:hover { color: #fff; }
+    .mss-bc-sep {
+        color: rgba(255,255,255,0.35);
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+    .mss-bc-active {
+        font-weight: 700;
+        color: #fff !important;
+    }
+    @media (max-width: 767px) {
+        .mss-inner-banner { padding: 2rem 0; }
+        .mss-breadcrumb-pill { display: none; }
+    }
+</style>
+</head>
+
+<body class="scrollbar-thin-1">
+  <div id="toast-container"></div>
+
+  <div id="shared-header"></div>
+
+
+  <!-- ── HERO ── -->
+  <!-- <section class="inner-page-hero">
+    <div class="container">
+      <div class="breadcrumb"><a href="index.html">Home</a> / <span>My Profile</span></div>
+      <h1>My Profile</h1>
+      <p>Manage your personal and professional details</p>
+    </div>
+  </section> -->
+
+              <div class="mss-inner-banner">
+                <div class="mss-inner-banner-bg"></div>
+                <div class="mss-inner-banner-orb mss-ib-orb-l"></div>
+                <div class="mss-inner-banner-orb mss-ib-orb-r"></div>
+                <div class="container" style="position:relative;z-index:2;">
+                    <div class="mss-inner-banner-row">
+                        <div class="mss-inner-banner-left">
+                            <!-- <div class="mss-inner-badge">
+                                <i class="feather-file-text"></i> Job Details
+                            </div> -->
+                            <h1 class="mss-inner-title">Profile</h1>
+                            <p class="mss-inner-sub">View your personal information, contact details, qualifications, and career preferences.</p>
+                        </div>
+                        <nav class="mss-breadcrumb-pill" aria-label="breadcrumb">
+                            <a href="/mss-career-portal/home" class="mss-bc-item">
+                                <i class="feather-home" style="font-size:0.75rem;"></i> Home
+                            </a>
+                            <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
+                            <span class="mss-bc-item mss-bc-active">Profile</span>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+  <!-- ── PROFILE BODY ── -->
+  <div class="cp-wrap">
+    <div class="cp-inner">
+      <div class="cp-layout">
+
+        <!-- ════════════════ SIDEBAR ════════════════ -->
+        <div class="cp-sidebar">
+
+          <!-- Identity card -->
+          <div class="cp-card">
+            <div class="cp-avatar-wrap">
+              <label for="photoUpload">
+                <div class="cp-avatar-ring" title="Change photo">
+                  <div class="cp-avatar-inner" id="cpAvatarInner">U</div>
+                </div>
+              </label>
+              <input type="file" id="photoUpload" hidden accept="image/*">
+              <span class="cp-avatar-hint">Click to change photo</span>
+            </div>
+
+            <div class="cp-profile-name" id="cpSidebarName">Loading…</div>
+            <div class="cp-profile-role" id="cpSidebarRole">Candidate</div>
+
+            <div class="cp-stats">
+              <div class="cp-stat-row">
+                <span class="cp-stat-label">Experience</span>
+                <span class="cp-stat-val" id="cpStatExp">—</span>
+              </div>
+              <div class="cp-stat-row">
+                <span class="cp-stat-label">Current Salary</span>
+                <span class="cp-stat-val" id="cpStatSal">—</span>
+              </div>
+              <div class="cp-stat-row">
+                <span class="cp-stat-label">Notice Period</span>
+                <span class="cp-stat-val" id="cpStatNotice">—</span>
+              </div>
+            </div>
+
+            <div class="cp-completion">
+              <div class="cp-completion-top">
+                <span class="cp-completion-label">Profile Completion</span>
+                <span class="cp-completion-pct" id="cpCompletePct">60%</span>
+              </div>
+              <div class="cp-progress">
+                <div class="cp-progress-bar" id="cpProgressBar" style="width:60%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact card -->
+          <div class="cp-card">
+            <div class="cp-contact-title">Contact Info</div>
+            <div class="cp-contact-item">
+              <div class="cp-contact-icon"><i class="fa-solid fa-envelope"></i></div>
+              <span class="cp-contact-text" id="cpContactEmail">—</span>
+            </div>
+            <div class="cp-contact-item">
+              <div class="cp-contact-icon"><i class="fa-solid fa-phone"></i></div>
+              <span class="cp-contact-text" id="cpContactPhone">—</span>
+            </div>
+            <div class="cp-contact-item">
+              <div class="cp-contact-icon"><i class="fa-solid fa-location-dot"></i></div>
+              <span class="cp-contact-text" id="cpContactLocation">—</span>
+            </div>
+          </div>
+
+          <!-- Quick link -->
+          <a href="/mss-career-portal/dashboard" class="cp-sidebar-link">
+            <i class="fa-solid fa-file-circle-check"></i> My Applications
+          </a>
+
+        </div><!-- /sidebar -->
+
+        <!-- ════════════════ MAIN ════════════════ -->
+        <div class="cp-main">
+
+          <!-- Profile Summary -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Profile Summary</div>
+                <div class="cp-section-sub">A brief professional overview shown to employers</div>
+              </div>
+            </div>
+            <label class="cp-field-label">About Me</label>
+            <textarea id="pfAbout" placeholder="Brief professional summary…"></textarea>
+          </div>
+
+          <!-- Resume -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Resume</div>
+                <div class="cp-section-sub">PDF, DOC or DOCX · Max 5 MB</div>
+              </div>
+            </div>
+            <div class="cp-resume-box" onclick="document.getElementById('resumeUpload').click()">
+              <label class="cp-resume-label" for="resumeUpload">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                <span class="cp-resume-title">Click to upload your resume</span>
+                <span class="cp-resume-hint">PDF, DOC, DOCX supported</span>
+              </label>
+              <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx" hidden>
+            </div>
+            <div id="resumeDisplay"></div>
+          </div>
+
+          <!-- Personal Information -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Personal Information</div>
+                <div class="cp-section-sub">Basic contact and identity details</div>
+              </div>
+            </div>
+            <div class="cp-grid-2">
+              <div>
+                <label class="cp-field-label">Full Name</label>
+                <input type="text" id="pfName" placeholder="Full Name" />
+              </div>
+              <div>
+                <label class="cp-field-label">Email</label>
+                <input type="email" id="pfEmail" placeholder="Email address" />
+              </div>
+              <div>
+                <label class="cp-field-label">Mobile</label>
+                <input type="tel" id="pfMobile" placeholder="10-digit number" />
+              </div>
+              <div>
+                <label class="cp-field-label">Current Location</label>
+                <input type="text" id="pfLocation" placeholder="City, State" />
+              </div>
+              <div>
+                <label class="cp-field-label">Date of Birth</label>
+                <input type="date" id="pfDob" max="2007-12-31" />
+              </div>
+              <div>
+                <label class="cp-field-label">Gender</label>
+                <select id="pfGender">
+                  <option value="">Select Gender</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Details -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Professional Details</div>
+                <div class="cp-section-sub">Current role, salary and availability</div>
+              </div>
+            </div>
+            <div class="cp-grid-2">
+              <div>
+                <label class="cp-field-label">Current Designation</label>
+                <input type="text" id="pfDesig" placeholder="e.g. Software Developer" />
+              </div>
+              <div>
+                <label class="cp-field-label">Current Company</label>
+                <input type="text" id="pfComp" placeholder="Current employer" />
+              </div>
+              <div>
+                <label class="cp-field-label">Total Experience</label>
+                <input type="text" id="pfExp" placeholder="e.g. 2 Years 3 Months" />
+              </div>
+              <div>
+                <label class="cp-field-label">Current Salary (LPA)</label>
+                <input type="text" id="pfSal" placeholder="e.g. 5.5" />
+              </div>
+              <div>
+                <label class="cp-field-label">Expected Salary (LPA)</label>
+                <input type="text" id="pfExpSal" placeholder="e.g. 8" />
+              </div>
+              <div>
+                <label class="cp-field-label">Notice Period</label>
+                <select id="pfNotice">
+                  <option>Immediately Available</option>
+                  <option>15 Days</option>
+                  <option>30 Days</option>
+                  <option>60 Days</option>
+                  <option>90 Days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skills -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Skills</div>
+                <div class="cp-section-sub">Technical and soft skills</div>
+              </div>
+            </div>
+            <div class="cp-chip-row">
+              <div class="cp-autocomplete-wrap">
+                <input id="skillInput" placeholder="Type a skill and press Add or select from suggestions…"
+                  onkeydown="if(event.key==='Enter'){event.preventDefault();cpAddSkill();}" autocomplete="off">
+                <div class="cp-autocomplete-dropdown" id="skillAutocomplete"></div>
+              </div>
+              <button class="cp-btn cp-btn-primary" onclick="cpAddSkill()">
+                <i class="fa-solid fa-plus"></i> Add
+              </button>
+            </div>
+            <div id="cpSkills" class="cp-chips"></div>
+          </div>
+
+          <!-- Languages -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Languages</div>
+                <div class="cp-section-sub">Languages you can communicate in</div>
+              </div>
+            </div>
+            <div class="cp-chip-row">
+              <input id="languageInput" placeholder="Type a language and press Add…"
+                onkeydown="if(event.key==='Enter')cpAddLanguage()">
+              <button class="cp-btn cp-btn-primary" onclick="cpAddLanguage()">
+                <i class="fa-solid fa-plus"></i> Add
+              </button>
+            </div>
+            <div id="cpLanguages" class="cp-chips"></div>
+          </div>
+
+          <!-- Work Experience -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Work Experience</div>
+                <div class="cp-section-sub">Past and current roles</div>
+              </div>
+              <button class="cp-btn cp-btn-primary" onclick="cpAddExperience()">
+                <i class="fa-solid fa-plus"></i> Add Role
+              </button>
+            </div>
+            <div id="cpExperienceList"></div>
+          </div>
+
+          <!-- Education -->
+          <div class="cp-section">
+            <div class="cp-section-header">
+              <div>
+                <div class="cp-section-title">Education</div>
+                <div class="cp-section-sub">Degrees and qualifications</div>
+              </div>
+              <button class="cp-btn cp-btn-primary" onclick="cpAddEducation()">
+                <i class="fa-solid fa-plus"></i> Add Degree
+              </button>
+            </div>
+            <div id="cpEducationList"></div>
+          </div>
+
+          <!-- Save bar -->
+          <div class="cp-save-bar">
+            <button class="cp-btn cp-btn-success" id="saveProfileBtn">
+              <i class="fa-solid fa-floppy-disk"></i> Save Profile
+            </button>
+          </div>
+
+        </div><!-- /cp-main -->
+      </div><!-- /cp-layout -->
+    </div><!-- /cp-inner -->
+  </div><!-- /cp-wrap -->
+
+        <!-- FOOTER START -->
+        <footer class="footer-dark"
+            style="background-color: #1A202C !important; display: block !important; position: relative !important; z-index: 10;">
+            <div class="container">
+
+                <div class="footer-top">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-12">
+                            <div class="widget widget_about">
+                                <div class="logo-footer clearfix">
+                                    <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
+                                            style="max-height: 80px;"></a>
+                                </div>
+                                <p style="color: #A0AEC0;">Established in 1928, The Madras Seva Sadan stands as one of South India’s oldest and most trusted institutions, dedicated to transforming lives through education, women empowerment, child welfare, social development, arts and sports — guided by the timeless values of compassion, dignity and service.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6">
+                            <div class="widget widget_services ftr-list-center">
+                                <h4 class="widget-title pb-1" style="color: #fff;">Quick Links</h4>
+                                <ul>
+                                    <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Home</a></li>
+                                    <li><a href="https://themadrassevasadan.org/about" target="_blank" style="color: #A0AEC0;">About</a></li>
+                                    <li><a href="/mss-career-portal/job-grid" style="color: #A0AEC0;">Open Roles</a></li>
+                                    <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Search</a></li>
+                                    <li><a href="contact.html" style="color: #A0AEC0;">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6">
+                            <div class="widget widget_info">
+                                <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
+                                <ul class="ftr-list">
+                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
+                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                        <p style="color: #A0AEC0; margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
+                                            600031</p>
+                                    </li>
+                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
+                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
+                                        <p style="color: #A0AEC0; margin: 0;">info@themadrassevasadan.org</p>
+                                    </li>
+                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
+                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
+                                        <p style="color: #A0AEC0; margin: 0;">+91 44 2836 4141</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="footer-bottom-info d-flex justify-content-center align-items-center w-100"
+                        style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-bottom: 20px;">
+                        <div class="footer-copy-right text-center w-100">
+                            <span class="copyrights-text" style="color: #718096;">Copyright 2026 <strong>The Madras Seva
+                                    Sadan</strong>. All Rights Reserved.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+        <!-- FOOTER END -->
+
+  <script src="../../assets/js/app.js"></script>
+
+      <!-- JAVASCRIPT  FILES ========================================= -->
+    <script src="js/jquery-3.6.0.min.js"></script><!-- JQUERY.MIN JS -->
+    <script src="js/popper.min.js"></script><!-- POPPER.MIN JS -->
+    <script src="js/bootstrap.min.js"></script><!-- BOOTSTRAP.MIN JS -->
+    <script src="js/magnific-popup.min.js"></script><!-- MAGNIFIC-POPUP JS -->
+    <script src="js/waypoints.min.js"></script><!-- WAYPOINTS JS -->
+    <script src="js/counterup.min.js"></script><!-- COUNTERUP JS -->
+    <script src="js/waypoints-sticky.min.js"></script><!-- STICKY HEADER -->
+    <script src="js/isotope.pkgd.min.js"></script><!-- MASONRY  -->
+    <script src="js/imagesloaded.pkgd.min.js"></script><!-- MASONRY  -->
+    <script src="js/owl.carousel.min.js"></script><!-- OWL  SLIDER  -->
+    <script src="js/theia-sticky-sidebar.js"></script><!-- STICKY SIDEBAR  -->
+    <script src="js/lc_lightbox.lite.js"></script><!-- IMAGE POPUP -->
+    <script src="js/bootstrap-select.min.js"></script><!-- Form js -->
+    <script src="js/dropzone.js"></script><!-- IMAGE UPLOAD  -->
+    <script src="js/jquery.scrollbar.js"></script><!-- scroller -->
+    <script src="js/jquery.dataTables.min.js"></script><!-- Datatable -->
+    <script src="js/dataTables.bootstrap5.min.js"></script><!-- Datatable -->
+    <script src="js/chart.js"></script><!-- Chart -->
+    <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
+    <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
+    <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
+    <script src="../../assets/js/shared-header.js"></script>
+    <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
+
+  <script>
+    /* ============================================================
+       CANDIDATE PROFILE – page script
+       ============================================================ */
+
+    /* ── State ── */
+    let cpSkills = [];
+    let cpLanguages = ['English', 'Tamil', 'Hindi'];
+    let allSkillsData = [];
+
+    /* ── Skills autocomplete ── */
+    async function loadSkillsData() {
+      try {
+        const res = await fetch('skills.json');
+        const data = await res.json();
+        if (Array.isArray(data.skills)) allSkillsData = data.skills;
+      } catch (_) {}
+
+      const skillInput = document.getElementById('skillInput');
+      const dropdown = document.getElementById('skillAutocomplete');
+      if (!skillInput || !dropdown) return;
+
+      skillInput.addEventListener('input', () => {
+        const q = skillInput.value.trim().toLowerCase();
+        if (!q) { dropdown.classList.remove('open'); return; }
+        const matches = allSkillsData.filter(s =>
+          s.skill_name.toLowerCase().includes(q) && !cpSkills.includes(s.skill_name)
+        ).slice(0, 40);
+        if (!matches.length) { dropdown.classList.remove('open'); return; }
+        const groups = {};
+        matches.forEach(s => { if (!groups[s.category]) groups[s.category] = []; groups[s.category].push(s.skill_name); });
+        dropdown.innerHTML = Object.entries(groups).map(([cat, names]) =>
+          `<div class="cp-autocomplete-group">${cat}</div>` +
+          names.map(name => `<div class="cp-autocomplete-option" onmousedown="event.preventDefault();cpSelectSkill(${JSON.stringify(name)})">${name}</div>`).join('')
+        ).join('');
+        dropdown.classList.add('open');
+      });
+
+      document.addEventListener('click', e => {
+        if (!skillInput.contains(e.target)) dropdown.classList.remove('open');
+      });
+    }
+
+    function cpSelectSkill(name) {
+      if (name && !cpSkills.includes(name)) { cpSkills.push(name); cpRenderSkills(); cpCalcCompletion(); }
+      document.getElementById('skillInput').value = '';
+      document.getElementById('skillAutocomplete').classList.remove('open');
+    }
+
+    /* ── Skills ── */
+    function cpAddSkill() {
+      const inp = document.getElementById('skillInput');
+      const val = inp.value.trim();
+      if (!val || cpSkills.includes(val)) return;
+      cpSkills.push(val);
+      inp.value = '';
+      document.getElementById('skillAutocomplete')?.classList.remove('open');
+      cpRenderSkills();
+      cpCalcCompletion();
+    }
+    function cpRemoveSkill(i) { cpSkills.splice(i, 1); cpRenderSkills(); }
+    function cpRenderSkills() {
+      document.getElementById('cpSkills').innerHTML =
+        cpSkills.map((s, i) => `
+      <div class="cp-chip">${s}
+        <span class="cp-chip-remove" onclick="cpRemoveSkill(${i})">×</span>
+      </div>`).join('');
+    }
+
+    /* ── Languages ── */
+    function cpAddLanguage() {
+      const inp = document.getElementById('languageInput');
+      const val = inp.value.trim();
+      if (!val || cpLanguages.includes(val)) return;
+      cpLanguages.push(val);
+      inp.value = '';
+      cpRenderLanguages();
+    }
+    function cpRemoveLanguage(i) { cpLanguages.splice(i, 1); cpRenderLanguages(); }
+    function cpRenderLanguages() {
+      document.getElementById('cpLanguages').innerHTML =
+        cpLanguages.map((l, i) => `
+      <div class="cp-chip">${l}
+        <span class="cp-chip-remove" onclick="cpRemoveLanguage(${i})">×</span>
+      </div>`).join('');
+    }
+
+    /* ── Work Experience ── */
+    function cpAddExperience() {
+      const list = document.getElementById('cpExperienceList');
+      const canDel = list.children.length > 0;
+      const maxMonth = new Date().toISOString().slice(0, 7);
+      const div = document.createElement('div');
+      div.className = canDel ? 'cp-item-card removable' : 'cp-item-card';
+      div.innerHTML = `
+    ${canDel ? `<button class="cp-delete-item" onclick="this.closest('.cp-item-card').remove()" title="Remove">×</button>` : ''}
+    <div class="cp-grid-2">
+      <div><label class="cp-field-label">Company Name</label><input placeholder="e.g. Infosys"></div>
+      <div><label class="cp-field-label">Designation</label><input placeholder="e.g. Software Developer"></div>
+    </div>
+    <div class="cp-grid-2">
+      <div>
+        <label class="cp-field-label">From</label>
+        <input type="text" placeholder="Month & Year" onfocus="this.type='month';this.max='${maxMonth}'" onblur="if(!this.value)this.type='text'" max="${maxMonth}">
+      </div>
+      <div>
+        <label class="cp-field-label">To</label>
+        <input type="text" placeholder="Month & Year (or present)" onfocus="this.type='month';this.max='${maxMonth}'" onblur="if(!this.value)this.type='text'" max="${maxMonth}">
+      </div>
+    </div>
+    <div>
+      <label class="cp-field-label">Job Description</label>
+      <textarea placeholder="Briefly describe your responsibilities…"></textarea>
+    </div>`;
+      list.appendChild(div);
+    }
+
+    /* ── Education ── */
+    function cpAddEducation() {
+      const list = document.getElementById('cpEducationList');
+      const canDel = list.children.length > 0;
+      const yr = new Date().getFullYear();
+      const div = document.createElement('div');
+      div.className = canDel ? 'cp-item-card removable' : 'cp-item-card';
+      div.innerHTML = `
+    ${canDel ? `<button class="cp-delete-item" onclick="this.closest('.cp-item-card').remove()" title="Remove">×</button>` : ''}
+    <div class="cp-grid-2">
+      <div><label class="cp-field-label">Degree / Qualification</label><input placeholder="e.g. B.E Computer Science"></div>
+      <div><label class="cp-field-label">University / College</label><input placeholder="e.g. Anna University"></div>
+    </div>
+    <div class="cp-grid-3">
+      <div><label class="cp-field-label">Start Year</label><input type="number" placeholder="e.g. 2018" min="1950" max="${yr}"></div>
+      <div><label class="cp-field-label">End Year</label><input type="number" placeholder="e.g. 2022" min="1950" max="${yr + 5}"></div>
+      <div><label class="cp-field-label">CGPA / Percentage</label><input placeholder="e.g. 8.5 CGPA"></div>
+    </div>`;
+      list.appendChild(div);
+    }
+
+    /* ── Photo upload ── */
+    document.getElementById('photoUpload').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      const inner = document.getElementById('cpAvatarInner');
+      inner.innerHTML = `<img src="${url}" alt="Photo">`;
+    });
+
+    /* ── Resume upload ── */
+    document.getElementById('resumeUpload').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const kb = (file.size / 1024).toFixed(0);
+      const size = kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+      document.getElementById('resumeDisplay').innerHTML = `
+    <div class="cp-resume-file">
+      <div class="cp-resume-file-info">
+        <div class="cp-resume-file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+        <div>
+          <div class="cp-resume-file-name">${file.name}</div>
+          <div class="cp-resume-file-size">${size}</div>
+        </div>
+      </div>
+      <button class="cp-btn cp-btn-outline" onclick="document.getElementById('resumeUpload').click()">Replace</button>
+    </div>`;
+    });
+
+    /* ── Update sidebar live ── */
+    function cpUpdateSidebar() {
+      const name = document.getElementById('pfName')?.value.trim();
+      const email = document.getElementById('pfEmail')?.value.trim();
+      const mobile = document.getElementById('pfMobile')?.value.trim();
+      const loc = document.getElementById('pfLocation')?.value.trim();
+      const exp = document.getElementById('pfExp')?.value.trim();
+      const sal = document.getElementById('pfSal')?.value.trim();
+      const notice = document.getElementById('pfNotice')?.value;
+      const desig = document.getElementById('pfDesig')?.value.trim();
+
+      if (name) { document.getElementById('cpSidebarName').textContent = name; document.getElementById('cpAvatarInner').textContent = name[0].toUpperCase(); }
+      if (desig) document.getElementById('cpSidebarRole').textContent = desig;
+      if (email) document.getElementById('cpContactEmail').textContent = email;
+      if (mobile) document.getElementById('cpContactPhone').textContent = mobile;
+      if (loc) document.getElementById('cpContactLocation').textContent = loc;
+      if (exp) document.getElementById('cpStatExp').textContent = exp;
+      if (sal) document.getElementById('cpStatSal').textContent = sal ? '₹' + sal + ' LPA' : '—';
+      if (notice) document.getElementById('cpStatNotice').textContent = notice;
+    }
+
+    /* ── Completion meter ── */
+    function cpCalcCompletion() {
+      const fields = ['pfName', 'pfEmail', 'pfMobile', 'pfLocation', 'pfAbout', 'pfDesig', 'pfExp', 'pfSal'];
+      const filled = fields.filter(id => document.getElementById(id)?.value.trim()).length;
+      const bonus = (cpSkills.length > 0 ? 1 : 0) + (document.getElementById('cpEducationList').children.length > 0 ? 1 : 0);
+      const pct = Math.round(((filled + bonus) / (fields.length + 2)) * 100);
+      document.getElementById('cpCompletePct').textContent = pct + '%';
+      document.getElementById('cpProgressBar').style.width = pct + '%';
+    }
+
+    async function loadCandidateProfile() {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        alert('Please log in to view and edit your profile.');
+        window.location.href = '/mss-career-portal/home';
+        return;
+      }
+      
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://192.168.0.12:8000';
+        const res = await fetch(apiBase + '/auth/candidate/profile', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) {
+          if (res.status === 401) {
+            alert('Your session has expired. Please log in again.');
+            window.location.href = '/mss-career-portal/home';
+            return;
+          }
+          throw new Error('Failed to load profile');
+        }
+        
+        const data = await res.json();
+        populateProfileForm(data);
+      } catch (err) {
+        console.error('Error loading profile:', err);
+        showToast('Error loading candidate profile details.', 'danger');
+      }
+    }
+
+    function populateProfileForm(data) {
+      // 1. Basic user details
+      const fullName = ((data.first_name || '') + ' ' + (data.last_name || '')).trim();
+      document.getElementById('pfName').value = fullName;
+      document.getElementById('pfEmail').value = data.email || '';
+      document.getElementById('pfEmail').readOnly = true;
+      document.getElementById('pfMobile').value = data.mobile || '';
+      if (data.gender) document.getElementById('pfGender').value = data.gender;
+      
+      // 2. Metadata details
+      const meta = data.metadata || {};
+      document.getElementById('pfDob').value = meta.date_of_birth || '';
+      document.getElementById('pfAbout').value = meta.about || '';
+      document.getElementById('pfDesig').value = meta.designation || '';
+      document.getElementById('pfComp').value = meta.company || '';
+      document.getElementById('pfExp').value = meta.experience || '';
+      document.getElementById('pfSal').value = meta.salary || '';
+      document.getElementById('pfExpSal').value = meta.expected_salary || '';
+      
+      if (meta.notice_period) document.getElementById('pfNotice').value = meta.notice_period;
+      if (meta.work_mode) document.getElementById('pfWorkMode').value = meta.work_mode;
+      if (meta.employment_type) document.getElementById('pfEmpType').value = meta.employment_type;
+      if (meta.preferred_role) document.getElementById('pfPrefRole').value = meta.preferred_role;
+      
+      if (meta.city || meta.state) {
+        document.getElementById('pfLocation').value = [meta.city, meta.state].filter(Boolean).join(', ');
+      } else {
+        document.getElementById('pfLocation').value = '';
+      }
+      
+      // Skills
+      if (meta.skills) {
+        cpSkills = meta.skills;
+        cpRenderSkills();
+      }
+      
+      // Languages
+      if (meta.languages) {
+        cpLanguages = meta.languages.split(',').map(l => l.trim()).filter(Boolean);
+        cpRenderLanguages();
+      }
+      
+      // Resume displays
+      if (meta.resume_doc) {
+        const fileName = meta.resume_doc.split('/').pop();
+        document.getElementById('resumeDisplay').innerHTML = `
+          <div class="cp-resume-file">
+            <div class="cp-resume-file-info">
+              <div class="cp-resume-file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+              <div>
+                <div class="cp-resume-file-name">${fileName}</div>
+                <div class="cp-resume-file-size">Stored in database</div>
+              </div>
+            </div>
+            <button class="cp-btn cp-btn-outline" onclick="document.getElementById('resumeUpload').click()">Replace</button>
+          </div>`;
+      }
+      
+      // 3. Education list
+      const eduList = document.getElementById('cpEducationList');
+      eduList.innerHTML = '';
+      if (data.education && data.education.length > 0) {
+        data.education.forEach(edu => {
+          cpAddEducation();
+          const card = eduList.lastElementChild;
+          const inputs = card.querySelectorAll('input');
+          inputs[0].value = edu.degree_name || '';
+          inputs[1].value = edu.university_name || '';
+          inputs[2].value = edu.start_year || '';
+          inputs[3].value = edu.end_year || '';
+          inputs[4].value = edu.cgpa || edu.percentage || '';
+        });
+      } else {
+        cpAddEducation();
+      }
+      
+      // 4. Experience list
+      const expList = document.getElementById('cpExperienceList');
+      expList.innerHTML = '';
+      if (data.experience && data.experience.length > 0) {
+        data.experience.forEach(exp => {
+          cpAddExperience();
+          const card = expList.lastElementChild;
+          const inputs = card.querySelectorAll('input');
+          const textarea = card.querySelector('textarea');
+          inputs[0].value = exp.company_name || '';
+          inputs[1].value = exp.job_title || '';
+          inputs[2].value = exp.start_date || '';
+          inputs[3].value = exp.end_date || '';
+          if (exp.start_date) inputs[2].type = 'month';
+          if (exp.end_date) inputs[3].type = 'month';
+          textarea.value = exp.description || '';
+        });
+      } else {
+        cpAddExperience();
+      }
+      
+      // Sidebar details
+      const initials = fullName ? fullName.charAt(0).toUpperCase() : '?';
+      document.getElementById('cpAvatarInner').textContent = initials;
+      document.getElementById('cpSidebarName').textContent = fullName || 'Your Name';
+      document.getElementById('cpContactEmail').textContent = data.email || '—';
+      document.getElementById('cpContactPhone').textContent = data.mobile || '—';
+      
+      cpUpdateSidebar();
+      cpCalcCompletion();
+    }
+
+    /* ── Init ── */
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSkillsData();
+      loadCandidateProfile();
+ 
+      /* Live sidebar updates */
+      ['pfName', 'pfEmail', 'pfMobile', 'pfLocation', 'pfExp', 'pfSal', 'pfDesig', 'pfNotice'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', () => { cpUpdateSidebar(); cpCalcCompletion(); });
+        document.getElementById(id)?.addEventListener('change', () => { cpUpdateSidebar(); cpCalcCompletion(); });
+      });
+ 
+      /* Save */
+      document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+        const token = localStorage.getItem('access_token');
+        if (!token) return;
+        
+        const nameVal = document.getElementById('pfName').value.trim();
+        let firstName = '';
+        let lastName = '';
+        if (nameVal) {
+          const parts = nameVal.split(' ');
+          firstName = parts[0];
+          lastName = parts.slice(1).join(' ');
+        }
+        
+        const locVal = document.getElementById('pfLocation').value.trim();
+        let city = '';
+        let state = '';
+        if (locVal) {
+          const parts = locVal.split(',');
+          city = parts[0].trim();
+          if (parts[1]) state = parts[1].trim();
+        }
+        
+        const education = [];
+        document.querySelectorAll('#cpEducationList .cp-item-card').forEach(card => {
+          const inputs = card.querySelectorAll('input');
+          if (inputs.length >= 5) {
+            const degreeName = inputs[0].value.trim();
+            const universityName = inputs[1].value.trim();
+            const startYear = parseInt(inputs[2].value) || null;
+            const endYear = parseInt(inputs[3].value) || null;
+            const scoreVal = inputs[4].value.trim();
+            
+            if (degreeName || universityName) {
+              let percentage = null;
+              let cgpa = null;
+              if (scoreVal.toLowerCase().includes('cgpa')) {
+                cgpa = parseFloat(scoreVal) || null;
+              } else if (scoreVal.toLowerCase().includes('%') || parseFloat(scoreVal) > 10) {
+                percentage = parseFloat(scoreVal) || null;
+              } else {
+                cgpa = parseFloat(scoreVal) || null;
+              }
+              
+              education.push({
+                degree_name: degreeName,
+                university_name: universityName,
+                start_year: startYear,
+                end_year: endYear,
+                percentage: percentage,
+                cgpa: cgpa,
+                education_level: degreeName.substring(0, 150)
+              });
+            }
+          }
+        });
+        
+        const experience = [];
+        document.querySelectorAll('#cpExperienceList .cp-item-card').forEach(card => {
+          const inputs = card.querySelectorAll('input');
+          const textarea = card.querySelector('textarea');
+          if (inputs.length >= 4) {
+            const companyName = inputs[0].value.trim();
+            const jobTitle = inputs[1].value.trim();
+            const startDate = inputs[2].value || null;
+            const endDate = inputs[3].value || null;
+            const description = textarea ? textarea.value.trim() : null;
+            
+            if (companyName || jobTitle) {
+              experience.push({
+                company_name: companyName,
+                job_title: jobTitle,
+                start_date: startDate,
+                end_date: endDate,
+                description: description,
+                employment_type: 'Full-time'
+              });
+            }
+          }
+        });
+        
+        const payload = {
+          first_name: firstName,
+          last_name: lastName,
+          gender: document.getElementById('pfGender').value,
+          mobile: document.getElementById('pfMobile').value.trim(),
+          metadata: {
+            date_of_birth: document.getElementById('pfDob').value || null,
+            city: city || null,
+            state: state || null,
+            about: document.getElementById('pfAbout').value.trim() || null,
+            designation: document.getElementById('pfDesig').value.trim() || null,
+            company: document.getElementById('pfComp').value.trim() || null,
+            experience: document.getElementById('pfExp').value.trim() || null,
+            salary: document.getElementById('pfSal').value.trim() || null,
+            expected_salary: document.getElementById('pfExpSal').value.trim() || null,
+            notice_period: document.getElementById('pfNotice').value || null,
+            work_mode: document.getElementById('pfWorkMode').value || null,
+            employment_type: document.getElementById('pfEmpType').value || null,
+            preferred_role: document.getElementById('pfPrefRole').value || null,
+            skills: cpSkills,
+            languages: cpLanguages.join(', ')
+          },
+          education: education,
+          experience: experience
+        };
+        
+        try {
+          const apiBase = window.AUTH_API_BASE || 'http://192.168.0.12:8000';
+          const saveBtn = document.getElementById('saveProfileBtn');
+          saveBtn.disabled = true;
+          saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+          
+          const res = await fetch(apiBase + '/auth/candidate/profile', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Profile';
+          
+          if (!res.ok) throw new Error('Save failed');
+          
+          const updatedData = await res.json();
+          showToast('Profile saved successfully!', 'success');
+          
+          localStorage.setItem('user_name', (firstName + ' ' + lastName).trim());
+          populateProfileForm(updatedData);
+          
+        } catch (err) {
+          console.error(err);
+          showToast('Failed to save profile. Please try again.', 'danger');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

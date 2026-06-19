@@ -1,0 +1,559 @@
+{
+  "skills": [
+    {
+      "id": 1,
+      "category": "Teaching",
+      "skill_name": "Classroom Management"
+    },
+    {
+      "id": 2,
+      "category": "Teaching",
+      "skill_name": "Lesson Planning"
+    },
+    {
+      "id": 3,
+      "category": "Teaching",
+      "skill_name": "Curriculum Development"
+    },
+    {
+      "id": 4,
+      "category": "Teaching",
+      "skill_name": "Student Assessment"
+    },
+    {
+      "id": 5,
+      "category": "Teaching",
+      "skill_name": "Subject Matter Expertise"
+    },
+    {
+      "id": 6,
+      "category": "Teaching",
+      "skill_name": "Online Teaching"
+    },
+    {
+      "id": 7,
+      "category": "Teaching",
+      "skill_name": "Smart Classroom Technology"
+    },
+    {
+      "id": 8,
+      "category": "Teaching",
+      "skill_name": "Special Education"
+    },
+    {
+      "id": 9,
+      "category": "Teaching",
+      "skill_name": "Student Counseling"
+    },
+    {
+      "id": 10,
+      "category": "Teaching",
+      "skill_name": "Parent Communication"
+    },
+    {
+      "id": 11,
+      "category": "School Administration",
+      "skill_name": "School Management"
+    },
+    {
+      "id": 12,
+      "category": "School Administration",
+      "skill_name": "Academic Planning"
+    },
+    {
+      "id": 13,
+      "category": "School Administration",
+      "skill_name": "Student Admissions"
+    },
+    {
+      "id": 14,
+      "category": "School Administration",
+      "skill_name": "Attendance Management"
+    },
+    {
+      "id": 15,
+      "category": "School Administration",
+      "skill_name": "Fee Management"
+    },
+    {
+      "id": 16,
+      "category": "School Administration",
+      "skill_name": "Timetable Scheduling"
+    },
+    {
+      "id": 17,
+      "category": "School Administration",
+      "skill_name": "School ERP"
+    },
+    {
+      "id": 18,
+      "category": "School Administration",
+      "skill_name": "Documentation"
+    },
+    {
+      "id": 19,
+      "category": "School Administration",
+      "skill_name": "Report Generation"
+    },
+    {
+      "id": 20,
+      "category": "School Administration",
+      "skill_name": "Policy Compliance"
+    },
+    {
+      "id": 21,
+      "category": "Human Resources",
+      "skill_name": "Recruitment"
+    },
+    {
+      "id": 22,
+      "category": "Human Resources",
+      "skill_name": "Talent Acquisition"
+    },
+    {
+      "id": 23,
+      "category": "Human Resources",
+      "skill_name": "Employee Onboarding"
+    },
+    {
+      "id": 24,
+      "category": "Human Resources",
+      "skill_name": "Payroll Processing"
+    },
+    {
+      "id": 25,
+      "category": "Human Resources",
+      "skill_name": "Performance Management"
+    },
+    {
+      "id": 26,
+      "category": "Human Resources",
+      "skill_name": "Employee Relations"
+    },
+    {
+      "id": 27,
+      "category": "Human Resources",
+      "skill_name": "HR Policies"
+    },
+    {
+      "id": 28,
+      "category": "Human Resources",
+      "skill_name": "Training & Development"
+    },
+    {
+      "id": 29,
+      "category": "Human Resources",
+      "skill_name": "Leave Management"
+    },
+    {
+      "id": 30,
+      "category": "Human Resources",
+      "skill_name": "HRMS"
+    },
+    {
+      "id": 31,
+      "category": "Accounts & Finance",
+      "skill_name": "Accounting"
+    },
+    {
+      "id": 32,
+      "category": "Accounts & Finance",
+      "skill_name": "Bookkeeping"
+    },
+    {
+      "id": 33,
+      "category": "Accounts & Finance",
+      "skill_name": "GST"
+    },
+    {
+      "id": 34,
+      "category": "Accounts & Finance",
+      "skill_name": "Taxation"
+    },
+    {
+      "id": 35,
+      "category": "Accounts & Finance",
+      "skill_name": "Auditing"
+    },
+    {
+      "id": 36,
+      "category": "Accounts & Finance",
+      "skill_name": "Budget Planning"
+    },
+    {
+      "id": 37,
+      "category": "Accounts & Finance",
+      "skill_name": "Financial Reporting"
+    },
+    {
+      "id": 38,
+      "category": "Accounts & Finance",
+      "skill_name": "Fee Collection"
+    },
+    {
+      "id": 39,
+      "category": "Accounts & Finance",
+      "skill_name": "Tally ERP"
+    },
+    {
+      "id": 40,
+      "category": "Accounts & Finance",
+      "skill_name": "QuickBooks"
+    },
+    {
+      "id": 41,
+      "category": "Information Technology",
+      "skill_name": "Computer Hardware"
+    },
+    {
+      "id": 42,
+      "category": "Information Technology",
+      "skill_name": "Network Administration"
+    },
+    {
+      "id": 43,
+      "category": "Information Technology",
+      "skill_name": "System Administration"
+    },
+    {
+      "id": 44,
+      "category": "Information Technology",
+      "skill_name": "Windows Server"
+    },
+    {
+      "id": 45,
+      "category": "Information Technology",
+      "skill_name": "Linux"
+    },
+    {
+      "id": 46,
+      "category": "Information Technology",
+      "skill_name": "Firewall Management"
+    },
+    {
+      "id": 47,
+      "category": "Information Technology",
+      "skill_name": "Cyber Security"
+    },
+    {
+      "id": 48,
+      "category": "Information Technology",
+      "skill_name": "Database Management"
+    },
+    {
+      "id": 49,
+      "category": "Information Technology",
+      "skill_name": "Technical Support"
+    },
+    {
+      "id": 50,
+      "category": "Information Technology",
+      "skill_name": "School ERP Support"
+    },
+    {
+      "id": 51,
+      "category": "Software Development",
+      "skill_name": "HTML"
+    },
+    {
+      "id": 52,
+      "category": "Software Development",
+      "skill_name": "CSS"
+    },
+    {
+      "id": 53,
+      "category": "Software Development",
+      "skill_name": "JavaScript"
+    },
+    {
+      "id": 54,
+      "category": "Software Development",
+      "skill_name": "PHP"
+    },
+    {
+      "id": 55,
+      "category": "Software Development",
+      "skill_name": "Python"
+    },
+    {
+      "id": 56,
+      "category": "Software Development",
+      "skill_name": "MySQL"
+    },
+    {
+      "id": 57,
+      "category": "Software Development",
+      "skill_name": "CodeIgniter"
+    },
+    {
+      "id": 58,
+      "category": "Software Development",
+      "skill_name": "Laravel"
+    },
+    {
+      "id": 59,
+      "category": "Software Development",
+      "skill_name": "React"
+    },
+    {
+      "id": 60,
+      "category": "Software Development",
+      "skill_name": "API Development"
+    },
+    {
+      "id": 61,
+      "category": "Digital Marketing",
+      "skill_name": "SEO"
+    },
+    {
+      "id": 62,
+      "category": "Digital Marketing",
+      "skill_name": "Social Media Marketing"
+    },
+    {
+      "id": 63,
+      "category": "Digital Marketing",
+      "skill_name": "Content Writing"
+    },
+    {
+      "id": 64,
+      "category": "Digital Marketing",
+      "skill_name": "Email Marketing"
+    },
+    {
+      "id": 65,
+      "category": "Digital Marketing",
+      "skill_name": "Google Analytics"
+    },
+    {
+      "id": 66,
+      "category": "Digital Marketing",
+      "skill_name": "Graphic Design"
+    },
+    {
+      "id": 67,
+      "category": "Digital Marketing",
+      "skill_name": "Canva"
+    },
+    {
+      "id": 68,
+      "category": "Digital Marketing",
+      "skill_name": "School Branding"
+    },
+    {
+      "id": 69,
+      "category": "Library",
+      "skill_name": "Library Management"
+    },
+    {
+      "id": 70,
+      "category": "Library",
+      "skill_name": "Cataloging"
+    },
+    {
+      "id": 71,
+      "category": "Library",
+      "skill_name": "Book Classification"
+    },
+    {
+      "id": 72,
+      "category": "Library",
+      "skill_name": "Digital Library Systems"
+    },
+    {
+      "id": 73,
+      "category": "Library",
+      "skill_name": "Inventory Management"
+    },
+    {
+      "id": 74,
+      "category": "Library",
+      "skill_name": "Reader Services"
+    },
+    {
+      "id": 75,
+      "category": "Transport",
+      "skill_name": "Fleet Management"
+    },
+    {
+      "id": 76,
+      "category": "Transport",
+      "skill_name": "Route Planning"
+    },
+    {
+      "id": 77,
+      "category": "Transport",
+      "skill_name": "Vehicle Maintenance"
+    },
+    {
+      "id": 78,
+      "category": "Transport",
+      "skill_name": "GPS Tracking"
+    },
+    {
+      "id": 79,
+      "category": "Transport",
+      "skill_name": "Transport Scheduling"
+    },
+    {
+      "id": 80,
+      "category": "Transport",
+      "skill_name": "Driver Coordination"
+    },
+    {
+      "id": 81,
+      "category": "Hostel Management",
+      "skill_name": "Hostel Administration"
+    },
+    {
+      "id": 82,
+      "category": "Hostel Management",
+      "skill_name": "Student Welfare"
+    },
+    {
+      "id": 83,
+      "category": "Hostel Management",
+      "skill_name": "Room Allocation"
+    },
+    {
+      "id": 84,
+      "category": "Hostel Management",
+      "skill_name": "Attendance Monitoring"
+    },
+    {
+      "id": 85,
+      "category": "Hostel Management",
+      "skill_name": "Discipline Management"
+    },
+    {
+      "id": 86,
+      "category": "Hostel Management",
+      "skill_name": "Mess Coordination"
+    },
+    {
+      "id": 87,
+      "category": "Nursing & Healthcare",
+      "skill_name": "First Aid"
+    },
+    {
+      "id": 88,
+      "category": "Nursing & Healthcare",
+      "skill_name": "Student Health Monitoring"
+    },
+    {
+      "id": 89,
+      "category": "Nursing & Healthcare",
+      "skill_name": "Medical Records"
+    },
+    {
+      "id": 90,
+      "category": "Nursing & Healthcare",
+      "skill_name": "Emergency Response"
+    },
+    {
+      "id": 91,
+      "category": "Nursing & Healthcare",
+      "skill_name": "Health Counseling"
+    },
+    {
+      "id": 92,
+      "category": "Operations & Facilities",
+      "skill_name": "Facility Management"
+    },
+    {
+      "id": 93,
+      "category": "Operations & Facilities",
+      "skill_name": "Vendor Management"
+    },
+    {
+      "id": 94,
+      "category": "Operations & Facilities",
+      "skill_name": "Inventory Control"
+    },
+    {
+      "id": 95,
+      "category": "Operations & Facilities",
+      "skill_name": "Purchase Management"
+    },
+    {
+      "id": 96,
+      "category": "Operations & Facilities",
+      "skill_name": "Maintenance Planning"
+    },
+    {
+      "id": 97,
+      "category": "Operations & Facilities",
+      "skill_name": "Safety Compliance"
+    },
+    {
+      "id": 98,
+      "category": "Front Office",
+      "skill_name": "Reception Management"
+    },
+    {
+      "id": 99,
+      "category": "Front Office",
+      "skill_name": "Parent Interaction"
+    },
+    {
+      "id": 100,
+      "category": "Front Office",
+      "skill_name": "Telephone Handling"
+    },
+    {
+      "id": 101,
+      "category": "Front Office",
+      "skill_name": "Visitor Management"
+    },
+    {
+      "id": 102,
+      "category": "Front Office",
+      "skill_name": "Documentation"
+    },
+    {
+      "id": 103,
+      "category": "Front Office",
+      "skill_name": "Customer Service"
+    },
+    {
+      "id": 104,
+      "category": "Soft Skills",
+      "skill_name": "Communication"
+    },
+    {
+      "id": 105,
+      "category": "Soft Skills",
+      "skill_name": "Leadership"
+    },
+    {
+      "id": 106,
+      "category": "Soft Skills",
+      "skill_name": "Teamwork"
+    },
+    {
+      "id": 107,
+      "category": "Soft Skills",
+      "skill_name": "Problem Solving"
+    },
+    {
+      "id": 108,
+      "category": "Soft Skills",
+      "skill_name": "Time Management"
+    },
+    {
+      "id": 109,
+      "category": "Soft Skills",
+      "skill_name": "Presentation Skills"
+    },
+    {
+      "id": 110,
+      "category": "Soft Skills",
+      "skill_name": "Conflict Resolution"
+    },
+    {
+      "id": 111,
+      "category": "Soft Skills",
+      "skill_name": "Decision Making"
+    }
+  ]
+}

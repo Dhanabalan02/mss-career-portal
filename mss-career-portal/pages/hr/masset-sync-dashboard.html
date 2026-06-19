@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MASSET Integration Dashboard - TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <script src="portal-layout.js"></script>
+  <link rel="stylesheet" href="portal-layout.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+  <style>
+    /* ═══════════════════════════════════════════
+   MASSET Dashboard — Design Tokens
+   Light / Dark via [data-theme="dark"] on <html>
+═══════════════════════════════════════════ */
+    :root {
+      /* Brand */
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-glow: rgba(37, 99, 235, .15);
+      --cyan: #06b6d4;
+      --orange: #f59e0b;
+      --purple: #7c3aed;
+      --green: #16a34a;
+      --red: #dc2626;
+
+      /* Surface — light */
+      --bg: #f0f3f9;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --border: #e2e8f0;
+      --border-strong: #c8d3e0;
+
+      /* Text — light */
+      --text: #0f172a;
+      --text-2: #475569;
+      --text-3: #94a3b8;
+
+      /* Status fills */
+      --s-pending-bg: #dbeafe;
+      --s-pending-tx: #1d4ed8;
+      --s-syncing-bg: #cffafe;
+      --s-syncing-tx: #0891b2;
+      --s-ao-bg: #ffedd5;
+      --s-ao-tx: #c2410c;
+      --s-onboarding-bg: #ede9fe;
+      --s-onboarding-tx: #6d28d9;
+      --s-onboarded-bg: #dcfce7;
+      --s-onboarded-tx: #15803d;
+      --s-failed-bg: #fee2e2;
+      --s-failed-tx: #b91c1c;
+
+      /* Shadow */
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, .06), 0 1px 2px rgba(15, 23, 42, .04);
+      --shadow-md: 0 4px 16px rgba(15, 23, 42, .09), 0 2px 6px rgba(15, 23, 42, .05);
+      --shadow-lg: 0 12px 40px rgba(15, 23, 42, .13), 0 4px 12px rgba(15, 23, 42, .07);
+
+      --radius: 14px;
+      --radius-sm: 9px;
+      --radius-xs: 6px;
+      --font: 'Outfit', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+      --bg1: #ffffff;
+      --transition: .2s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    /* Dark theme overrides */
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg: #0d0d0d;
+      --surface: #0d0d0d;
+      --surface-2: #111111;
+      --border: rgba(255, 255, 255, 0.10);
+      --border-strong: rgba(255, 255, 255, 0.16);
+
+      --text: #f0efe8;
+      --text-2: #b4b2a9;
+      --text-3: #666560;
+
+      --s-pending-bg: #1e3a5f;
+      --s-pending-tx: #93c5fd;
+      --s-syncing-bg: #0c3344;
+      --s-syncing-tx: #67e8f9;
+      --s-ao-bg: #412402;
+      --s-ao-tx: #FAC775;
+      --s-onboarding-bg: #26215C;
+      --s-onboarding-tx: #CECBF6;
+      --s-onboarded-bg: #173404;
+      --s-onboarded-tx: #C0DD97;
+      --s-failed-bg: #501313;
+      --s-failed-tx: #F7C1C1;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+      --accent-glow: rgba(37, 99, 235, .25);
+      --bg1: #0d0d0d;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .scrollbar-thin-1::-webkit-scrollbar {
+      width: 0px;
+      height: 8px;
+    }
+
+    .scrollbar-thin-1::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .scrollbar-thin-1::-webkit-scrollbar-thumb {
+
+      border-radius: 4px;
+      border: 2px solid transparent;
+      background-clip: content-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* ── Page shell ── */
+    .page-shell {
+      transition: padding-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .page-header {
+      background: var(--bg1);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .page-subtitle {
+      font-size: 12.5px;
+      color: var(--text-3);
+      margin-top: 2px;
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .page-content {
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn i {
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-primary:active {
+      transform: scale(.98);
+    }
+
+    .btn-light {
+      background: var(--surface);
+      color: var(--text-2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-light:hover {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .btn-sm {
+      padding: 6px 13px;
+      font-size: 12.5px;
+    }
+
+    /* ── Stat Cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      box-shadow: var(--shadow-sm);
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card:hover::after {
+      opacity: 1;
+    }
+
+    .stat-card.active-filter {
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-pending {
+      border-top-color: var(--accent);
+    }
+
+    .stat-syncing {
+      border-top-color: var(--cyan);
+    }
+
+    .stat-ao {
+      border-top-color: var(--orange);
+    }
+
+    .stat-onboarding {
+      border-top-color: var(--purple);
+    }
+
+    .stat-onboarded {
+      border-top-color: var(--green);
+    }
+
+    .stat-failed {
+      border-top-color: var(--red);
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      margin-bottom: 12px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      line-height: 1;
+      margin-bottom: 5px;
+      font-family: var(--mono);
+    }
+
+    .stat-label {
+      font-size: 12.5px;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+
+    .stat-delta {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 11px;
+      color: var(--text-3);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: 8px 12px 8px 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface-2);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      transition: var(--transition);
+    }
+
+    .filter-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface-2);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .filter-input:focus,
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .filter-input::placeholder {
+      color: var(--text-3);
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+    }
+
+    /* ── Table card ── */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 22px;
+    }
+
+    .table-toolbar {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .table-toolbar-title {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-toolbar-title i {
+      font-size: 17px;
+      color: var(--accent);
+    }
+
+    .row-count {
+      font-size: 12px;
+      color: var(--text-3);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-family: var(--mono);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    th {
+      background: var(--surface-2);
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--text-3);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th .sort-icon {
+      font-size: 13px;
+      vertical-align: -2px;
+      color: var(--text-3);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: background var(--transition);
+    }
+
+    tbody tr:hover {
+      background: var(--surface-2);
+    }
+
+    /* Candidate cell */
+    .cand-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cand-av {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      font-family: var(--mono);
+    }
+
+    .cand-name {
+      font-weight: 600;
+      font-size: 13.5px;
+    }
+
+    .cand-email {
+      font-size: 11.5px;
+      color: var(--text-3);
+      margin-top: 1px;
+    }
+
+    /* Status badge */
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    .status-pending {
+      background: var(--s-pending-bg);
+      color: var(--s-pending-tx);
+    }
+
+    .status-syncing {
+      background: var(--s-syncing-bg);
+      color: var(--s-syncing-tx);
+    }
+
+    .status-ao {
+      background: var(--s-ao-bg);
+      color: var(--s-ao-tx);
+    }
+
+    .status-onboarding {
+      background: var(--s-onboarding-bg);
+      color: var(--s-onboarding-tx);
+    }
+
+    .status-onboarded {
+      background: var(--s-onboarded-bg);
+      color: var(--s-onboarded-tx);
+    }
+
+    .status-failed {
+      background: var(--s-failed-bg);
+      color: var(--s-failed-tx);
+    }
+
+    /* Pulse dot for syncing */
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .3
+      }
+    }
+
+    .status-ao::before {
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    .status-pending::before {
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    .status-onboarding::before {
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    .status-syncing::before {
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    /* Progress */
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 140px;
+    }
+
+    .progress {
+      flex: 1;
+      height: 6px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 20px;
+      transition: width .6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .progress-pct {
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--text-3);
+      min-width: 28px;
+      text-align: right;
+    }
+
+    /* Last sync */
+    .sync-time {
+      font-size: 12.5px;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .sync-time i {
+      font-size: 13px;
+      color: var(--text-3);
+    }
+
+    /* Action buttons */
+    .actions-cell {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-xs);
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .action-btn i {
+      font-size: 13px;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .action-btn:active {
+      transform: scale(.97);
+    }
+
+    .btn-sync {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn-retry {
+      background: var(--s-failed-bg);
+      color: var(--s-failed-tx);
+      border-color: var(--s-failed-tx);
+    }
+
+    .btn-timeline {
+      background: var(--s-onboarding-bg);
+      color: var(--s-onboarding-tx);
+      border-color: var(--s-onboarding-tx);
+    }
+
+    .btn-logs {
+      background: var(--surface-2);
+      color: var(--text-2);
+      border-color: var(--border);
+    }
+
+    .btn-logs:hover {
+      border-color: var(--border-strong);
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-3);
+    }
+
+    .empty-state i {
+      font-size: 36px;
+      display: block;
+      margin-bottom: 10px;
+      opacity: .4;
+    }
+
+    .empty-state p {
+      font-size: 13px;
+    }
+
+    /* ── Bottom grid ── */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .widget {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .widget-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+
+    .widget-title {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .widget-title i {
+      font-size: 17px;
+      color: var(--accent);
+    }
+
+    .widget-badge {
+      font-size: 11px;
+      padding: 2px 9px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--text-3);
+    }
+
+    /* Bar chart */
+    .chart-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .chart-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .chart-label {
+      font-size: 12.5px;
+      color: var(--text-2);
+      min-width: 130px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chart-bar {
+      flex: 1;
+      height: 8px;
+      background: var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .chart-fill {
+      height: 100%;
+      border-radius: 20px;
+      transition: width 1s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .chart-pct {
+      font-size: 11.5px;
+      font-family: var(--mono);
+      color: var(--text-3);
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* Events feed */
+    .events-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .event {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .event:last-child {
+      border-bottom: none;
+    }
+
+    .event-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .event-content {
+      flex: 1;
+    }
+
+    .event-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .event-time {
+      font-size: 11.5px;
+      color: var(--text-3);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .event-time i {
+      font-size: 12px;
+    }
+
+    .event-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 500;
+      align-self: center;
+      white-space: nowrap;
+    }
+
+    /* ── Timeline Modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 16, 28, .5);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 24px;
+      overflow-y: auto;
+      z-index: 2100;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: scale(.96)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .modal-content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      width: 540px;
+      max-width: 95vw;
+      max-height: calc(100vh - 48px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      margin: auto 0;
+      animation: modalFadeIn .25s ease;
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-header h3 {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-header h3 i {
+      font-size: 18px;
+      color: var(--purple);
+    }
+
+    .modal-cand {
+      font-size: 12.5px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .drawer-close {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xs);
+      background: var(--surface-2);
+      color: var(--text-2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      font-size: 17px;
+    }
+
+    .drawer-close:hover {
+      background: var(--s-failed-bg);
+      color: var(--red);
+    }
+
+    .modal-body {
+      padding: 22px;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .timeline-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tl-step {
+      display: flex;
+      gap: 14px;
+      padding-bottom: 20px;
+      position: relative;
+    }
+
+    .tl-step::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 32px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .tl-step:last-child::before {
+      display: none;
+    }
+
+    .tl-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      border: 2px solid transparent;
+    }
+
+    .tl-icon.done {
+      background: var(--s-onboarded-bg);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .tl-icon.current {
+      background: var(--s-pending-bg);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+
+    .tl-icon.pending {
+      background: var(--surface-2);
+      border-color: var(--border);
+      color: var(--text-3);
+    }
+
+    .tl-body {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .tl-title {
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .tl-desc {
+      font-size: 12px;
+      color: var(--text-2);
+      margin-top: 3px;
+    }
+
+    .tl-badge-row {
+      margin-top: 5px;
+    }
+
+    .tl-badge {
+      font-size: 11px;
+      padding: 2px 9px;
+      border-radius: 20px;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    .tl-badge.done {
+      background: var(--s-onboarded-bg);
+      color: var(--green);
+    }
+
+    .tl-badge.current {
+      background: var(--s-pending-bg);
+      color: var(--accent);
+    }
+
+    .modal-footer {
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--text);
+      color: var(--surface);
+      padding: 11px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s, transform .25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: var(--shadow-lg);
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast i {
+      font-size: 16px;
+    }
+
+    .toast.t-success i {
+      color: #4ade80;
+    }
+
+    .toast.t-error i {
+      color: #f87171;
+    }
+
+    .toast.t-info i {
+      color: #60a5fa;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 800px) {
+      table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .drawer {
+        width: 100%;
+        right: -100%;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 500px) {
+      .page-content {
+        padding: 14px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    /* ── Dark theme table zebra ── */
+    [data-theme="dark"] tbody tr:hover {
+      background: rgba(255, 255, 255, .03);
+    }
+
+    [data-theme="dark"] .widget,
+    [data-theme="dark"] .table-card,
+    [data-theme="dark"] .filter-bar {
+      border-color: var(--border);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-shell">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">MASSET Integration</div>
+        <div class="page-subtitle">Real-time sync status &amp; onboarding pipeline</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-light" onclick="exportReport()">
+          <i class="ti ti-file-export" aria-hidden="true"></i> Export Report
+        </button>
+        <button class="btn btn-primary" onclick="refreshAll()">
+          <i class="ti ti-refresh" aria-hidden="true"></i> Refresh Status
+        </button>
+      </div>
+    </div>
+
+    <div class="page-content">
+
+      <!-- Stat cards -->
+      <div class="stats-grid" id="statsGrid">
+
+        <div class="stat-card stat-pending" id="sc-Sync Pending" onclick="filterStatus('Sync Pending')">
+          <div class="stat-icon" style="background:#dbeafe;color:#2563eb"><i class="ti ti-clock-hour-4"
+              aria-hidden="true"></i></div>
+          <div class="stat-value" id="sv-Sync Pending">0</div>
+          <div class="stat-label">Sync Pending</div>
+          <div class="stat-delta">Awaiting trigger</div>
+        </div>
+
+        <!-- <div class="stat-card stat-syncing" id="sc-Syncing" onclick="filterStatus('Syncing')">
+          <div class="stat-icon" style="background:#cffafe;color:#06b6d4"><i class="ti ti-refresh"
+              aria-hidden="true"></i>
+          </div>
+          <div class="stat-value" id="sv-Syncing">8</div>
+          <div class="stat-label">Syncing</div>
+          <div class="stat-delta">In progress</div>
+        </div> -->
+
+        <div class="stat-card stat-ao" id="sc-AO Pending" onclick="filterStatus('AO Pending')">
+          <div class="stat-icon" style="background:#ffedd5;color:#f59e0b"><i class="ti ti-file-time"
+              aria-hidden="true"></i></div>
+          <div class="stat-value" id="sv-AO Pending">0</div>
+          <div class="stat-label">AO Pending</div>
+          <div class="stat-delta">Awaiting approval</div>
+        </div>
+
+        <!-- <div class="stat-card stat-onboarding" id="sc-Onboarding" onclick="filterStatus('Onboarding')">
+          <div class="stat-icon" style="background:#ede9fe;color:#7c3aed"><i class="ti ti-user-plus"
+              aria-hidden="true"></i></div>
+          <div class="stat-value" id="sv-Onboarding">5</div>
+          <div class="stat-label">Onboarding</div>
+          <div class="stat-delta">Active onboarding</div>
+        </div> -->
+
+        <div class="stat-card stat-onboarded" id="sc-Onboarded" onclick="filterStatus('Onboarded')">
+          <div class="stat-icon" style="background:#dcfce7;color:#16a34a"><i class="ti ti-circle-check"
+              aria-hidden="true"></i></div>
+          <div class="stat-value" id="sv-Onboarded">0</div>
+          <div class="stat-label">Onboarded</div>
+          <div class="stat-delta">All time</div>
+        </div>
+
+        <div class="stat-card stat-failed" id="sc-Sync Failed" onclick="filterStatus('Sync Failed')">
+          <div class="stat-icon" style="background:#fee2e2;color:#dc2626"><i class="ti ti-alert-triangle"
+              aria-hidden="true"></i></div>
+          <div class="stat-value" id="sv-Sync Failed">0</div>
+          <div class="stat-label">Sync Failed</div>
+          <div class="stat-delta">Needs attention</div>
+        </div>
+
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input class="filter-input" type="text" id="searchInput" placeholder="Search candidate or school…"
+            oninput="applyFilters()">
+        </div>
+        <div class="filter-divider"></div>
+        <select class="filter-select" id="schoolFilter" onchange="applyFilters()">
+          <option value="">All Schools</option>
+          <option>ABC Public School</option>
+          <option>XYZ International School</option>
+          <option>Global Academy</option>
+        </select>
+        <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+          <option value="">All Statuses</option>
+          <option>Sync Pending</option>
+          <option>Syncing</option>
+          <option>AO Pending</option>
+          <option>Onboarding</option>
+          <option>Onboarded</option>
+          <option>Sync Failed</option>
+        </select>
+        <button class="btn btn-light btn-sm" onclick="clearFilters()">
+          <i class="ti ti-x" aria-hidden="true"></i> Clear
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="table-toolbar-title">
+            <i class="ti ti-table" aria-hidden="true"></i>
+            Candidates
+            <span class="row-count" id="rowCount">0</span>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-light btn-sm" onclick="showToast('Columns configuration coming soon','info')">
+              <i class="ti ti-columns" aria-hidden="true"></i> Columns
+            </button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Position</th>
+                <th>School</th>
+                <th>Offer Date</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Last Sync</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="candidateTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Bottom grid -->
+      <div class="dashboard-grid">
+
+        <!-- School bar chart -->
+        <div class="widget">
+          <div class="widget-header">
+            <div class="widget-title"><i class="ti ti-chart-bar" aria-hidden="true"></i> School-wise Onboarding</div>
+            <span class="widget-badge" id="schoolBadge">0 schools</span>
+          </div>
+          <div id="schoolChartsContainer">
+            <!-- Dynamic School Charts -->
+          </div>
+        </div>
+
+
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /page-shell -->
+
+  <!-- Overlay -->
+  <div class="overlay" id="overlay" onclick="closeLogs()"></div>
+
+
+
+  <!-- Timeline Modal -->
+  <div class="modal-overlay" id="timelineModal" onclick="handleModalClick(event)">
+    <div class="modal-content" id="modalContent">
+      <div class="modal-header">
+        <div>
+          <h3><i class="ti ti-timeline" aria-hidden="true"></i> Candidate Timeline</h3>
+          <div class="modal-cand" id="modalCandName"></div>
+        </div>
+        <button class="drawer-close" onclick="closeTimeline()" aria-label="Close timeline">
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="modal-body scrollbar-thin-1">
+        <div class="timeline-steps" id="timelineSteps"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-light btn-sm" onclick="closeTimeline()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script>
+    const API_BASE = window.AUTH_API_BASE || `http://${window.location.hostname}:8000`;
+    const _token = () => localStorage.getItem('access_token') || '';
+
+    /* ── Data ── */
+    let candidates = [];
+    const webhookEvents = [];
+    const logsData = { default: [] };
+
+    const timelineSteps = {
+      default: [
+        { icon: 'ti-check', state: 'done', title: 'Offer Accepted', desc: 'Candidate accepted on 28 May 2026' },
+        { icon: 'ti-check', state: 'done', title: 'Sync Started', desc: 'API request sent to MASSET' },
+        { icon: 'ti-check', state: 'done', title: 'Employee Created', desc: 'MASSET Employee ID: EMP-4821' },
+        { icon: 'ti-check', state: 'done', title: 'AO Generated', desc: 'AO reference: AO-2026-0512' },
+        { icon: 'ti-dots', state: 'current', title: 'AO Approval Pending', desc: 'Waiting for manager sign-off' },
+        { icon: 'ti-circle', state: 'pending', title: 'Onboarded', desc: 'Not yet completed' },
+      ],
+    };
+
+    /* ── Helpers ── */
+    const PROGRESS_MAP = { 'Sync Pending': 10, 'Syncing': 35, 'AO Pending': 60, 'Onboarding': 80, 'Onboarded': 100, 'Sync Failed': 0 };
+    const STATUS_CLASS = { 'Sync Pending': 'status-pending', 'Syncing': 'status-syncing', 'AO Pending': 'status-ao', 'Onboarding': 'status-onboarding', 'Onboarded': 'status-onboarded', 'Sync Failed': 'status-failed' };
+    const PROGRESS_COLOR = s => s === 'Onboarded' ? '#16a34a' : s === 'Sync Failed' ? '#dc2626' : s === 'Syncing' ? '#06b6d4' : '#2563eb';
+
+    let activeStatus = '';
+    let toastTimer = null;
+
+    /* ── Render table ── */
+    function renderTable(data) {
+      const tbody = document.getElementById('candidateTable');
+      document.getElementById('rowCount').textContent = data.length;
+      if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="ti ti-search-off"></i><p>No candidates match your filters.</p></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = data.map((c, i) => {
+        const pct = PROGRESS_MAP[c.status] ?? 0;
+
+        // 1. Check if lastSync is empty, null, or equals "not synced" (case-insensitive)
+        const isNotSynced = !c.lastSync || c.lastSync.trim().toLowerCase() === 'not synced';
+
+        // 2. Display the sync button if either condition is met
+        const showSyncButton = (c.masset_sync == '1') || isNotSynced;
+
+        return `<tr style="animation:fadeRow .25s ease ${i * 40}ms both">
+  <td>
+    <div class="cand-cell">
+      <div class="cand-av" style="background:${c.color[0]};color:${c.color[1]}">${c.initials}</div>
+      <div>
+        <div class="cand-name">${c.name}</div>
+        <div class="cand-email">${c.email}</div>
+      </div>
+    </div>
+  </td>
+  <td>${c.position}</td>
+  <td>${c.school}</td>
+  <td style="font-family:var(--mono);font-size:12.5px">${c.offerDate}</td>
+  <td><span class="status ${STATUS_CLASS[c.status]}">${c.status}</span></td>
+  <td>
+    <div class="progress-wrap">
+      <div class="progress"><div class="progress-bar" style="width:${pct}%;background:${PROGRESS_COLOR(c.status)}"></div></div>
+      <span class="progress-pct">${pct}%</span>
+    </div>
+  </td>
+  <td><span class="sync-time"><i class="ti ti-clock" aria-hidden="true"></i>${c.lastSync}</span></td>
+  <td>
+    <div class="actions-cell">
+      ${showSyncButton ? `<button class="action-btn btn-sync" onclick="syncCandidate(${c.id})"><i class="ti ti-refresh" aria-hidden="true"></i> Sync</button>` : ''}
+      ${c.status === 'Sync Failed' ? `<button class="action-btn btn-retry" onclick="retrySync(${c.id})"><i class="ti ti-rotate" aria-hidden="true"></i> Retry</button>` : ''}
+      <button class="action-btn btn-timeline" onclick="openTimeline(${c.id})"><i class="ti ti-timeline" aria-hidden="true"></i> Timeline</button>
+    </div>
+  </td>
+</tr>`;
+      }).join('');
+    }
+
+    /* ── Render events ── */
+    function renderEvents() {
+      const feed = document.getElementById('eventsFeed');
+      const badge = { success: 't-success', info: 't-info', error: 't-error' };
+      const label = { success: 'Completed', info: 'Info', error: 'Failed' };
+
+      if (!webhookEvents.length) {
+        feed.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-3);font-size:13px;">No recent webhook events.</div>';
+        document.getElementById('eventBadge').textContent = '0 events';
+        return;
+      }
+
+      feed.innerHTML = webhookEvents.map(ev => `
+    <div class="event">
+      <div class="event-dot" style="background:${ev.dot}"></div>
+      <div class="event-content">
+        <div class="event-title">${ev.title}</div>
+        <div class="event-time"><i class="ti ti-clock" aria-hidden="true"></i>${ev.time}</div>
+      </div>
+      <span class="event-badge ${badge[ev.type]}" style="background:var(--s-${ev.type === 'success' ? 'onboarded' : ev.type === 'info' ? 'pending' : 'failed'}-bg);color:var(--s-${ev.type === 'success' ? 'onboarded' : ev.type === 'info' ? 'pending' : 'failed'}-tx)">${label[ev.type]}</span>
+    </div>`).join('');
+      document.getElementById('eventBadge').textContent = `${webhookEvents.length} events`;
+    }
+
+    /* ── Filters ── */
+    function getFiltered() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const school = document.getElementById('schoolFilter').value;
+      const status = document.getElementById('statusFilter').value;
+      return candidates.filter(c =>
+        (!q || c.name.toLowerCase().includes(q) || c.school.toLowerCase().includes(q)) &&
+        (!school || c.school === school) &&
+        (!status || c.status === status)
+      );
+    }
+    function applyFilters() { renderTable(getFiltered()); }
+    function clearFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('schoolFilter').value = '';
+      document.getElementById('statusFilter').value = '';
+      activeStatus = '';
+      document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+      applyFilters();
+    }
+    function filterStatus(status) {
+      if (activeStatus === status) { activeStatus = ''; clearFilters(); return; }
+      activeStatus = status;
+      document.getElementById('statusFilter').value = status;
+      document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+      const sc = document.getElementById('sc-' + status);
+      if (sc) sc.classList.add('active-filter');
+      applyFilters();
+    }
+
+    /* ── Actions ── */
+    async function syncCandidate(id) {
+      const c = candidates.find(x => x.id === id);
+      if (!c) return;
+      try {
+        const res = await fetch(`${API_BASE}/hr/masset/${id}/sync`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${_token()}` },
+          body: JSON.stringify({}),
+        });
+        const data = await res.json();
+        if (!res.ok || data.error) {
+           c.status = 'Sync Failed';
+           c.lastSync = 'Failed';
+           showToast(data.error || 'Failed to sync with MASSET platform', 'error');
+        } else {
+           c.status = 'Onboarding'; 
+           c.lastSync = 'Just now';
+           if (data.masset_employee_id) c.masset_employee_id = data.masset_employee_id;
+           showToast(`${c.name} synced to MASSET`, 'success');
+        }
+      } catch (e) { 
+        c.status = 'Sync Failed'; 
+        c.lastSync = 'Failed'; 
+        showToast('Network error while syncing', 'error');
+      }
+      renderTable(getFiltered());
+    }
+    async function retrySync(id) {
+      return syncCandidate(id);
+    }
+    function refreshAll() {
+      showToast('Status refreshed successfully', 'success');
+      renderTable(getFiltered());
+    }
+    function exportReport() {
+      showToast('Preparing report export…', 'info');
+    }
+
+    /* ── Logs Drawer ── */
+    function openLogs(id) {
+      const c = candidates.find(x => x.id === id);
+      const info = document.getElementById('drawerCandInfo');
+      if (c) {
+        info.style.display = 'flex';
+        info.innerHTML = `<div class="drawer-av" style="background:${c.color[0]};color:${c.color[1]}">${c.initials}</div>
+      <div><div class="drawer-cname">${c.name}</div><div class="drawer-cpos">${c.position} · ${c.school}</div></div>`;
+      } else {
+        info.style.display = 'none';
+      }
+      const logs = logsData.default;
+      document.getElementById('logItems').innerHTML = logs.map(l => `
+    <div class="log-item">
+      <div class="log-dot ${l.type}"></div>
+      <div>
+        <div class="log-text">${l.text}</div>
+        <div class="log-time"><i class="ti ti-clock" aria-hidden="true"></i>${l.time}</div>
+      </div>
+    </div>`).join('');
+      document.getElementById('overlay').classList.add('active');
+    }
+    function closeLogs() {
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    /* ── Timeline Modal ── */
+    function openTimeline(id) {
+      const c = candidates.find(x => x.id === id);
+      document.getElementById('modalCandName').textContent = c ? `${c.name} · ${c.position}` : 'Candidate';
+
+      let steps = [];
+      if (c) {
+        steps.push({ icon: 'ti-check', state: 'done', title: 'Offer Accepted', desc: `Accepted on ${c.offerDate}` });
+
+        if (c.status === 'Sync Failed') {
+          steps.push({ icon: 'ti-alert-circle', state: 'failed', title: 'Sync Failed', desc: 'API request to MASSET failed' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'AO Generation', desc: 'Pending sync retry' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
+        } else if (c.status === 'AO Pending' || c.status === 'Sync Pending') {
+          steps.push({ icon: 'ti-clock', state: 'current', title: 'Sync Pending', desc: 'Awaiting HR action to sync to MASSET' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'AO Generation', desc: 'Pending sync' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
+        } else if (c.status === 'Syncing') {
+          steps.push({ icon: 'ti-refresh', state: 'current', title: 'Syncing', desc: 'API request in progress' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'AO Generation', desc: 'Waiting for response' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
+        } else if (c.status === 'Onboarding') {
+          steps.push({ icon: 'ti-check', state: 'done', title: 'Sync Completed', desc: `Synced on ${c.lastSync}` });
+          if (c.masset_employee_id) steps.push({ icon: 'ti-check', state: 'done', title: 'Employee Created', desc: `MASSET Employee ID: ${c.masset_employee_id}` });
+          steps.push({ icon: 'ti-check', state: 'done', title: 'AO Generation', desc: 'AO generated successfully' });
+          steps.push({ icon: 'ti-dots', state: 'current', title: 'Onboarding', desc: 'Awaiting response from MASSET official platform' });
+        } else if (c.status === 'Onboarded') {
+          steps.push({ icon: 'ti-check', state: 'done', title: 'Sync Completed', desc: `Synced on ${c.lastSync}` });
+          if (c.masset_employee_id) steps.push({ icon: 'ti-check', state: 'done', title: 'Employee Created', desc: `MASSET Employee ID: ${c.masset_employee_id}` });
+          steps.push({ icon: 'ti-check', state: 'done', title: 'AO Generation', desc: 'AO generated successfully' });
+          steps.push({ icon: 'ti-check', state: 'done', title: 'Onboarding', desc: 'Successfully onboarded in MASSET' });
+        }
+      } else {
+        steps = timelineSteps.default;
+      }
+
+      document.getElementById('timelineSteps').innerHTML = steps.map(s => `
+    <div class="tl-step">
+      <div class="tl-icon ${s.state}"><i class="ti ${s.icon}" aria-hidden="true"></i></div>
+      <div class="tl-body">
+        <div class="tl-title">${s.title}</div>
+        <div class="tl-desc">${s.desc}</div>
+        ${s.state !== 'pending' ? `<div class="tl-badge-row"><span class="tl-badge ${s.state}">${s.state === 'done' ? 'Completed' : s.state === 'failed' ? 'Failed' : 'In Progress'}</span></div>` : ''}
+      </div>
+    </div>`).join('');
+      document.getElementById('timelineModal').classList.add('open');
+    }
+    function closeTimeline() {
+      document.getElementById('timelineModal').classList.remove('open');
+    }
+    function handleModalClick(e) {
+      if (e.target === document.getElementById('timelineModal')) closeTimeline();
+    }
+
+    /* ── Toast ── */
+    function showToast(msg, type = 'success') {
+      const icons = { success: 'ti-circle-check', error: 'ti-circle-x', info: 'ti-info-circle' };
+      const t = document.getElementById('toast');
+      t.className = `toast t-${type} show`;
+      t.innerHTML = `<i class="ti ${icons[type]}" aria-hidden="true"></i>${msg}`;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+    }
+
+    /* ── Dark theme watcher ── */
+    // Responds to portal-layout.js toggling data-theme on <html>
+    const observer = new MutationObserver(() => { /* CSS variables handle the rest */ });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    /* ── Row animation ── */
+    const style = document.createElement('style');
+    style.textContent = `@keyframes fadeRow{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}`;
+    document.head.appendChild(style);
+
+    /* ── Init ── */
+    async function loadMasset() {
+      try {
+        const res = await fetch(`${API_BASE}/hr/masset/candidates`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // Always use the real data (even if empty) to override mock data
+          candidates = Array.isArray(data.candidates) ? data.candidates : [];
+          const schools = [...new Set(candidates.map(c => c.school).filter(Boolean))];
+          const sel = document.getElementById('schoolFilter');
+          if (sel) sel.innerHTML = '<option value="">All Schools</option>' + schools.map(s => `<option>${s}</option>`).join('');
+
+          // Dynamically update the top stat cards
+          // Stat cards will retain their test data as requested
+
+          // Render Dynamic School Charts
+          const schoolGroups = {};
+          candidates.forEach(c => {
+            if (!c.school) return;
+            if (!schoolGroups[c.school]) schoolGroups[c.school] = { totalPct: 0, count: 0 };
+            schoolGroups[c.school].totalPct += (PROGRESS_MAP[c.status] || 0);
+            schoolGroups[c.school].count++;
+          });
+
+          const colors = ['var(--accent)', 'var(--cyan)', 'var(--purple)', 'var(--pink)', 'var(--amber)'];
+          let chartHtml = '';
+          const schoolKeys = Object.keys(schoolGroups);
+          document.getElementById('schoolBadge').textContent = `${schoolKeys.length} schools`;
+
+          if (!schoolKeys.length) {
+            chartHtml = '<div style="padding:20px;text-align:center;color:var(--text-3);font-size:13px;">No school data available.</div>';
+          } else {
+            schoolKeys.forEach((sName, i) => {
+              const s = schoolGroups[sName];
+              const avg = Math.round(s.totalPct / s.count);
+              const color = colors[i % colors.length];
+              chartHtml += `
+                <div class="chart-row">
+                  <div class="chart-label">${sName}</div>
+                  <div class="chart-bar">
+                    <div class="chart-fill" style="width:${avg}%;background:${color}"></div>
+                  </div>
+                  <div class="chart-pct">${avg}%</div>
+                </div>`;
+            });
+          }
+          document.getElementById('schoolChartsContainer').innerHTML = chartHtml;
+        }
+      } catch (e) { console.error('Failed to load masset candidates', e); }
+      renderTable(candidates);
+      renderEvents();
+    }
+
+    async function loadMassetStats() {
+      try {
+        const res = await fetch(`${API_BASE}/hr/masset/stats`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        if (res.ok) {
+          const stats = await res.json();
+          for (const [key, value] of Object.entries(stats)) {
+            const el = document.getElementById(`sv-${key}`);
+            if (el) el.textContent = value;
+          }
+        }
+      } catch (e) { console.error('Failed to load masset stats', e); }
+    }
+
+    loadMasset();
+    loadMassetStats();
+  </script>
+</body>
+
+</html>
