@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Job Applicants – TMSS Career</title>
-  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+  <link rel="icon" href="images/mss-logo.svg" type="image/svg+xml">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -646,7 +646,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 50px 20px 20px;
     }
 
     .modal-box {
@@ -837,25 +837,25 @@
       <div class="stats-row">
         <div class="stat-card sc-total">
           <div class="stat-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
-          <div class="stat-value">247</div>
+          <div class="stat-value">0</div>
           <div class="stat-label">Total Applicants</div>
           <div class="stat-delta">Across 5 positions</div>
         </div>
         <div class="stat-card sc-interview">
           <div class="stat-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
-          <div class="stat-value">38</div>
+          <div class="stat-value">0</div>
           <div class="stat-label">In Interview</div>
           <div class="stat-delta">15.4% of pipeline</div>
         </div>
         <div class="stat-card sc-offers">
           <div class="stat-icon"><i class="ti ti-send" aria-hidden="true"></i></div>
-          <div class="stat-value">31</div>
+          <div class="stat-value">0</div>
           <div class="stat-label">Offers</div>
           <div class="stat-delta">21 accepted so far</div>
         </div>
         <div class="stat-card sc-onboarding">
           <div class="stat-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
-          <div class="stat-value">18</div>
+          <div class="stat-value">0</div>
           <div class="stat-label">Onboarding</div>
           <div class="stat-delta">Active this month</div>
         </div>
@@ -1149,11 +1149,11 @@
       <div class="form-group">
         <label>Date</label><input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}">
       </div>
-      <div class="form-group" style="display:flex; gap:10px;">
-        <div style="flex:1;">
+      <div class="form-group span2" style="display:flex; flex-direction:row; gap:10px;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
           <label>Start Time</label><input type="time" id="schTime" value="10:00">
         </div>
-        <div style="flex:1;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
           <label>End Time</label><input type="time" id="schEndTime" value="11:00">
         </div>
       </div>

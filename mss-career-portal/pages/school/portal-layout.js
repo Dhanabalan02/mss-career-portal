@@ -200,7 +200,7 @@
                   type="button"
                   aria-label="Toggle navigation"
                   data-sidebar-open>
-              <img src="images/mss-logo.png" alt="MSS Logo" class="portal-topbar-logo__image">
+              <img src="images/mss-logo.svg" alt="MSS Logo" class="portal-topbar-logo__image">
               <span class="portal-brand">${cfg.brandTitle}</span>
           </a>
           </button>

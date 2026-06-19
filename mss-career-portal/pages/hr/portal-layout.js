@@ -58,8 +58,8 @@
       navItems: [
         { type: 'section', label: 'Main' },
         { label: 'Dashboard', icon: 'chart-bar', href: '/mss-career-portal/hr/dashboard', pages: ['hr-dashboard.html', 'dashboard'] },
-        { label: 'Job Posts', icon: 'clipboard-list', href: '/mss-career-portal/hr/jobpost-list', pages: ['hr-jobpost-list.html', 'hr-jobpost-create.html', 'hr-jobpost-details.html', 'jobpost-list', 'jobpost-create', 'jobpost-details'], badge: '12' },
-        { label: 'Job Applicants', icon: 'users', href: '/mss-career-portal/hr/jobapplicants-list', pages: ['hr-jobapplicants-list.html', 'hr-candidate-profile.html', 'jobapplicants-list', 'candidate-profile'], badge: '247' },
+        { label: 'Job Posts', icon: 'clipboard-list', href: '/mss-career-portal/hr/jobpost-list', pages: ['hr-jobpost-list.html', 'hr-jobpost-create.html', 'hr-jobpost-details.html', 'jobpost-list', 'jobpost-create', 'jobpost-details'], badge: '0' },
+        { label: 'Job Applicants', icon: 'users', href: '/mss-career-portal/hr/jobapplicants-list', pages: ['hr-jobapplicants-list.html', 'hr-candidate-profile.html', 'jobapplicants-list', 'candidate-profile'], badge: '0' },
         { label: 'Interview Management', icon: 'calendar', href: '/mss-career-portal/hr/interviews', pages: ['hr-interviewlist.html', 'interviews'] },
         { label: 'ATS Pipeline', icon: 'refresh', href: '/mss-career-portal/hr/ats-pipeline', pages: ['hr-atspipeline.html', 'ats-pipeline'] },
         { type: 'section', label: 'Integrations' },
@@ -179,7 +179,7 @@
                   type="button"
                   aria-label="Toggle navigation"
                   data-sidebar-open>
-              <img src="images/mss-logo.png" alt="MSS Logo" class="portal-topbar-logo__image">
+              <img src="images/mss-logo.svg" alt="MSS Logo" class="portal-topbar-logo__image">
               <span class="portal-brand">${cfg.brandTitle}</span>
           </a>
           </button>
