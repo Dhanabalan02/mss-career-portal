@@ -1,0 +1,2650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Create Job Post – TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="portal-layout.css">
+  <script src="portal-layout.js" defer></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f4f1;
+      --surface: #ffffff;
+      --surface2: #f9f8f6;
+      --border: #e8e6e1;
+      --border2: #d4d1cb;
+      --text: #1a1917;
+      --text2: #4a4844;
+      --text3: #8a8782;
+      --accent: #2563eb;
+      --accent-bg: #eff6ff;
+      --accent-border: #bfdbfe;
+      --green: #16a34a;
+      --green-bg: #f0fdf4;
+      --green-border: #bbf7d0;
+      --amber: #d97706;
+      --amber-bg: #fffbeb;
+      --red: #dc2626;
+      --red-bg: #fef2f2;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --font: 'DM Sans', sans-serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg: #0d0d0d;
+      --surface: #0d0d0d;
+      --surface2: #111111;
+      --border: rgba(255, 255, 255, 0.10);
+      --border2: rgba(255, 255, 255, 0.16);
+      --text: #f0efe8;
+      --text2: #b4b2a9;
+      --text3: #666560;
+      --accent-bg: #26215C;
+      --green-bg: #173404;
+      --amber-bg: #412402;
+      --red-bg: #501313;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 6px;
+    }
+
+    .breadcrumb a {
+      color: var(--text3);
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--text2);
+    }
+
+    .breadcrumb span {
+      font-size: 11px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      color: var(--text);
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+      border: none;
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface2);
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: var(--text);
+      color: #fff;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary:hover {
+      background: #2d2c2a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .btn-danger {
+      background: var(--red-bg);
+      color: var(--red);
+      border: 1px solid #fecaca;
+      padding: 5px 10px;
+    }
+
+    .btn-danger:hover {
+      background: #fee2e2;
+    }
+
+    /* Step Indicator */
+    .step-track {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .step-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .step-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 55%;
+      right: -5%;
+      height: 1.5px;
+      background: var(--border2);
+      transition: background 0.3s ease;
+      z-index: 0;
+      width: 100%;
+    }
+
+    .step-item.done:not(:last-child)::after {
+      background: var(--green);
+    }
+
+    .step-item.active:not(:last-child)::after {
+      background: var(--border2);
+    }
+
+    .step-dot {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text3);
+      z-index: 1;
+      position: relative;
+      transition: all 0.25s ease;
+      font-family: var(--mono);
+    }
+
+    .step-item.active .step-dot {
+      background: var(--text);
+      border-color: var(--text);
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(26, 25, 23, 0.1);
+    }
+
+    .step-item.done .step-dot {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .step-item.done .step-dot::after {
+      content: '✓';
+      font-family: var(--font);
+      font-size: 13px;
+    }
+
+    .step-item.done .step-dot span {
+      display: none;
+    }
+
+    .step-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text3);
+      margin-top: 6px;
+      text-align: center;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .step-item.active .step-label {
+      color: var(--text);
+    }
+
+    .step-item.done .step-label {
+      color: var(--green);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* Form elements */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group.span2 {
+      grid-column: span 2;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13.5px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      background: var(--surface);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text3);
+    }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a8782' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    .input-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    /* Range row */
+    .range-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .range-sep {
+      font-size: 12px;
+      color: var(--text3);
+      flex-shrink: 0;
+    }
+
+    /* Skill tags */
+    .skill-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 8px;
+      min-height: 44px;
+      cursor: text;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .skill-wrap:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      background: var(--surface);
+    }
+
+    .skill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      animation: tagIn 0.15s ease;
+    }
+
+    @keyframes tagIn {
+      from {
+        opacity: 0;
+        transform: scale(0.85);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .skill-tag .rm {
+      cursor: pointer;
+      color: #93c5fd;
+      font-size: 14px;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+
+    .skill-tag .rm:hover {
+      color: var(--red);
+    }
+
+    .skill-input-bare {
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font);
+      min-width: 120px;
+      outline: none;
+      padding: 2px 4px;
+      box-shadow: none;
+    }
+
+    .skill-input-bare::placeholder {
+      color: var(--text3);
+    }
+
+    /* Pre-screen questions */
+    .question-row {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: qIn 0.2s ease;
+    }
+
+    @keyframes qIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .q-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 3px;
+      font-family: var(--mono);
+    }
+
+    .q-controls {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    /* Review */
+    .review-box {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+    }
+
+    .review-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 4px;
+    }
+
+    .review-meta {
+      font-size: 13px;
+      color: var(--text3);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .review-meta span::before {
+      content: '·';
+      margin-right: 8px;
+    }
+
+    .review-meta span:first-child::before {
+      display: none;
+    }
+
+    .review-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .review-tag {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      color: var(--text2);
+    }
+
+    .review-desc {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text2);
+      margin: 14px 0;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Alert */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .alert-success {
+      background: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: #15803d;
+    }
+
+    .alert-info {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      color: #1d4ed8;
+    }
+
+    /* Step nav */
+    .step-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 4px;
+    }
+
+    .step-nav.right {
+      justify-content: flex-end;
+    }
+
+    /* Step panels */
+    .step-panel {
+      display: none;
+      animation: panelIn 0.25s ease;
+    }
+
+    .step-panel.active {
+      display: block;
+    }
+
+    @keyframes panelIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      animation: fadeIn 0.15s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: var(--shadow-md);
+      animation: modalIn 0.2s ease;
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    /* Library checkbox */
+    .lib-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: border-color 0.1s;
+    }
+
+    .lib-item:hover {
+      border-color: var(--border2);
+    }
+
+    .lib-item input[type="checkbox"] {
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      background: var(--surface);
+      border: 1.5px solid var(--border2);
+      border-radius: 4px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      margin-top: 1px;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .lib-item span {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+
+    /* Status chip */
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+
+    .chip-draft {
+      background: var(--amber-bg);
+      color: var(--amber);
+      border: 1px solid #fde68a;
+    }
+
+    /* Section hint */
+    .hint {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 18px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.span2 {
+        grid-column: span 1;
+      }
+
+      .page-header {
+        flex-direction: column;
+      }
+
+      .header-actions {
+        width: 100%;
+      }
+
+      .header-actions .btn {
+        flex: 1;
+        justify-content: center;
+      }
+
+      .step-label {
+        display: none;
+      }
+    }
+
+    /* Character counter */
+    .char-wrap {
+      position: relative;
+    }
+
+    .char-count {
+      position: absolute;
+      bottom: 8px;
+      right: 10px;
+      font-size: 11px;
+      color: var(--text3);
+      font-family: var(--mono);
+      pointer-events: none;
+    }
+
+    /* Floating save indicator */
+    .save-indicator {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: var(--surface);
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .save-indicator.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Required asterisk */
+    .req {
+      color: var(--red);
+      margin-left: 2px;
+    }
+
+    /* ── Edu Qualification Search & Select ── */
+    .edu-select-wrap {
+      position: relative;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      min-height: 44px;
+      cursor: text;
+    }
+
+    .edu-select-wrap.open {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      background: var(--surface);
+    }
+
+    .edu-tags {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      min-height: 44px;
+    }
+
+    .edu-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      white-space: nowrap;
+      animation: tagIn 0.15s ease;
+    }
+
+    .edu-tag .rm {
+      cursor: pointer;
+      color: #93c5fd;
+      font-size: 14px;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+
+    .edu-tag .rm:hover {
+      color: var(--red);
+    }
+
+    .edu-search-input {
+      background: none;
+      border: none;
+      outline: none;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      min-width: 160px;
+      flex: 1;
+      padding: 2px 4px;
+      box-shadow: none;
+    }
+
+    .edu-search-input::placeholder {
+      color: var(--text3);
+    }
+
+    .edu-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      z-index: 30;
+      overflow: hidden;
+    }
+
+    .edu-select-wrap.open .edu-dropdown {
+      display: block;
+    }
+
+    .edu-dropdown-list {
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .edu-option {
+      padding: 9px 14px;
+      font-size: 13px;
+      color: var(--text2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: background 0.1s;
+    }
+
+    .edu-option:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .edu-option.selected {
+      background: var(--accent-bg);
+      color: var(--accent);
+    }
+
+    .edu-check {
+      width: 15px;
+      height: 15px;
+      border: 1.5px solid var(--border2);
+      border-radius: 3px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .edu-option.selected .edu-check {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .edu-loading,
+    .edu-no-results {
+      padding: 16px;
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text3);
+    }
+
+    .edu-spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Skill group header in dropdown ── */
+    .skill-group-header {
+      padding: 6px 14px 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text3);
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+    }
+
+    /* ── Multiple-choice options block ── */
+    .mc-options-wrap {
+      margin-top: 10px;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-border);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      animation: qIn 0.2s ease;
+    }
+
+    .mc-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .mc-option-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .mc-option-row input {
+      flex: 1;
+      margin: 0;
+    }
+
+    .mc-add-btn {
+      margin-top: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* ── Preferred Answer section ── */
+    .preferred-answer-wrap {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 8px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      animation: qIn 0.2s ease;
+    }
+
+    .preferred-answer-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text3);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .yn-options {
+      display: flex;
+      gap: 6px;
+    }
+
+    .yn-btn {
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid var(--border2);
+      background: var(--surface2);
+      color: var(--text2);
+      font-family: var(--font);
+      transition: all 0.15s;
+    }
+
+    .yn-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    .yn-btn.selected-yes {
+      background: var(--green-bg);
+      border-color: var(--green);
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .yn-btn.selected-no {
+      background: var(--red-bg);
+      border-color: var(--red);
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .pref-mc-select {
+      flex: 1;
+      min-width: 160px;
+      max-width: 280px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-wrap">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <a href="#">Job Posts</a>
+          <span>›</span>
+          <span style="color:var(--text2);">Create New</span>
+          <span style="margin-left:6px;">
+            <span class="status-chip chip-draft">Draft</span>
+          </span>
+        </div>
+        <div class="page-title">Create Job Post</div>
+        <div class="page-subtitle">Complete all steps to publish your listing</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost" onclick="saveDraft()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+          </svg>
+          Save Draft
+        </button>
+        <button class="btn btn-primary" onclick="publishNow()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13" />
+            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+          </svg>
+          Publish Now
+        </button>
+      </div>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-track">
+      <div class="step-item active" id="si1" onclick="goStep(1)">
+        <div class="step-dot"><span>1</span></div>
+        <div class="step-label">Job Details</div>
+      </div>
+      <div class="step-item" id="si2" onclick="goStep(2)">
+        <div class="step-dot"><span>2</span></div>
+        <div class="step-label">Requirements</div>
+      </div>
+      <div class="step-item" id="si3" onclick="goStep(3)">
+        <div class="step-dot"><span>3</span></div>
+        <div class="step-label">Pre-Screening</div>
+      </div>
+      <div class="step-item" id="si4" onclick="goStep(4)">
+        <div class="step-dot"><span>4</span></div>
+        <div class="step-label">Review</div>
+      </div>
+    </div>
+
+    <!-- ── STEP 1: Job Details ── -->
+    <div class="step-panel active" id="step1">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></div>
+          <div>
+            <div class="card-title">Basic Job Information</div>
+            <div class="card-subtitle">Core details about the position</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label>Job Title <span class="req">*</span></label>
+              <input type="text" id="jobTitle" placeholder="e.g. Senior Mathematics Teacher" oninput="syncPreview()">
+            </div>
+            <div class="form-group">
+              <label>Department <span class="req">*</span></label>
+              <select id="dept" onchange="syncPreview()">
+                <option value="">Select Department</option>
+                <option>Teaching Staff</option>
+                <option>Administration</option>
+                <option>Physical Education</option>
+                <option>Arts &amp; Music</option>
+                <option>Sports Coaching</option>
+                <option>Support Staff</option>
+                <option>Management</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Job Type <span class="req">*</span></label>
+              <select id="jobType" onchange="syncPreview()">
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Contract</option>
+                <option>Temporary</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Number of Vacancies <span class="req">*</span></label>
+              <input type="number" id="vacancies" placeholder="e.g. 3" min="1" value="1" oninput="syncPreview()">
+            </div>
+            <div class="form-group">
+              <label>School / Unit</label>
+              <select id="school">
+                <option value="">Select School</option>
+                <option>Lady Andal School</option>
+                <option>Sir Mutha School (CBSE)</option>
+                <option>MSS Higher Secondary School</option>
+                <option>Shanthi Sadan</option>
+                <option>ORCA Swimming Pool</option>
+                <option>Head Office</option>
+                <option>Garuda Cricket Academy</option>
+                <option>Prem Vihar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Experience Range (years)</label>
+              <div class="range-row">
+                <input type="number" id="expMin" placeholder="Min" style="flex:1;" oninput="syncPreview()">
+                <span class="range-sep">to</span>
+                <input type="number" id="expMax" placeholder="Max" style="flex:1;" oninput="syncPreview()">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Application Closing Date</label>
+              <input type="date" id="closeDate">
+            </div>
+            <div class="form-group span2">
+              <label>Job Description <span class="req">*</span></label>
+              <div class="char-wrap">
+                <textarea id="jobDesc" rows="6"
+                  placeholder="Describe the role, responsibilities, and what you're looking for in an ideal candidate…"
+                  oninput="countChars(this,'descCount')"></textarea>
+                <span class="char-count" id="descCount">0</span>
+              </div>
+              <div class="hint">A detailed description attracts more qualified candidates.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav right">
+        <button class="btn btn-primary" onclick="nextStep(2)">
+          Next: Requirements
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 2: Requirements ── -->
+    <div class="step-panel" id="step2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-target" aria-hidden="true"></i></div>
+          <div>
+            <div class="card-title">Requirements &amp; Qualifications</div>
+            <div class="card-subtitle">Skills, education, and certifications</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="form-group" style="margin-bottom:20px;">
+            <label>Required Skills</label>
+            <div class="edu-select-wrap" id="skillSelectWrap" onclick="openSkillDropdown()">
+              <div class="edu-tags" id="skillTags">
+                <input type="text" id="skillSearchInput" class="edu-search-input"
+                  placeholder="Search skills by name or category…" autocomplete="off"
+                  oninput="filterSkillOptions(this.value)" onclick="event.stopPropagation();openSkillDropdown()"
+                  onkeydown="handleSkillKey(event)">
+              </div>
+              <div class="edu-dropdown" id="skillDropdown">
+                <div class="edu-dropdown-list" id="skillOptionsList">
+                  <div class="edu-loading"><span class="edu-spinner"></span>Loading skills…</div>
+                </div>
+              </div>
+            </div>
+            <div class="hint">Search by skill name or category and select; click a tag to remove it.</div>
+          </div>
+          <hr class="divider">
+          <div class="form-grid">
+            <div class="form-group span2">
+              <label>Education Qualification</label>
+              <div class="edu-select-wrap" id="eduSelectWrap" onclick="openEduDropdown()">
+                <div class="edu-tags" id="eduTags">
+                  <input type="text" id="eduSearchInput" class="edu-search-input" placeholder="Search qualifications…"
+                    autocomplete="off" oninput="filterEduOptions(this.value)"
+                    onclick="event.stopPropagation();openEduDropdown()" onkeydown="handleEduKey(event)">
+                </div>
+                <div class="edu-dropdown" id="eduDropdown">
+                  <div class="edu-dropdown-list" id="eduOptionsList">
+                    <div class="edu-loading"><span class="edu-spinner"></span>Loading qualifications…</div>
+                  </div>
+                </div>
+              </div>
+              <div class="hint">Search and select one or more required qualifications.</div>
+            </div>
+            <div class="form-group span2">
+              <label>Additional Requirements</label>
+              <textarea id="addReqs"
+                placeholder="Any additional qualifications, language requirements, or other expectations…"
+                rows="3"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="nextStep(1)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back
+        </button>
+        <button class="btn btn-primary" onclick="nextStep(3)">
+          Next: Pre-Screening
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: Pre-Screening ── -->
+    <div class="step-panel" id="step3">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-help" aria-hidden="true"></i></div>
+          <div>
+            <div class="card-title">Pre-Screening Questions</div>
+            <div class="card-subtitle">Candidates must answer these before applying</div>
+          </div>
+          <div style="margin-left:auto;">
+            <span
+              style="font-size:11px;color:var(--text3);background:var(--surface2);padding:3px 10px;border-radius:20px;border:1px solid var(--border);"
+              id="qCountBadge">2 questions</span>
+          </div>
+        </div>
+        <div class="card-body" style="padding-bottom:0;">
+          <div id="questionsBody">
+            <div class="question-row">
+              <div class="q-num">1</div>
+              <div style="flex:1;">
+                <input type="text"
+                  value="How many years of experience do you have teaching Mathematics at secondary level?"
+                  style="margin-bottom:8px;">
+                <div class="q-controls">
+                  <select style="flex:1;" onchange="handleQTypeChange(this)">
+                    <option>Yes/No</option>
+                    <option>Multiple Choice</option>
+                  </select>
+                  <button class="btn btn-danger" onclick="removeQ(this)">✕</button>
+                </div>
+              </div>
+            </div>
+            <div class="question-row">
+              <div class="q-num">2</div>
+              <div style="flex:1;">
+                <input type="text" value="Are you CTET/TET certified?" style="margin-bottom:8px;">
+                <div class="q-controls">
+                  <select style="flex:1;" onchange="handleQTypeChange(this)">
+                    <option>Yes/No</option>
+                    <option>Multiple Choice</option>
+                  </select>
+                  <button class="btn btn-danger" onclick="removeQ(this)">✕</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="addQuestion()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Question
+          </button>
+          <button class="btn btn-ghost" onclick="showLibrary()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+            </svg>
+            Question Library
+          </button>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="nextStep(2)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back
+        </button>
+        <button class="btn btn-primary" onclick="nextStep(4)">
+          Review &amp; Publish
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 4: Review ── -->
+    <div class="step-panel" id="step4">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-icon"><i class="ti ti-eye" aria-hidden="true"></i></div>
+          <div>
+            <div class="card-title">Review &amp; Publish</div>
+            <div class="card-subtitle">Confirm your job post before it goes live</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            Your job post looks good! Review the summary below before publishing.
+          </div>
+          <div class="review-box">
+            <div class="review-title" id="previewTitle">Senior Mathematics Teacher</div>
+            <div class="review-meta">
+              <span id="prevDept">Science &amp; Math</span>
+              <span id="prevLoc">Delhi</span>
+              <span id="prevType">Full-time</span>
+              <span id="prevVac">1 Vacancy</span>
+              <span id="prevExp">Experience: —</span>
+            </div>
+            
+            <div style="margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Job Description</div>
+              <div class="review-desc" id="prevDesc" style="white-space: pre-wrap; font-size: 13.5px; line-height: 1.6; color: var(--text2);">
+                We are seeking a passionate and experienced Senior Mathematics Teacher to join our team.
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Required Skills</div>
+              <div class="review-tags" id="prevSkills" style="margin-top: 6px;">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Education Qualifications</div>
+              <div class="review-tags" id="prevQuals" style="margin-top: 6px;">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 12px;">
+              <div style="font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;">Additional Requirements</div>
+              <div id="prevAddReqs" style="font-size: 13.5px; line-height: 1.5; color: var(--text2); margin-top: 6px; white-space: pre-wrap;">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+          <hr class="divider">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+            <div
+              style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+              <div
+                style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">
+                Posting Details</div>
+              <div style="font-size:13.5px;font-weight:500;" id="prevPostingDetails">Closes on: —</div>
+            </div>
+            <div
+              style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;">
+              <div
+                style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">
+                Pre-screening</div>
+              <div style="font-size:13.5px;font-weight:500;" id="prevQCount">2 questions enabled</div>
+            </div>
+          </div>
+          <div id="prevQuestionsContainer" style="margin-top:12px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:16px; display:none;">
+            <div
+              style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px; border-bottom:1px solid var(--border); padding-bottom:6px;">
+              Pre-screening Questions Detail</div>
+            <div id="prevQuestionsList" style="display:flex; flex-direction:column; gap:12px;">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="nextStep(3)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
+          Back
+        </button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="saveDraft()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+            </svg>
+            Save Draft
+          </button>
+          <button class="btn btn-primary" onclick="publishNow()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            Publish Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save indicator -->
+  <div class="save-indicator" id="saveIndicator">✓ Draft saved</div>
+
+  <script>
+    let currentStep = 1;
+    let qCount = 3;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobIdParam = urlParams.get('id');
+    const editJobId = jobIdParam ? parseInt(jobIdParam) : null;
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // Skill/education dropdown options and tag-removal buttons used to carry
+    // their id/label as inline onclick="...JSON.stringify(label)..." — but
+    // JSON.stringify always wraps strings in double quotes, and the onclick
+    // attribute itself is double-quoted, so the markup broke as soon as it
+    // was rendered (the browser treats the first embedded " as closing the
+    // attribute). That's why clicking a skill/education option did nothing.
+    // Delegated handling via data-* attributes avoids the quoting problem
+    // entirely and survives re-renders since it's bound once on document.
+    document.addEventListener('click', e => {
+      const skillOpt = e.target.closest('#skillOptionsList .edu-option');
+      if (skillOpt) {
+        e.stopPropagation();
+        const skill = skillState.all.find(s => s.id === Number(skillOpt.dataset.skillId));
+        if (skill) toggleSkillOption(skill.id, skill.label);
+        return;
+      }
+      const skillRm = e.target.closest('#skillTags .rm');
+      if (skillRm) {
+        e.stopPropagation();
+        const id = Number(skillRm.closest('.edu-tag').dataset.skillId);
+        const skill = skillState.selected.find(s => s.id === id);
+        if (skill) toggleSkillOption(skill.id, skill.label);
+        return;
+      }
+      const eduOpt = e.target.closest('#eduOptionsList .edu-option');
+      if (eduOpt) {
+        e.stopPropagation();
+        const edu = eduState.all.find(s => s.id === Number(eduOpt.dataset.eduId));
+        if (edu) toggleEduOption(edu.id, edu.label);
+        return;
+      }
+      const eduRm = e.target.closest('#eduTags .rm');
+      if (eduRm) {
+        e.stopPropagation();
+        const id = Number(eduRm.closest('.edu-tag').dataset.eduId);
+        const edu = eduState.selected.find(s => s.id === id);
+        if (edu) toggleEduOption(edu.id, edu.label);
+        return;
+      }
+    });
+
+    /* ── Draft persistence (resume on refresh / show existing data when going back) ── */
+    const DRAFT_KEY = 'hrJobPostDraftV1';
+    let restoringDraft = false;
+
+    function fieldVal(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    }
+
+    function setFieldVal(id, value) {
+      const el = document.getElementById(id);
+      if (el && value !== undefined && value !== null) {
+        el.value = value;
+        if (el._flatpickr) {
+          el._flatpickr.setDate(value);
+        }
+      }
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('closeDate').setAttribute('min', today);
+
+    function collectQuestionsForDraft() {
+      const questions = [];
+      document.querySelectorAll('#questionsBody .question-row').forEach(row => {
+        const questionText = row.querySelector('input[type="text"]').value;
+        const selectEl = row.querySelector('.q-controls select');
+        const typeRaw = selectEl ? selectEl.value : 'Yes/No';
+        const q = { text: questionText, typeRaw, options: [], preferred: '' };
+        if (typeRaw === 'Multiple Choice') {
+          row.querySelectorAll('.mc-option-row input[type="text"]').forEach(inp => q.options.push(inp.value));
+          const prefSelect = row.querySelector('.pref-mc-select');
+          if (prefSelect) q.preferred = prefSelect.value;
+        } else {
+          const prefWrap = row.querySelector('.preferred-answer-wrap');
+          if (prefWrap && prefWrap.dataset.preferred) q.preferred = prefWrap.dataset.preferred;
+        }
+        questions.push(q);
+      });
+      return questions;
+    }
+
+    function collectFormState() {
+      return {
+        currentStep,
+        jobTitle: fieldVal('jobTitle'), dept: fieldVal('dept'), jobType: fieldVal('jobType'),
+        vacancies: fieldVal('vacancies'), school: fieldVal('school'),
+        expMin: fieldVal('expMin'), expMax: fieldVal('expMax'),
+        salMin: fieldVal('salMin'), salMax: fieldVal('salMax'),
+        closeDate: fieldVal('closeDate'),
+        jobDesc: fieldVal('jobDesc'), addReqs: fieldVal('addReqs'),
+        skills: skillState.selected,
+        education: eduState.selected,
+        questions: collectQuestionsForDraft()
+      };
+    }
+
+    function saveDraftState() {
+      if (restoringDraft) return;
+      try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collectFormState())); } catch (e) { /* storage full/unavailable */ }
+    }
+
+    function clearDraftState() {
+      try { localStorage.removeItem(DRAFT_KEY); } catch (e) { /* ignore */ }
+    }
+
+    function rebuildQuestionRow(qData) {
+      const body = document.getElementById('questionsBody');
+      const n = body.querySelectorAll('.question-row').length + 1;
+      const d = document.createElement('div');
+      d.className = 'question-row';
+      d.innerHTML = `
+    <div class="q-num">${n}</div>
+    <div style="flex:1;">
+      <input type="text" placeholder="Enter your screening question…" style="margin-bottom:8px;">
+      <div class="q-controls">
+        <select style="flex:1;" onchange="handleQTypeChange(this)"><option>Yes/No</option><option>Multiple Choice</option></select>
+        <button class="btn btn-danger" onclick="removeQ(this)">✕</button>
+      </div>
+    </div>`;
+      body.appendChild(d);
+      d.querySelector('input[type="text"]').value = qData.text || '';
+      const select = d.querySelector('select');
+      select.value = qData.typeRaw === 'Multiple Choice' ? 'Multiple Choice' : 'Yes/No';
+      handleQTypeChange(select);
+
+      if (select.value === 'Multiple Choice') {
+        const mcWrap = d.querySelector('.mc-options-wrap');
+        const options = qData.options && qData.options.length ? qData.options : ['', ''];
+        while (mcWrap.querySelectorAll('.mc-option-row').length < options.length) {
+          addMcOption(mcWrap.querySelector('.mc-add-btn'));
+        }
+        const inputs = mcWrap.querySelectorAll('.mc-option-row input[type="text"]');
+        options.forEach((optVal, i) => { if (inputs[i]) inputs[i].value = optVal; });
+        const firstInput = mcWrap.querySelector('.mc-option-row input');
+        if (firstInput) refreshMcPreferred(firstInput);
+        const prefSelect = d.querySelector('.pref-mc-select');
+        if (prefSelect && qData.preferred) prefSelect.value = qData.preferred;
+      } else if (qData.preferred === 'Yes' || qData.preferred === 'No') {
+        const btn = [...d.querySelectorAll('.yn-btn')].find(b => b.textContent.trim() === qData.preferred);
+        if (btn) selectYnPref(btn, qData.preferred);
+      }
+      return d;
+    }
+
+    function loadDraftState() {
+      let raw;
+      try { raw = localStorage.getItem(DRAFT_KEY); } catch (e) { return false; }
+      if (!raw) return false;
+      let draft;
+      try { draft = JSON.parse(raw); } catch (e) { return false; }
+      if (!draft) return false;
+
+      restoringDraft = true;
+
+      setFieldVal('jobTitle', draft.jobTitle);
+      setFieldVal('dept', draft.dept);
+      setFieldVal('jobType', draft.jobType);
+      setFieldVal('vacancies', draft.vacancies);
+      setFieldVal('school', draft.school);
+      setFieldVal('expMin', draft.expMin);
+      setFieldVal('expMax', draft.expMax);
+      setFieldVal('salMin', draft.salMin);
+      setFieldVal('salMax', draft.salMax);
+      setFieldVal('closeDate', draft.closeDate);
+      setFieldVal('jobDesc', draft.jobDesc);
+      setFieldVal('addReqs', draft.addReqs);
+      countChars(document.getElementById('jobDesc'), 'descCount');
+
+      skillState.selected = Array.isArray(draft.skills) ? draft.skills : [];
+      eduState.selected = Array.isArray(draft.education) ? draft.education : [];
+      renderSkillTags();
+      renderEduTags();
+
+      if (Array.isArray(draft.questions)) {
+        document.getElementById('questionsBody').innerHTML = '';
+        draft.questions.forEach(q => rebuildQuestionRow(q));
+        renumberQ();
+      }
+
+      syncPreview();
+
+      const step = draft.currentStep >= 1 && draft.currentStep <= 4 ? draft.currentStep : 1;
+      nextStep(step);
+
+      restoringDraft = false;
+      return true;
+    }
+
+    document.addEventListener('input', saveDraftState);
+    document.addEventListener('change', saveDraftState);
+
+    function goStep(n) {
+      if (n > currentStep) return;
+      nextStep(n);
+    }
+
+    function nextStep(n) {
+      document.getElementById('step' + currentStep).classList.remove('active');
+      document.getElementById('step' + currentStep).style.display = '';
+      document.getElementById('step' + n).classList.add('active');
+
+      document.querySelectorAll('.step-item').forEach((s, i) => {
+        s.classList.remove('active', 'done');
+        if (i + 1 < n) s.classList.add('done');
+        if (i + 1 === n) s.classList.add('active');
+      });
+
+      currentStep = n;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (n === 4) updateReview();
+      saveDraftState();
+    }
+
+    function syncPreview() {
+      const title = document.getElementById('jobTitle').value || 'Job Title';
+      document.getElementById('previewTitle').textContent = title;
+
+      const dept = document.getElementById('dept').value;
+      const loc = document.getElementById('school').value;
+      const type = document.getElementById('jobType').value;
+      const vac = document.getElementById('vacancies').value;
+
+      document.getElementById('prevDept').textContent = dept || 'Department';
+      document.getElementById('prevLoc').textContent = loc || 'School / Campus';
+      document.getElementById('prevType').textContent = type;
+      document.getElementById('prevVac').textContent = vac + (parseInt(vac) === 1 ? ' Vacancy' : ' Vacancies');
+
+      const eMin = document.getElementById('expMin').value;
+      const eMax = document.getElementById('expMax').value;
+      if (eMin || eMax) {
+        document.getElementById('prevExp').textContent = 'Exp: ' + (eMin || '—') + '–' + (eMax || '—') + ' yrs';
+        document.getElementById('prevExp').style.display = '';
+      } else {
+        document.getElementById('prevExp').textContent = 'Exp: Open';
+        document.getElementById('prevExp').style.display = '';
+      }
+    }
+
+    function updateReview() {
+      syncPreview();
+      
+      // Description
+      const desc = document.getElementById('jobDesc').value;
+      document.getElementById('prevDesc').textContent = desc || 'No description provided.';
+      
+      // Skills
+      const prevSkillsDiv = document.getElementById('prevSkills');
+      if (prevSkillsDiv) {
+        prevSkillsDiv.innerHTML = '';
+        if (skillState.selected && skillState.selected.length > 0) {
+          skillState.selected.forEach(s => {
+            const span = document.createElement('span');
+            span.className = 'review-tag';
+            span.textContent = s.label;
+            prevSkillsDiv.appendChild(span);
+          });
+        } else {
+          prevSkillsDiv.innerHTML = '<span style="font-size:13px; color:var(--text3); font-style:italic;">No skills selected</span>';
+        }
+      }
+
+      // Qualifications
+      const prevQualsDiv = document.getElementById('prevQuals');
+      if (prevQualsDiv) {
+        prevQualsDiv.innerHTML = '';
+        if (eduState.selected && eduState.selected.length > 0) {
+          eduState.selected.forEach(e => {
+            const span = document.createElement('span');
+            span.className = 'review-tag';
+            span.textContent = e.label;
+            prevQualsDiv.appendChild(span);
+          });
+        } else {
+          prevQualsDiv.innerHTML = '<span style="font-size:13px; color:var(--text3); font-style:italic;">No qualifications selected</span>';
+        }
+      }
+
+      // Additional Requirements
+      const prevAddReqsDiv = document.getElementById('prevAddReqs');
+      if (prevAddReqsDiv) {
+        const addReqs = document.getElementById('addReqs').value;
+        prevAddReqsDiv.textContent = addReqs ? addReqs.trim() : 'None specified.';
+      }
+
+      // Closing Date / Posting Details
+      const prevPostingDetailsDiv = document.getElementById('prevPostingDetails');
+      if (prevPostingDetailsDiv) {
+        const closeDate = document.getElementById('closeDate').value;
+        prevPostingDetailsDiv.textContent = closeDate ? `Closes on: ${closeDate}` : 'No closing date specified.';
+      }
+
+      // Pre-screening questions list
+      const qc = document.querySelectorAll('#questionsBody .question-row').length;
+      document.getElementById('prevQCount').textContent = qc + ' question' + (qc !== 1 ? 's' : '') + ' enabled';
+
+      const prevQuestionsContainer = document.getElementById('prevQuestionsContainer');
+      const prevQuestionsList = document.getElementById('prevQuestionsList');
+      if (prevQuestionsContainer && prevQuestionsList) {
+        prevQuestionsList.innerHTML = '';
+        if (qc > 0) {
+          prevQuestionsContainer.style.display = 'block';
+          document.querySelectorAll('#questionsBody .question-row').forEach((row, i) => {
+            const textVal = row.querySelector('input[type="text"]')?.value || '';
+            const typeVal = row.querySelector('select')?.value || '';
+            if (textVal) {
+              const qDiv = document.createElement('div');
+              qDiv.style.display = 'flex';
+              qDiv.style.gap = '8px';
+              qDiv.style.fontSize = '13px';
+              qDiv.style.color = 'var(--text2)';
+              qDiv.innerHTML = `
+                <span style="font-weight:600; color:var(--portal-primary); min-width:22px;">Q${i+1}.</span>
+                <div style="flex:1;">
+                  <div style="font-weight:500; color:var(--text1);">${escapeHtml(textVal)}</div>
+                  <div style="font-size:11.5px; color:var(--text3); margin-top:2px;">Type: ${escapeHtml(typeVal)}</div>
+                </div>
+              `;
+              prevQuestionsList.appendChild(qDiv);
+            }
+          });
+        } else {
+          prevQuestionsContainer.style.display = 'none';
+        }
+      }
+    }
+
+    function countChars(el, countId) {
+      document.getElementById(countId).textContent = el.value.length;
+    }
+
+    function addSkill(e) {
+      if (e.key === 'Enter' && e.target.value.trim()) {
+        e.preventDefault();
+        const wrap = document.getElementById('skillsWrap');
+        const tag = document.createElement('span');
+        tag.className = 'skill-tag';
+        const name = e.target.value.trim();
+        tag.innerHTML = name + '<span class="rm" onclick="this.parentElement.remove()">×</span>';
+        wrap.insertBefore(tag, e.target);
+        e.target.value = '';
+      }
+    }
+
+    function removeQ(btn) {
+      btn.closest('.question-row').remove();
+      renumberQ();
+    }
+
+    function renumberQ() {
+      document.querySelectorAll('.question-row .q-num').forEach((n, i) => {
+        n.textContent = i + 1;
+      });
+      const count = document.querySelectorAll('.question-row').length;
+      document.getElementById('qCountBadge').textContent = count + ' question' + (count !== 1 ? 's' : '');
+      saveDraftState();
+    }
+
+    function addQuestion() {
+      const body = document.getElementById('questionsBody');
+      const n = body.querySelectorAll('.question-row').length + 1;
+      const d = document.createElement('div');
+      d.className = 'question-row';
+      d.innerHTML = `
+    <div class="q-num">${n}</div>
+    <div style="flex:1;">
+      <input type="text" placeholder="Enter your screening question…" style="margin-bottom:8px;">
+      <div class="q-controls">
+        <select style="flex:1;" onchange="handleQTypeChange(this)"><option>Yes/No</option><option>Multiple Choice</option></select>
+        <button class="btn btn-danger" onclick="removeQ(this)">✕</button>
+      </div>
+    </div>`;
+      body.appendChild(d);
+      renumberQ();
+      d.querySelector('input[type="text"]').focus();
+      handleQTypeChange(d.querySelector('select'));
+    }
+
+    function showLibrary() {
+      const questions = [
+        'Have you taught in a CBSE school before?',
+        'What is your approach to differentiated learning?',
+        'Are you comfortable with online teaching platforms?',
+        'Do you have experience with the IB curriculum?',
+        'What is your average student pass percentage in board exams?',
+        'Are you willing to take extra classes or weekend sessions?'
+      ];
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Question Library</div>
+      <p style="font-size:13px;color:var(--text3);margin-bottom:14px;">Select questions to add to your screening flow</p>
+      ${questions.map(q => `
+        <label class="lib-item">
+          <input type="checkbox">
+          <span>${q}</span>
+        </label>`).join('')}
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" onclick="addFromLibrary(this)">Add Selected</button>
+      </div>
+    </div>`;
+      document.body.appendChild(overlay);
+      overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+    }
+
+    function addFromLibrary(btn) {
+      const overlay = btn.closest('.modal-overlay');
+      const checked = overlay.querySelectorAll('input[type="checkbox"]:checked');
+      const body = document.getElementById('questionsBody');
+      checked.forEach(cb => {
+        const text = cb.nextElementSibling.textContent;
+        const n = body.querySelectorAll('.question-row').length + 1;
+        const d = document.createElement('div');
+        d.className = 'question-row';
+        d.innerHTML = `
+      <div class="q-num">${n}</div>
+      <div style="flex:1;">
+        <input type="text" value="${text}" style="margin-bottom:8px;">
+        <div class="q-controls">
+          <select style="flex:1;" onchange="handleQTypeChange(this)"><option>Yes/No</option><option>Multiple Choice</option></select>
+          <button class="btn btn-danger" onclick="removeQ(this)">✕</button>
+        </div>
+      </div>`;
+        body.appendChild(d);
+        handleQTypeChange(d.querySelector('select'));
+      });
+      renumberQ();
+      overlay.remove();
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('saveIndicator');
+      el.innerHTML = msg;
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 2200);
+    }
+
+    function saveDraft() {
+      submitJobPost('draft');
+    }
+
+    function publishNow() {
+      const jobTitle = document.getElementById('jobTitle').value.trim();
+      const department = document.getElementById('dept').value;
+      const jobType = document.getElementById('jobType').value;
+      const jobDescription = document.getElementById('jobDesc').value.trim();
+      const closingDate = document.getElementById('closeDate').value;
+
+      if (!jobTitle || !department || !jobType || !jobDescription || !closingDate) {
+        showToast('❌ Please fill all required fields before publishing.');
+        goStep(1);
+        return;
+      }
+
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      const title = jobTitle || 'this job post';
+
+      let displayCloseDate = closingDate;
+      try {
+        const d = new Date(closingDate);
+        if (!isNaN(d.getTime())) {
+          displayCloseDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+      } catch (e) { }
+
+      overlay.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Ready to publish?</div>
+      <p style="font-size:13.5px;color:var(--text2);margin-bottom:14px;line-height:1.6;">
+        <strong style="color:var(--text);">${title}</strong> will be visible to candidates immediately after publishing.
+      </p>
+      <div class="alert alert-info">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Applications close on <strong>${displayCloseDate}</strong>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+        <button class="btn btn-primary" id="confirmPublishBtn">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Publish Now
+        </button>
+      </div>
+    </div>`;
+      document.body.appendChild(overlay);
+
+      const confirmBtn = overlay.querySelector('#confirmPublishBtn');
+      confirmBtn.addEventListener('click', () => {
+        overlay.remove();
+        submitJobPost('publish');
+      });
+
+      overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+    }
+
+    function getQuestionsData() {
+      const questions = [];
+      document.querySelectorAll('#questionsBody .question-row').forEach(row => {
+        const questionText = row.querySelector('input[type="text"]').value.trim();
+        if (!questionText) return;
+
+        const selectEl = row.querySelector('.q-controls select');
+        const questionTypeRaw = selectEl ? selectEl.value : 'Yes/No';
+
+        let options = null;
+        let expectedAnswer = '';
+        let questionType = 'boolean';
+
+        if (questionTypeRaw === 'Multiple Choice') {
+          questionType = 'mcq';
+          options = [];
+          row.querySelectorAll('.mc-option-row input[type="text"]').forEach(optInp => {
+            const val = optInp.value.trim();
+            if (val) options.push(val);
+          });
+          const prefSelect = row.querySelector('.pref-mc-select');
+          if (prefSelect) {
+            expectedAnswer = prefSelect.value.trim();
+          }
+        } else if (questionTypeRaw === 'Yes/No') {
+          questionType = 'boolean';
+          options = ['Yes', 'No'];
+          const prefWrap = row.querySelector('.preferred-answer-wrap');
+          if (prefWrap && prefWrap.dataset.preferred) {
+            expectedAnswer = prefWrap.dataset.preferred;
+          }
+        }
+
+        questions.push({
+          question_text: questionText,
+          question_type: questionType,
+          options: options,
+          expected_answer: expectedAnswer || null,
+        });
+      });
+      return questions;
+    }
+
+    async function submitJobPost(status) {
+      const adminIdStr = localStorage.getItem('user_id');
+      const adminId = adminIdStr ? parseInt(adminIdStr) : null;
+      if (!adminId) {
+        showToast('Error: Admin session not found. Please log in.');
+        setTimeout(() => { window.location.replace('/mss-career-portal/home'); }, 2000);
+        return;
+      }
+
+      const jobTitle = document.getElementById('jobTitle').value.trim();
+      const department = document.getElementById('dept').value;
+      const jobType = document.getElementById('jobType').value;
+      const vacancies = parseInt(document.getElementById('vacancies').value) || 1;
+      const schoolName = document.getElementById('school').value;
+
+      const minExp = document.getElementById('expMin').value.trim() || null;
+      const maxExp = document.getElementById('expMax').value.trim() || null;
+
+      const closingDate = document.getElementById('closeDate').value;
+      const jobDescription = document.getElementById('jobDesc').value.trim();
+
+      const addReqsEl = document.getElementById('addReqs');
+      const additionalRequirements = addReqsEl ? addReqsEl.value.trim() : null;
+
+      // Validation
+      if (!jobTitle) {
+        showToast('❌ Job Title is required');
+        goStep(1);
+        return;
+      }
+      
+      if (status === 'publish') {
+        if (!department) {
+          showToast('❌ Department is required');
+          goStep(1);
+          return;
+        }
+        if (!jobType) {
+          showToast('❌ Job Type is required');
+          goStep(1);
+          return;
+        }
+        if (!jobDescription) {
+          showToast('❌ Job Description is required');
+          goStep(1);
+          return;
+        }
+        if (!closingDate) {
+          showToast('❌ Closing Date is required');
+          goStep(1);
+          return;
+        }
+      }
+
+      const skills = skillState.selected.length ? skillState.selected.map(s => s.label).join(', ') : null;
+      const education = eduState.selected.length ? eduState.selected.map(e => e.label).join(', ') : null;
+      const questions = getQuestionsData();
+
+      const payload = {
+        job_posted_by: adminId,
+        job_title: jobTitle,
+        department: department,
+        job_type: jobType,
+        vacancy_count: vacancies,
+        school_name: schoolName || null,
+        min_exp: minExp,
+        max_exp: maxExp,
+        closing_date: closingDate || null,
+        job_description: jobDescription,
+        skills_required: skills,
+        education_qualification: education,
+        additional_requirements: additionalRequirements,
+        job_status: status,
+        pre_screening_questions: questions
+      };
+
+      const token = localStorage.getItem('access_token');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const url = editJobId ? `${apiBase}/jobs/${editJobId}` : `${apiBase}/jobs/`;
+        const method = editJobId ? 'PUT' : 'POST';
+        const res = await fetch(url, {
+          method: method,
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          clearDraftState();
+          showToast(status === 'publish' ? '🚀 Published successfully!' : '✓ Draft saved successfully!');
+          setTimeout(() => {
+            window.location.href = '/mss-career-portal/hr/jobpost-list';
+          }, 1500);
+        } else {
+          const errorData = await res.json();
+          const detail = errorData.detail || 'Failed to save job post';
+          showToast(`❌ Error: ${typeof detail === 'object' ? JSON.stringify(detail) : detail}`);
+        }
+      } catch (err) {
+        console.error('API Error:', err);
+        showToast('❌ Error: Connection failed.');
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveDraft(); }
+    });
+
+    /* ── Multiple-choice option blocks ── */
+    function handleQTypeChange(sel) {
+      const qControls = sel.closest('.q-controls');
+      if (!qControls) return;
+      const qBody = qControls.parentElement;
+
+      // Remove existing extras before re-rendering
+      qBody.querySelector('.mc-options-wrap')?.remove();
+      qBody.querySelector('.preferred-answer-wrap')?.remove();
+
+      if (sel.value === 'Multiple Choice') {
+        const mcWrap = document.createElement('div');
+        mcWrap.className = 'mc-options-wrap';
+        mcWrap.innerHTML = `
+          <div class="mc-options-list">
+            <div class="mc-option-row"><input type="text" placeholder="Option A" oninput="refreshMcPreferred(this)"><button class="btn btn-danger" onclick="removeMcOption(this)">−</button></div>
+            <div class="mc-option-row"><input type="text" placeholder="Option B" oninput="refreshMcPreferred(this)"><button class="btn btn-danger" onclick="removeMcOption(this)">−</button></div>
+          </div>
+          <button class="btn btn-ghost mc-add-btn" onclick="addMcOption(this)">+ Add Option</button>`;
+        qControls.after(mcWrap);
+
+        const prefWrap = document.createElement('div');
+        prefWrap.className = 'preferred-answer-wrap';
+        prefWrap.innerHTML = `
+          <span class="preferred-answer-label">Preferred Answer:</span>
+          <select class="pref-mc-select"><option value="">— Select preferred answer —</option></select>`;
+        mcWrap.after(prefWrap);
+        mcWrap.querySelector('input').focus();
+
+      } else if (sel.value === 'Yes/No') {
+        const prefWrap = document.createElement('div');
+        prefWrap.className = 'preferred-answer-wrap';
+        prefWrap.innerHTML = `
+          <span class="preferred-answer-label">Preferred Answer:</span>
+          <div class="yn-options">
+            <button type="button" class="yn-btn" onclick="selectYnPref(this,'Yes')">Yes</button>
+            <button type="button" class="yn-btn" onclick="selectYnPref(this,'No')">No</button>
+          </div>`;
+        qControls.after(prefWrap);
+      }
+      saveDraftState();
+    }
+
+    function selectYnPref(btn, val) {
+      const opts = btn.closest('.yn-options');
+      opts.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('selected-yes', 'selected-no'));
+      btn.classList.add(val === 'Yes' ? 'selected-yes' : 'selected-no');
+      btn.closest('.preferred-answer-wrap').dataset.preferred = val;
+      saveDraftState();
+    }
+
+    function refreshMcPreferred(input) {
+      const mcWrap = input.closest('.mc-options-wrap');
+      const prefWrap = mcWrap?.nextElementSibling;
+      if (!prefWrap?.classList.contains('preferred-answer-wrap')) return;
+      const prefSelect = prefWrap.querySelector('.pref-mc-select');
+      if (!prefSelect) return;
+      const currentVal = prefSelect.value;
+      prefSelect.innerHTML = '<option value="">— Select preferred answer —</option>';
+      mcWrap.querySelectorAll('.mc-option-row input[type="text"]').forEach(inp => {
+        const val = inp.value.trim();
+        if (val) {
+          const opt = document.createElement('option');
+          opt.value = val;
+          opt.textContent = val;
+          if (val === currentVal) opt.selected = true;
+          prefSelect.appendChild(opt);
+        }
+      });
+    }
+
+    function addMcOption(btn) {
+      const list = btn.previousElementSibling;
+      const count = list.querySelectorAll('.mc-option-row').length;
+      const letters = 'ABCDEFGHIJ';
+      const row = document.createElement('div');
+      row.className = 'mc-option-row';
+      row.innerHTML = `<input type="text" placeholder="Option ${letters[count] || count + 1}" oninput="refreshMcPreferred(this)"><button class="btn btn-danger" onclick="removeMcOption(this)">−</button>`;
+      list.appendChild(row);
+      row.querySelector('input').focus();
+      saveDraftState();
+    }
+
+    function removeMcOption(btn) {
+      const list = btn.closest('.mc-options-list');
+      if (list.querySelectorAll('.mc-option-row').length > 2) {
+        const mcWrap = btn.closest('.mc-options-wrap');
+        btn.closest('.mc-option-row').remove();
+        const firstInput = mcWrap.querySelector('.mc-option-row input');
+        if (firstInput) refreshMcPreferred(firstInput);
+        saveDraftState();
+      }
+    }
+
+    /* ── Skills search & select ── */
+    const skillState = { all: [], filtered: [], selected: [] };
+
+    async function initSkillSelect() {
+      const wrap = document.getElementById('skillSelectWrap');
+      const list = document.getElementById('skillOptionsList');
+      if (!wrap || !list) return;
+      try {
+        const res = await fetch('../../skills.json');
+        const data = await res.json();
+        if (Array.isArray(data.skills)) {
+          skillState.all = data.skills.map(s => ({ id: s.id, label: s.skill_name, category: s.category }));
+          skillState.filtered = [...skillState.all];
+          renderSkillOptions();
+        }
+      } catch {
+        list.innerHTML = '<div class="edu-no-results">Failed to load skills.</div>';
+      }
+      document.addEventListener('click', e => { if (!wrap.contains(e.target)) closeSkillDropdown(); });
+    }
+
+    function openSkillDropdown() {
+      document.getElementById('skillSelectWrap')?.classList.add('open');
+      document.getElementById('skillSearchInput')?.focus();
+    }
+
+    function closeSkillDropdown() {
+      const wrap = document.getElementById('skillSelectWrap');
+      if (!wrap) return;
+      wrap.classList.remove('open');
+      const input = document.getElementById('skillSearchInput');
+      if (input) input.value = '';
+      skillState.filtered = [...skillState.all];
+      renderSkillOptions();
+    }
+
+    function filterSkillOptions(query) {
+      const q = query.toLowerCase().trim();
+      skillState.filtered = q
+        ? skillState.all.filter(s => s.label.toLowerCase().includes(q) || s.category.toLowerCase().includes(q))
+        : [...skillState.all];
+      renderSkillOptions();
+    }
+
+    function toggleSkillOption(id, label) {
+      const idx = skillState.selected.findIndex(s => s.id === id);
+      if (idx >= 0) skillState.selected.splice(idx, 1);
+      else skillState.selected.push({ id, label });
+      renderSkillOptions();
+      renderSkillTags();
+      document.getElementById('skillSearchInput')?.focus();
+      saveDraftState();
+    }
+
+    function renderSkillOptions() {
+      const list = document.getElementById('skillOptionsList');
+      if (!list) return;
+      if (!skillState.filtered.length) { list.innerHTML = '<div class="edu-no-results">No matches found.</div>'; return; }
+      const groups = {};
+      skillState.filtered.forEach(s => { if (!groups[s.category]) groups[s.category] = []; groups[s.category].push(s); });
+      list.innerHTML = Object.entries(groups).map(([cat, skills]) =>
+        `<div class="skill-group-header">${escapeHtml(cat)}</div>` +
+        skills.map(s => {
+          const sel = skillState.selected.some(x => x.id === s.id);
+          return `<div class="edu-option${sel ? ' selected' : ''}" data-skill-id="${s.id}"><span class="edu-check">${sel ? '✓' : ''}</span>${escapeHtml(s.label)}</div>`;
+        }).join('')
+      ).join('');
+    }
+
+    function renderSkillTags() {
+      const tagsWrap = document.getElementById('skillTags');
+      const input = document.getElementById('skillSearchInput');
+      if (!tagsWrap || !input) return;
+      tagsWrap.querySelectorAll('.edu-tag').forEach(t => t.remove());
+      skillState.selected.forEach(s => {
+        const tag = document.createElement('span');
+        tag.className = 'edu-tag';
+        tag.dataset.skillId = s.id;
+        tag.innerHTML = `${escapeHtml(s.label)}<span class="rm">×</span>`;
+        tagsWrap.insertBefore(tag, input);
+      });
+      input.placeholder = skillState.selected.length ? '' : 'Search skills by name or category…';
+    }
+
+    function handleSkillKey(e) {
+      if (e.key === 'Escape') closeSkillDropdown();
+      if (e.key === 'Enter') e.preventDefault();
+    }
+
+    /* ── Edu Qualification – load from education.json ── */
+    const eduState = { all: [], filtered: [], selected: [] };
+
+    async function fetchEduQualifications() {
+      try {
+        const res = await fetch('../../education.json');
+        const data = await res.json();
+        if (Array.isArray(data.education)) {
+          return data.education.map(e => ({ id: e.id, label: e.name }));
+        }
+      } catch (_) { }
+      return [
+        { id: 1, label: 'B.Ed. (Bachelor of Education)' },
+        { id: 2, label: 'M.Ed. (Master of Education)' },
+        { id: 3, label: 'B.Sc. + B.Ed.' },
+        { id: 4, label: 'B.A. + B.Ed.' },
+        { id: 5, label: 'M.A. + B.Ed.' },
+        { id: 6, label: 'Ph.D. in relevant field' },
+        { id: 7, label: 'Diploma in Education (D.Ed.)' },
+        { id: 8, label: 'CTET / TET Certified' },
+        { id: 9, label: 'B.Tech / B.E.' },
+        { id: 10, label: 'M.Tech / M.E.' },
+        { id: 11, label: 'MBA' }, { id: 12, label: 'MCA' }, { id: 13, label: 'BCA' },
+      ];
+    }
+
+    async function initEduSelect() {
+      const wrap = document.getElementById('eduSelectWrap');
+      const list = document.getElementById('eduOptionsList');
+      if (!wrap || !list) return;
+
+      try {
+        const data = await fetchEduQualifications();
+        eduState.all = data;
+        eduState.filtered = [...data];
+        renderEduOptions();
+      } catch {
+        list.innerHTML = '<div class="edu-no-results">Failed to load. Please retry.</div>';
+      }
+
+      document.addEventListener('click', e => {
+        if (!wrap.contains(e.target)) closeEduDropdown();
+      });
+    }
+
+    function openEduDropdown() {
+      const wrap = document.getElementById('eduSelectWrap');
+      if (!wrap) return;
+      wrap.classList.add('open');
+      document.getElementById('eduSearchInput')?.focus();
+    }
+
+    function closeEduDropdown() {
+      const wrap = document.getElementById('eduSelectWrap');
+      if (!wrap) return;
+      wrap.classList.remove('open');
+      const input = document.getElementById('eduSearchInput');
+      if (input) { input.value = ''; }
+      eduState.filtered = [...eduState.all];
+      renderEduOptions();
+    }
+
+    function filterEduOptions(query) {
+      const q = query.toLowerCase().trim();
+      eduState.filtered = q
+        ? eduState.all.filter(o => o.label.toLowerCase().includes(q))
+        : [...eduState.all];
+      renderEduOptions();
+    }
+
+    function toggleEduOption(id, label) {
+      const idx = eduState.selected.findIndex(s => s.id === id);
+      if (idx >= 0) eduState.selected.splice(idx, 1);
+      else eduState.selected.push({ id, label });
+      renderEduOptions();
+      renderEduTags();
+      document.getElementById('eduSearchInput')?.focus();
+      saveDraftState();
+    }
+
+    function renderEduOptions() {
+      const list = document.getElementById('eduOptionsList');
+      if (!list) return;
+      if (!eduState.filtered.length) {
+        list.innerHTML = '<div class="edu-no-results">No matches found.</div>';
+        return;
+      }
+      list.innerHTML = eduState.filtered.map(opt => {
+        const sel = eduState.selected.some(s => s.id === opt.id);
+        return `<div class="edu-option${sel ? ' selected' : ''}" data-edu-id="${opt.id}">
+      <span class="edu-check">${sel ? '✓' : ''}</span>${escapeHtml(opt.label)}
+    </div>`;
+      }).join('');
+    }
+
+    function renderEduTags() {
+      const tagsWrap = document.getElementById('eduTags');
+      const input = document.getElementById('eduSearchInput');
+      if (!tagsWrap || !input) return;
+      tagsWrap.querySelectorAll('.edu-tag').forEach(t => t.remove());
+      eduState.selected.forEach(s => {
+        const tag = document.createElement('span');
+        tag.className = 'edu-tag';
+        tag.dataset.eduId = s.id;
+        tag.innerHTML = `${escapeHtml(s.label)}<span class="rm">×</span>`;
+        tagsWrap.insertBefore(tag, input);
+      });
+      input.placeholder = eduState.selected.length ? '' : 'Search qualifications…';
+    }
+
+    function handleEduKey(e) {
+      if (e.key === 'Escape') closeEduDropdown();
+      if (e.key === 'Enter') e.preventDefault();
+    }
+
+    async function loadJobPostToEdit() {
+      if (!editJobId) return;
+      
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        showToast('Error: You must be logged in to edit job posts.');
+        return;
+      }
+      
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const res = await fetch(`${apiBase}/jobs/${editJobId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (res.ok) {
+          const job = await res.json();
+          restoringDraft = true;
+          
+          document.title = 'Edit Job Post - TMSS Career';
+          const pageTitleEl = document.querySelector('.page-title');
+          if (pageTitleEl) pageTitleEl.textContent = 'Edit Job Post';
+          
+          setFieldVal('jobTitle', job.job_title);
+          setFieldVal('dept', job.department);
+          setFieldVal('jobType', job.job_type);
+          setFieldVal('vacancies', job.vacancy_count);
+          setFieldVal('school', job.school_name);
+          setFieldVal('expMin', job.min_exp);
+          setFieldVal('expMax', job.max_exp);
+          
+          if (job.closing_date) {
+            setFieldVal('closeDate', job.closing_date);
+          }
+          
+          setFieldVal('jobDesc', job.job_description);
+          setFieldVal('addReqs', job.additional_requirements);
+          countChars(document.getElementById('jobDesc'), 'descCount');
+          
+          if (job.skills_required) {
+            const skillLabels = job.skills_required.split(',').map(s => s.trim()).filter(Boolean);
+            skillState.selected = skillLabels.map((lbl, idx) => {
+              const match = skillState.all.find(s => s.label.toLowerCase() === lbl.toLowerCase());
+              return match ? { id: match.id, label: match.label } : { id: 1000 + idx, label: lbl };
+            });
+            renderSkillTags();
+            renderSkillOptions();
+          }
+          
+          if (job.education_qualification) {
+            const eduLabels = job.education_qualification.split(',').map(e => e.trim()).filter(Boolean);
+            eduState.selected = eduLabels.map((lbl, idx) => {
+              const match = eduState.all.find(e => e.label.toLowerCase() === lbl.toLowerCase());
+              return match ? { id: match.id, label: match.label } : { id: 1000 + idx, label: lbl };
+            });
+            renderEduTags();
+            renderEduOptions();
+          }
+          
+          if (Array.isArray(job.pre_screening_questions)) {
+            document.getElementById('questionsBody').innerHTML = '';
+            job.pre_screening_questions.forEach(q => {
+              const typeRaw = q.question_type === 'mcq' ? 'Multiple Choice' : 'Yes/No';
+              rebuildQuestionRow({
+                text: q.question_text,
+                typeRaw: typeRaw,
+                options: q.options || [],
+                preferred: q.expected_answer
+              });
+            });
+            renumberQ();
+          }
+          
+          syncPreview();
+          restoringDraft = false;
+        } else {
+          showToast('❌ Failed to load job post data.');
+        }
+      } catch (err) {
+        console.error('Error loading job post:', err);
+        showToast('❌ Error loading job post.');
+      }
+    }
+
+    async function initializePage() {
+      await Promise.all([
+        initEduSelect(),
+        initSkillSelect()
+      ]);
+      
+      if (editJobId) {
+        await loadJobPostToEdit();
+      } else {
+        const draftWasLoaded = loadDraftState();
+        if (!draftWasLoaded) {
+          document.querySelectorAll('#questionsBody .question-row select').forEach(sel => handleQTypeChange(sel));
+        }
+      }
+    }
+
+    initializePage();
+
+  </script>
+</body>
+
+</html>

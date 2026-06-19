@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ATS Pipeline - TMSS Career</title>
+    <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+    <script src="hr-sidebar.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --warning: #f59e0b;
+            --danger: #dc2626;
+            --purple: #7c3aed;
+            --teal: #0d9488;
+
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --border: #e5e7eb;
+            --text: #111827;
+            --muted: #6b7280;
+        }
+
+        [data-theme="dark"],
+        body.dark-theme {
+            --bg: #0d0d0d;
+            --card: #0d0d0d;
+            --border: rgba(255, 255, 255, 0.10);
+            --text: #f0efe8;
+            --muted: #666560;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Segoe UI, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+        }
+
+        .main-content {
+            padding: 25px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .filters {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filters select,
+        .filters input {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+        }
+
+        .kanban-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+
+        .column {
+            min-width: 320px;
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, .05);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .column-title {
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .applied {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .screened {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .interview {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .offer {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .accepted {
+            background: #ccfbf1;
+            color: #0f766e;
+        }
+
+        .onboarding {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .card-list {
+            min-height: 500px;
+        }
+
+        .candidate-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--primary);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            cursor: grab;
+            transition: .3s;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, .08);
+        }
+
+        .card-header {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .name {
+            font-weight: 600;
+        }
+
+        .position {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .card-footer {
+            margin-top: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 450px;
+            height: 100%;
+            background: white;
+            box-shadow: -4px 0 20px rgba(0, 0, 0, .15);
+            transition: .4s;
+            overflow: auto;
+            z-index: 999;
+        }
+
+        .drawer.active {
+            right: 0;
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .drawer-body {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section h4 {
+            margin-bottom: 10px;
+        }
+
+        .skill {
+            background: #eef2ff;
+            color: #3730a3;
+            padding: 6px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 4px;
+            font-size: 12px;
+        }
+
+        .timeline-item {
+            border-left: 2px solid #ddd;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+
+        .actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .actions button {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-interview {
+            background: #2563eb;
+        }
+
+        .btn-hold {
+            background: #f59e0b;
+        }
+
+        .btn-reject {
+            background: #dc2626;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        @media(max-width:768px) {
+
+            .drawer {
+                width: 100%;
+            }
+
+            .column {
+                min-width: 280px;
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-content">
+
+        <div class="page-header">
+            <div class="page-title">ATS Pipeline</div>
+
+            <div class="filters">
+                <input type="text" placeholder="Search Candidate">
+                <select>
+                    <option>All Jobs</option>
+                    <option>Mathematics Teacher</option>
+                    <option>Science Teacher</option>
+                </select>
+
+                <select>
+                    <option>All Schools</option>
+                    <option>ABC School</option>
+                    <option>XYZ School</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="kanban-container">
+
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">Applied</div>
+                    <span class="badge applied">12</span>
+                </div>
+
+                <div class="card-list" data-stage="Applied">
+
+                    <div class="candidate-card" draggable="true" onclick="openDrawer('Priya Sharma')">
+
+                        <div class="card-header">
+                            <div class="avatar">P</div>
+                            <div>
+                                <div class="name">Priya Sharma</div>
+                                <div class="position">Mathematics Teacher</div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <span>Applied</span>
+                            <span>2 Days Ago</span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">Screened</div>
+                    <span class="badge screened">8</span>
+                </div>
+
+                <div class="card-list" data-stage="Screened">
+
+                    <div class="candidate-card" draggable="true" onclick="openDrawer('Rahul Kumar')">
+
+                        <div class="card-header">
+                            <div class="avatar">R</div>
+                            <div>
+                                <div class="name">Rahul Kumar</div>
+                                <div class="position">Science Teacher</div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <span>Screened</span>
+                            <span>5 Days Ago</span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">Interview</div>
+                    <span class="badge interview">5</span>
+                </div>
+
+                <div class="card-list" data-stage="Interview"></div>
+            </div>
+
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">Offer</div>
+                    <span class="badge offer">4</span>
+                </div>
+
+                <div class="card-list" data-stage="Offer"></div>
+            </div>
+
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">Offer Accepted</div>
+                    <span class="badge accepted">2</span>
+                </div>
+
+                <div class="card-list" data-stage="Offer Accepted"></div>
+            </div>
+
+            <div class="column">
+                <div class="column-header">
+                    <div class="column-title">Onboarding</div>
+                    <span class="badge onboarding">3</span>
+                </div>
+
+                <div class="card-list" data-stage="Onboarding"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="drawer" id="drawer">
+
+        <div class="drawer-header">
+            <h3>Candidate Profile</h3>
+            <div class="close-btn" onclick="closeDrawer()">×</div>
+        </div>
+
+        <div class="drawer-body">
+
+            <div class="section">
+                <h4>Overview</h4>
+                <p><strong>Name:</strong> <span id="candidateName"></span></p>
+                <p><strong>Experience:</strong> 5 Years</p>
+                <p><strong>Email:</strong> candidate@email.com</p>
+                <p><strong>Phone:</strong> +91 9876543210</p>
+            </div>
+
+            <div class="section">
+                <h4>Skills</h4>
+
+                <span class="skill">Mathematics</span>
+                <span class="skill">Communication</span>
+                <span class="skill">Leadership</span>
+                <span class="skill">Classroom Management</span>
+
+            </div>
+
+            <div class="section">
+                <h4>Interview History</h4>
+
+                <div class="timeline-item">
+                    Round 1 Completed
+                </div>
+
+                <div class="timeline-item">
+                    Technical Assessment Cleared
+                </div>
+
+            </div>
+
+            <div class="section actions">
+
+                <button class="btn-interview">
+                    Schedule Interview
+                </button>
+
+                <button class="btn-hold">
+                    Put On Hold
+                </button>
+
+                <button class="btn-reject">
+                    Reject Candidate
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        const cards = document.querySelectorAll('.candidate-card');
+        const lists = document.querySelectorAll('.card-list');
+
+        cards.forEach(card => {
+
+            card.addEventListener('dragstart', () => {
+
+                card.classList.add('dragging');
+
+            });
+
+            card.addEventListener('dragend', () => {
+
+                card.classList.remove('dragging');
+
+            });
+
+        });
+
+        lists.forEach(list => {
+
+            list.addEventListener('dragover', (e) => {
+
+                e.preventDefault();
+
+                const dragging = document.querySelector('.dragging');
+
+                if (dragging) {
+                    list.appendChild(dragging);
+                }
+
+            });
+
+        });
+
+        function openDrawer(name) {
+
+            document.getElementById('candidateName').innerText = name;
+
+            document
+                .getElementById('drawer')
+                .classList.add('active');
+
+        }
+
+        function closeDrawer() {
+
+            document
+                .getElementById('drawer')
+                .classList.remove('active');
+
+        }
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="" />
+    <meta name="author" content="" />
+    <meta name="robots" content="" />
+    <meta name="description" content="" />
+
+    <!-- FAVICONS ICON -->
+    <link rel="icon" href="images/mss/mss-logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/mss/mss-logo.png" />
+
+    <!-- PAGE TITLE HERE -->
+    <title>The Madras Sevasadan Career Portal - Jobs</title>
+
+    <!-- MOBILE SPECIFIC -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"><!-- BOOTSTRAP STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"><!-- FONTAWESOME STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/feather.css"><!-- FEATHER ICON SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/owl.carousel.min.css"><!-- OWL CAROUSEL STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/magnific-popup.min.css"><!-- MAGNIFIC POPUP STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/lc_lightbox.css"><!-- Lc light box popup -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css"><!-- BOOTSTRAP SLECT BOX STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap5.min.css"><!-- DATA table STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap5.min.css">
+    <!-- DASHBOARD select bootstrap  STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/dropzone.css"><!-- DROPZONE STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/scrollbar.css"><!-- CUSTOM SCROLL BAR STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/flaticon.css"> <!-- Flaticon -->
+    <link rel="stylesheet" type="text/css" href="css/swiper-bundle.min.css"><!-- Swiper Slider -->
+    <link rel="stylesheet" type="text/css" href="css/style.css"><!-- MAIN STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="../../assets/css/shared-header.css"><!-- SHARED HEADER + MODALS -->
+
+    <style>
+        /* MSS Logo Alignment Fix for Job Cards and Media Objects */
+        .twm-jobs-grid-style1 .twm-media,
+        .twm-job-self-top .twm-media {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 10px !important;
+            background-color: #ffffff !important;
+            box-sizing: border-box;
+        }
+
+        .twm-jobs-grid-style1 .twm-media img,
+        .twm-job-self-top .twm-media img {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .form-check-input:checked {
+            background-color: #0a014f;
+            border-color: #0a014f;
+        }
+    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Universal Mobile Header Responsiveness Fix */
+        @media (max-width: 991px) {
+            .site-header .main-bar .container-fluid {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 10px 15px !important;
+            }
+
+            .logo-header {
+                flex: 0 0 auto !important;
+                margin: 0 !important;
+                float: none !important;
+                width: auto !important;
+                display: block !important;
+            }
+
+            .logo-header img {
+                max-height: 50px !important;
+                width: auto !important;
+            }
+
+            .extra-nav.header-2-nav {
+                flex: 0 0 auto !important;
+                margin: 0 !important;
+                float: none !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: flex-end !important;
+            }
+
+            .header-nav-btn-section {
+                display: none !important;
+                /* Hide massive buttons on mobile */
+            }
+
+            .header-search {
+                display: none !important;
+                /* Hide search bar to save header space */
+            }
+
+            .extra-cell {
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+                display: flex !important;
+            }
+
+            .vnav-btn {
+                margin-left: 15px !important;
+                font-size: 26px !important;
+                display: flex !important;
+                align-items: center !important;
+                padding: 10px !important;
+                color: #1E3A8A !important;
+            }
+        }
+    </style>
+</head>
+
+<style>
+    .apply-content {
+        margin-top: 2rem;
+        position: relative;
+        z-index: 10;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-section {
+        display: none;
+    }
+
+    .form-section.active {
+        display: block;
+        animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .card-neo {
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.8) !important;
+        padding: 3rem !important;
+        margin-bottom: 3rem;
+    }
+
+    .step-indicator {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2.5rem;
+        padding: 0 1rem;
+    }
+
+    .step {
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    .step:last-child {
+        flex-grow: 0;
+    }
+
+    .step-num {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background-color: #F1F5F9;
+        color: #94A3B8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-family: 'Rubik', sans-serif;
+        z-index: 1;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid #fff;
+        font-size: 1.1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .step.active .step-num {
+        /* background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%); */
+        background: linear-gradient(135deg, #0a014f, #14008a);
+        color: #fff;
+        box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
+        transform: scale(1.15);
+        border-color: #fff;
+    }
+
+    .step.completed .step-num {
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        color: #fff;
+        border-color: #fff;
+    }
+
+    .step-line {
+        height: 4px;
+        background-color: #F1F5F9;
+        flex-grow: 1;
+        margin: 0 15px;
+        transition: all 0.4s ease;
+        border-radius: 2px;
+    }
+
+    .step.completed .step-line {
+        background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+    }
+
+    .form-control {
+        border: 2px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1rem 1.25rem !important;
+        font-family: 'Rubik', sans-serif;
+        font-weight: 500;
+        font-size: 1.05rem;
+        color: #0F172A;
+        transition: all 0.3s ease;
+        box-shadow: none !important;
+        background-color: #F8FAFC;
+    }
+
+    .form-control:focus {
+        border-color: #3B82F6;
+        background-color: #fff;
+        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1) !important;
+        transform: translateY(-1px);
+    }
+
+    .form-label {
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        color: #475569 !important;
+        font-family: 'Rubik', sans-serif;
+    }
+
+    .btn-radio-group {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-radio {
+        flex: 1;
+        position: relative;
+    }
+
+    .btn-radio input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .btn-radio label {
+        display: block;
+        width: 100%;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        border: 2px solid #E2E8F0;
+        border-radius: 14px;
+        font-family: 'Rubik', sans-serif;
+        font-weight: 600;
+        color: #64748B;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #fff;
+    }
+
+    .btn-radio label:hover {
+        border-color: #94A3B8;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-radio input[type="radio"]:checked+label {
+        border-color: #3B82F6;
+        background-color: #EFF6FF;
+        color: #1D4ED8;
+        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .upload-area {
+        border: 2px dashed #CBD5E1;
+        border-radius: 16px;
+        padding: 3.5rem 2rem;
+        text-align: center;
+        background: linear-gradient(180deg, #F8FAFC 0%, #F1F5F9 100%);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+    }
+
+    .upload-area:hover {
+        /* border-color: #3B82F6; */
+        border-color: #0a014f;
+        background: #EFF6FF;
+        transform: translateY(-4px);
+        box-shadow: 0 15px 25px -5px rgba(59, 130, 246, 0.15);
+    }
+
+    .upload-icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background-color: #fff;
+        /* color: #3B82F6; */
+        color: #0a014f;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .resume-card-existing {
+        border: 2px solid #10B981;
+        background: linear-gradient(135deg, #ECFDF5 0%, #ffffff 100%);
+        border-radius: 14px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+        border: none;
+        box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px -3px rgba(37, 99, 235, 0.4);
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+        color: #fff;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        border: none;
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px -3px rgba(16, 185, 129, 0.4);
+        color: #fff;
+    }
+
+    .btn-light {
+        background: #F1F5F9;
+        border: none;
+        color: #475569;
+        transition: all 0.3s ease;
+    }
+
+    .btn-light:hover {
+        background: #E2E8F0;
+        color: #1E293B;
+        transform: translateY(-2px);
+    }
+</style>
+
+<body style="background-color: #F8F9FA; padding-top: 0 !important;" class="scrollbar-thin-1">
+    <div class="page-wraper">
+        <div id="shared-header"></div>
+
+        <div class="page-content bg-white" style="padding-top: 0;">
+
+            <!-- MODERN COLOR BANNER -->
+            <div class="mss-inner-banner">
+                <div class="mss-inner-banner-bg"></div>
+                <div class="mss-inner-banner-orb mss-ib-orb-l"></div>
+                <div class="mss-inner-banner-orb mss-ib-orb-r"></div>
+                <div class="container" style="position:relative;z-index:2;">
+                    <div class="mss-inner-banner-row">
+                        <div class="mss-inner-banner-left">
+                            <!-- <div class="mss-inner-badge">
+                                <i class="feather-send"></i> Career Application
+                            </div> -->
+                            <h1 class="mss-inner-title" id="job-title-display">Submit Application</h1>
+                            <p class="mss-inner-sub" id="job-school-display">The Madras Seva Sadan</p>
+                        </div>
+                        <nav class="mss-breadcrumb-pill" aria-label="breadcrumb">
+                            <a href="/mss-career-portal/home" class="mss-bc-item">
+                                <i class="feather-home" style="font-size:0.75rem;"></i> Home
+                            </a>
+                            <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
+                            <a href="/mss-career-portal/job-grid" class="mss-bc-item">Jobs</a>
+                            <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
+                            <span class="mss-bc-item mss-bc-active">Apply</span>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <!-- END MODERN COLOR BANNER -->
+            <style>
+                .mss-inner-banner {
+                    position: relative;
+                    /* background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 55%, #1D4ED8 100%); */
+                    background: linear-gradient(135deg, #0A1628 0%, #0F172A 45%, #0D1B3E 100%);
+                    padding: 3rem 0;
+                    overflow: hidden;
+                    margin-top: 0;
+                }
+
+                .mss-inner-banner-bg {
+                    position: absolute;
+                    inset: 0;
+                    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+                }
+
+                .mss-inner-banner-orb {
+                    position: absolute;
+                    border-radius: 50%;
+                    filter: blur(60px);
+                    pointer-events: none;
+                }
+
+                .mss-ib-orb-l {
+                    width: 400px;
+                    height: 400px;
+                    background: rgba(59, 130, 246, 0.18);
+                    top: -150px;
+                    left: -100px;
+                }
+
+                .mss-ib-orb-r {
+                    width: 300px;
+                    height: 300px;
+                    background: rgba(99, 102, 241, 0.15);
+                    bottom: -100px;
+                    right: 5%;
+                }
+
+                .mss-inner-banner-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 2rem;
+                    flex-wrap: wrap;
+                }
+
+                .mss-inner-banner-left {
+                    flex: 1;
+                    min-width: 0;
+                }
+
+                .mss-inner-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(255, 255, 255, 0.12);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-radius: 50px;
+                    padding: 5px 14px;
+                    font-family: 'Rubik', sans-serif;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: rgba(255, 255, 255, 0.85);
+                    margin-bottom: 0.75rem;
+                    backdrop-filter: blur(8px);
+                }
+
+                .mss-inner-title {
+                    font-family: 'Rubik', sans-serif;
+                    font-size: clamp(1.6rem, 3vw, 2.4rem);
+                    font-weight: 800;
+                    color: #fff;
+                    margin: 0 0 0.5rem;
+                    letter-spacing: -0.3px;
+                    line-height: 1.2;
+                }
+
+                .mss-inner-sub {
+                    font-family: 'Rubik', sans-serif;
+                    font-size: 0.95rem;
+                    color: rgba(255, 255, 255, 0.65);
+                    margin: 0;
+                    max-width: 460px;
+                    line-height: 1.6;
+                }
+
+                .mss-breadcrumb-pill {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: rgba(255, 255, 255, 0.1);
+                    border: 1px solid rgba(255, 255, 255, 0.18);
+                    border-radius: 50px;
+                    padding: 8px 18px;
+                    backdrop-filter: blur(10px);
+                    flex-shrink: 0;
+                    white-space: nowrap;
+                }
+
+                .mss-bc-item {
+                    font-family: 'Rubik', sans-serif;
+                    font-size: 0.82rem;
+                    font-weight: 500;
+                    color: rgba(255, 255, 255, 0.75);
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    transition: color 0.15s;
+                }
+
+                .mss-bc-item:hover {
+                    color: #fff;
+                }
+
+                .mss-bc-sep {
+                    color: rgba(255, 255, 255, 0.35);
+                    font-size: 0.75rem;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .mss-bc-active {
+                    font-weight: 700;
+                    color: #fff !important;
+                }
+
+                @media (max-width: 767px) {
+                    .mss-inner-banner {
+                        padding: 2rem 0;
+                    }
+
+                    .mss-breadcrumb-pill {
+                        display: none;
+                    }
+                }
+            </style>
+
+            <div class="container apply-content pb-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-9 col-xl-8">
+                        <div class="card-neo shadow-lg border-0 px-4 px-md-5 py-5 mb-5">
+                            <div class="step-indicator" id="form-steps">
+                                <div class="step active" data-step="1">
+                                    <div class="step-num">1</div><span
+                                        class="ms-2 fw-bold text-dark font-Rubik small d-none d-md-block step-label">Candidate
+                                        Info</span>
+                                    <div class="step-line"></div>
+                                </div>
+                                <div class="step" data-step="2">
+                                    <div class="step-num">2</div><span
+                                        class="ms-2 fw-bold text-muted font-Rubik small d-none d-md-block step-label">Screening</span>
+                                    <div class="step-line"></div>
+                                </div>
+                                <div class="step" data-step="3">
+                                    <div class="step-num">3</div><span
+                                        class="ms-2 fw-bold text-muted font-Rubik small d-none d-md-block step-label">Resume</span>
+                                    <div class="step-line"></div>
+                                </div>
+                                <div class="step" data-step="4">
+                                    <div class="step-num">4</div><span
+                                        class="ms-2 fw-bold text-muted font-Rubik small d-none d-md-block step-label">Review</span>
+                                    <div class="step-line d-none d-md-block" style="visibility:hidden;"></div>
+                                </div>
+                            </div>
+
+                            <div id="logged-in-alert"
+                                class="alert alert-primary d-flex align-items-center d-none border-0 shadow-sm mb-4"
+                                style="background-color: #EBF4FF; color: #0a014f;" role="alert">
+                                <i class="bi bi-check-circle-fill fs-4 me-3"></i>
+                                <div><strong>Welcome back, <span id="auth-user-name">Jane Doe</span>!</strong>
+                                    <div class="small text-muted mt-1">We've pre-filled your basic information.</div>
+                                </div>
+                            </div>
+
+                            <form id="apply-form" action="/mss-career-portal/dashboard">
+                                <!-- STEP 1 -->
+                                <div class="form-section active" id="section-1">
+                                    <h3 class="fw-bold font-Rubik text-dark border-bottom pb-3 mb-4">Personal
+                                        Information</h3>
+                                    <div class="row g-4 mb-4">
+                                        <div class="col-md-6"><label
+                                                class="form-label fw-bold small text-muted text-uppercase mb-2">First
+                                                Name</label><input type="text" class="form-control py-3"
+                                                id="input-fname" required></div>
+                                        <div class="col-md-6"><label
+                                                class="form-label fw-bold small text-muted text-uppercase mb-2">Last
+                                                Name</label><input type="text" class="form-control py-3"
+                                                id="input-lname" required></div>
+                                    </div>
+                                    <div class="row g-4 mb-4">
+                                        <div class="col-md-6"><label
+                                                class="form-label fw-bold small text-muted text-uppercase mb-2">Email
+                                                Address</label><input type="email" class="form-control py-3"
+                                                id="input-email" required></div>
+                                        <div class="col-md-6"><label
+                                                class="form-label fw-bold small text-muted text-uppercase mb-2">Phone
+                                                Number</label><input type="tel" class="form-control py-3"
+                                                id="input-phone" required></div>
+                                    </div>
+                                    <div class="mb-5"><label
+                                            class="form-label fw-bold small text-muted text-uppercase mb-2">LinkedIn
+                                            Profile (Optional)</label><input type="url" class="form-control py-3"
+                                            id="input-linkedin"></div>
+                                    <div class="d-flex justify-content-end border-top pt-4"><button type="button"
+                                            class="btn rounded-pill px-5 py-3 fw-bold shadow-none"
+                                            style="background: linear-gradient(135deg, #0a014f, #14008a); color:#fff;"
+                                            onclick="nextStep(2)">Save & Continue <i
+                                                class="bi bi-arrow-right ms-2"></i></button></div>
+                                </div>
+
+                                <!-- STEP 2 -->
+                                <div class="form-section" id="section-2">
+                                    <h3 class="fw-bold font-Rubik text-dark border-bottom pb-3 mb-4">Screening Questions
+                                    </h3>
+
+                                    <!-- Dynamic container for fetched pre-screening questions -->
+                                    <div id="questions-container">
+                                        <div class="text-center text-muted py-4">
+                                            <div class="spinner-border spinner-border-sm text-primary mb-2"
+                                                role="status"></div>
+                                            Loading pre-screening questions...
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between border-top pt-4">
+                                        <button type="button"
+                                            class="btn btn-light rounded-pill px-4 shadow-none fw-bold"
+                                            onclick="nextStep(1)"><i class="bi bi-arrow-left me-2"></i> Edit
+                                            Info</button>
+                                        <button type="button" class="btn rounded-pill px-5 py-3 fw-bold shadow-none"
+                                            style="background: linear-gradient(135deg, #0a014f, #14008a); color:#fff;"
+                                            onclick="nextStep(3)">Continue to CV <i
+                                                class="bi bi-arrow-right ms-2"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- STEP 3 -->
+                                <div class="form-section" id="section-3">
+                                    <h3 class="fw-bold font-Rubik text-dark border-bottom pb-3 mb-4">Resume & Documents
+                                    </h3>
+                                    <div id="existing-resume-block" class="mb-5 d-none">
+                                        <label class="form-label fw-bold small text-dark mb-3">Existing Resume
+                                            Found</label>
+                                        <div class="resume-card-existing">
+                                            <div class="d-flex align-items-center">
+                                                <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center me-3 shadow-sm"
+                                                    style="width: 48px;height: 48px;font-size: 1.5rem;"><i
+                                                        class="bi bi-file-earmark-pdf-fill"></i></div>
+                                                <div><span class="d-block fw-bold text-success font-Rubik"
+                                                        id="resume-filename">Jane_Doe_Resume_2026.pdf</span></div>
+                                            </div><a href="javascript:;" class="btn btn-sm btn-outline-success bg-white"
+                                                id="btn-keep-resume"><i class="bi bi-check2"></i> Selected</a>
+                                        </div>
+                                    </div>
+                                    <div class="mb-5 mt-4">
+                                        <div class="upload-area" id="new-upload-area"
+                                            onclick="document.getElementById('resume-upload').click()">
+                                            <div class="upload-icon" id="resume-icon"><i
+                                                    class="bi bi-cloud-arrow-up"></i></div>
+                                            <h5 class="fw-bold text-dark font-Rubik" id="resume-name-text">Click to
+                                                upload a new resume</h5>
+                                            <input type="file" class="d-none" id="resume-upload"
+                                                accept=".pdf,.doc,.docx">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-top pt-4">
+                                        <button type="button"
+                                            class="btn btn-light rounded-pill px-4 shadow-none fw-bold"
+                                            onclick="nextStep(2)"><i class="bi bi-arrow-left me-2"></i> Back</button>
+                                        <button type="button" class="btn  rounded-pill px-5 py-3 fw-bold shadow-none"
+                                            style="background: linear-gradient(135deg, #0a014f, #14008a); color:#fff;"
+                                            onclick="nextStep(4)">Review Application <i
+                                                class="bi bi-arrow-right ms-2"></i></button>
+                                    </div>
+                                </div>
+
+                                <!-- STEP 4 -->
+                                <div class="form-section" id="section-4">
+                                    <div class="text-center mb-5 mt-3">
+                                        <div class="rounded-circle bg-success-bg text-success d-inline-flex align-items-center justify-content-center mb-4 border border-success"
+                                            style="width: 80px;height: 80px;font-size: 2.5rem;"><i
+                                                class="bi bi-check-circle-fill"></i></div>
+                                        <h3 class="fw-bold font-Rubik text-dark mb-2">Ready to Apply</h3>
+                                    </div>
+                                    <div class="bg-body rounded-lg p-4 border mb-5">
+                                        <div class="form-check mb-3"><input class="form-check-input mt-1"
+                                                type="checkbox" id="certify1" required><label
+                                                class="form-check-label text-muted small" for="certify1">I certify that
+                                                all information provided is true.</label></div>
+                                        <div class="form-check"><input class="form-check-input mt-1" type="checkbox"
+                                                id="certify2" required><label class="form-check-label text-muted small"
+                                                for="certify2">I authorize verification of records.</label></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between border-top pt-4">
+                                        <button type="button"
+                                            class="btn btn-light rounded-pill px-4 shadow-none fw-bold"
+                                            onclick="nextStep(3)"><i class="bi bi-arrow-left me-2"></i> Back</button>
+                                        <button type="button"
+                                            class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-lg"
+                                            onclick="submitApplication()"><i class="bi bi-send-fill me-2"></i> Submit
+                                            Application</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="success-section text-center d-none" id="success-section"
+                                style="padding: 2rem 0;">
+                                <div class="rounded-circle bg-success text-white d-inline-flex align-items-center justify-content-center mb-4"
+                                    style="width: 100px; height: 100px; font-size: 3.5rem; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);">
+                                    <i class="bi bi-check2-all"></i>
+                                </div>
+                                <h2 class="fw-bold font-Rubik text-dark mb-3">Application Submitted Successfully!</h2>
+                                <p class="text-muted mb-4 fs-5" style="max-width: 600px; margin: 0 auto;">Thank you for
+                                    applying to The Madras Seva Sadan. Your profile and attached documents have been
+                                    safely received.</p>
+
+                                <div class="rounded-4 p-4 mb-5 d-inline-block"
+                                    style="min-width: 350px; background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%); border: 2px dashed #CBD5E1;">
+                                    <p class="mb-2 text-muted small text-uppercase fw-bold"
+                                        style="letter-spacing: 1px;">Application Reference Number </p>
+                                    <h3 class="fw-bold  mb-0 font-Rubik tracking-widest" style="color: #0a014f;"
+                                        id="ref-number-display" style="letter-spacing: 2px;">MSS-APP-10024</h3>
+                                </div>
+
+                                <div class="d-flex justify-content-center mt-2 gap-3">
+                                    <a href="/mss-career-portal/job-grid"
+                                        class="btn btn-light rounded-pill px-4 py-3 fw-bold border shadow-sm"><i
+                                            class="feather-briefcase me-2" style="color: #0a014f;"></i> Explore More
+                                        Jobs </a>
+                                    <a href="/mss-career-portal/home" class="btn  rounded-pill px-5 py-3 fw-bold shadow-lg"
+                                        style="background: linear-gradient(135deg, #0a014f, #14008a); color:#fff;"><i
+                                            class="feather-home text-white me-2"></i> Return to Home</a>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FOOTER START -->
+        <footer class="footer-dark"
+            style="background-color: #1A202C !important; display: block !important; position: relative !important; z-index: 10;">
+            <div class="container">
+
+                <div class="footer-top">
+                    <div class="row">
+
+                        <div class="col-lg-4 col-md-12">
+                            <div class="widget widget_about">
+                                <div class="logo-footer clearfix">
+                                    <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
+                                            style="max-height: 80px;"></a>
+                                </div>
+                                <p style="color: #A0AEC0;">Established in 1928, The Madras Seva Sadan stands as one of
+                                    South India’s oldest and most trusted institutions, dedicated to transforming lives
+                                    through education, women empowerment, child welfare, social development, arts and
+                                    sports — guided by the timeless values of compassion, dignity and service.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6">
+                            <div class="widget widget_services ftr-list-center">
+                                <h4 class="widget-title pb-1" style="color: #fff;">Quick Links</h4>
+                                <ul>
+                                    <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Home</a></li>
+                                    <li><a href="https://themadrassevasadan.org/about" target="_blank"
+                                            style="color: #A0AEC0;">About</a></li>
+                                    <li><a href="/mss-career-portal/job-grid" style="color: #A0AEC0;">Jobs</a></li>
+                                    <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Search</a></li>
+                                    <li><a href="contact.html" style="color: #A0AEC0;">Contact</a></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-6">
+                            <div class="widget widget_info">
+                                <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
+                                <ul class="ftr-list">
+                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
+                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                        <p style="color: #A0AEC0; margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
+                                            600031</p>
+                                    </li>
+                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
+                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
+                                        <p style="color: #A0AEC0; margin: 0;">info@themadrassevasadan.org</p>
+                                    </li>
+                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
+                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
+                                        <p style="color: #A0AEC0; margin: 0;">+91 44 2836 4141</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="footer-bottom-info d-flex justify-content-center align-items-center w-100"
+                        style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-bottom: 20px;">
+                        <div class="footer-copy-right text-center w-100">
+                            <span class="copyrights-text" style="color: #718096;">Copyright 2026 <strong>The Madras Seva
+                                    Sadan</strong>. All Rights Reserved.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </footer>
+        <!-- FOOTER END -->
+    </div> <!-- END PAGE WRAPER -->
+
+    <!-- JAVASCRIPT  FILES ========================================= -->
+    <script src="js/jquery-3.6.0.min.js"></script><!-- JQUERY.MIN JS -->
+    <script src="js/popper.min.js"></script><!-- POPPER.MIN JS -->
+    <script src="js/bootstrap.min.js"></script><!-- BOOTSTRAP.MIN JS -->
+    <script src="js/magnific-popup.min.js"></script><!-- MAGNIFIC-POPUP JS -->
+    <script src="js/waypoints.min.js"></script><!-- WAYPOINTS JS -->
+    <script src="js/counterup.min.js"></script><!-- COUNTERUP JS -->
+    <script src="js/waypoints-sticky.min.js"></script><!-- STICKY HEADER -->
+    <script src="js/isotope.pkgd.min.js"></script><!-- MASONRY  -->
+    <script src="js/imagesloaded.pkgd.min.js"></script><!-- MASONRY  -->
+    <script src="js/owl.carousel.min.js"></script><!-- OWL  SLIDER  -->
+    <script src="js/theia-sticky-sidebar.js"></script><!-- STICKY SIDEBAR  -->
+    <script src="js/lc_lightbox.lite.js"></script><!-- IMAGE POPUP -->
+    <script src="js/bootstrap-select.min.js"></script><!-- Form js -->
+    <script src="js/dropzone.js"></script><!-- IMAGE UPLOAD  -->
+    <script src="js/jquery.scrollbar.js"></script><!-- scroller -->
+    <script src="js/jquery.dataTables.min.js"></script><!-- Datatable -->
+    <script src="js/dataTables.bootstrap5.min.js"></script><!-- Datatable -->
+    <script src="js/chart.js"></script><!-- Chart -->
+    <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
+    <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
+    <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
+    <script src="../../assets/js/shared-header.js?v=2"></script>
+    <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
+
+
+
+    <script>
+        var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : 'http://192.168.0.12:8000';
+        var jobQuestions = [];
+        var selectedResumeFile = null;
+        var jobId = null;
+        var token = localStorage.getItem('access_token');
+
+        $(document).ready(function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            jobId = urlParams.get('id');
+            if (!jobId) {
+                alert('No job selected. Redirecting to job list.');
+                window.location.href = '/mss-career-portal/job-grid';
+                return;
+            }
+
+            if (!token) {
+                promptLogin(jobId);
+                return;
+            }
+
+            // Verify token on backend
+            fetch(JOBS_API_BASE + '/apply/check-login', {
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result && result.logged_in) {
+                        initApplicationPage(result);
+                    } else {
+                        promptLogin(jobId);
+                    }
+                })
+                .catch(err => {
+                    console.error('Login check failed:', err);
+                    promptLogin(jobId);
+                });
+        });
+
+        function promptLogin(jobId) {
+            sessionStorage.setItem('pending_apply_job_id', jobId);
+            var loginModal = document.getElementById('candidateLoginModal');
+            if (loginModal && typeof bootstrap !== 'undefined') {
+                var bsModal = bootstrap.Modal.getOrCreateInstance(loginModal);
+                bsModal.show();
+
+                $(loginModal).off('hidden.bs.modal').on('hidden.bs.modal', function () {
+                    if (!localStorage.getItem('access_token')) {
+                        window.location.href = '/mss-career-portal/job-grid';
+                    }
+                });
+            } else {
+                alert('Please log in to apply for this job.');
+                window.location.href = '/mss-career-portal/job-grid';
+            }
+        }
+
+        function initApplicationPage(userData) {
+            // Prefill basic info
+            var fullName = userData && userData.name ? userData.name : (localStorage.getItem('user_name') || '');
+            var email = userData && userData.email ? userData.email : (localStorage.getItem('user_email') || '');
+            var mobile = userData && userData.mobile ? userData.mobile : (localStorage.getItem('user_mobile') || '');
+
+            var nameParts = fullName.trim().split(/\s+/);
+            var fname = nameParts[0] || '';
+            var lname = nameParts.slice(1).join(' ') || '';
+
+            $('#input-fname').val(fname);
+            $('#input-lname').val(lname);
+            $('#input-email').val(email);
+            $('#input-phone').val(mobile);
+            $('#auth-user-name').text(fullName);
+            $('#logged-in-alert').removeClass('d-none');
+
+            // Fetch job details and questions
+            fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId))
+                .then(response => {
+                    if (!response.ok) throw new Error('Job not found');
+                    return response.json();
+                })
+                .then(job => {
+                    $('#job-title-display').html('Applying for: <span style="color: #FFD700;">' + job.job_title + '</span>');
+                    $('#job-school-display').text(job.school_name || 'The Madras Seva Sadan');
+
+                    renderQuestions(job.pre_screening_questions || []);
+                })
+                .catch(err => {
+                    console.error('Error fetching job details:', err);
+                    alert('Failed to load job details. Redirecting to job grid.');
+                    window.location.href = '/mss-career-portal/job-grid';
+                });
+        }
+
+        function renderQuestions(questions) {
+            jobQuestions = questions;
+            const container = $('#questions-container');
+            container.empty();
+
+            if (!questions || questions.length === 0) {
+                container.html(`
+                    <div class="text-center py-4">
+                        <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; color: #10B981; border: 1px solid #10B981;">
+                            <i class="bi bi-check-circle fs-2"></i>
+                        </div>
+                        <p class="text-muted fw-bold">No pre-screening questions are required for this position.</p>
+                    </div>
+                `);
+                return;
+            }
+
+            questions.forEach((q, idx) => {
+                let questionHtml = `
+                    <div class="mb-5 question-item" data-question-id="${q.question_id}" data-question-type="${q.question_type}">
+                        <label class="form-label fw-bold fs-5 text-dark mb-3">${idx + 1}. ${q.question_text}</label>
+                `;
+
+                if (q.question_type === 'boolean' || q.question_type === 'yes_no') {
+                    questionHtml += `
+                        <div class="btn-radio-group">
+                            <div class="btn-radio">
+                                <input type="radio" name="q_${q.question_id}" id="q_${q.question_id}_yes" value="Yes" required>
+                                <label for="q_${q.question_id}_yes">Yes</label>
+                            </div>
+                            <div class="btn-radio">
+                                <input type="radio" name="q_${q.question_id}" id="q_${q.question_id}_no" value="No" required>
+                                <label for="q_${q.question_id}_no">No</label>
+                            </div>
+                        </div>
+                    `;
+                } else if (q.question_type === 'mcq') {
+                    let opts = q.options;
+                    if (typeof opts === 'string') {
+                        try {
+                            opts = JSON.parse(opts);
+                        } catch (e) {
+                            opts = opts.split(',').map(s => s.trim());
+                        }
+                    }
+                    if (!Array.isArray(opts)) {
+                        opts = ['Yes', 'No'];
+                    }
+
+                    questionHtml += `<div class="btn-radio-group flex-wrap">`;
+                    opts.forEach((opt, oIdx) => {
+                        questionHtml += `
+                            <div class="btn-radio mb-2" style="min-width: 120px; flex: 1 1 auto;">
+                                <input type="radio" name="q_${q.question_id}" id="q_${q.question_id}_opt_${oIdx}" value="${opt}" required>
+                                <label for="q_${q.question_id}_opt_${oIdx}">${opt}</label>
+                            </div>
+                        `;
+                    });
+                    questionHtml += `</div>`;
+                } else {
+                    questionHtml += `
+                        <textarea class="form-control" name="q_${q.question_id}" id="q_${q.question_id}_text" rows="3" placeholder="Enter your response here..." required></textarea>
+                    `;
+                }
+
+                questionHtml += `</div>`;
+                container.append(questionHtml);
+            });
+        }
+
+        function validateStep1() {
+            const fields = ['#input-fname', '#input-lname', '#input-email', '#input-phone'];
+            let valid = true;
+            fields.forEach(selector => {
+                const field = $(selector)[0];
+                if (field && !field.checkValidity()) {
+                    field.reportValidity();
+                    valid = false;
+                }
+            });
+            return valid;
+        }
+
+        function validateStep2() {
+            let valid = true;
+            jobQuestions.forEach(q => {
+                if (q.question_type === 'boolean' || q.question_type === 'yes_no' || q.question_type === 'mcq') {
+                    const radios = $(`input[name="q_${q.question_id}"]`);
+                    const checked = radios.filter(':checked');
+                    if (checked.length === 0) {
+                        if (radios.length > 0) {
+                            radios[0].setCustomValidity('Please answer this question.');
+                            radios[0].reportValidity();
+                        }
+                        valid = false;
+                    } else {
+                        if (radios.length > 0) {
+                            radios[0].setCustomValidity('');
+                        }
+                    }
+                } else {
+                    const textInput = $(`#q_${q.question_id}_text`)[0];
+                    if (textInput && !textInput.checkValidity()) {
+                        textInput.reportValidity();
+                        valid = false;
+                    }
+                }
+            });
+            return valid;
+        }
+
+        function validateStep3() {
+            if (!selectedResumeFile) {
+                alert('Please upload your resume to continue.');
+                return false;
+            }
+            return true;
+        }
+
+        $(document).on('change', 'input[type="radio"]', function () {
+            const name = $(this).attr('name');
+            if (name) {
+                $(`input[name="${name}"]`).each(function () {
+                    this.setCustomValidity('');
+                });
+            }
+        });
+
+        $(document).on('input', 'textarea', function () {
+            this.setCustomValidity('');
+        });
+
+        $(document).on('change', '#resume-upload', function () {
+            const file = this.files[0];
+            if (file) {
+                selectedResumeFile = file;
+                $('#resume-name-text').text(file.name);
+                $('#resume-icon').html('<i class="bi bi-file-earmark-check-fill text-success" style="font-size: 2.5rem;"></i>');
+            }
+        });
+
+        function nextStep(step) {
+            const currentActiveStep = parseInt($('.step.active').attr('data-step'));
+            if (step > currentActiveStep) {
+                if (currentActiveStep === 1 && !validateStep1()) return;
+                if (currentActiveStep === 2 && !validateStep2()) return;
+                if (currentActiveStep === 3 && !validateStep3()) return;
+            }
+
+            $('.form-section').removeClass('active'); $('#section-' + step).addClass('active');
+            $('.step').removeClass('active completed');
+            for (let i = 1; i <= 4; i++) {
+                if (i < step) { $(`[data-step="${i}"]`).addClass('completed'); $(`[data-step="${i}"] .step-label`).removeClass('text-muted').addClass('text-dark'); }
+                else if (i === step) { $(`[data-step="${i}"]`).addClass('active'); $(`[data-step="${i}"] .step-label`).removeClass('text-muted').addClass('text-dark'); }
+            }
+            window.scrollTo({ top: $('.card-neo').offset().top - 100, behavior: 'smooth' });
+        }
+
+        function submitApplication() {
+            if (!$('#certify1').is(':checked') || !$('#certify2').is(':checked')) {
+                alert('Please certify and authorize all statements to submit.');
+                return;
+            }
+
+            const answers = [];
+            jobQuestions.forEach(q => {
+                let answerVal = '';
+                if (q.question_type === 'boolean' || q.question_type === 'yes_no' || q.question_type === 'mcq') {
+                    answerVal = $(`input[name="q_${q.question_id}"]:checked`).val() || '';
+                } else {
+                    answerVal = $(`#q_${q.question_id}_text`).val() || '';
+                }
+                answers.push({
+                    question_id: q.question_id,
+                    answer: answerVal
+                });
+            });
+
+            const payload = {
+                job_id: parseInt(jobId),
+                resume_doc: selectedResumeFile ? selectedResumeFile.name : '',
+                cover_letter: '',
+                expected_salary: '',
+                screening_answers: answers
+            };
+
+            const submitBtn = $('.btn-success');
+            const originalBtnText = submitBtn.html();
+            submitBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Submitting...').prop('disabled', true);
+
+            fetch(JOBS_API_BASE + '/apply/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify(payload)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.detail || 'Failed to submit application.'); });
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    const refNo = result.mss_app_no || ('MSS-APP-' + result.job_applicant_id);
+                    $('#ref-number-display').text(refNo);
+
+                    $('#apply-form').fadeOut(300, function () {
+                        $('#form-steps').fadeOut(300);
+                        $('#logged-in-alert').fadeOut(300);
+                        $('#success-section').hide().removeClass('d-none').fadeIn(500);
+                        window.scrollTo({ top: $('.card-neo').offset().top - 100, behavior: 'smooth' });
+                    });
+                })
+                .catch(err => {
+                    console.error('Error submitting application:', err);
+                    alert(err.message || 'An error occurred while submitting your application. Please try again.');
+                })
+                .finally(() => {
+                    submitBtn.html(originalBtnText).prop('disabled', false);
+                });
+        }
+    </script>
+
+</body>
+
+</html>

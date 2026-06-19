@@ -1,0 +1,289 @@
+/* Shared MSS header + candidate login/register modals (from home-refer.html) */
+
+#mss-header {
+  z-index: 1030 !important;
+}
+
+#candidateLoginModal,
+#candidateRegisterModal {
+  z-index: 1055 !important;
+}
+
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+
+/* ── Header nav links ───────────────────────────── */
+.mss-dark-link {
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #94A3B8;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.mss-dark-link:hover {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.mss-mob-link {
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #94A3B8;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  text-decoration: none;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.mss-mob-link:hover {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.mss-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(16, 185, 129, 0);
+  }
+}
+
+/* ── Modal shared label ───────────────────────── */
+#candidateLoginModal .mss-label,
+#candidateRegisterModal .mss-label {
+  display: block;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  margin-bottom: 6px;
+}
+
+/* ── Modal input field (scoped — avoids hero .mss-field conflict) ── */
+#candidateLoginModal .mss-modal-field,
+#candidateRegisterModal .mss-modal-field {
+  display: flex;
+  align-items: center;
+  background: #F8FAFC;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  height: 48px;
+}
+
+#candidateLoginModal .mss-modal-field:focus-within,
+#candidateRegisterModal .mss-modal-field:focus-within {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  background: #fff;
+}
+
+#candidateLoginModal .mss-modal-field > i,
+#candidateRegisterModal .mss-modal-field > i {
+  padding: 0 10px 0 14px;
+  color: #CBD5E1;
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+#candidateLoginModal .mss-modal-field input,
+#candidateRegisterModal .mss-modal-field input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0 0.75rem 0 0;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.9rem;
+  color: #0F172A;
+  outline: none;
+  height: 100%;
+  min-width: 0;
+}
+
+#candidateLoginModal .mss-modal-field input::placeholder,
+#candidateRegisterModal .mss-modal-field input::placeholder {
+  color: #CBD5E1;
+  font-weight: 400;
+}
+
+#candidateLoginModal .mss-modal-field > span,
+#candidateRegisterModal .mss-modal-field > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  height: 100%;
+  color: #94A3B8;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+
+#candidateLoginModal .mss-modal-field > span:hover,
+#candidateRegisterModal .mss-modal-field > span:hover {
+  color: #475569;
+}
+
+/* ── Modal divider (or-separator) ──────────────── */
+#candidateLoginModal .mss-modal-sep,
+#candidateRegisterModal .mss-modal-sep {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #ff1f06;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.73rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0.85rem 0;
+}
+
+#candidateLoginModal .mss-modal-sep::before,
+#candidateLoginModal .mss-modal-sep::after,
+#candidateRegisterModal .mss-modal-sep::before,
+#candidateRegisterModal .mss-modal-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #F1F5F9;
+  color:red;
+}
+
+/* ── Social auth buttons ────────────────────────── */
+#candidateLoginModal .mss-social-btn,
+#candidateRegisterModal .mss-social-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.58rem 0.5rem;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 10px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: #fff;
+  text-decoration: none;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+
+/* ── Submit button ─────────────────────────────── */
+#candidateLoginModal .mss-submit,
+#candidateRegisterModal .mss-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.82rem;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  letter-spacing: 0.2px;
+}
+
+#candidateLoginModal .mss-submit:hover,
+#candidateRegisterModal .mss-submit:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+
+/* ── Login modal sizing ─────────────────────────── */
+#candidateLoginModal .modal-content {
+  max-height: none !important;
+  overflow: hidden !important;
+  border-radius: 24px;
+}
+
+#candidateLoginModal .modal-body {
+  overflow-y: visible !important;
+  max-height: none !important;
+}
+
+/* ── Register modal — Bootstrap flex was shrinking & clipping the form ── */
+#candidateRegisterModal .modal-dialog.mss-register-dialog {
+  max-width: 860px;
+  margin: 1.5rem auto;
+}
+
+#candidateRegisterModal .modal-content {
+  display: block !important;
+  flex-direction: unset !important;
+  max-height: none !important;
+  height: auto !important;
+  overflow: visible !important;
+  border-radius: 24px;
+}
+
+#candidateRegisterModal .mss-register-modal-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  flex-shrink: 0 !important;
+  min-height: 540px;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+
+#candidateRegisterModal .mss-register-form-panel {
+  overflow: visible !important;
+  max-height: none !important;
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+#candidateRegisterModal form {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+}
+
+#candidateRegisterModal .mss-modal-sep,
+#candidateRegisterModal form .mss-label,
+#candidateRegisterModal form .mss-modal-field,
+#candidateRegisterModal form .form-check,
+#candidateRegisterModal form .mss-submit {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 767px) {
+  #candidateRegisterModal .mss-register-modal-row {
+    flex-wrap: wrap !important;
+    min-height: auto !important;
+  }
+}

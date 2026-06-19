@@ -1,0 +1,260 @@
+{
+  "education": [
+    {
+      "id": 1,
+      "name": "12th / HSC",
+      "slug": "12th-hsc"
+    },
+    {
+      "id": 2,
+      "name": "Diploma in Mechanical Engineering",
+      "slug": "dme"
+    },
+    {
+      "id": 3,
+      "name": "Diploma in Civil Engineering",
+      "slug": "dce"
+    },
+    {
+      "id": 4,
+      "name": "Diploma in Electrical Engineering",
+      "slug": "dee"
+    },
+    {
+      "id": 5,
+      "name": "Diploma in Electronics & Communication",
+      "slug": "dece"
+    },
+    {
+      "id": 6,
+      "name": "Diploma in Computer Science",
+      "slug": "dcs"
+    },
+    {
+      "id": 7,
+      "name": "Diploma in Automobile Engineering",
+      "slug": "dae"
+    },
+    {
+      "id": 8,
+      "name": "Diploma in Chemical Engineering",
+      "slug": "dche"
+    },
+
+    {
+      "id": 9,
+      "name": "Diploma in Fashion Design",
+      "slug": "dfd"
+    },
+    {
+      "id": 10,
+      "name": "Diploma in Interior Design",
+      "slug": "did"
+    },
+    {
+      "id": 11,
+      "name": "Diploma in Graphic Design",
+      "slug": "dgd"
+    },
+    {
+      "id": 12,
+      "name": "Diploma in Animation",
+      "slug": "d-animation"
+    },
+    {
+      "id": 13,
+      "name": "Diploma in Education (D.Ed)",
+      "slug": "d-ed"
+    },
+    {
+      "id": 14,
+      "name": "Diploma - Other",
+      "slug": "diploma-other"
+    },
+    {
+      "id": 15,
+      "name": "B.E / B.Tech",
+      "slug": "be-btech"
+    },
+    {
+      "id": 16,
+      "name": "B.Sc",
+      "slug": "bsc"
+    },
+    {
+      "id": 17,
+      "name": "B.Com",
+      "slug": "bcom"
+    },
+    {
+      "id": 18,
+      "name": "B.A",
+      "slug": "ba"
+    },
+    {
+      "id": 19,
+      "name": "BBA",
+      "slug": "bba"
+    },
+    {
+      "id": 20,
+      "name": "BCA",
+      "slug": "bca"
+    },
+    {
+      "id": 21,
+      "name": "B.Arch",
+      "slug": "barch"
+    },
+    {
+      "id": 22,
+      "name": "B.Ed",
+      "slug": "bed"
+    },
+    {
+      "id": 23,
+      "name": "BFA (Fine Arts)",
+      "slug": "bfa"
+    },
+    {
+      "id": 24,
+      "name": "B.Litt",
+      "slug": "blitt"
+    },
+    {
+      "id": 25,
+      "name": "BMS (Management Studies)",
+      "slug": "bms"
+    },
+    {
+      "id": 26,
+      "name": "B.Sc IT",
+      "slug": "bsc-it"
+    },
+    {
+      "id": 27,
+      "name": "B.Com (Hons)",
+      "slug": "bcom-hons"
+    },
+    {
+      "id": 28,
+      "name": "UG - Other",
+      "slug": "ug-other"
+    },
+    {
+      "id": 29,
+      "name": "M.E / M.Tech",
+      "slug": "me-mtech"
+    },
+    {
+      "id": 30,
+      "name": "M.Sc",
+      "slug": "msc"
+    },
+    {
+      "id": 31,
+      "name": "M.Com",
+      "slug": "mcom"
+    },
+    {
+      "id": 32,
+      "name": "M.A",
+      "slug": "ma"
+    },
+    {
+      "id": 33,
+      "name": "MBA",
+      "slug": "mba"
+    },
+    {
+      "id": 34,
+      "name": "MCA",
+      "slug": "mca"
+    },
+    {
+      "id": 35,
+      "name": "M.Arch",
+      "slug": "march"
+    },
+    {
+      "id": 36,
+      "name": "M.Ed",
+      "slug": "med"
+    },
+    {
+      "id": 37,
+      "name": "MPT (Physiotherapy)",
+      "slug": "mpt"
+    },
+    {
+      "id": 38,
+      "name": "M.Phil",
+      "slug": "mphil"
+    },
+    {
+      "id": 39,
+      "name": "MFA (Fine Arts)",
+      "slug": "mfa"
+    },
+    {
+      "id": 40,
+      "name": "PG - Other",
+      "slug": "pg-other"
+    },
+    {
+      "id": 41,
+      "name": "PhD - Engineering & Technology",
+      "slug": "phd-engineering"
+    },
+    {
+      "id": 42,
+      "name": "PhD - Science",
+      "slug": "phd-science"
+    },
+    {
+      "id": 43,
+      "name": "PhD - Arts & Humanities",
+      "slug": "phd-arts"
+    },
+    {
+      "id": 44,
+      "name": "PhD - Commerce & Management",
+      "slug": "phd-commerce"
+    },
+    {
+      "id": 45,
+      "name": "PhD - Education",
+      "slug": "phd-education"
+    },
+    {
+      "id": 46,
+      "name": "PhD - Other",
+      "slug": "phd-other"
+    },
+    {
+      "id": 47,
+      "name": "Post Doctorate - Engineering & Technology",
+      "slug": "postdoc-engineering"
+    },
+    {
+      "id": 48,
+      "name": "Post Doctorate - Science",
+      "slug": "postdoc-science"
+    },
+    {
+      "id": 49,
+      "name": "Post Doctorate - Other",
+      "slug": "postdoc-other"
+    },
+    {
+      "id": 50,
+      "name": "CA (Chartered Accountant)",
+      "slug": "ca"
+    },
+    {
+      "id": 51,
+      "name": "Other Professional Course",
+      "slug": "other-professional-course"
+    }
+  ]
+}

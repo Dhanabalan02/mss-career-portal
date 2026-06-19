@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic_settings
+pymysql
+passlib[bcrypt]
+bcrypt<4.0.0
+pyjwt
+python-multipart
+requests

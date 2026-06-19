@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Job Applicants – TMSS Career</title>
+  <link rel="icon" href="images/mss-logo.png" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="portal-layout.css">
+  <script src="portal-layout.js" defer></script>
+  <style>
+    /* ════════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════════ */
+    :root {
+      --bg: #ffffff;
+      --bg2: #f8f8f6;
+      --bg3: #f1efe8;
+      --surface: #ffffff;
+      --border: rgba(0, 0, 0, 0.09);
+      --border2: rgba(0, 0, 0, 0.14);
+      --text1: #1a1a18;
+      --text2: #444441;
+      --text3: #888780;
+      --accent: #534AB7;
+      --accent2: #3C3489;
+      --green: #3B6D11;
+      --green-bg: #EAF3DE;
+      --green-text: #27500A;
+      --amber: #BA7517;
+      --amber-bg: #FAEEDA;
+      --amber-text: #633806;
+      --red: #A32D2D;
+      --red-bg: #FCEBEB;
+      --red-text: #791F1F;
+      --purple-bg: #EEEDFE;
+      --purple-text: #3C3489;
+      --teal: #0F6E56;
+      --teal-bg: #E1F5EE;
+      --teal-text: #085041;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+
+    /* Dark mode — triggered by portal-layout.js via body.dark-theme */
+    [data-theme="dark"],
+    body.dark-theme {
+      --bg: #0d0d0d;
+      --bg2: #111111;
+      --bg3: #181818;
+      --surface: #0d0d0d;
+      --border: rgba(255, 255, 255, 0.10);
+      --border2: rgba(255, 255, 255, 0.16);
+      --text1: #f0efe8;
+      --text2: #b4b2a9;
+      --text3: #666560;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+      --purple-bg: #26215C;
+      --purple-text: #CECBF6;
+      --green-bg: #173404;
+      --green-text: #C0DD97;
+      --amber-bg: #412402;
+      --amber-text: #FAC775;
+      --red-bg: #501313;
+      --red-text: #F7C1C1;
+      --teal-bg: #04342C;
+      --teal-text: #9FE1CB;
+    }
+
+    /* ════════════════════════════════════════
+   RESET & BASE
+════════════════════════════════════════ */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text1);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ════════════════════════════════════════
+   PAGE SHELL
+════════════════════════════════════════ */
+    .page-shell {
+      transition: padding-left 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      background: var(--surface);
+      border-bottom: 0.5px solid var(--border2);
+      padding: 15px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .page-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text1);
+    }
+
+    .page-subtitle {
+      font-size: 12.5px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .header-btn {
+      padding: 8px 15px;
+      border: 0.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--text1);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+
+    .header-btn:hover {
+      background: var(--bg3);
+    }
+
+    /* ── Content padding ── */
+    .page-content {
+      padding: 22px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+    .stat-card .stat-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; margin-bottom: 12px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 28px; font-weight: 700; letter-spacing: -.5px;
+      line-height: 1; margin-bottom: 5px; color: var(--text1);
+    }
+
+    .stat-card .stat-label {
+      font-size: 12.5px; color: var(--text3); font-weight: 400;
+    }
+
+    .stat-card .stat-delta { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+    /* Color variants */
+    .stat-card.sc-total      { border-top-color: var(--accent); }
+    .stat-card.sc-total      .stat-icon { background: var(--purple-bg); color: var(--accent); }
+    .stat-card.sc-interview  { border-top-color: var(--amber); }
+    .stat-card.sc-interview  .stat-icon { background: var(--amber-bg); color: var(--amber); }
+    .stat-card.sc-offers     { border-top-color: var(--green); }
+    .stat-card.sc-offers     .stat-icon { background: var(--green-bg); color: var(--green); }
+    .stat-card.sc-onboarding { border-top-color: var(--teal); }
+    .stat-card.sc-onboarding .stat-icon { background: var(--teal-bg); color: var(--teal); }
+
+    .stat-sub {
+      font-size: 11.5px;
+      color: var(--text3);
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stat-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── Filters bar ── */
+    .filters-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 180px;
+      padding: 9px 14px;
+      border: 0.5px solid var(--border2);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      background: var(--surface);
+      color: var(--text1);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text3);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .filter-select {
+      padding: 9px 12px;
+      border: 0.5px solid var(--border2);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text1);
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.15s;
+      min-width: 140px;
+    }
+
+    .filter-select:focus {
+      border-color: var(--accent);
+    }
+
+    /* ── Stage chips ── */
+    .stage-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stage-chip {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .chip-count {
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .table-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 13px 18px;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--surface);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr {
+      background: var(--bg2);
+      border-bottom: 0.5px solid var(--border2);
+    }
+
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text3);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 13px 16px;
+      color: var(--text1);
+      border-bottom: 0.5px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+
+    tbody tr:hover {
+      background: var(--bg2);
+    }
+
+    .td-flex {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar-sm {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .candidate-name {
+      font-weight: 600;
+      font-size: 13.5px;
+      color: var(--text1);
+    }
+
+    .candidate-id {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    /* ── Stage badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-applied {
+      background: var(--purple-bg);
+      color: var(--purple-text);
+    }
+
+    .badge-screened {
+      background: #E6F1FB;
+      color: #0C447C;
+    }
+
+    .badge-interview {
+      background: var(--amber-bg);
+      color: var(--amber-text);
+    }
+
+    .badge-offer {
+      background: #EEEDFE;
+      color: #3C3489;
+    }
+
+    .badge-accepted {
+      background: var(--green-bg);
+      color: var(--green-text);
+    }
+
+    .badge-onboarding {
+      background: var(--teal-bg);
+      color: var(--teal-text);
+    }
+
+    .badge-rejected {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    [data-theme="dark"] .badge-applied,
+    body.dark-theme .badge-applied {
+      background: #26215C;
+      color: #CECBF6;
+    }
+
+    [data-theme="dark"] .badge-screened,
+    body.dark-theme .badge-screened {
+      background: #042C53;
+      color: #85B7EB;
+    }
+
+    [data-theme="dark"] .badge-interview,
+    body.dark-theme .badge-interview {
+      background: #412402;
+      color: #FAC775;
+    }
+
+    [data-theme="dark"] .badge-offer,
+    body.dark-theme .badge-offer {
+      background: #26215C;
+      color: #CECBF6;
+    }
+
+    [data-theme="dark"] .badge-accepted,
+    body.dark-theme .badge-accepted {
+      background: #173404;
+      color: #C0DD97;
+    }
+
+    [data-theme="dark"] .badge-onboarding,
+    body.dark-theme .badge-onboarding {
+      background: #04342C;
+      color: #9FE1CB;
+    }
+
+    [data-theme="dark"] .badge-rejected,
+    body.dark-theme .badge-rejected {
+      background: #501313;
+      color: #F7C1C1;
+    }
+
+    /* ── Interview status ── */
+    .interview-status {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-scheduled {
+      color: var(--amber);
+    }
+
+    .status-scheduled .status-dot {
+      background: var(--amber);
+    }
+
+    .status-completed {
+      color: var(--teal);
+    }
+
+    .status-completed .status-dot {
+      background: var(--teal);
+    }
+
+    .status-pending {
+      color: var(--text3);
+    }
+
+    .status-pending .status-dot {
+      background: var(--text3);
+    }
+
+    /* ── Action buttons ── */
+    .action-btn {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 0.5px solid transparent;
+      transition: opacity 0.15s;
+    }
+
+    .action-btn:hover {
+      opacity: 0.82;
+    }
+
+    .action-btn.blue {
+      background: #E6F1FB;
+      color: #0C447C;
+      border-color: #B5D4F4;
+    }
+
+    .action-btn.green {
+      background: var(--green-bg);
+      color: var(--green-text);
+      border-color: #C0DD97;
+    }
+
+    .action-btn.red {
+      background: var(--red-bg);
+      color: var(--red-text);
+      border-color: #F7C1C1;
+    }
+
+    [data-theme="dark"] .action-btn.blue,
+    body.dark-theme .action-btn.blue {
+      background: #042C53;
+      color: #85B7EB;
+      border-color: #0C447C;
+    }
+
+    [data-theme="dark"] .action-btn.green,
+    body.dark-theme .action-btn.green {
+      background: #173404;
+      color: #C0DD97;
+      border-color: #3B6D11;
+    }
+
+    [data-theme="dark"] .action-btn.red,
+    body.dark-theme .action-btn.red {
+      background: #501313;
+      color: #F7C1C1;
+      border-color: #791F1F;
+    }
+
+    .checkbox {
+      width: 15px;
+      height: 15px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 13px 18px;
+      border-top: 0.5px solid var(--border);
+      background: var(--bg2);
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      padding: 0 10px;
+      border: 0.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--text1);
+      border-radius: 7px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover {
+      background: var(--bg3);
+    }
+
+    .page-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .modal-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text1);
+      margin-bottom: 16px;
+    }
+
+    .modal-overlay p {
+      color: var(--text2);
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group.span2 {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 9px 12px;
+      border: 0.5px solid var(--border2);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      background: var(--surface);
+      color: var(--text1);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .btn-primary {
+      padding: 9px 20px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+    }
+
+    .btn-danger {
+      padding: 9px 20px;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.88;
+    }
+
+    /* ════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      .stats-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .page-content {
+        padding: 16px 16px 56px;
+      }
+
+      .page-header {
+        padding: 14px 16px;
+      }
+
+      .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-input,
+      .filter-select {
+        width: 100%;
+        min-width: 0;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.span2 {
+        grid-column: span 1;
+      }
+
+      .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-shell">
+
+    <!-- Page header -->
+    <header class="page-header">
+      <div>
+        <div class="page-title">Job Applicants</div>
+        <div class="page-subtitle">247 total candidates across all positions</div>
+      </div>
+    </header>
+
+    <!-- Page content -->
+    <div class="page-content">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card sc-total">
+          <div class="stat-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
+          <div class="stat-value">247</div>
+          <div class="stat-label">Total Applicants</div>
+          <div class="stat-delta">Across 5 positions</div>
+        </div>
+        <div class="stat-card sc-interview">
+          <div class="stat-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
+          <div class="stat-value">38</div>
+          <div class="stat-label">In Interview</div>
+          <div class="stat-delta">15.4% of pipeline</div>
+        </div>
+        <div class="stat-card sc-offers">
+          <div class="stat-icon"><i class="ti ti-send" aria-hidden="true"></i></div>
+          <div class="stat-value">31</div>
+          <div class="stat-label">Offers</div>
+          <div class="stat-delta">21 accepted so far</div>
+        </div>
+        <div class="stat-card sc-onboarding">
+          <div class="stat-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
+          <div class="stat-value">18</div>
+          <div class="stat-label">Onboarding</div>
+          <div class="stat-delta">Active this month</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-bar">
+        <input class="search-input" type="text" id="searchInput" placeholder="Search candidates…"
+          oninput="filterApplicants()">
+        <select class="filter-select" id="fJob" onchange="filterApplicants()">
+          <option value="">All Job Posts</option>
+          <option>Senior Mathematics Teacher</option>
+          <option>English Language Arts Teacher</option>
+          <option>School Counselor</option>
+          <option>Physical Education Instructor</option>
+          <option>Vice Principal – Academics</option>
+        </select>
+        <select class="filter-select" id="fStage" onchange="filterApplicants()">
+          <option value="">All Stages</option>
+          <option>Applied</option>
+          <option>Screened</option>
+          <option>Interview</option>
+          <option>Offer</option>
+          <option>Offer Accepted</option>
+          <option>Onboarding</option>
+          <option>Rejected</option>
+        </select>
+        <select class="filter-select" id="fExp" onchange="filterApplicants()">
+          <option value="">All Experience</option>
+          <option>0-3 yrs</option>
+          <option>3-6 yrs</option>
+          <option>6-10 yrs</option>
+          <option>10+ yrs</option>
+        </select>
+      </div>
+
+      <!-- Stage chips -->
+      <div class="stage-chips" id="stageChips"></div>
+
+      <!-- Table -->
+      <div class="table-wrap">
+        <div class="table-header">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="table-title">All Applicants</span>
+            <span id="selectedCount" style="font-size:12px;color:var(--text3);"></span>
+          </div>
+          <span id="resultCount" style="font-size:12px;color:var(--text3);">247 candidates</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>SI NO</th>
+                <th>Candidate</th>
+                <th>Applied For</th>
+                <th>Applied Date</th>
+                <th>Experience</th>
+                <th>Current Stage</th>
+                <th>Interview Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="applicantBody"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+    </div><!-- /page-content -->
+  </div><!-- /page-shell -->
+
+  <!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+  <script>
+    /* ── HR nav (portal-layout.js) ── */
+    localStorage.setItem('userRole', 'hr');
+
+    /* ── Candidate data (merged from original source) ── */
+    /* ── API Configuration ── */
+    const JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : 'http://localhost:8000';
+    const token = localStorage.getItem('access_token');
+
+    let activeStageFilter = '';
+    let applicantsData = [];
+
+    // Redirect to login if token is missing
+    if (!token) {
+      window.location.href = '/mss-career-portal/home';
+    }
+
+    /* ── Load Job Posts into Filter Dropdown ── */
+    function loadJobOptions() {
+      fetch(JOBS_API_BASE + '/jobs', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(jobs => {
+        const select = document.getElementById('fJob');
+        select.innerHTML = '<option value="">All Job Posts</option>';
+        jobs.forEach(job => {
+          const opt = document.createElement('option');
+          opt.value = job.job_id;
+          opt.textContent = job.job_title;
+          select.appendChild(opt);
+        });
+      })
+      .catch(err => console.error('Failed to load jobs filter options:', err));
+    }
+
+    /* ── Fetch Applicants from API ── */
+    function fetchApplicants() {
+      const q = document.getElementById('searchInput').value;
+      const jobId = document.getElementById('fJob').value;
+      const stage = document.getElementById('fStage').value || activeStageFilter;
+      const exp = document.getElementById('fExp').value;
+
+      const params = new URLSearchParams();
+      if (jobId) params.append('job_id', jobId);
+      if (stage) params.append('stage', stage);
+      if (q) params.append('search', q);
+      if (exp) params.append('exp', exp);
+
+      fetch(JOBS_API_BASE + '/jobs/applicants?' + params.toString(), {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(data => {
+        // Update stats card values
+        document.querySelector('.sc-total .stat-value').textContent = data.stats.total;
+        document.querySelector('.sc-interview .stat-value').textContent = data.stats.interview;
+        document.querySelector('.sc-offers .stat-value').textContent = data.stats.offers;
+        document.querySelector('.sc-onboarding .stat-value').textContent = data.stats.onboarding;
+
+        // Render stage chips
+        renderStageChips(data.chips);
+
+        // Render table rows
+        applicantsData = data.applicants;
+        renderApplicants(applicantsData);
+      })
+      .catch(err => {
+        console.error('Failed to load applicants:', err);
+        const tbody = document.getElementById('applicantBody');
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3);">Unable to load candidates. Please try again.</td></tr>`;
+        }
+      });
+    }
+
+    /* ── Build stage chips dynamically ── */
+    const STAGE_CONFIG = [
+      { name: 'Applied', color: '#534AB7', bg: '#EEEDFE' },
+      { name: 'Screened', color: '#185FA5', bg: '#E6F1FB' },
+      { name: 'Interview', color: '#BA7517', bg: '#FAEEDA' },
+      { name: 'Offer', color: '#534AB7', bg: '#EEEDFE' },
+      { name: 'Offer Accepted', color: '#3B6D11', bg: '#EAF3DE' },
+      { name: 'Onboarding', color: '#0F6E56', bg: '#E1F5EE' },
+      { name: 'Rejected', color: '#A32D2D', bg: '#FCEBEB' },
+    ];
+
+    function renderStageChips(chipsData) {
+      const chipsEl = document.getElementById('stageChips');
+      chipsEl.innerHTML = '';
+      STAGE_CONFIG.forEach(s => {
+        const count = chipsData[s.name] || 0;
+        const chip = document.createElement('button');
+        chip.className = 'stage-chip';
+        chip.dataset.stage = s.name;
+        chip.style.cssText = `background:${s.bg};color:${s.color};border-color:${s.color}30;`;
+        if (activeStageFilter === s.name) {
+          chip.style.outline = `2px solid ${s.color}`;
+        }
+        chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${count}</span>`;
+        chip.onclick = () => {
+          activeStageFilter = activeStageFilter === s.name ? '' : s.name;
+          document.getElementById('fStage').value = activeStageFilter;
+          fetchApplicants();
+        };
+        chipsEl.appendChild(chip);
+      });
+    }
+
+    /* ── Helpers ── */
+    function stageBadge(stage) {
+      const map = {
+        'Applied': 'badge-applied', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
+        'Offer': 'badge-offer', 'Offer Accepted': 'badge-accepted',
+        'Onboarding': 'badge-onboarding', 'Rejected': 'badge-rejected'
+      };
+      return `<span class="badge ${map[stage] || ''}">${stage}</span>`;
+    }
+
+    function interviewStatusHtml(s) {
+      if (s === 'Scheduled') return `<span class="interview-status status-scheduled"><span class="status-dot"></span>Scheduled</span>`;
+      if (s === 'Completed') return `<span class="interview-status status-completed"><span class="status-dot"></span>Completed</span>`;
+      if (s === 'Pending') return `<span class="interview-status status-pending"><span class="status-dot"></span>Pending</span>`;
+      return `<span style="color:var(--text3);">${s || '—'}</span>`;
+    }
+
+    function avatarGradient(name) {
+      const p = [
+        ['#6366f1', '#8b5cf6'], ['#3b82f6', '#06b6d4'], ['#10b981', '#0891b2'],
+        ['#f59e0b', '#ef4444'], ['#534AB7', '#185FA5'], ['#0F6E56', '#3B6D11'], ['#BA7517', '#A32D2D']
+      ];
+      return p[name.charCodeAt(0) % p.length].join(',');
+    }
+
+    /* ── Render table ── */
+    function renderApplicants(list) {
+      const tbody = document.getElementById('applicantBody');
+      tbody.innerHTML = '';
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3);">No candidates match your filters</td></tr>`;
+        document.getElementById('resultCount').textContent = '0 candidates';
+        const pg = document.getElementById('pagination');
+        if (pg) pg.style.display = 'none';
+        return;
+      } else {
+        const pg = document.getElementById('pagination');
+        if (pg) pg.style.display = 'flex';
+      }
+      list.forEach((c, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td style="font-weight:600;color:var(--text2);"> ${index + 1} </td>
+      <td>
+        <div class="td-flex">
+          <div class="avatar-sm" style="background:linear-gradient(135deg,${avatarGradient(c.name)});">${c.avatar}</div>
+          <div>
+            <div class="candidate-name">${c.name}</div>
+            <div class="candidate-id">APP-${String(c.id).padStart(4, '0')}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--text2);max-width:180px;">${c.job}</td>
+      <td style="color:var(--text3);white-space:nowrap;">${c.appliedDate}</td>
+      <td style="font-weight:500;">${c.min_exp}-${c.max_exp} yrs</td>
+      <td>${stageBadge(c.stage)}</td>
+      <td>${interviewStatusHtml(c.interviewStatus)}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="action-btn blue" onclick="event.stopPropagation(); location.href='/mss-career-portal/hr/candidate-profile?id=${c.id}'">Profile</button>
+          ${(c.stage === 'Screened' || c.stage === 'Applied') ? `<button class="action-btn green" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})">Schedule</button>` : ''}
+          ${c.stage !== 'Rejected' ? `<button class="action-btn red" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')">Reject</button>` : ''}
+        </div>
+      </td>`;
+        tbody.appendChild(tr);
+      });
+      document.getElementById('resultCount').textContent = `${list.length} candidate${list.length !== 1 ? 's' : ''}`;
+    }
+
+    /* ── Filter ── */
+    function filterApplicants() {
+      // Re-trigger API fetch when dropdowns change
+      fetchApplicants();
+    }
+
+    /* ── Modal helper ── */
+    function showModal(html) {
+      const ov = document.createElement('div');
+      ov.className = 'modal-overlay';
+      ov.innerHTML = `<div class="modal-box">${html}</div>`;
+      ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
+      document.body.appendChild(ov);
+    }
+
+    /* ── Schedule Interview modal ── */
+    function scheduleInterviewModal(applicantId, name, jobId) {
+      showModal(`
+    <div class="modal-title"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview</div>
+    <p>Scheduling interview for <strong>${name}</strong></p>
+    <div class="form-grid">
+      <div class="form-group span2">
+        <label>Interview Round</label>
+        <input type="text" id="schRound" placeholder="e.g. Round 1 – Technical Interview" value="Round 1 - Technical Interview">
+      </div>
+      <div class="form-group">
+        <label>Mode</label>
+        <select id="interviewMode" onchange="toggleInterviewModeField()">
+          <option value="online">Online</option>
+          <option value="offline">In-Person</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label><input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}">
+      </div>
+      <div class="form-group" style="display:flex; gap:10px;">
+        <div style="flex:1;">
+          <label>Start Time</label><input type="time" id="schTime" value="10:00">
+        </div>
+        <div style="flex:1;">
+          <label>End Time</label><input type="time" id="schEndTime" value="11:00">
+        </div>
+      </div>
+      <div class="form-group span2" id="dynamicModeContainer">
+        <label id="modeLabel">Meeting Link</label>
+        <input type="text" id="modeInput" placeholder="Enter online meeting URL">
+      </div>
+      <div class="form-group span2">
+        <label>Interviewer</label>
+        <select id="schInterviewer">
+          <option value="">Loading interviewers…</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
+      <button class="btn-primary" onclick="submitSchedule(${applicantId}, ${jobId})"><i class="ti ti-calendar" aria-hidden="true"></i> Confirm Schedule</button>
+    </div>`);
+      loadInterviewers('schInterviewer');
+    }
+
+    function submitSchedule(applicantId, jobId) {
+      const round = document.getElementById('schRound').value.trim();
+      const mode = document.getElementById('interviewMode').value;
+      const schDate = document.getElementById('schDate').value;
+      const schTime = document.getElementById('schTime').value;
+      const schEndTime = document.getElementById('schEndTime').value;
+      const modeInput = document.getElementById('modeInput').value.trim();
+      const interviewer = document.getElementById('schInterviewer').value.trim();
+
+      if (!round || !schDate || !schTime || !schEndTime) {
+        alert('Please fill out all required fields (Round, Date, Start Time, End Time).');
+        return;
+      }
+
+      // Combine date and time to ISO string
+      const scheduledAtIso = `${schDate}T${schTime}:00`;
+      const endTimeAtIso = `${schDate}T${schEndTime}:00`;
+
+      const payload = {
+        job_id: jobId,
+        job_applicant_id: applicantId,
+        interview_round: round,
+        scheduled_at: scheduledAtIso,
+        end_time_at: endTimeAtIso,
+        interview_mode: mode,
+        meeting_link: mode === 'online' ? modeInput : null,
+        location: mode === 'offline' ? modeInput : null,
+        interviewer_name: interviewer
+      };
+
+      fetch(JOBS_API_BASE + '/job-interviews/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to schedule interview');
+        return res.json();
+      })
+      .then(() => {
+        if (window.showToast) {
+          window.showToast('Interview scheduled successfully!', 'success');
+        } else {
+          alert('Interview scheduled successfully!');
+        }
+        document.querySelector('.modal-overlay').remove();
+        fetchApplicants();
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error scheduling interview: ' + err.message);
+      });
+    }
+
+    /* ── Interviewer dropdown loader ── */
+    function loadInterviewers(selectId) {
+      fetch(JOBS_API_BASE + '/auth/interviewers', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      .then(res => res.ok ? res.json() : Promise.reject(res))
+      .then(list => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        if (!list.length) {
+          sel.innerHTML = '<option value="">No interviewers found (role_id=3)</option>';
+          return;
+        }
+        sel.innerHTML = list.map(i =>
+          `<option value="${i.name}">${i.name} (${i.email})</option>`
+        ).join('');
+      })
+      .catch(() => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        const wrapper = sel.parentElement;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = selectId;
+        input.placeholder = 'Enter interviewer name';
+        wrapper.replaceChild(input, sel);
+      });
+    }
+
+    /* ── Reject Candidate modal ── */
+    function rejectCandidateModal(applicantId, name) {
+      showModal(`
+    <div class="modal-title">Reject Candidate</div>
+    <p>You are about to reject <strong>${name}</strong> from this position.</p>
+    <div class="form-group">
+      <label>Rejection Reason *</label>
+      <select id="rejReason">
+        <option>Does not meet experience requirements</option>
+        <option>Qualification mismatch</option>
+        <option>Position filled</option>
+        <option>Better candidates selected</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label>Additional Notes</label>
+      <textarea id="rejNotes" placeholder="Optional feedback…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
+      <button class="btn-danger" onclick="submitRejection(${applicantId})">Confirm Rejection</button>
+    </div>`);
+    }
+
+    function submitRejection(applicantId) {
+      const reason = document.getElementById('rejReason').value;
+      const notes = document.getElementById('rejNotes').value.trim();
+
+      fetch(JOBS_API_BASE + `/jobs/applicants/${applicantId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          status: 'rejected',
+          remarks: `${reason}. Notes: ${notes}`
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Rejection request failed');
+        return res.json();
+      })
+      .then(() => {
+        if (window.showToast) {
+          window.showToast('Candidate rejected.', 'error');
+        } else {
+          alert('Candidate rejected.');
+        }
+        document.querySelector('.modal-overlay').remove();
+        fetchApplicants();
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error rejecting candidate.');
+      });
+    }
+
+    /* ── Init Page ── */
+    loadJobOptions();
+    fetchApplicants();
+
+    /* ── Pagination (static mockup wrapper) ── */
+    const pg = document.getElementById('pagination');
+    pg.innerHTML = '';
+    [1].forEach((p, i) => {
+      const b = document.createElement('button');
+      b.className = 'page-btn active';
+      b.textContent = p;
+      pg.appendChild(b);
+    });
+    const pgInfo = document.createElement('span');
+    pgInfo.style.cssText = 'margin-left:auto;font-size:12px;color:var(--text3);';
+    pgInfo.textContent = 'Page 1 of 1';
+    pg.appendChild(pgInfo);
+
+    // Handler function to toggle label and placeholder text
+    function toggleInterviewModeField() {
+      const mode = document.getElementById('interviewMode').value;
+      const label = document.getElementById('modeLabel');
+      const input = document.getElementById('modeInput');
+
+      if (mode === 'online') {
+        label.innerText = 'Meeting Link';
+        input.placeholder = 'https://meet.google.com/...';
+        input.value = '';
+      } else {
+        label.innerText = 'Location';
+        input.placeholder = 'Enter institution address';
+        input.value = '';
+      }
+    }
+
+  </script>
+</body>
+
+</html>

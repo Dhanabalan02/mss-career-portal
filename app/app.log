@@ -1,0 +1,301 @@
+[2026-06-18 23:40:39] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:40:39] INFO in database: Database engine created successfully.
+[2026-06-18 23:40:40] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:40:49] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:40:49] INFO in database: Database engine created successfully.
+[2026-06-18 23:40:50] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:40:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:40:52] INFO in database: Database engine created successfully.
+[2026-06-18 23:40:52] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:41:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:41:08] INFO in database: Database engine created successfully.
+[2026-06-18 23:41:09] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:41:33] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:41:34] INFO in database: Database engine created successfully.
+[2026-06-18 23:42:00] INFO in jobs_crud: Job post created by admin 3
+[2026-06-18 23:52:23] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:52:23] INFO in database: Database engine created successfully.
+[2026-06-18 23:52:24] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:52:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:52:40] INFO in database: Database engine created successfully.
+[2026-06-18 23:52:40] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:52:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:52:50] INFO in database: Database engine created successfully.
+[2026-06-18 23:52:51] INFO in main: FastAPI application has started successfully.
+[2026-06-18 23:53:48] INFO in config: Constructing the database URL from environment variables.
+[2026-06-18 23:53:48] INFO in database: Database engine created successfully.
+[2026-06-19 00:08:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:08:43] INFO in database: Database engine created successfully.
+[2026-06-19 00:08:43] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:10:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:10:10] INFO in database: Database engine created successfully.
+[2026-06-19 00:11:04] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-19 00:11:21] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:11:39] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:12:22] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:12:42] WARNING in auth_crud: Unauthorized login attempt for email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:14:14] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:14:14] INFO in database: Database engine created successfully.
+[2026-06-19 00:14:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:14:28] INFO in database: Database engine created successfully.
+[2026-06-19 00:14:36] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:14:36] INFO in database: Database engine created successfully.
+[2026-06-19 00:15:57] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:15:57] INFO in database: Database engine created successfully.
+[2026-06-19 00:15:58] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:00] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:00] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:00] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:01] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:02] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:02] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:10] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:11] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:11] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:16:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:30] INFO in database: Database engine created successfully.
+[2026-06-19 00:16:42] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:16:42] INFO in database: Database engine created successfully.
+[2026-06-19 00:17:00] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:21:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:41] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:41] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:21:45] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:45] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:45] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:21:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:51] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:51] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:21:56] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:21:56] INFO in database: Database engine created successfully.
+[2026-06-19 00:21:56] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:03] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:03] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:08] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:09] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:15] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:16] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:22] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:22] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:22] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:26] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:26] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:27] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:30] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:31] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:35] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:35] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:35] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:41] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:41] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:46] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:46] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:46] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:22:55] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:22:55] INFO in database: Database engine created successfully.
+[2026-06-19 00:22:56] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:23:01] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:23:01] INFO in database: Database engine created successfully.
+[2026-06-19 00:23:01] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:23:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:23:43] INFO in database: Database engine created successfully.
+[2026-06-19 00:23:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:23:51] INFO in database: Database engine created successfully.
+[2026-06-19 00:24:06] INFO in auth_crud: Admin ID 5 logged out from IP: 127.0.0.1
+[2026-06-19 00:24:16] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:27:04] INFO in auth_crud: Successful login for hr_team email: hradmin.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 00:29:01] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:29:01] INFO in database: Database engine created successfully.
+[2026-06-19 00:29:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 00:29:03] INFO in database: Database engine created successfully.
+[2026-06-19 00:29:03] INFO in main: FastAPI application has started successfully.
+[2026-06-19 00:32:00] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 10:05:19] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:05:19] INFO in database: Database engine created successfully.
+[2026-06-19 10:06:13] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:06:13] INFO in database: Database engine created successfully.
+[2026-06-19 10:07:04] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:07:04] INFO in database: Database engine created successfully.
+[2026-06-19 10:07:27] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:07:27] INFO in database: Database engine created successfully.
+[2026-06-19 10:08:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:08:52] INFO in database: Database engine created successfully.
+[2026-06-19 10:12:49] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:12:49] INFO in database: Database engine created successfully.
+[2026-06-19 10:13:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:13:28] INFO in database: Database engine created successfully.
+[2026-06-19 10:14:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:14:43] INFO in database: Database engine created successfully.
+[2026-06-19 10:15:14] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:15:14] INFO in database: Database engine created successfully.
+[2026-06-19 10:15:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:15:15] INFO in database: Database engine created successfully.
+[2026-06-19 10:15:15] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:17:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:17:44] INFO in database: Database engine created successfully.
+[2026-06-19 10:17:44] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:17:54] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:17:54] INFO in database: Database engine created successfully.
+[2026-06-19 10:18:34] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:18:34] INFO in database: Database engine created successfully.
+[2026-06-19 10:18:35] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:18:35] INFO in database: Database engine created successfully.
+[2026-06-19 10:18:35] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:22:06] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:22:06] INFO in database: Database engine created successfully.
+[2026-06-19 10:22:06] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:22:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:22:15] INFO in database: Database engine created successfully.
+[2026-06-19 10:29:45] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:29:46] INFO in database: Database engine created successfully.
+[2026-06-19 10:29:46] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:29:55] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:29:55] INFO in database: Database engine created successfully.
+[2026-06-19 10:30:29] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:30:29] INFO in database: Database engine created successfully.
+[2026-06-19 10:30:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:30:30] INFO in database: Database engine created successfully.
+[2026-06-19 10:30:30] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:31:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:31:09] INFO in database: Database engine created successfully.
+[2026-06-19 10:31:10] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:32:49] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:32:49] INFO in database: Database engine created successfully.
+[2026-06-19 10:32:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:32:50] INFO in database: Database engine created successfully.
+[2026-06-19 10:32:50] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:26] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:26] INFO in database: Database engine created successfully.
+[2026-06-19 10:37:26] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:34] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:34] INFO in database: Database engine created successfully.
+[2026-06-19 10:37:34] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:50] INFO in database: Database engine created successfully.
+[2026-06-19 10:37:51] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:37:59] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:37:59] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:00] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:07] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:07] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:07] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:13] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:13] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:14] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:22] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:22] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:23] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:29] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:29] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:29] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:38] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:38] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:38] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:38:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:38:44] INFO in database: Database engine created successfully.
+[2026-06-19 10:38:45] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:39:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:39:08] INFO in database: Database engine created successfully.
+[2026-06-19 10:42:58] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:42:58] INFO in database: Database engine created successfully.
+[2026-06-19 10:43:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:43:40] INFO in database: Database engine created successfully.
+[2026-06-19 10:43:42] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:43:42] INFO in database: Database engine created successfully.
+[2026-06-19 10:43:42] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:45:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:45:40] INFO in database: Database engine created successfully.
+[2026-06-19 10:45:40] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:46:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:46:09] INFO in database: Database engine created successfully.
+[2026-06-19 10:46:17] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:46:17] INFO in database: Database engine created successfully.
+[2026-06-19 10:46:18] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:50:19] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:50:19] INFO in database: Database engine created successfully.
+[2026-06-19 10:50:20] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:51:00] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:51:00] INFO in database: Database engine created successfully.
+[2026-06-19 10:53:57] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:53:57] INFO in database: Database engine created successfully.
+[2026-06-19 10:53:57] INFO in main: FastAPI application has started successfully.
+[2026-06-19 10:54:17] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 10:54:17] INFO in database: Database engine created successfully.
+[2026-06-19 11:01:59] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:01:59] INFO in database: Database engine created successfully.
+[2026-06-19 11:01:59] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:09:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:09:41] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:30] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:30] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:31] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:31] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:32] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:11:43] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:43] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:11:44] INFO in database: Database engine created successfully.
+[2026-06-19 11:11:44] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:12:57] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:12:57] INFO in database: Database engine created successfully.
+[2026-06-19 11:12:58] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:12:58] INFO in database: Database engine created successfully.
+[2026-06-19 11:12:58] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:12:58] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 11:13:06] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-19 11:24:48] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:24:48] INFO in database: Database engine created successfully.
+[2026-06-19 11:24:48] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:25:09] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:25:09] INFO in database: Database engine created successfully.
+[2026-06-19 11:25:10] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:47:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:47:40] INFO in database: Database engine created successfully.
+[2026-06-19 11:47:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:47:41] INFO in database: Database engine created successfully.
+[2026-06-19 11:47:41] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:47:53] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-19 11:54:07] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:54:07] INFO in database: Database engine created successfully.
+[2026-06-19 11:54:07] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:54:10] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:54:10] INFO in database: Database engine created successfully.
+[2026-06-19 11:54:10] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:54:13] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:54:13] INFO in database: Database engine created successfully.
+[2026-06-19 11:54:13] INFO in main: FastAPI application has started successfully.
+[2026-06-19 11:54:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 11:54:52] INFO in database: Database engine created successfully.
+[2026-06-19 12:08:17] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:08:17] INFO in database: Database engine created successfully.
+[2026-06-19 12:08:17] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:12:59] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:12:59] INFO in database: Database engine created successfully.
+[2026-06-19 12:12:59] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:13:08] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:13:08] INFO in database: Database engine created successfully.
+[2026-06-19 12:13:09] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:13:23] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:13:23] INFO in database: Database engine created successfully.
+[2026-06-19 12:27:21] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:27:21] INFO in database: Database engine created successfully.
+[2026-06-19 12:27:21] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:28:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:28:15] INFO in database: Database engine created successfully.
+[2026-06-19 12:28:15] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:28:32] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:28:32] INFO in database: Database engine created successfully.
+[2026-06-19 12:28:33] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:33:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:33:52] INFO in database: Database engine created successfully.
+[2026-06-19 12:33:53] INFO in main: FastAPI application has started successfully.
+[2026-06-19 12:34:04] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 12:34:04] INFO in database: Database engine created successfully.
+[2026-06-19 13:12:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-19 13:12:51] INFO in database: Database engine created successfully.
+[2026-06-19 13:13:58] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
