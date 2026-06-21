@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus, OfferAcceptanceStatus
 from app.models.job_post_model import JobPost, JobStatus
-from app.models.interview_schedule_model import JobInterviewSchedule
+from app.models.interview_schedule_model import JobInterviewSchedule, InterviewStatus
 from app.models.user_model import Users
 from app.models.candidate_metadata_model import CandidateMetadata
 from app.models.candidate_experience_model import CandidateExperience
@@ -42,21 +42,61 @@ def _days_ago(dt) -> int:
         return 0
 
 
-def _get_admin_school(db: Session, admin_id: int) -> str:
+def _get_admin_job_filter(db: Session, admin_id: int):
+    from sqlalchemy import text, or_, func
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
-    return (admin.unit_id or "") if admin else ""
+    if not admin:
+        return JobPost.job_id == -1
+
+    admin_email = (admin.email or "").strip().lower()
+    
+    # Check if there is any interview schedule where this admin is the interviewer
+    has_interviews = db.query(JobInterviewSchedule).filter(
+        func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email
+    ).first() is not None
+
+    if not has_interviews:
+        # If this logic is false, then loads no data and display in the dashboard
+        return JobPost.job_id == -1
+
+    school_name = ""
+    if admin.unit_id:
+        result = db.execute(text("SELECT unit_name FROM units WHERE id = :unit_id"), {"unit_id": admin.unit_id}).fetchone()
+        if result and result[0]:
+            school_name = result[0]
+
+    iv_job_ids = [
+        r[0] for r in db.query(JobInterviewSchedule.job_id)
+        .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
+        .distinct()
+        .all()
+    ]
+    
+    if school_name and iv_job_ids:
+        return or_(JobPost.school_name == school_name, JobPost.job_id.in_(iv_job_ids))
+    elif school_name:
+        return JobPost.school_name == school_name
+    elif iv_job_ids:
+        return JobPost.job_id.in_(iv_job_ids)
+    else:
+        return JobPost.job_id == -1
+
 
 
 def get_school_dashboard(db: Session, admin_id: int) -> dict:
-    school = _get_admin_school(db, admin_id)
+    job_filter = _get_admin_job_filter(db, admin_id)
+    admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
+    admin_email = (admin.email or "").strip().lower() if admin else ""
+
+    from sqlalchemy import func
 
     jobs_q = db.query(JobPost).filter(
-        JobPost.school_name == school,
+        job_filter,
         JobPost.job_status == JobStatus.PUBLISH,
     )
     active_jobs = jobs_q.count()
 
-    all_job_ids = [j.job_id for j in db.query(JobPost.job_id).filter(JobPost.school_name == school).all()]
+    all_job_ids = [j.job_id for j in db.query(JobPost.job_id).filter(job_filter).all()]
     apps_q = db.query(JobApplicant).filter(JobApplicant.job_id.in_(all_job_ids)) if all_job_ids else None
     total_applicants = apps_q.count() if apps_q else 0
     offers_sent = apps_q.filter(JobApplicant.issue_offer == 1).count() if apps_q else 0
@@ -66,9 +106,10 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .join(JobPost, JobInterviewSchedule.job_id == JobPost.job_id)
         .join(JobApplicant, JobInterviewSchedule.job_applicant_id == JobApplicant.job_applicant_id)
         .join(Users, JobApplicant.user_id == Users.user_id)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
+        .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
         .filter(JobInterviewSchedule.scheduled_date >= date.today())
-        .order_by(JobInterviewSchedule.scheduled_date, JobInterviewSchedule.scheduled_time)
+        .order_by(JobInterviewSchedule.scheduled_date, JobInterviewSchedule.start_time)
     )
     upcoming_rows = upcoming_interviews_q.limit(10).all()
     upcoming_count = upcoming_interviews_q.count()
@@ -81,7 +122,8 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .join(JobPost, JobInterviewSchedule.job_id == JobPost.job_id)
         .join(JobApplicant, JobInterviewSchedule.job_applicant_id == JobApplicant.job_applicant_id)
         .join(Users, JobApplicant.user_id == Users.user_id)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
+        .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
         .all()
     )
     for ci, (iv, user, job) in enumerate(all_iv_rows):
@@ -91,7 +133,7 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
                 "name": f"{user.first_name} {user.last_name}".strip(),
                 "role": job.job_title or "",
                 "round": iv.interview_round or "Round 1",
-                "time": _format_time(iv.scheduled_time),
+                "time": _format_time(iv.start_time),
                 "color": INTERVIEW_COLORS[ci % len(INTERVIEW_COLORS)],
             })
 
@@ -102,11 +144,11 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         iv_date = iv.scheduled_date
         today = date.today()
         if iv_date == today:
-            label = f"Today {_format_time(iv.scheduled_time)}"
+            label = f"Today {_format_time(iv.start_time)}"
         elif iv_date == today.replace(day=today.day + 1) if today.day < 28 else today:
-            label = f"Tomorrow {_format_time(iv.scheduled_time)}"
+            label = f"Tomorrow {_format_time(iv.start_time)}"
         else:
-            label = f"{_format_date(iv_date)} {_format_time(iv.scheduled_time)}"
+            label = f"{_format_date(iv_date)} {_format_time(iv.start_time)}"
         upcoming_list.append({
             "applicant_id": iv.job_applicant_id,
             "name": name,
@@ -120,7 +162,7 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
     # Recent job posts (max 5)
     recent_jobs_rows = (
         db.query(JobPost)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
         .order_by(JobPost.created_at.desc())
         .limit(5)
         .all()
@@ -144,7 +186,7 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         db.query(JobApplicant, Users, JobPost)
         .join(Users, JobApplicant.user_id == Users.user_id)
         .join(JobPost, JobApplicant.job_id == JobPost.job_id)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
         .order_by(JobApplicant.created_at.desc())
         .limit(5)
         .all()
@@ -204,10 +246,10 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
 
 
 def get_school_jobs(db: Session, admin_id: int) -> list:
-    school = _get_admin_school(db, admin_id)
+    job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobPost)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
         .order_by(JobPost.created_at.desc())
         .all()
     )
@@ -228,14 +270,40 @@ def get_school_jobs(db: Session, admin_id: int) -> list:
 
 
 def get_school_job_detail(db: Session, admin_id: int, job_id: int) -> Optional[dict]:
-    school = _get_admin_school(db, admin_id)
+    job_filter = _get_admin_job_filter(db, admin_id)
     job = db.query(JobPost).filter(
         JobPost.job_id == job_id,
-        JobPost.school_name == school,
+        job_filter,
     ).first()
     if not job:
         return None
+    
     applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == job_id).count()
+    
+    shortlisted_count = db.query(JobApplicant).filter(
+        JobApplicant.job_id == job_id,
+        (JobApplicant.applicant_job_status.in_([ApplicantJobStatus.SELECTED, ApplicantJobStatus.HOLD])) | 
+        (db.query(JobInterviewSchedule).filter(JobInterviewSchedule.job_applicant_id == JobApplicant.job_applicant_id).exists())
+    ).count()
+    
+    interview_count = db.query(JobInterviewSchedule).filter(
+        JobInterviewSchedule.job_id == job_id,
+        JobInterviewSchedule.status == InterviewStatus.SCHEDULED
+    ).count()
+    
+    offers_count = db.query(JobApplicant).filter(
+        JobApplicant.job_id == job_id,
+        (JobApplicant.issue_offer == 1) | (JobApplicant.offer_letter_doc.isnot(None))
+    ).count()
+
+    questions_list = []
+    for q in job.job_pre_screening_questions:
+        questions_list.append({
+            "question": q.question_text or "",
+            "type": q.question_type or "Text",
+            "is_required": True
+        })
+
     return {
         "job_id": job.job_id,
         "job_unique_id": f"JOB-{job.job_id}",
@@ -252,17 +320,21 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int) -> Optional[d
         "closing_date": _format_date(job.closing_date),
         "status": job.job_status.value if job.job_status else "draft",
         "applicants": applicant_count,
+        "shortlisted": shortlisted_count,
+        "interviews": interview_count,
+        "offers": offers_count,
+        "questions": questions_list,
     }
 
 
 def get_school_applicants(db: Session, admin_id: int) -> list:
-    school = _get_admin_school(db, admin_id)
+    job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobApplicant, Users, CandidateMetadata, JobPost)
         .join(Users, JobApplicant.user_id == Users.user_id)
         .outerjoin(CandidateMetadata, Users.user_id == CandidateMetadata.user_id)
         .join(JobPost, JobApplicant.job_id == JobPost.job_id)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
         .order_by(JobApplicant.created_at.desc())
         .all()
     )
@@ -288,8 +360,7 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
         has_interview = app.job_applicant_id in interviewed_ids
         stage = compute_stage(app, has_interview)
         exp_str = compute_exp_str(
-            exps_map.get(user.user_id, []),
-            meta.experience if meta else None,
+            exps_map.get(user.user_id, [])
         )
         color = get_color(idx)
         interview_status = "Pending"
@@ -319,13 +390,13 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
 
 
 def get_school_offers(db: Session, admin_id: int) -> list:
-    school = _get_admin_school(db, admin_id)
+    job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobApplicant, Users, CandidateMetadata, JobPost)
         .join(Users, JobApplicant.user_id == Users.user_id)
         .outerjoin(CandidateMetadata, Users.user_id == CandidateMetadata.user_id)
         .join(JobPost, JobApplicant.job_id == JobPost.job_id)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
         .filter(JobApplicant.applicant_job_status == ApplicantJobStatus.SELECTED)
         .order_by(JobApplicant.updated_at.desc())
         .all()
@@ -342,8 +413,7 @@ def get_school_offers(db: Session, admin_id: int) -> list:
     for idx, (app, user, meta, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
         exp_str = compute_exp_str(
-            exps_map.get(user.user_id, []),
-            meta.experience if meta else None,
+            exps_map.get(user.user_id, [])
         )
         status = compute_offer_status(app)
         av = get_av_class(idx)
@@ -416,13 +486,13 @@ def update_offer_status(db: Session, admin_id: int, applicant_id: int, status: s
     return {"success": True}
 
 def get_school_sidebar_counts(db: Session, admin_id: int) -> dict:
-    school = _get_admin_school(db, admin_id)
-    job_posts_count = db.query(JobPost).filter(JobPost.school_name == school).count()
+    job_filter = _get_admin_job_filter(db, admin_id)
+    job_posts_count = db.query(JobPost).filter(job_filter).count()
     
     applicants_count = (
         db.query(JobApplicant)
         .join(JobPost, JobApplicant.job_id == JobPost.job_id)
-        .filter(JobPost.school_name == school)
+        .filter(job_filter)
         .count()
     )
 

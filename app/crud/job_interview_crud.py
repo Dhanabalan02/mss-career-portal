@@ -118,6 +118,7 @@ def reschedule_interview(
     end_time_at: datetime,
     reschedule_reason: Optional[str] = None,
     rescheduled_by: Optional[int] = None,
+    interviewer_name: Optional[str] = None,
 ) -> JobInterviewSchedule:
     """Reschedules an interview to a new date/time, keeping the previous slot for reference."""
     job_interview = get_job_interview_or_404(db, job_interview_id)
@@ -133,6 +134,8 @@ def reschedule_interview(
     
     job_interview.reschedule_reason = reschedule_reason
     job_interview.rescheduled_by = rescheduled_by
+    if interviewer_name is not None:
+        job_interview.interviewer_name = interviewer_name
     job_interview.status = InterviewStatus.RESCHEDULED
     db.commit()
     db.refresh(job_interview)

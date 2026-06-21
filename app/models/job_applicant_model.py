@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 
 class ApplicantJobStatus(str, PyEnum):
+    NEXT_ROUND = "next_round"
     SELECTED = "selected"
     REJECTED = "rejected"
     HOLD = "hold"
@@ -30,13 +31,13 @@ class JobApplicant(Base):
     __tablename__ = "job_applicants"
 
     job_applicant_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    mss_app_no: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     job_id: Mapped[int] = mapped_column(Integer, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), index=True)
 
     resume_doc: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     cover_letter: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     skills_match: Mapped[Optional[Decimal]] = mapped_column(Numeric(5, 2), nullable=True)
-    expected_salary: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
 
     applicant_job_status: Mapped[Optional[ApplicantJobStatus]] = mapped_column(
         Enum(ApplicantJobStatus, name="applicant_job_status_enum",

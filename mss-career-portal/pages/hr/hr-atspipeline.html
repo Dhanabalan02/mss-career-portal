@@ -1891,13 +1891,13 @@
 
     /* ── Toast ── */
     function showToast(msg, type = 'success') {
-      const icons = { success: 'ti-circle-check', warning: 'ti-alert-triangle', danger: 'ti-circle-x' };
-      const t = document.getElementById('toast');
-      t.className = `toast ${type}`;
-      t.innerHTML = `<i class="ti ${icons[type]}" aria-hidden="true"></i>${msg}`;
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+      var mappedType = type;
+      if (type === 'danger') mappedType = 'error';
+      if (window.showToast) {
+        window.showToast(msg, mappedType);
+      } else {
+        console.log(msg);
+      }
     }
 
     function getStageFromPoint(x, y) {

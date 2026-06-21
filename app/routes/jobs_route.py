@@ -117,6 +117,10 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
     if job_post.job_status == JobStatus.PUBLISH or getattr(job_post.job_status, 'value', None) == 'publish':
         published_date = job_post.updated_at.isoformat() if job_post.updated_at else None
 
+    applicant_count = 0
+    if db:
+        applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == job_post.job_id).count()
+
     return {
         "job_id": job_post.job_id,
         "job_posted_by": job_post.job_posted_by,
@@ -135,6 +139,7 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "job_status": job_post.job_status,
         "is_clone": is_clone,
         "published_date": published_date,
+        "applicant_count": applicant_count,
         "pre_screening_questions": [
             {
                 "question_id": q.question_id,
@@ -264,10 +269,16 @@ def get_applicants_route(
         elif len(interviews) > 0:
             stage_val = "Interview"
             latest_int = interviews[0]
-            if latest_int.status == "completed":
+            remark = db.query(InterviewRemark).filter(InterviewRemark.job_interview_id == latest_int.job_interview_id).first()
+            if remark and remark.applicant_status:
+                if remark.applicant_status == "next_round":
+                    interview_status = "Next Round"
+                else:
+                    interview_status = remark.applicant_status.capitalize()
+            elif latest_int.status == "completed":
                 interview_status = "Completed"
             else:
-                interview_status = "Scheduled"
+                interview_status = latest_int.status.value.capitalize() if hasattr(latest_int.status, 'value') else str(latest_int.status).capitalize()
         elif app.applicant_job_status == "hold":
             stage_val = "Screened"
             interview_status = "On Hold"
@@ -282,9 +293,21 @@ def get_applicants_route(
         exp_years = 0.0
         exp_records = db.query(CandidateExperience).filter(CandidateExperience.user_id == user.user_id).all()
         total_days = 0
+        
         for exp_rec in exp_records:
-            end = exp_rec.end_date or date.today()
-            total_days += (end - exp_rec.start_date).days
+            # Safely handle start_date conversion if it is a string
+            start_dt = exp_rec.start_date
+            if isinstance(start_dt, str):
+                start_dt = datetime.strptime(start_dt.split()[0], "%Y-%m-%d").date()
+                
+            # Safely handle end_date conversion if it is a string or missing
+            end_dt = exp_rec.end_date or date.today()
+            if isinstance(end_dt, str):
+                end_dt = datetime.strptime(end_dt.split()[0], "%Y-%m-%d").date()
+            
+            if start_dt and end_dt:
+                total_days += (end_dt - start_dt).days
+                
         if total_days > 0:
             exp_years = round(total_days / 365.25, 1)
         else:
@@ -334,6 +357,7 @@ def get_applicants_route(
             "max_exp": job_post.max_exp if job_post and job_post.max_exp is not None else 0,
             "stage": stage_val,
             "interviewStatus": interview_status,
+            "interview_round": interviews[0].interview_round if len(interviews) > 0 else "",
             "avatar": avatar,
             "color": color
         })
@@ -348,7 +372,6 @@ def get_applicants_route(
         },
         "chips": chip_counts
     }
-
 
 @router.get("/applicants/{job_applicant_id}")
 def get_applicant_detail_route(
@@ -367,7 +390,13 @@ def get_applicant_detail_route(
         .join(JobPost, JobApplicant.job_id == JobPost.job_id)
         .filter(JobApplicant.job_applicant_id == job_applicant_id)
     )
-    if not is_hr:
+    if is_hr:
+        pass
+    elif admin is not None and admin.user_roles.role_name == "school_admin":
+        from app.crud.school_admin_crud import _get_admin_job_filter
+        job_filter = _get_admin_job_filter(db, admin_id)
+        query = query.filter(job_filter)
+    else:
         query = query.filter(JobPost.job_posted_by == admin_id)
     app = query.first()
     if not app:
@@ -382,8 +411,16 @@ def get_applicant_detail_route(
     exp_records = db.query(CandidateExperience).filter(CandidateExperience.user_id == user.user_id).all()
     total_days = 0
     for exp_rec in exp_records:
-        end = exp_rec.end_date or date.today()
-        total_days += (end - exp_rec.start_date).days
+        start_dt = exp_rec.start_date
+        if isinstance(start_dt, str):
+            start_dt = datetime.strptime(start_dt.split()[0], "%Y-%m-%d").date()
+            
+        end_dt = exp_rec.end_date or date.today()
+        if isinstance(end_dt, str):
+            end_dt = datetime.strptime(end_dt.split()[0], "%Y-%m-%d").date()
+            
+        if start_dt and end_dt:
+            total_days += (end_dt - start_dt).days
     if total_days > 0:
         exp_years = round(total_days / 365.25, 1)
     else:
@@ -433,20 +470,17 @@ def get_applicant_detail_route(
     meta = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == user.user_id).first()
     metadata_dict = {
         "date_of_birth": meta.date_of_birth.strftime("%Y-%m-%d") if (meta and meta.date_of_birth) else "",
-        "marital_status": meta.marital_status if (meta and meta.marital_status) else "",
         "personal_address": meta.personal_address if (meta and meta.personal_address) else "",
         "city": meta.city if (meta and meta.city) else "",
         "state": meta.state if (meta and meta.state) else "",
         "country": meta.country if (meta and meta.country) else "",
         "pincode": meta.pincode if (meta and meta.pincode) else "",
-        "candidate_category": meta.candidate_category if (meta and meta.candidate_category) else "",
         "skills": (
             (lambda s: (__import__("json").loads(s) if s.startswith("[") else [x.strip() for x in s.split(",") if x.strip()]))(meta.skills)
         ) if (meta and meta.skills) else [],
         "profile_status": meta.profile_status if (meta and meta.profile_status) else "",
         "resume_doc": app.resume_doc or (meta.resume_doc if meta else None) or "",
         "cover_letter": app.cover_letter or "",
-        "expected_salary": app.expected_salary or "",
         "bio": "Dynamic educator committed to student growth."
     }
 
@@ -469,14 +503,23 @@ def get_applicant_detail_route(
     # Serialize experience
     experience_list = []
     for exp_rec in exp_records:
+        start_date_str = ""
+        if exp_rec.start_date:
+            start_date_str = exp_rec.start_date if isinstance(exp_rec.start_date, str) else exp_rec.start_date.strftime("%Y-%m-%d")
+            
+        end_date_str = "Present"
+        if exp_rec.end_date:
+            end_date_str = exp_rec.end_date if isinstance(exp_rec.end_date, str) else exp_rec.end_date.strftime("%Y-%m-%d")
+
         experience_list.append({
             "company": exp_rec.company_name,
-            "title": exp_rec.job_title,
+            "title": exp_rec.designation,
             "type": exp_rec.employment_type or "Full-time",
-            "start_date": exp_rec.start_date.strftime("%Y-%m-%d") if exp_rec.start_date else "",
-            "end_date": exp_rec.end_date.strftime("%Y-%m-%d") if exp_rec.end_date else "Present",
+            "start_date": start_date_str,
+            "end_date": end_date_str,
             "location": exp_rec.location or "",
-            "description": exp_rec.description or ""
+            "description": exp_rec.description or "",
+            "notice_period": exp_rec.notice_period or ""
         })
 
     # Serialize screening answers
@@ -484,9 +527,15 @@ def get_applicant_detail_route(
         CandidateScreeningAnswer.candidate_id == user.user_id,
         CandidateScreeningAnswer.job_id == app.job_id
     ).all()
-    answers_list = []
+    
+    # Deduplicate by question_id, keeping the latest one
+    unique_answers = {}
     for ans in screening_answers:
-        q = db.query(JobPreScreeningQuestion).filter(JobPreScreeningQuestion.question_id == ans.question_id).first()
+        unique_answers[ans.question_id] = ans
+
+    answers_list = []
+    for q_id, ans in unique_answers.items():
+        q = db.query(JobPreScreeningQuestion).filter(JobPreScreeningQuestion.question_id == q_id).first()
         answers_list.append({
             "question": q.question_text if q else "Pre-Screening Question",
             "answer": ans.answer,
@@ -497,11 +546,15 @@ def get_applicant_detail_route(
     interviews_history = []
     for item in interviews:
         sch_at = None
-        if item.scheduled_date and item.scheduled_time:
-            sch_at = datetime.combine(item.scheduled_date, item.scheduled_time)
+        end_at = None
+        if item.scheduled_date and item.start_time:
+            sch_at = datetime.combine(item.scheduled_date, item.start_time)
+        if item.scheduled_date and item.end_time:
+            end_at = datetime.combine(item.scheduled_date, item.end_time)
+            
         resch_at = None
-        if item.rescheduled_date and item.rescheduled_time:
-            resch_at = datetime.combine(item.rescheduled_date, item.rescheduled_time)
+        if item.rescheduled_date and item.rescheduled_start_time:
+            resch_at = datetime.combine(item.rescheduled_date, item.rescheduled_start_time)
             
         remark = db.query(InterviewRemark).filter(InterviewRemark.job_interview_id == item.job_interview_id).first()
         interviews_history.append({
@@ -509,6 +562,7 @@ def get_applicant_detail_route(
             "round": item.interview_round,
             "mode": item.interview_mode,
             "scheduled_at": sch_at,
+            "end_time_at": end_at,
             "rescheduled_at": resch_at,
             "meeting_link": item.meeting_link or "",
             "location": item.location or "",
@@ -545,7 +599,6 @@ def get_applicant_detail_route(
         "interviews": interviews_history
     }
 
-
 @router.patch("/applicants/{job_applicant_id}/status")
 def update_applicant_status_route(
     job_applicant_id: int,
@@ -581,6 +634,53 @@ def update_applicant_status_route(
         
     db.commit()
     db.refresh(app)
+
+    # Send Notifications
+    try:
+        from app.models import Users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        
+        job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
+        candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
+        
+        if job and candidate:
+            candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+            
+            # 1. Notify Candidate
+            notify_candidate(
+                db=db,
+                candidate_id=candidate.user_id,
+                title="Application Status Update",
+                message=f"Your application status for '{job.job_title}' has been updated to {status_lower}.",
+                notification_type="status_update",
+                sender_user_id=admin_id,
+                sender_type="hr" if is_hr else "schoolAdmin"
+            )
+            
+            # 2. Notify School Admin
+            notify_school_admin(
+                db=db,
+                admin_id=job.job_posted_by,
+                title="Application Status Update",
+                message=f"Application status for candidate {candidate_name} has been updated to {status_lower}.",
+                notification_type="status_update",
+                sender_user_id=admin_id,
+                sender_type="hr" if is_hr else "schoolAdmin"
+            )
+            
+            # 3. Notify HR Users
+            notify_hr_users(
+                db=db,
+                title="Application Status Update",
+                message=f"Application status for candidate {candidate_name} has been updated to {status_lower} for '{job.job_title}'.",
+                notification_type="status_update",
+                sender_user_id=admin_id,
+                sender_type="hr" if is_hr else "schoolAdmin"
+            )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating status update notifications: {e}")
+
     return {"message": f"Candidate status updated to {status_lower} successfully."}
 
 
@@ -929,8 +1029,16 @@ def get_dashboard_recent_applicants(
         elif has_interview:
             stage = "Interview"
             iv = latest_iv[app.job_applicant_id]
-            time_str = str(iv.scheduled_time)[:5] if iv.scheduled_time else ""
-            interview_status = f"{iv.interview_round or 'Round 1'} · {time_str}".strip(" ·")
+            remark = db.query(InterviewRemark).filter(InterviewRemark.job_interview_id == iv.job_interview_id).first()
+            if remark and remark.applicant_status:
+                if remark.applicant_status == "next_round":
+                    interview_status = "Next Round"
+                else:
+                    interview_status = remark.applicant_status.capitalize()
+            else:
+                date_str = iv.scheduled_date.strftime("%b %d, %Y") if iv.scheduled_date else ""
+                time_str = str(iv.start_time)[:5] if iv.start_time else ""
+                interview_status = f"{iv.interview_round or 'Round 1'} · {time_str}".strip(" ·")
         elif app.applicant_job_status in (ApplicantJobStatus.SELECTED, ApplicantJobStatus.HOLD):
             stage = "Screened"
             interview_status = app.applicant_job_status.value.capitalize()

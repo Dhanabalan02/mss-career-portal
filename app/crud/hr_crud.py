@@ -91,8 +91,7 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
         has_interview = app.job_applicant_id in interviewed_ids
         stage = compute_stage(app, has_interview)
         exp_str = compute_exp_str(
-            exps_map.get(user.user_id, []),
-            meta.experience if meta else None,
+            exps_map.get(user.user_id, [])
         )
         skills = parse_skills(meta.skills if meta else None)
         notes = (meta.about or "") if meta else ""
@@ -143,6 +142,14 @@ def get_interviews(db: Session, admin_id: int) -> dict:
         if end_val:
             time_str += f" - {_format_time(end_val)}"
 
+        from app.models.interview_remarks_model import InterviewRemark
+        status_text = iv.status.value.capitalize() if iv.status else "Scheduled"
+        candidate_status = ""
+        if iv.status and iv.status.value.lower() == "completed":
+            remark = db.query(InterviewRemark).filter(InterviewRemark.job_interview_id == iv.job_interview_id).first()
+            if remark and remark.applicant_status:
+                candidate_status = remark.applicant_status.value if hasattr(remark.applicant_status, 'value') else remark.applicant_status
+
         interviews.append({
             "job_interview_id": iv.job_interview_id,
             "candidate_id": user.user_id,
@@ -154,8 +161,9 @@ def get_interviews(db: Session, admin_id: int) -> dict:
             "date": _format_date(date_val),
             "time": time_str,
             "interviewer": iv.interviewer_name or "",
-            "status": (iv.status.value.capitalize() if iv.status else "Scheduled"),
+            "status": status_text,
             "mode": (iv.interview_mode.value if iv.interview_mode else "online"),
+            "candidate_status": candidate_status
         })
 
     # Also return candidates list for the schedule-interview dropdown

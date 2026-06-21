@@ -486,7 +486,7 @@
   };
 
   /* ── Toast ────────────────────────────────────────────────── */
-  function showToast(msg) {
+  function showToast(msg, type = 'success') {
     let toast = qs('[data-portal-toast]');
     if (!toast) {
       toast = document.createElement('div');
@@ -496,7 +496,17 @@
       toast.setAttribute('aria-live', 'polite');
       document.body.appendChild(toast);
     }
-    toast.innerHTML = msg;
+    toast.classList.remove('success', 'error', 'warning', 'info');
+    toast.classList.add(type);
+
+    const icons = {
+      success: '<i class="ti ti-circle-check" style="margin-right: 6px; color: #16A34A; font-size: 16px; vertical-align: middle;"></i>',
+      error: '<i class="ti ti-circle-x" style="margin-right: 6px; color: #DC2626; font-size: 16px; vertical-align: middle;"></i>',
+      warning: '<i class="ti ti-alert-triangle" style="margin-right: 6px; color: #D97706; font-size: 16px; vertical-align: middle;"></i>',
+      info: '<i class="ti ti-info-circle" style="margin-right: 6px; color: #2563EB; font-size: 16px; vertical-align: middle;"></i>'
+    };
+
+    toast.innerHTML = (icons[type] || '') + msg;
     toast.classList.add('is-visible');
     clearTimeout(showToast._t);
     showToast._t = setTimeout(() => toast.classList.remove('is-visible'), 2800);
@@ -585,6 +595,7 @@
   window.updateNotificationBadge = updateBadge;
   window.portalIcon = portalIcon;
   window.AUTH_API_BASE = AUTH_API_BASE;
+  window.API_BASE = AUTH_API_BASE;
   window.showToast = showToast;
 
   ensurePortalStylesheet();

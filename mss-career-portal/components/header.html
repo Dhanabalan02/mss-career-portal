@@ -224,33 +224,7 @@
         }
     }
 
-    /* ── Success toast (shown after registration submit) ───────────── */
-    .mss-toast {
-        position: fixed;
-        top: 24px;
-        right: 24px;
-        z-index: 2000;
-        background: linear-gradient(135deg, #10B981, #059669);
-        color: #fff;
-        padding: 14px 20px;
-        border-radius: 12px;
-        font-family: 'Rubik', sans-serif;
-        font-size: 0.9rem;
-        font-weight: 600;
-        box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        opacity: 0;
-        transform: translateY(-12px);
-        transition: opacity 0.25s ease, transform 0.25s ease;
-        pointer-events: none;
-    }
 
-    .mss-toast.show {
-        opacity: 1;
-        transform: translateY(0);
-    }
 </style>
 <header id="mss-header"
     style="position: fixed; top: 0; left: 0; right: 0; z-index: 1030; width: 100%; background: #0F172A; box-shadow: 0 1px 0 rgba(255,255,255,0.02) inset;">
@@ -662,25 +636,7 @@
         if (window.feather) feather.replace();
     });
 
-    // Success toast helper
-    function showMssToast(message) {
-        var toast = document.createElement('div');
-        toast.className = 'mss-toast';
-        toast.innerHTML = '<i class="feather-check-circle"></i><span>' + message + '</span>';
-        document.body.appendChild(toast);
-        if (window.feather) feather.replace();
 
-        requestAnimationFrame(function () {
-            toast.classList.add('show');
-        });
-
-        setTimeout(function () {
-            toast.classList.remove('show');
-            setTimeout(function () {
-                toast.remove();
-            }, 250);
-        }, 3000);
-    }
 
     // Registration submit: stop the native page reload, close the modal,
     // and confirm success to the candidate.
@@ -696,7 +652,7 @@
         }
 
         form.reset();
-        showMssToast('Account created successfully! You can now sign in.');
+        window.showMssToast('Account created successfully! You can now sign in.');
     });
 
     // Defensive fix: dev-server live-reload scripts get injected mid-markup

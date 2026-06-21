@@ -297,12 +297,11 @@ let state = {
    TOAST
    ============================================================ */
 function showToast(msg, type = 'info') {
-  const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i><span>${msg}</span>`;
-  document.getElementById('toast-container').appendChild(toast);
-  setTimeout(() => toast.remove(), 3800);
+  if (window.showMssToast) {
+    window.showMssToast(msg, type);
+  } else {
+    console.log(msg);
+  }
 }
 window.showToast = showToast;
 

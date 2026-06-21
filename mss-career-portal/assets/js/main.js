@@ -110,23 +110,25 @@ $(document).ready(function() {
 
     // Global Toast Notification wrapper
     window.showToast = function(title, message, type='success') {
-        let toastHtml = `
-            <div class="toast align-items-center text-white bg-${type} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-              <div class="d-flex">
-                <div class="toast-body">
-                  <strong>${title}</strong><br>${message}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
-            </div>
-        `;
-        if ($('#toast-container').length === 0) {
-            $('body').append('<div id="toast-container" class="toast-container position-fixed bottom-0 end-0 p-3"></div>');
+        var msg = message;
+        var t = type;
+        if (!message) {
+            msg = title;
+            t = 'success';
+        } else if (message === 'success' || message === 'error' || message === 'danger' || message === 'warning' || message === 'info') {
+            msg = title;
+            t = message;
+        } else {
+            msg = title + ': ' + message;
         }
-        let toastEl = $(toastHtml).appendTo('#toast-container');
-        setTimeout(() => {
-            toastEl.removeClass('show');
-            setTimeout(() => toastEl.remove(), 300);
-        }, 3000);
+        
+        var mappedType = t;
+        if (t === 'danger') mappedType = 'error';
+        
+        if (window.showMssToast) {
+            window.showMssToast(msg, mappedType);
+        } else {
+            console.log(msg);
+        }
     }
 });

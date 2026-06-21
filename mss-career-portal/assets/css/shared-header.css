@@ -287,3 +287,47 @@
     min-height: auto !important;
   }
 }
+
+/* ── MSS Global Toast Notifications ───────────────────── */
+.mss-toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 2000;
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.35);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.mss-toast.error {
+  background: linear-gradient(135deg, #EF4444, #DC2626);
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.35);
+}
+
+.mss-toast.warning {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+}
+
+.mss-toast.info {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.35);
+}
+
+.mss-toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+

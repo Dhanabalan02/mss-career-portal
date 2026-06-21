@@ -2,7 +2,7 @@ from urllib.parse import urlencode
 from typing import List, Optional
 from decimal import Decimal
 import jwt
-from fastapi import APIRouter, Depends, Request, Header, HTTPException, status
+from fastapi import APIRouter, Depends, Request, Header, HTTPException, status, UploadFile, File
 from fastapi.responses import RedirectResponse
 from app.core.html_helper import serve_html_with_base
 from sqlalchemy.orm import Session
@@ -15,6 +15,7 @@ from app.crud.auth_crud import (
     get_candidate_profile_db,
     update_candidate_profile_db,
     get_interviewers_db,
+    update_candidate_resume_db,
 )
 from app.core.config import settings
 from app.core.database import get_db
@@ -68,7 +69,6 @@ class ExperienceItem(BaseModel):
 
 class CandidateMetadataUpdate(BaseModel):
     date_of_birth: Optional[str] = None
-    marital_status: Optional[str] = None
     personal_address: Optional[str] = None
     city: Optional[str] = None
     state: Optional[str] = None
@@ -78,6 +78,14 @@ class CandidateMetadataUpdate(BaseModel):
     skills: Optional[List[str]] = None
     resume_doc: Optional[str] = None
     profile_status: Optional[str] = None
+    about: Optional[str] = None
+    languages: Optional[str] = None
+    designation: Optional[str] = None
+    company: Optional[str] = None
+    experience: Optional[str] = None
+    salary: Optional[str] = None
+    notice_period: Optional[str] = None
+    employment_type: Optional[str] = None
 
 
 class CandidateProfileUpdateRequest(BaseModel):
@@ -238,7 +246,30 @@ def update_candidate_profile(
     candidate_id: int = Depends(_get_candidate_id_from_token)
 ):
     """Updates candidate profile details."""
-    return update_candidate_profile_db(db, user_id=candidate_id, data=form_data.model_dump())
+    return update_candidate_profile_db(db, user_id=candidate_id, data=form_data.model_dump(exclude_unset=True))
+
+
+import os
+import time
+
+@router.post("/candidate/upload-resume")
+async def upload_candidate_resume(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    candidate_id: int = Depends(_get_candidate_id_from_token)
+):
+    """Uploads and updates the candidate's resume document."""
+    upload_dir = "uploads/resumes"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    file_extension = os.path.splitext(file.filename)[1]
+    unique_filename = f"resume_{candidate_id}_{int(time.time())}{file_extension}"
+    file_path = os.path.join(upload_dir, unique_filename).replace("\\", "/")
+    
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+        
+    return update_candidate_resume_db(db, user_id=candidate_id, resume_path=file_path)
 
 
 def _get_hr_id_from_token(authorization: Optional[str] = Header(default=None)) -> int:

@@ -268,10 +268,201 @@ window.toggleMssProfileMenu = function (e) {
     menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 };
 
+window.showMssToast = function(message, type) {
+    var toastType = type || 'success';
+    var toast = document.createElement('div');
+    toast.className = 'mss-toast ' + toastType;
+    
+    var iconClass = 'feather-check-circle';
+    if (toastType === 'error') {
+        iconClass = 'feather-alert-circle';
+    } else if (toastType === 'warning') {
+        iconClass = 'feather-alert-triangle';
+    } else if (toastType === 'info') {
+        iconClass = 'feather-info';
+    }
+    
+    toast.innerHTML = '<i class="' + iconClass + '"></i><span>' + message + '</span>';
+    document.body.appendChild(toast);
+    if (window.feather) window.feather.replace();
+
+    requestAnimationFrame(function () {
+        toast.classList.add('show');
+    });
+
+    setTimeout(function () {
+        toast.classList.remove('show');
+        setTimeout(function () {
+            toast.remove();
+        }, 250);
+    }, 3000);
+};
+
+window.mssNotifications = [];
+
+function buildNotificationBellHtml() {
+    return '' +
+        '<div class="mss-notification-wrap" style="position:relative; margin-right: 12px; display: flex; align-items: center;">' +
+            '<button type="button" class="mss-notification-btn" onclick="toggleMssNotificationMenu(event)" ' +
+                'style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);' +
+                'color:#94A3B8;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;' +
+                'cursor:pointer;flex-shrink:0;position:relative;transition:all 0.2s;" ' +
+                'onmouseover="this.style.color=\'#F8FAFC\';this.style.borderColor=\'rgba(255,255,255,0.25)\';this.style.background=\'rgba(255,255,255,0.1)\'" ' +
+                'onmouseout="this.style.color=\'#94A3B8\';this.style.borderColor=\'rgba(255,255,255,0.1)\';this.style.background=\'rgba(255,255,255,0.06)\'">' +
+                '<i class="feather-bell" style="font-size:1.1rem;"></i>' +
+                '<span class="mss-notification-badge" id="mssNotificationBadge" style="display:none;position:absolute;top:-2px;right:-2px;' +
+                    'background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
+                    'display:flex;align-items:center;justify-content:center;border:2px solid #0F172A;line-height:1;">0</span>' +
+            '</button>' +
+            '<div class="mss-notification-dropdown" id="mssNotificationDropdown" style="display:none;position:absolute;top:46px;right:0;' +
+                'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);width:320px;z-index:1100;overflow:hidden;">' +
+                '<div style="padding:12px 16px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center;">' +
+                    '<span style="font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.9rem;color:#0F172A;">Notifications</span>' +
+                    '<button onclick="mssMarkAllRead(event)" style="background:none;border:none;color:#3B82F6;font-family:\'Rubik\',sans-serif;' +
+                        'font-size:0.75rem;font-weight:600;cursor:pointer;padding:0;">Mark all read</button>' +
+                '</div>' +
+                '<div id="mssNotificationList" style="max-height:280px;overflow-y:auto;font-family:\'Rubik\',sans-serif;font-size:0.82rem;color:#475569;">' +
+                    '<div style="padding:20px;text-align:center;color:#94A3B8;">Loading...</div>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+}
+
+window.toggleMssNotificationMenu = function (e) {
+    if (e) e.stopPropagation();
+    var menu = document.getElementById('mssNotificationDropdown');
+    if (!menu) return;
+    
+    var profileMenu = document.getElementById('mssProfileMenu');
+    if (profileMenu) profileMenu.style.display = 'none';
+    
+    var isOpen = menu.style.display === 'block';
+    if (isOpen) {
+        menu.style.display = 'none';
+    } else {
+        menu.style.display = 'block';
+        fetchCandidateNotifications();
+    }
+};
+
+async function fetchCandidateNotifications() {
+    var token = localStorage.getItem('access_token');
+    if (!token) return;
+    try {
+        var response = await fetch(AUTH_API_BASE + '/notifications/', {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        if (response.ok) {
+            var data = await response.json();
+            window.mssNotifications = data;
+            renderCandidateNotifications();
+        }
+    } catch (e) {
+        console.warn('Failed to fetch candidate notifications', e);
+    }
+}
+
+function renderCandidateNotifications() {
+    var listContainer = document.getElementById('mssNotificationList');
+    var badge = document.getElementById('mssNotificationBadge');
+    
+    var notes = window.mssNotifications || [];
+    var unreadCount = notes.filter(function (n) { return !n.read; }).length;
+    
+    if (badge) {
+        if (unreadCount > 0) {
+            badge.style.display = 'flex';
+            badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+    
+    if (!listContainer) return;
+    
+    if (notes.length === 0) {
+        listContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#94A3B8;">No notifications.</div>';
+        return;
+    }
+    
+    var html = notes.map(function (n) {
+        var itemBg = n.read ? '#ffffff' : '#F8FAFC';
+        var titleColor = n.read ? '#64748B' : '#0F172A';
+        var fontWeight = n.read ? '500' : '700';
+        return '' +
+            '<div class="mss-notification-item" onclick="mssMarkSingleRead(event, ' + n.id + ')" ' +
+                'style="padding:12px 16px;border-bottom:1px solid #F1F5F9;cursor:pointer;transition:all 0.2s;' +
+                'background:' + itemBg + ';display:flex;flex-direction:column;gap:4px;" ' +
+                'onmouseover="this.style.background=\'#F1F5F9\'" ' +
+                'onmouseout="this.style.background=\'' + itemBg + '\'">' +
+                '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">' +
+                    '<span style="font-weight:' + fontWeight + ';color:' + titleColor + ';font-size:0.82rem;line-height:1.25;">' + n.title + '</span>' +
+                    '<span style="font-size:0.7rem;color:#94A3B8;white-space:nowrap;">' + n.time + '</span>' +
+                '</div>' +
+                '<span style="color:#64748B;font-size:0.78rem;line-height:1.4;">' + n.message + '</span>' +
+            '</div>';
+    }).join('');
+    
+    listContainer.innerHTML = html;
+}
+
+window.mssMarkSingleRead = async function (e, id) {
+    if (e) e.stopPropagation();
+    var token = localStorage.getItem('access_token');
+    if (!token) return;
+    
+    var note = (window.mssNotifications || []).find(function (n) { return n.id === id; });
+    if (note && !note.read) {
+        note.read = true;
+        renderCandidateNotifications();
+    }
+    
+    try {
+        await fetch(AUTH_API_BASE + '/notifications/' + id + '/read', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        fetchCandidateNotifications();
+    } catch (e) {
+        console.error('Error marking notification as read', e);
+    }
+};
+
+window.mssMarkAllRead = async function (e) {
+    if (e) e.stopPropagation();
+    var token = localStorage.getItem('access_token');
+    if (!token) return;
+    
+    (window.mssNotifications || []).forEach(function (n) { n.read = true; });
+    renderCandidateNotifications();
+    
+    try {
+        await fetch(AUTH_API_BASE + '/notifications/mark-all-read', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        fetchCandidateNotifications();
+    } catch (e) {
+        console.error('Error marking all notifications as read', e);
+    }
+};
+
 document.addEventListener('click', function (e) {
-    var menu = document.getElementById('mssProfileMenu');
-    if (!menu || menu.style.display !== 'block') return;
-    if (!e.target.closest('.mss-profile-wrap')) menu.style.display = 'none';
+    var profileMenu = document.getElementById('mssProfileMenu');
+    if (profileMenu && profileMenu.style.display === 'block') {
+        if (!e.target.closest('.mss-profile-wrap')) profileMenu.style.display = 'none';
+    }
+    
+    var notifMenu = document.getElementById('mssNotificationDropdown');
+    if (notifMenu && notifMenu.style.display === 'block') {
+        if (!e.target.closest('.mss-notification-wrap')) notifMenu.style.display = 'none';
+    }
 });
 
 window.mssLogout = function () {
@@ -303,6 +494,12 @@ function applyAuthUI() {
             loginLink.style.display = 'none';
             if (applyLink) applyLink.style.display = 'none';
 
+            if (!container.querySelector('.mss-notification-wrap')) {
+                var bellWrap = document.createElement('div');
+                bellWrap.innerHTML = buildNotificationBellHtml();
+                container.appendChild(bellWrap.firstChild);
+            }
+
             if (!container.querySelector('.mss-profile-wrap')) {
                 var wrap = document.createElement('div');
                 wrap.innerHTML = avatarHtml;
@@ -310,6 +507,16 @@ function applyAuthUI() {
             }
         });
     });
+    
+    if (window.feather) window.feather.replace();
+    
+    fetchCandidateNotifications();
+    
+    if (!window.mssNotificationInterval) {
+        window.mssNotificationInterval = setInterval(function () {
+            fetchCandidateNotifications();
+        }, 30000);
+    }
 }
 
 

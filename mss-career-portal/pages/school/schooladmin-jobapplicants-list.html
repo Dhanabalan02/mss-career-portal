@@ -549,7 +549,7 @@ tbody tr:hover { background: var(--bg2); }
 /* ── School admin nav (portal-layout.js) ── */
 localStorage.setItem('userRole', 'schoolAdmin');
 
-const API_BASE = window.API_BASE;
+const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
 const _token = () => localStorage.getItem('access_token') || '';
 
 /* ── Candidate data (merged from original source) ── */
@@ -738,13 +738,20 @@ async function loadApplicants() {
     const data = await res.json();
     CANDIDATES = Array.isArray(data.applicants) ? data.applicants : [];
     
-    if (data.stats) {
-      const statVals = document.querySelectorAll('.stat-value');
-      if (statVals[0]) statVals[0].textContent = data.stats.total || 0;
-      if (statVals[1]) statVals[1].textContent = data.stats.interview || 0;
-      if (statVals[2]) statVals[2].textContent = data.stats.offers || 0;
-      if (statVals[3]) statVals[3].textContent = data.stats.onboarding || 0;
-    }
+    const totalCount = CANDIDATES.length;
+    const interviewCount = CANDIDATES.filter(c => c.stage === 'Interview').length;
+    const offersCount = CANDIDATES.filter(c => c.stage === 'Offer' || c.stage === 'Offer Accepted').length;
+    const onboardingCount = CANDIDATES.filter(c => c.stage === 'Onboarding').length;
+
+    const scTotalVal = document.querySelector('.sc-total .stat-value');
+    const scInterviewVal = document.querySelector('.sc-interview .stat-value');
+    const scOffersVal = document.querySelector('.sc-offers .stat-value');
+    const scOnboardingVal = document.querySelector('.sc-onboarding .stat-value');
+
+    if (scTotalVal) scTotalVal.textContent = totalCount;
+    if (scInterviewVal) scInterviewVal.textContent = interviewCount;
+    if (scOffersVal) scOffersVal.textContent = offersCount;
+    if (scOnboardingVal) scOnboardingVal.textContent = onboardingCount;
     
     /* update stage counts */
     STAGE_CONFIG.forEach(sc => sc.count = 0);

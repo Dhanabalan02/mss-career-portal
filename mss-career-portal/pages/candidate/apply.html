@@ -896,12 +896,24 @@
                     if (result && result.logged_in) {
                         initApplicationPage(result);
                     } else {
-                        promptLogin(jobId);
+                        localStorage.removeItem('access_token');
+                        localStorage.removeItem('user_type');
+                        localStorage.removeItem('user_name');
+                        localStorage.removeItem('user_email');
+                        localStorage.removeItem('user_id');
+                        alert('Your session has expired. Please log in again.');
+                        window.location.href = '/mss-career-portal/home';
                     }
                 })
                 .catch(err => {
                     console.error('Login check failed:', err);
-                    promptLogin(jobId);
+                    localStorage.removeItem('access_token');
+                    localStorage.removeItem('user_type');
+                    localStorage.removeItem('user_name');
+                    localStorage.removeItem('user_email');
+                    localStorage.removeItem('user_id');
+                    alert('Your session has expired. Please log in again.');
+                    window.location.href = '/mss-career-portal/home';
                 });
         });
 
@@ -949,6 +961,19 @@
                 .then(job => {
                     $('#job-title-display').html('Applying for: <span style="color: #FFD700;">' + job.job_title + '</span>');
                     $('#job-school-display').text(job.school_name || 'The Madras Seva Sadan');
+
+                    // Check for existing resume
+                    if (userData && userData.resume_doc) {
+                        var fileName = userData.resume_doc.split('/').pop().split('\\').pop();
+                        $('#resume-filename').text(fileName);
+                        $('#existing-resume-block').removeClass('d-none');
+                        
+                        // Default to existing resume
+                        window.userDataResume = userData.resume_doc;
+                        selectedResumeFile = { name: userData.resume_doc, is_existing: true };
+                        $('#btn-keep-resume').removeClass('btn-outline-secondary').addClass('btn-outline-success')
+                            .html('<i class="bi bi-check2"></i> Selected');
+                    }
 
                     renderQuestions(job.pre_screening_questions || []);
                 })
@@ -1097,6 +1122,25 @@
                 selectedResumeFile = file;
                 $('#resume-name-text').text(file.name);
                 $('#resume-icon').html('<i class="bi bi-file-earmark-check-fill text-success" style="font-size: 2.5rem;"></i>');
+                
+                // Deselect existing resume if present
+                if ($('#existing-resume-block').length) {
+                    $('#btn-keep-resume').removeClass('btn-outline-success').addClass('btn-outline-secondary')
+                        .html('Select');
+                }
+            }
+        });
+
+        $(document).on('click', '#btn-keep-resume', function() {
+            if (window.userDataResume) {
+                selectedResumeFile = { name: window.userDataResume, is_existing: true };
+                $(this).removeClass('btn-outline-secondary').addClass('btn-outline-success')
+                    .html('<i class="bi bi-check2"></i> Selected');
+                
+                // Reset new upload UI
+                $('#resume-upload').val('');
+                $('#resume-name-text').text('Click to upload a new resume');
+                $('#resume-icon').html('<i class="bi bi-cloud-arrow-up"></i>');
             }
         });
 
@@ -1137,50 +1181,83 @@
                 });
             });
 
-            const payload = {
-                job_id: parseInt(jobId),
-                resume_doc: selectedResumeFile ? selectedResumeFile.name : '',
-                cover_letter: '',
-                expected_salary: '',
-                screening_answers: answers
-            };
-
             const submitBtn = $('.btn-success');
             const originalBtnText = submitBtn.html();
             submitBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status"></span> Submitting...').prop('disabled', true);
 
-            fetch(JOBS_API_BASE + '/apply/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify(payload)
-            })
+            function sendApplyRequest(finalResumePath) {
+                const payload = {
+                    job_id: parseInt(jobId),
+                    resume_doc: finalResumePath,
+                    cover_letter: '',
+                    expected_salary: '',
+                    screening_answers: answers
+                };
+
+                fetch(JOBS_API_BASE + '/apply/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => { throw new Error(err.detail || 'Failed to submit application.'); });
+                        }
+                        return response.json();
+                    })
+                    .then(result => {
+                        const refNo = result.mss_app_no || ('MSS-APP-' + result.job_applicant_id);
+                        $('#ref-number-display').text(refNo);
+
+                        $('#apply-form').fadeOut(300, function () {
+                            $('#form-steps').fadeOut(300);
+                            $('#logged-in-alert').fadeOut(300);
+                            $('#success-section').hide().removeClass('d-none').fadeIn(500);
+                            window.scrollTo({ top: $('.card-neo').offset().top - 100, behavior: 'smooth' });
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Error submitting application:', err);
+                        alert(err.message || 'An error occurred while submitting your application. Please try again.');
+                    })
+                    .finally(() => {
+                        submitBtn.html(originalBtnText).prop('disabled', false);
+                    });
+            }
+
+            // Handle Resume Upload if it's a new file
+            if (selectedResumeFile && !selectedResumeFile.is_existing) {
+                var formData = new FormData();
+                formData.append('file', selectedResumeFile);
+                
+                var uploadUrl = (typeof AUTH_API_BASE !== 'undefined' ? AUTH_API_BASE : 'http://127.0.0.1:8000') + '/auth/candidate/upload-resume';
+                
+                fetch(uploadUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: formData
+                })
                 .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => { throw new Error(err.detail || 'Failed to submit application.'); });
-                    }
+                    if (!response.ok) throw new Error('Failed to upload resume.');
                     return response.json();
                 })
-                .then(result => {
-                    const refNo = result.mss_app_no || ('MSS-APP-' + result.job_applicant_id);
-                    $('#ref-number-display').text(refNo);
-
-                    $('#apply-form').fadeOut(300, function () {
-                        $('#form-steps').fadeOut(300);
-                        $('#logged-in-alert').fadeOut(300);
-                        $('#success-section').hide().removeClass('d-none').fadeIn(500);
-                        window.scrollTo({ top: $('.card-neo').offset().top - 100, behavior: 'smooth' });
-                    });
+                .then(data => {
+                    sendApplyRequest(data.resume_doc || selectedResumeFile.name);
                 })
                 .catch(err => {
-                    console.error('Error submitting application:', err);
-                    alert(err.message || 'An error occurred while submitting your application. Please try again.');
-                })
-                .finally(() => {
+                    console.error('Resume upload error:', err);
+                    alert('Error uploading resume: ' + err.message);
                     submitBtn.html(originalBtnText).prop('disabled', false);
                 });
+            } else {
+                // Using existing resume
+                sendApplyRequest(selectedResumeFile ? selectedResumeFile.name : '');
+            }
         }
     </script>
 

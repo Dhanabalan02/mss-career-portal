@@ -2019,11 +2019,12 @@
       overlay.remove();
     }
 
-    function showToast(msg) {
-      const el = document.getElementById('saveIndicator');
-      el.innerHTML = msg;
-      el.classList.add('visible');
-      setTimeout(() => el.classList.remove('visible'), 2200);
+    function showToast(msg, type = 'success') {
+      if (window.showToast) {
+        window.showToast(msg, type);
+      } else {
+        console.log(msg);
+      }
     }
 
     function saveDraft() {

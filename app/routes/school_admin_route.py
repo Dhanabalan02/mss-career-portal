@@ -89,6 +89,43 @@ def issue_offer_route(
     result = issue_offer(db, admin_id, applicant_id, payload.dict())
     if "error" in result:
         raise HTTPException(status_code=404, detail=result["error"])
+        
+    # Send Notifications
+    try:
+        from app.models import JobApplicant, JobPost, Users
+        from app.crud.notification_crud import notify_candidate, notify_hr_users
+        
+        app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
+        if app:
+            job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
+            candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
+            if job and candidate:
+                candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                
+                # 1. Notify Candidate
+                notify_candidate(
+                    db=db,
+                    candidate_id=candidate.user_id,
+                    title="Job Offer Issued",
+                    message=f"You have been issued a job offer for the position of '{job.job_title}' at {job.school_name}. Please review it on your dashboard.",
+                    notification_type="offer_issued",
+                    sender_user_id=admin_id,
+                    sender_type="schoolAdmin"
+                )
+                
+                # 2. Notify HR Users
+                notify_hr_users(
+                    db=db,
+                    title="Job Offer Issued",
+                    message=f"A job offer has been issued to candidate {candidate_name} for '{job.job_title}' at {job.school_name}.",
+                    notification_type="offer_issued",
+                    sender_user_id=admin_id,
+                    sender_type="schoolAdmin"
+                )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating offer issued notifications: {e}")
+        
     return result
 
 
@@ -106,6 +143,44 @@ def update_offer_status_route(
     result = update_offer_status(db, admin_id, applicant_id, payload.status)
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
+        
+    # Send Notifications
+    try:
+        from app.models import JobApplicant, JobPost, Users
+        from app.crud.notification_crud import notify_candidate, notify_hr_users
+        
+        app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
+        if app:
+            job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
+            candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
+            if job and candidate:
+                candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                status_cap = payload.status.capitalize()
+                
+                # 1. Notify Candidate
+                notify_candidate(
+                    db=db,
+                    candidate_id=candidate.user_id,
+                    title="Offer Status Updated",
+                    message=f"Your offer status for '{job.job_title}' has been updated to '{payload.status}'.",
+                    notification_type=f"offer_status_{payload.status.lower()}",
+                    sender_user_id=admin_id,
+                    sender_type="schoolAdmin"
+                )
+                
+                # 2. Notify HR Users
+                notify_hr_users(
+                    db=db,
+                    title=f"Offer {status_cap}",
+                    message=f"Offer status for candidate {candidate_name} ('{job.job_title}') has been updated to '{payload.status}'.",
+                    notification_type=f"offer_status_{payload.status.lower()}",
+                    sender_user_id=admin_id,
+                    sender_type="schoolAdmin"
+                )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating offer status update notifications: {e}")
+        
     return result
 
 @router.get("/sidebar-counts")

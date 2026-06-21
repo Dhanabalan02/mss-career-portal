@@ -1139,7 +1139,6 @@
                 <th>Position</th>
                 <th>Department</th>
                 <th>School / Campus</th>
-                <th>Exp.</th>
                 <th>Offer Status</th>
                 <th>Last Updated</th>
                 <th>Actions</th>
@@ -1319,7 +1318,7 @@
     /* ── Init sidebar ──────────────────────────── */
     if (typeof initSidebar === 'function') initSidebar('offer-management');
 
-    const API_BASE = window.API_BASE || 'http://192.168.0.12:8000';
+    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
     const _token = () => localStorage.getItem('access_token') || '';
 
     /* ── Data ──────────────────────────────────── */
@@ -1399,7 +1398,6 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       <td>${c.role}</td>
       <td>${c.dept}</td>
       <td style="font-size:12.5px;">${c.school}</td>
-      <td style="font-family:var(--mono);font-size:12.5px;">${c.exp}</td>
       <td><span class="badge ${s.cls}">${s.label}</span></td>
       <td style="color:var(--text3);font-size:12.5px;">${c.updated}</td>
       <td>
@@ -1471,6 +1469,18 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
+
+      // Set min date to today's local date to prevent past dates selection
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const minDateStr = `${yyyy}-${mm}-${dd}`;
+      const joiningInput = document.getElementById('offJoining');
+      if (joiningInput) joiningInput.min = minDateStr;
+      const expiryInput = document.getElementById('offExpiry');
+      if (expiryInput) expiryInput.min = minDateStr;
+
       document.querySelectorAll('.template-card').forEach(el => el.classList.remove('selected'));
       document.getElementById('previewPanel').classList.remove('visible');
       document.getElementById('previewPanel').innerHTML = '';
@@ -1520,6 +1530,9 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       const join = fmtDate(document.getElementById('offJoining').value) || '[Joining Date]';
       const exp = fmtDate(document.getElementById('offExpiry').value) || '[Expiry Date]';
 
+      const adminEmail = localStorage.getItem('user_email') || 'admin@school.org';
+      const regardsSignature = `School Admin - ${adminEmail}`;
+
       let body = tpl.body
         .replace(/\[Candidate Name\]/g, c.name)
         .replace(/\[Job Title\]/g, c.role)
@@ -1528,7 +1541,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         .replace(/\[Offered Salary\]/g, sal)
         .replace(/\[Probation Period\]/g, prob)
         .replace(/\[Joining Date\]/g, join)
-        .replace(/\[Expiry Date\]/g, exp);
+        .replace(/\[Expiry Date\]/g, exp)
+        .replace(/School Admin — TMSS/g, regardsSignature);
 
       const notes = document.getElementById('offNotes').value.trim();
       if (notes) body += `<br><br><em style="color:var(--text3);font-size:12px;">Additional terms: ${notes}</em>`;
@@ -1583,9 +1597,10 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(res.status);
+        const candidateName = currentCandidate ? currentCandidate.name : '';
         await loadCandidates();
         closeModal();
-        showToast('<i class="ti ti-device-floppy" aria-hidden="true"></i> Offer saved for ' + currentCandidate.name);
+        showToast('<i class="ti ti-device-floppy" aria-hidden="true"></i> Offer saved for ' + candidateName);
       } catch(e) {
         console.warn('API error', e);
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error saving offer', 'error');
@@ -1612,9 +1627,10 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
           body: JSON.stringify(payload)
         });
         if (!res.ok) throw new Error(res.status);
+        const candidateName = currentCandidate ? currentCandidate.name : '';
         await loadCandidates();
         closeModal();
-        showToast('<i class="ti ti-rocket" aria-hidden="true"></i> Offer issued to ' + currentCandidate.name + ' via system!');
+        showToast('<i class="ti ti-rocket" aria-hidden="true"></i> Offer issued to ' + candidateName + ' via system!');
       } catch(e) {
         console.warn('API error', e);
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error issuing offer', 'error');
@@ -1629,6 +1645,25 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       if (!sal || !prob || !join || !exp) {
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Please fill in all required compensation fields.'); return false;
       }
+
+      // Past date validation
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const joinDate = new Date(join);
+      joinDate.setHours(0, 0, 0, 0);
+      if (joinDate < today) {
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Expected Joining Date cannot be in the past.', 'error');
+        return false;
+      }
+
+      const expDate = new Date(exp);
+      expDate.setHours(0, 0, 0, 0);
+      if (expDate < today) {
+        showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Offer Expiry Date cannot be in the past.', 'error');
+        return false;
+      }
+
       if (requireTemplate && !selectedTemplate) {
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Please select an offer letter template.'); return false;
       }
@@ -1655,7 +1690,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
     function recalcStats() {
       document.getElementById('sc-total').textContent = CANDIDATES.length;
       document.getElementById('sc-awaiting').textContent = CANDIDATES.filter(c => c.status === 'awaiting').length;
-      document.getElementById('sc-pending').textContent = CANDIDATES.filter(c => c.status === 'pending' || c.status === 'draft').length;
+      document.getElementById('sc-pending').textContent = CANDIDATES.filter(c => c.status === 'pending' || c.status === 'draft' || c.status === 'sent').length;
       document.getElementById('sc-accepted').textContent = CANDIDATES.filter(c => c.status === 'accepted').length;
     }
 
@@ -1748,12 +1783,12 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
     }
 
     /* ── Toast ──────────────────────────────────── */
-    function showToast(msg) {
-      const el = document.getElementById('toast');
-      el.innerHTML = msg;
-      el.classList.add('show');
-      clearTimeout(el._t);
-      el._t = setTimeout(() => el.classList.remove('show'), 2800);
+    function showToast(msg, type = 'success') {
+      if (window.showToast) {
+        window.showToast(msg, type);
+      } else {
+        console.log(msg);
+      }
     }
 
     /* ── Helpers ─────────────────────────────────── */
@@ -1851,7 +1886,20 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       }
     }
 
+    function initMinDates() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const minDateStr = `${yyyy}-${mm}-${dd}`;
+      const joiningInput = document.getElementById('offJoining');
+      if (joiningInput) joiningInput.min = minDateStr;
+      const expiryInput = document.getElementById('offExpiry');
+      if (expiryInput) expiryInput.min = minDateStr;
+    }
+
     // Init
+    initMinDates();
     loadCandidates();
 
   </script>

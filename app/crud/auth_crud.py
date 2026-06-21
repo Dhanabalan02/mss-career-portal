@@ -340,27 +340,22 @@ def get_candidate_profile_db(db: Session, user_id: int) -> dict:
         "mobile": user.mobile,
         "image_path": user.image_path,
         "metadata": {
-            "date_of_birth": meta.date_of_birth.strftime("%Y-%m-%d") if (meta and meta.date_of_birth) else None,
-            "marital_status": meta.marital_status if meta else None,
+            "date_of_birth": meta.date_of_birth.strftime("%Y-%m-%d") if (meta and meta.date_of_birth and hasattr(meta.date_of_birth, 'strftime')) else (meta.date_of_birth if meta and meta.date_of_birth else None),
             "personal_address": meta.personal_address if meta else None,
             "city": meta.city if meta else None,
             "state": meta.state if meta else None,
             "country": meta.country if meta else None,
             "pincode": meta.pincode if meta else None,
-            "candidate_category": meta.candidate_category if meta else None,
             "skills": skills_list,
             "resume_doc": meta.resume_doc if meta else None,
             "profile_status": meta.profile_status if meta else None,
             "about": meta.about,
-            "designation": meta.designation,
-            "company": meta.company,
-            "experience": meta.experience,
-            "salary": meta.salary,
-            "expected_salary": meta.expected_salary,
-            "notice_period": meta.notice_period,
-            "work_mode": meta.work_mode,
-            "employment_type": meta.employment_type,
-            "preferred_role": meta.preferred_role,
+            "designation": experience[0].designation if experience else None,
+            "company": experience[0].company_name if experience else None,
+            "experience": experience[0].total_experience if experience else None,
+            "salary": experience[0].salary if experience else None,
+            "notice_period": experience[0].notice_period if experience else None,
+            "employment_type": experience[0].employment_type if experience else None,
             "languages": meta.languages,
         } if meta else None,
         "education": [
@@ -382,10 +377,10 @@ def get_candidate_profile_db(db: Session, user_id: int) -> dict:
             {
                 "candidate_experience_id": exp.candidate_experience_id,
                 "company_name": exp.company_name,
-                "job_title": exp.job_title,
+                "job_title": exp.designation,
                 "employment_type": exp.employment_type,
-                "start_date": exp.start_date.strftime("%Y-%m") if exp.start_date else None,
-                "end_date": exp.end_date.strftime("%Y-%m") if exp.end_date else None,
+                "start_date": exp.start_date.strftime("%Y-%m") if hasattr(exp.start_date, 'strftime') else (exp.start_date[:7] if exp.start_date else None),
+                "end_date": exp.end_date.strftime("%Y-%m") if hasattr(exp.end_date, 'strftime') else (exp.end_date[:7] if exp.end_date else None),
                 "total_experience": exp.total_experience,
                 "location": exp.location,
                 "description": exp.description,
@@ -426,26 +421,15 @@ def update_candidate_profile_db(db: Session, user_id: int, data: dict) -> dict:
         elif "date_of_birth" in metadata_in:
             meta.date_of_birth = None
             
-        meta.marital_status = metadata_in.get("marital_status", meta.marital_status)
         meta.personal_address = metadata_in.get("personal_address", meta.personal_address)
         meta.city = metadata_in.get("city", meta.city)
         meta.state = metadata_in.get("state", meta.state)
         meta.country = metadata_in.get("country", meta.country)
         meta.pincode = metadata_in.get("pincode", meta.pincode)
-        meta.candidate_category = metadata_in.get("candidate_category", meta.candidate_category)
         meta.resume_doc = metadata_in.get("resume_doc", meta.resume_doc)
-        meta.profile_status = metadata_in.get("profile_status", meta.profile_status)
+        meta.profile_status = "complete"
         
         meta.about = metadata_in.get("about", meta.about)
-        meta.designation = metadata_in.get("designation", meta.designation)
-        meta.company = metadata_in.get("company", meta.company)
-        meta.experience = metadata_in.get("experience", meta.experience)
-        meta.salary = metadata_in.get("salary", meta.salary)
-        meta.expected_salary = metadata_in.get("expected_salary", meta.expected_salary)
-        meta.notice_period = metadata_in.get("notice_period", meta.notice_period)
-        meta.work_mode = metadata_in.get("work_mode", meta.work_mode)
-        meta.employment_type = metadata_in.get("employment_type", meta.employment_type)
-        meta.preferred_role = metadata_in.get("preferred_role", meta.preferred_role)
         meta.languages = metadata_in.get("languages", meta.languages)
         
         skills = metadata_in.get("skills")
@@ -475,36 +459,63 @@ def update_candidate_profile_db(db: Session, user_id: int, data: dict) -> dict:
             db.add(new_edu)
             
     # 4. Update Experience Details (delete and recreate)
-    experience_in = data.get("experience")
-    if experience_in is not None:
-        db.query(CandidateExperience).filter(CandidateExperience.user_id == user_id).delete()
-        for exp in experience_in:
+    experience_in = data.get("experience") or []
+    metadata_in = data.get("metadata", {})
+    
+    # Check if there are summary details in the metadata
+    has_summary = any(metadata_in.get(k) for k in ["designation", "company", "salary",  "notice_period"])
+    
+    db.query(CandidateExperience).filter(CandidateExperience.user_id == user_id).delete()
+    
+    if experience_in:
+        for i, exp in enumerate(experience_in):
             start_date_val = None
             start_str = exp.get("start_date")
             if start_str:
                 if len(start_str) == 7:
                     start_str += "-01"
-                start_date_val = date.fromisoformat(start_str)
                 
             end_date_val = None
             end_str = exp.get("end_date")
             if end_str:
                 if len(end_str) == 7:
                     end_str += "-01"
-                end_date_val = date.fromisoformat(end_str)
                 
             new_exp = CandidateExperience(
                 user_id=user_id,
                 company_name=exp.get("company_name", "Unknown"),
-                job_title=exp.get("job_title", "Unknown"),
+                designation=exp.get("job_title", "Unknown"),
                 employment_type=exp.get("employment_type", "Full-time"),
-                start_date=start_date_val,
-                end_date=end_date_val,
+                start_date=start_str or "Unknown",
+                end_date=end_str or "Unknown",
                 total_experience=exp.get("total_experience"),
-                location=exp.get("location"),
-                description=exp.get("description")
+                description=exp.get("description"),
             )
+            
+            # Map the summary fields to the primary/first experience record
+            if i == 0 and has_summary:
+                new_exp.salary = metadata_in.get("salary")
+                new_exp.notice_period = metadata_in.get("notice_period")
+                # Also capture the total experience and designation if it was updated in the summary form
+                new_exp.total_experience = metadata_in.get("experience", new_exp.total_experience)
+                new_exp.designation = metadata_in.get("designation", new_exp.designation)
+                new_exp.company_name = metadata_in.get("company", new_exp.company_name)
+                
             db.add(new_exp)
+    elif has_summary:
+        # Create a single record for the summary if no historical experiences provided
+        new_exp = CandidateExperience(
+            user_id=user_id,
+            company_name=metadata_in.get("company", "Unknown"),
+            designation=metadata_in.get("designation", "Unknown"),
+            employment_type=metadata_in.get("employment_type", "Full-time"),
+            total_experience=metadata_in.get("experience"),
+            salary=metadata_in.get("salary"),
+            notice_period=metadata_in.get("notice_period"),
+            start_date="Unknown",
+            end_date="Unknown"
+        )
+        db.add(new_exp)
             
     db.commit()
     return get_candidate_profile_db(db, user_id)
@@ -525,3 +536,16 @@ def get_interviewers_db(db: Session) -> list:
         }
         for i in interviewers
     ]
+
+def update_candidate_resume_db(db: Session, user_id: int, resume_path: str) -> dict:
+    """Updates candidate's resume_doc path."""
+    from app.models import CandidateMetadata
+    
+    meta = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == user_id).first()
+    if not meta:
+        meta = CandidateMetadata(user_id=user_id)
+        db.add(meta)
+    
+    meta.resume_doc = resume_path
+    db.commit()
+    return {"message": "Resume uploaded successfully", "resume_doc": resume_path}

@@ -1014,11 +1014,12 @@
         .mss-inner-banner { padding: 2rem 0; }
         .mss-breadcrumb-pill { display: none; }
     }
+
 </style>
 </head>
 
 <body class="scrollbar-thin-1">
-  <div id="toast-container"></div>
+
 
   <div id="shared-header"></div>
 
@@ -1227,10 +1228,6 @@
                 <input type="text" id="pfSal" placeholder="e.g. 5.5" />
               </div>
               <div>
-                <label class="cp-field-label">Expected Salary (LPA)</label>
-                <input type="text" id="pfExpSal" placeholder="e.g. 8" />
-              </div>
-              <div>
                 <label class="cp-field-label">Notice Period</label>
                 <select id="pfNotice">
                   <option>Immediately Available</option>
@@ -1422,13 +1419,22 @@
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
   <script>
+    function showToast(message, type = 'info') {
+      var mappedType = type;
+      if (type === 'danger') mappedType = 'error';
+      if (window.showMssToast) {
+        window.showMssToast(message, mappedType);
+      } else {
+        console.log(message);
+      }
+    }
     /* ============================================================
        CANDIDATE PROFILE – page script
        ============================================================ */
 
     /* ── State ── */
     let cpSkills = [];
-    let cpLanguages = ['English', 'Tamil', 'Hindi'];
+    let cpLanguages = [];
     let allSkillsData = [];
 
     /* ── Skills autocomplete ── */
@@ -1465,7 +1471,14 @@
     }
 
     function cpSelectSkill(name) {
-      if (name && !cpSkills.includes(name)) { cpSkills.push(name); cpRenderSkills(); cpCalcCompletion(); }
+      if (name) {
+        const lowerName = name.toLowerCase();
+        if (!cpSkills.some(s => s.toLowerCase() === lowerName)) {
+            cpSkills.push(name);
+            cpRenderSkills();
+            cpCalcCompletion();
+        }
+      }
       document.getElementById('skillInput').value = '';
       document.getElementById('skillAutocomplete').classList.remove('open');
     }
@@ -1474,8 +1487,12 @@
     function cpAddSkill() {
       const inp = document.getElementById('skillInput');
       const val = inp.value.trim();
-      if (!val || cpSkills.includes(val)) return;
-      cpSkills.push(val);
+      if (!val) return;
+      const lowerVal = val.toLowerCase();
+      if (cpSkills.some(s => s.toLowerCase() === lowerVal)) return;
+      
+      const formattedVal = val.charAt(0).toUpperCase() + val.slice(1);
+      cpSkills.push(formattedVal);
       inp.value = '';
       document.getElementById('skillAutocomplete')?.classList.remove('open');
       cpRenderSkills();
@@ -1494,8 +1511,13 @@
     function cpAddLanguage() {
       const inp = document.getElementById('languageInput');
       const val = inp.value.trim();
-      if (!val || cpLanguages.includes(val)) return;
-      cpLanguages.push(val);
+      if (!val) return;
+      
+      const lowerVal = val.toLowerCase();
+      if (cpLanguages.some(l => l.toLowerCase() === lowerVal)) return;
+      
+      const formattedVal = val.charAt(0).toUpperCase() + val.slice(1);
+      cpLanguages.push(formattedVal);
       inp.value = '';
       cpRenderLanguages();
     }
@@ -1521,7 +1543,17 @@
       <div><label class="cp-field-label">Company Name</label><input placeholder="e.g. Infosys"></div>
       <div><label class="cp-field-label">Designation</label><input placeholder="e.g. Software Developer"></div>
     </div>
-    <div class="cp-grid-2">
+    <div class="cp-grid-3">
+      <div>
+        <label class="cp-field-label">Employment Type</label>
+        <select>
+          <option value="Full-time">Full-time</option>
+          <option value="Part-time">Part-time</option>
+          <option value="Contract">Contract</option>
+          <option value="Internship">Internship</option>
+          <option value="Freelance">Freelance</option>
+        </select>
+      </div>
       <div>
         <label class="cp-field-label">From</label>
         <input type="text" placeholder="Month & Year" onfocus="this.type='month';this.max='${maxMonth}'" onblur="if(!this.value)this.type='text'" max="${maxMonth}">
@@ -1549,12 +1581,13 @@
     ${canDel ? `<button class="cp-delete-item" onclick="this.closest('.cp-item-card').remove()" title="Remove">×</button>` : ''}
     <div class="cp-grid-2">
       <div><label class="cp-field-label">Degree / Qualification</label><input placeholder="e.g. B.E Computer Science"></div>
-      <div><label class="cp-field-label">University / College</label><input placeholder="e.g. Anna University"></div>
-    </div>
-    <div class="cp-grid-3">
+      <div><label class="cp-field-label">Specialization</label><input placeholder="e.g. Artificial Intelligence"></div>
+      <div><label class="cp-field-label">University Name</label><input placeholder="e.g. Anna University"></div>
+      <div><label class="cp-field-label">Institution Name</label><input placeholder="e.g. SSN College of Engineering"></div>
       <div><label class="cp-field-label">Start Year</label><input type="number" placeholder="e.g. 2018" min="1950" max="${yr}"></div>
       <div><label class="cp-field-label">End Year</label><input type="number" placeholder="e.g. 2022" min="1950" max="${yr + 5}"></div>
-      <div><label class="cp-field-label">CGPA / Percentage</label><input placeholder="e.g. 8.5 CGPA"></div>
+      <div><label class="cp-field-label">CGPA (Optional)</label><input type="number" step="0.01" placeholder="e.g. 8.5"></div>
+      <div><label class="cp-field-label">Percentage (Optional)</label><input type="number" step="0.01" placeholder="e.g. 85.00"></div>
     </div>`;
       list.appendChild(div);
     }
@@ -1569,22 +1602,55 @@
     });
 
     /* ── Resume upload ── */
-    document.getElementById('resumeUpload').addEventListener('change', e => {
+    document.getElementById('resumeUpload').addEventListener('change', async e => {
       const file = e.target.files[0];
       if (!file) return;
+      
+      const token = localStorage.getItem('access_token');
+      if (!token) return;
+
       const kb = (file.size / 1024).toFixed(0);
       const size = kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
-      document.getElementById('resumeDisplay').innerHTML = `
-    <div class="cp-resume-file">
-      <div class="cp-resume-file-info">
-        <div class="cp-resume-file-icon"><i class="fa-solid fa-file-pdf"></i></div>
-        <div>
-          <div class="cp-resume-file-name">${file.name}</div>
-          <div class="cp-resume-file-size">${size}</div>
-        </div>
-      </div>
-      <button class="cp-btn cp-btn-outline" onclick="document.getElementById('resumeUpload').click()">Replace</button>
-    </div>`;
+      
+      const oldHtml = document.getElementById('resumeDisplay').innerHTML;
+      document.getElementById('resumeDisplay').innerHTML = `<div style="padding: 15px; color: var(--cp-accent);"><i class="fa-solid fa-spinner fa-spin"></i> Uploading resume...</div>`;
+      document.querySelector('.cp-resume-box').style.display = 'none';
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+        const res = await fetch(apiBase + '/auth/candidate/upload-resume', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            body: formData
+        });
+
+        if (!res.ok) throw new Error('Upload failed');
+        
+        const data = await res.json();
+        showToast('Resume uploaded successfully!', 'success');
+
+        document.getElementById('resumeDisplay').innerHTML = `
+        <div class="cp-resume-file">
+          <div class="cp-resume-file-info">
+            <div class="cp-resume-file-icon"><i class="fa-solid fa-file-pdf"></i></div>
+            <div>
+              <div class="cp-resume-file-name">${file.name}</div>
+              <div class="cp-resume-file-size">${size}</div>
+            </div>
+          </div>
+          <button class="cp-btn cp-btn-outline" onclick="document.getElementById('resumeUpload').click()">Replace</button>
+        </div>`;
+      } catch (err) {
+        console.error('Error uploading resume:', err);
+        showToast('Failed to upload resume. Please try again.', 'danger');
+        document.getElementById('resumeDisplay').innerHTML = oldHtml;
+        if (!oldHtml) document.querySelector('.cp-resume-box').style.display = 'flex';
+      }
     });
 
     /* ── Update sidebar live ── */
@@ -1627,12 +1693,17 @@
       }
       
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://192.168.0.12:8000';
+        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
         const res = await fetch(apiBase + '/auth/candidate/profile', {
           headers: { 'Authorization': 'Bearer ' + token }
         });
         if (!res.ok) {
           if (res.status === 401) {
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user_type');
+            localStorage.removeItem('user_name');
+            localStorage.removeItem('user_email');
+            localStorage.removeItem('user_id');
             alert('Your session has expired. Please log in again.');
             window.location.href = '/mss-career-portal/home';
             return;
@@ -1659,18 +1730,18 @@
       
       // 2. Metadata details
       const meta = data.metadata || {};
-      document.getElementById('pfDob').value = meta.date_of_birth || '';
-      document.getElementById('pfAbout').value = meta.about || '';
-      document.getElementById('pfDesig').value = meta.designation || '';
-      document.getElementById('pfComp').value = meta.company || '';
-      document.getElementById('pfExp').value = meta.experience || '';
-      document.getElementById('pfSal').value = meta.salary || '';
-      document.getElementById('pfExpSal').value = meta.expected_salary || '';
+      if (document.getElementById('pfDob')) document.getElementById('pfDob').value = meta.date_of_birth || '';
+      if (document.getElementById('pfAbout')) document.getElementById('pfAbout').value = meta.about || '';
+      if (document.getElementById('pfDesig')) document.getElementById('pfDesig').value = meta.designation || '';
+      if (document.getElementById('pfComp')) document.getElementById('pfComp').value = meta.company || '';
+      if (document.getElementById('pfExp')) document.getElementById('pfExp').value = meta.experience || '';
+      if (document.getElementById('pfSal')) document.getElementById('pfSal').value = meta.salary || '';
+      if (document.getElementById('pfExpSal')) document.getElementById('pfExpSal').value = meta.expected_salary || '';
       
-      if (meta.notice_period) document.getElementById('pfNotice').value = meta.notice_period;
-      if (meta.work_mode) document.getElementById('pfWorkMode').value = meta.work_mode;
-      if (meta.employment_type) document.getElementById('pfEmpType').value = meta.employment_type;
-      if (meta.preferred_role) document.getElementById('pfPrefRole').value = meta.preferred_role;
+      if (meta.notice_period && document.getElementById('pfNotice')) document.getElementById('pfNotice').value = meta.notice_period;
+      if (meta.work_mode && document.getElementById('pfWorkMode')) document.getElementById('pfWorkMode').value = meta.work_mode;
+      if (meta.employment_type && document.getElementById('pfEmpType')) document.getElementById('pfEmpType').value = meta.employment_type;
+      if (meta.preferred_role && document.getElementById('pfPrefRole')) document.getElementById('pfPrefRole').value = meta.preferred_role;
       
       if (meta.city || meta.state) {
         document.getElementById('pfLocation').value = [meta.city, meta.state].filter(Boolean).join(', ');
@@ -1688,11 +1759,14 @@
       if (meta.languages) {
         cpLanguages = meta.languages.split(',').map(l => l.trim()).filter(Boolean);
         cpRenderLanguages();
+      } else {
+        cpLanguages = [];
+        cpRenderLanguages();
       }
       
       // Resume displays
       if (meta.resume_doc) {
-        const fileName = meta.resume_doc.split('/').pop();
+        const fileName = meta.resume_doc.split('/').pop().split('\\').pop();
         document.getElementById('resumeDisplay').innerHTML = `
           <div class="cp-resume-file">
             <div class="cp-resume-file-info">
@@ -1704,6 +1778,10 @@
             </div>
             <button class="cp-btn cp-btn-outline" onclick="document.getElementById('resumeUpload').click()">Replace</button>
           </div>`;
+        document.querySelector('.cp-resume-box').style.display = 'none';
+      } else {
+        document.getElementById('resumeDisplay').innerHTML = '';
+        document.querySelector('.cp-resume-box').style.display = 'flex';
       }
       
       // 3. Education list
@@ -1715,10 +1793,13 @@
           const card = eduList.lastElementChild;
           const inputs = card.querySelectorAll('input');
           inputs[0].value = edu.degree_name || '';
-          inputs[1].value = edu.university_name || '';
-          inputs[2].value = edu.start_year || '';
-          inputs[3].value = edu.end_year || '';
-          inputs[4].value = edu.cgpa || edu.percentage || '';
+          inputs[1].value = edu.specialization || '';
+          inputs[2].value = edu.university_name || '';
+          inputs[3].value = edu.institution_name || '';
+          inputs[4].value = edu.start_year || '';
+          inputs[5].value = edu.end_year || '';
+          inputs[6].value = edu.cgpa || '';
+          inputs[7].value = edu.percentage || '';
         });
       } else {
         cpAddEducation();
@@ -1732,9 +1813,11 @@
           cpAddExperience();
           const card = expList.lastElementChild;
           const inputs = card.querySelectorAll('input');
+          const selects = card.querySelectorAll('select');
           const textarea = card.querySelector('textarea');
           inputs[0].value = exp.company_name || '';
           inputs[1].value = exp.job_title || '';
+          if (selects.length > 0) selects[0].value = exp.employment_type || 'Full-time';
           inputs[2].value = exp.start_date || '';
           inputs[3].value = exp.end_date || '';
           if (exp.start_date) inputs[2].type = 'month';
@@ -1793,32 +1876,27 @@
         const education = [];
         document.querySelectorAll('#cpEducationList .cp-item-card').forEach(card => {
           const inputs = card.querySelectorAll('input');
-          if (inputs.length >= 5) {
+          if (inputs.length >= 8) {
             const degreeName = inputs[0].value.trim();
-            const universityName = inputs[1].value.trim();
-            const startYear = parseInt(inputs[2].value) || null;
-            const endYear = parseInt(inputs[3].value) || null;
-            const scoreVal = inputs[4].value.trim();
+            const specialization = inputs[1].value.trim();
+            const universityName = inputs[2].value.trim();
+            const institutionName = inputs[3].value.trim();
+            const startYear = parseInt(inputs[4].value) || null;
+            const endYear = parseInt(inputs[5].value) || null;
+            const cgpa = parseFloat(inputs[6].value) || null;
+            const percentage = parseFloat(inputs[7].value) || null;
             
-            if (degreeName || universityName) {
-              let percentage = null;
-              let cgpa = null;
-              if (scoreVal.toLowerCase().includes('cgpa')) {
-                cgpa = parseFloat(scoreVal) || null;
-              } else if (scoreVal.toLowerCase().includes('%') || parseFloat(scoreVal) > 10) {
-                percentage = parseFloat(scoreVal) || null;
-              } else {
-                cgpa = parseFloat(scoreVal) || null;
-              }
-              
+            if (degreeName || universityName || institutionName) {
               education.push({
                 degree_name: degreeName,
+                specialization: specialization,
                 university_name: universityName,
+                institution_name: institutionName,
                 start_year: startYear,
                 end_year: endYear,
                 percentage: percentage,
                 cgpa: cgpa,
-                education_level: degreeName.substring(0, 150)
+                education_level: degreeName ? degreeName.substring(0, 150) : "Degree"
               });
             }
           }
@@ -1827,10 +1905,12 @@
         const experience = [];
         document.querySelectorAll('#cpExperienceList .cp-item-card').forEach(card => {
           const inputs = card.querySelectorAll('input');
+          const selects = card.querySelectorAll('select');
           const textarea = card.querySelector('textarea');
           if (inputs.length >= 4) {
             const companyName = inputs[0].value.trim();
             const jobTitle = inputs[1].value.trim();
+            const employmentType = selects.length > 0 ? selects[0].value : 'Full-time';
             const startDate = inputs[2].value || null;
             const endDate = inputs[3].value || null;
             const description = textarea ? textarea.value.trim() : null;
@@ -1842,7 +1922,7 @@
                 start_date: startDate,
                 end_date: endDate,
                 description: description,
-                employment_type: 'Full-time'
+                employment_type: employmentType
               });
             }
           }
@@ -1854,19 +1934,19 @@
           gender: document.getElementById('pfGender').value,
           mobile: document.getElementById('pfMobile').value.trim(),
           metadata: {
-            date_of_birth: document.getElementById('pfDob').value || null,
+            date_of_birth: document.getElementById('pfDob') ? document.getElementById('pfDob').value : null,
             city: city || null,
             state: state || null,
-            about: document.getElementById('pfAbout').value.trim() || null,
-            designation: document.getElementById('pfDesig').value.trim() || null,
-            company: document.getElementById('pfComp').value.trim() || null,
-            experience: document.getElementById('pfExp').value.trim() || null,
-            salary: document.getElementById('pfSal').value.trim() || null,
-            expected_salary: document.getElementById('pfExpSal').value.trim() || null,
-            notice_period: document.getElementById('pfNotice').value || null,
-            work_mode: document.getElementById('pfWorkMode').value || null,
-            employment_type: document.getElementById('pfEmpType').value || null,
-            preferred_role: document.getElementById('pfPrefRole').value || null,
+            about: document.getElementById('pfAbout') ? document.getElementById('pfAbout').value.trim() : null,
+            designation: document.getElementById('pfDesig') ? document.getElementById('pfDesig').value.trim() : null,
+            company: document.getElementById('pfComp') ? document.getElementById('pfComp').value.trim() : null,
+            experience: document.getElementById('pfExp') ? document.getElementById('pfExp').value.trim() : null,
+            salary: document.getElementById('pfSal') ? document.getElementById('pfSal').value.trim() : null,
+            expected_salary: document.getElementById('pfExpSal') ? document.getElementById('pfExpSal').value.trim() : null,
+            notice_period: document.getElementById('pfNotice') ? document.getElementById('pfNotice').value : null,
+            work_mode: document.getElementById('pfWorkMode') ? document.getElementById('pfWorkMode').value : null,
+            employment_type: document.getElementById('pfEmpType') ? document.getElementById('pfEmpType').value : null,
+            preferred_role: document.getElementById('pfPrefRole') ? document.getElementById('pfPrefRole').value : null,
             skills: cpSkills,
             languages: cpLanguages.join(', ')
           },
@@ -1875,7 +1955,7 @@
         };
         
         try {
-          const apiBase = window.AUTH_API_BASE || 'http://192.168.0.12:8000';
+          const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
           const saveBtn = document.getElementById('saveProfileBtn');
           saveBtn.disabled = true;
           saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';

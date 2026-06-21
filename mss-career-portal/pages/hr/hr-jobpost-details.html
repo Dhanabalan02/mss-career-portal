@@ -1573,18 +1573,12 @@
         window.location.href = '/mss-career-portal/hr/jobpost-list';
       }
 
-      function showToast(msg) {
-        let toast = document.querySelector('[data-portal-toast]');
-        if (!toast) {
-          toast = document.createElement('div');
-          toast.className = 'portal-toast';
-          toast.setAttribute('data-portal-toast', '');
-          document.body.appendChild(toast);
+      function showToast(msg, type = 'success') {
+        if (window.showToast) {
+          window.showToast(msg, type);
+        } else {
+          console.log(msg);
         }
-        toast.innerHTML = msg;
-        toast.classList.add('is-visible');
-        clearTimeout(window._toastTimeout);
-        window._toastTimeout = setTimeout(() => toast.classList.remove('is-visible'), 2800);
       }
 
       function getJobId() {

@@ -58,6 +58,7 @@ class InterviewRescheduleRequest(BaseModel):
     end_time_at: str
     reschedule_reason: Optional[str] = None
     rescheduled_by: Optional[int] = None
+    interviewer_name: Optional[str] = None
 
 
 class InterviewCancelRequest(BaseModel):
@@ -121,6 +122,31 @@ def _serialize_interview_remark(interview_remark: InterviewRemark) -> dict:
     }
 
 
+@router.get("/school-admins")
+def get_school_admins_route(
+    db: Session = Depends(get_db),
+    admin_id: int = Depends(get_current_admin_id)
+):
+    from sqlalchemy import text
+    query = text("""
+        SELECT a.admin_id, a.email, a.unit_id, u.unit_name
+        FROM admins a
+        LEFT JOIN units u ON a.unit_id = u.id
+        WHERE a.role_id = 7 AND a.is_active = 1
+    """)
+    result = db.execute(query).fetchall()
+    return [
+        {
+            "admin_id": r.admin_id, 
+            "email": r.email, 
+            "unit_id": r.unit_id,
+            "unit_name": r.unit_name
+        } 
+        for r in result
+    ]
+
+@router.get("")
+
 @router.post("/")
 def schedule_interview_route(
     form_data: InterviewScheduleRequest,
@@ -156,6 +182,56 @@ def schedule_interview_route(
         interviewer_name=form_data.interviewer_name,
         created_by=admin_id,
     )
+    
+    # Send Notifications
+    try:
+        from app.models import JobApplicant, JobPost, Users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        
+        applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == form_data.job_applicant_id).first()
+        job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
+        
+        if applicant and job:
+            candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
+            if candidate:
+                candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                date_str = scheduled_dt.strftime("%b %d, %Y at %I:%M %p")
+                
+                # 1. Notify Candidate
+                notify_candidate(
+                    db=db,
+                    candidate_id=candidate.user_id,
+                    title="Interview Scheduled",
+                    message=f"An interview for '{job.job_title}' has been scheduled on {date_str} (Mode: {form_data.interview_mode.value if hasattr(form_data.interview_mode, 'value') else form_data.interview_mode}).",
+                    notification_type="interview_scheduled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+                
+                # 2. Notify School Admin / Job Poster
+                notify_school_admin(
+                    db=db,
+                    admin_id=job.job_posted_by,
+                    title="Interview Scheduled",
+                    message=f"Interview round '{form_data.interview_round}' has been scheduled for candidate {candidate_name} on {date_str}.",
+                    notification_type="interview_scheduled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+                
+                # 3. Notify HR Users
+                notify_hr_users(
+                    db=db,
+                    title="Interview Scheduled",
+                    message=f"Interview round '{form_data.interview_round}' scheduled for {candidate_name} for '{job.job_title}' on {date_str}.",
+                    notification_type="interview_scheduled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating interview scheduled notifications: {e}")
+
     return _serialize_job_interview(job_interview)
 
 
@@ -210,7 +286,59 @@ def reschedule_interview_route(
         end_time_at=end_time_dt,
         reschedule_reason=form_data.reschedule_reason,
         rescheduled_by=admin_id,
+        interviewer_name=form_data.interviewer_name,
     )
+    
+    # Send Notifications
+    try:
+        from app.models import JobApplicant, JobPost, Users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        
+        applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
+        job = db.query(JobPost).filter(JobPost.job_id == job_interview.job_id).first()
+        
+        if applicant and job:
+            candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
+            if candidate:
+                candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                date_str = scheduled_dt.strftime("%b %d, %Y at %I:%M %p")
+                reason_part = f" Reason: {form_data.reschedule_reason}." if form_data.reschedule_reason else ""
+                
+                # 1. Notify Candidate
+                notify_candidate(
+                    db=db,
+                    candidate_id=candidate.user_id,
+                    title="Interview Rescheduled",
+                    message=f"Your interview for '{job.job_title}' has been rescheduled to {date_str}.{reason_part}",
+                    notification_type="interview_rescheduled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+                
+                # 2. Notify School Admin
+                notify_school_admin(
+                    db=db,
+                    admin_id=job.job_posted_by,
+                    title="Interview Rescheduled",
+                    message=f"Interview round '{job_interview.interview_round}' has been rescheduled to {date_str} for candidate {candidate_name}.{reason_part}",
+                    notification_type="interview_rescheduled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+                
+                # 3. Notify HR Users
+                notify_hr_users(
+                    db=db,
+                    title="Interview Rescheduled",
+                    message=f"Interview rescheduled to {date_str} for candidate {candidate_name} ({job.job_title}).",
+                    notification_type="interview_rescheduled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating interview rescheduled notifications: {e}")
+
     return _serialize_job_interview(job_interview)
 
 
@@ -227,6 +355,56 @@ def cancel_interview_route(
         job_interview_id=job_interview_id,
         cancelled_reason=form_data.cancelled_reason,
     )
+    
+    # Send Notifications
+    try:
+        from app.models import JobApplicant, JobPost, Users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        
+        applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
+        job = db.query(JobPost).filter(JobPost.job_id == job_interview.job_id).first()
+        
+        if applicant and job:
+            candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
+            if candidate:
+                candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                reason_part = f" Reason: {form_data.cancelled_reason}." if form_data.cancelled_reason else ""
+                
+                # 1. Notify Candidate
+                notify_candidate(
+                    db=db,
+                    candidate_id=candidate.user_id,
+                    title="Interview Cancelled",
+                    message=f"Your interview for '{job.job_title}' has been cancelled.{reason_part}",
+                    notification_type="interview_cancelled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+                
+                # 2. Notify School Admin
+                notify_school_admin(
+                    db=db,
+                    admin_id=job.job_posted_by,
+                    title="Interview Cancelled",
+                    message=f"Interview round '{job_interview.interview_round}' for candidate {candidate_name} has been cancelled.{reason_part}",
+                    notification_type="interview_cancelled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+                
+                # 3. Notify HR Users
+                notify_hr_users(
+                    db=db,
+                    title="Interview Cancelled",
+                    message=f"Interview round '{job_interview.interview_round}' cancelled for {candidate_name} ({job.job_title}).",
+                    notification_type="interview_cancelled",
+                    sender_user_id=admin_id,
+                    sender_type="hr"
+                )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating interview cancelled notifications: {e}")
+
     return _serialize_job_interview(job_interview)
 
 
@@ -248,13 +426,21 @@ def submit_interview_remarks_route(
     db: Session = Depends(get_db),
     admin_id: int = Depends(get_current_admin_id)
 ):
-    """Submits or updates the remarks/result for an interview."""
+    # Fetch the interview schedule to get the round name if not provided
+    interview_schedule = db.query(JobInterviewSchedule).filter(
+        JobInterviewSchedule.job_interview_id == job_interview_id
+    ).first()
+    
+    round_val = form_data.round
+    if not round_val and interview_schedule:
+        round_val = interview_schedule.interview_round
+
     interview_remark = submit_interview_remarks(
         db=db,
         job_interview_id=job_interview_id,
         applicant_status=form_data.applicant_status,
         created_by=admin_id,
-        round=form_data.round,
+        round=round_val,
         remarks=form_data.remarks,
     )
 
@@ -275,6 +461,53 @@ def submit_interview_remarks_route(
             elif form_data.applicant_status == ApplicantStatus.HOLD:
                 applicant.applicant_job_status = ApplicantJobStatus.HOLD
         db.commit()
+        
+        # Send Notifications
+        try:
+            from app.models import JobPost, Users
+            from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+            
+            job = db.query(JobPost).filter(JobPost.job_id == interview_schedule.job_id).first()
+            if applicant and job:
+                candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
+                if candidate:
+                    candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                    status_str = form_data.applicant_status.value.lower() if hasattr(form_data.applicant_status, 'value') else str(form_data.applicant_status).lower()
+                    
+                    # 1. Notify Candidate
+                    notify_candidate(
+                        db=db,
+                        candidate_id=candidate.user_id,
+                        title="Application Status Update",
+                        message=f"Your application status for '{job.job_title}' has been updated to {status_str}.",
+                        notification_type="status_update",
+                        sender_user_id=admin_id,
+                        sender_type="hr"
+                    )
+                    
+                    # 2. Notify School Admin
+                    notify_school_admin(
+                        db=db,
+                        admin_id=job.job_posted_by,
+                        title="Application Status Update",
+                        message=f"Application status for candidate {candidate_name} has been updated to {status_str}.",
+                        notification_type="status_update",
+                        sender_user_id=admin_id,
+                        sender_type="hr"
+                    )
+                    
+                    # 3. Notify HR Users
+                    notify_hr_users(
+                        db=db,
+                        title="Application Status Update",
+                        message=f"Application status for candidate {candidate_name} has been updated to {status_str} for '{job.job_title}'.",
+                        notification_type="status_update",
+                        sender_user_id=admin_id,
+                        sender_type="hr"
+                    )
+        except Exception as e:
+            from app.core.logger import logger
+            logger.error(f"Error creating status update notifications: {e}")
 
     return _serialize_interview_remark(interview_remark)
 

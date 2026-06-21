@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.models import UserLoginLog, LoginStatus, Users
+from app.models import UserLoginLog, LoginStatus, Users, CandidateMetadata
 from app.crud.job_apply_crud import (
     create_job_application,
     get_candidate_applications,
@@ -48,7 +48,6 @@ class JobApplicationRequest(BaseModel):
     job_id: int
     resume_doc: Optional[str] = None
     cover_letter: Optional[str] = None
-    expected_salary: Optional[str] = None
     screening_answers: Optional[List[ScreeningAnswerRequest]] = None
 
 
@@ -59,7 +58,6 @@ def _serialize_application(app):
         "user_id": app.user_id,
         "resume_doc": app.resume_doc,
         "cover_letter": app.cover_letter,
-        "expected_salary": app.expected_salary,
         "applicant_job_status": app.applicant_job_status,
         "offer_acceptance_status": app.offer_acceptance_status,
         "created_at": app.created_at
@@ -103,12 +101,16 @@ def check_login_route(
         if not user:
             return {"logged_in": False, "detail": "User not found."}
 
+        meta = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == user_id).first()
+        resume_doc = meta.resume_doc if meta else ""
+
         return {
             "logged_in": True,
             "user_id": user_id,
             "name": f"{user.first_name} {user.last_name}".strip(),
             "email": user.email,
-            "mobile": user.mobile
+            "mobile": user.mobile,
+            "resume_doc": resume_doc
         }
     except jwt.ExpiredSignatureError:
         return {"logged_in": False, "detail": "Token expired."}
@@ -139,9 +141,60 @@ def apply_for_job_route(
         job_id=form_data.job_id,
         resume_doc=form_data.resume_doc,
         cover_letter=form_data.cover_letter,
-        expected_salary=form_data.expected_salary,
         screening_answers=[ans.model_dump() for ans in form_data.screening_answers] if form_data.screening_answers else None
     )
+    
+    # Send Notifications
+    try:
+        from app.models.job_post_model import JobPost
+        from app.models.user_model import Users
+        from app.crud.notification_crud import notify_candidate, notify_hr_users, create_notification
+        from app.models.admin_model import Admins
+        
+        job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
+        candidate = db.query(Users).filter(Users.user_id == user_id).first()
+        
+        if job and candidate:
+            candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+            
+            # 1. Notify Candidate
+            notify_candidate(
+                db=db,
+                candidate_id=user_id,
+                title="Application Submitted",
+                message=f"Your application for '{job.job_title}' at {job.school_name} has been submitted successfully (App No: {application.mss_app_no}).",
+                notification_type="application_submitted"
+            )
+            
+            # 2. Notify Job Poster (School Admin or HR)
+            poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
+            if poster:
+                poster_role = poster.user_roles.role_name if poster.user_roles else ""
+                recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team"] else "schoolAdmin"
+                create_notification(
+                    db=db,
+                    recipient_user_id=poster.admin_id,
+                    recipient_type=recipient_type,
+                    title="New Job Application",
+                    message=f"New application received from {candidate_name} for '{job.job_title}'.",
+                    notification_type="new_application",
+                    sender_user_id=user_id,
+                    sender_type="candidate"
+                )
+            
+            # 3. Notify HR Users
+            notify_hr_users(
+                db=db,
+                title="New Job Application",
+                message=f"New application received from {candidate_name} for '{job.job_title}' at {job.school_name}.",
+                notification_type="new_application",
+                sender_user_id=user_id,
+                sender_type="candidate"
+            )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating job application notifications: {e}")
+
     return _serialize_application(application)
 
 @router.get("/my-applications")
@@ -197,6 +250,59 @@ def respond_to_offer_route(
     success = respond_to_offer(db, user_id, job_id, payload.status)
     if not success:
         raise HTTPException(status_code=404, detail="Offer not found or update failed")
+        
+    # Send Notifications
+    try:
+        from app.models.job_post_model import JobPost
+        from app.models.user_model import Users
+        from app.crud.notification_crud import notify_candidate, notify_hr_users, create_notification
+        from app.models.admin_model import Admins
+        
+        job = db.query(JobPost).filter(JobPost.job_id == job_id).first()
+        candidate = db.query(Users).filter(Users.user_id == user_id).first()
+        
+        if job and candidate:
+            candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+            status_cap = payload.status.capitalize()
+            
+            # 1. Notify Candidate
+            notify_candidate(
+                db=db,
+                candidate_id=user_id,
+                title=f"Offer {status_cap}",
+                message=f"You have successfully {payload.status} the offer for '{job.job_title}'.",
+                notification_type=f"offer_{payload.status.lower()}"
+            )
+            
+            # 2. Notify Job Poster (School Admin or HR)
+            poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
+            if poster:
+                poster_role = poster.user_roles.role_name if poster.user_roles else ""
+                recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team"] else "schoolAdmin"
+                create_notification(
+                    db=db,
+                    recipient_user_id=poster.admin_id,
+                    recipient_type=recipient_type,
+                    title=f"Offer {status_cap}",
+                    message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}'.",
+                    notification_type=f"offer_{payload.status.lower()}",
+                    sender_user_id=user_id,
+                    sender_type="candidate"
+                )
+                
+            # 3. Notify HR Users
+            notify_hr_users(
+                db=db,
+                title=f"Offer {status_cap}",
+                message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}' at {job.school_name}.",
+                notification_type=f"offer_{payload.status.lower()}",
+                sender_user_id=user_id,
+                sender_type="candidate"
+            )
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Error creating offer response notifications: {e}")
+        
     return {"success": True}
 
 
@@ -208,3 +314,33 @@ def apply_page():
 @router.get("/my-applications-page")
 def my_applications_page():
     return serve_html_with_base("mss-career-portal/pages/candidate/dashboard.html", "/mss-career-portal/pages/candidate/")
+
+@router.get("/download/{filename:path}")
+def download_resume_route(filename: str):
+    import os
+    from fastapi import HTTPException
+    from fastapi.responses import FileResponse
+    
+    # Normalize path separators
+    normalized_path = filename.replace("\\", "/")
+    download_name = os.path.basename(normalized_path)
+    
+    # Determine the target path
+    target_path = None
+    if os.path.exists(normalized_path):
+        target_path = normalized_path
+    else:
+        fallback_path = os.path.join("app", "uploads", "resumes", download_name)
+        if os.path.exists(fallback_path):
+            target_path = fallback_path
+            
+    if not target_path:
+        raise HTTPException(status_code=404, detail="File not found")
+        
+    # By specifying filename, FastAPI automatically sets: 
+    # Content-Disposition: attachment; filename="your_file.pdf"
+    return FileResponse(
+        target_path, 
+        media_type="application/octet-stream", 
+        filename=download_name
+    )

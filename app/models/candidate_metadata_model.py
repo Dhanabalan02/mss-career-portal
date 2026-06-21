@@ -14,9 +14,9 @@ class CandidateMetadata(Base):
     
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), index=True)
     
-    date_of_birth: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    about: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
-    marital_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    date_of_birth: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     
     personal_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
@@ -28,25 +28,15 @@ class CandidateMetadata(Base):
     
     pincode: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     
-    candidate_category: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    
     skills: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    languages: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     resume_doc: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     
-    profile_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    certifications: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     
-    about: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    designation: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    company: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    experience: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    salary: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    expected_salary: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    notice_period: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    work_mode: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    employment_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-    preferred_role: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    languages: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    profile_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, server_default=func.current_timestamp()

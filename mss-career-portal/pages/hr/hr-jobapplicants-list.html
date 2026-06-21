@@ -1085,6 +1085,13 @@
         if (pg) pg.style.display = 'flex';
       }
       list.forEach((c, index) => {
+        let displayStage = c.stage;
+        let showActions = true;
+        if (c.interviewStatus === 'Selected') {
+          displayStage = 'Awaiting Offer';
+          showActions = false;
+        }
+        
         const tr = document.createElement('tr');
         tr.innerHTML = `
       <td style="font-weight:600;color:var(--text2);"> ${index + 1} </td>
@@ -1100,13 +1107,13 @@
       <td style="color:var(--text2);max-width:180px;">${c.job}</td>
       <td style="color:var(--text3);white-space:nowrap;">${c.appliedDate}</td>
       <td style="font-weight:500;">${c.min_exp}-${c.max_exp} yrs</td>
-      <td>${stageBadge(c.stage)}</td>
+      <td>${stageBadge(displayStage)}</td>
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button class="action-btn blue" onclick="event.stopPropagation(); location.href='/mss-career-portal/hr/candidate-profile?id=${c.id}'">Profile</button>
-          ${(c.stage === 'Screened' || c.stage === 'Applied') ? `<button class="action-btn green" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})">Schedule</button>` : ''}
-          ${c.stage !== 'Rejected' ? `<button class="action-btn red" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')">Reject</button>` : ''}
+          ${(showActions && c.interviewStatus !== 'Completed') ? `<button class="action-btn green" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})">Schedule</button>` : ''}
+          ${(showActions && c.stage !== 'Rejected') ? `<button class="action-btn red" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')">Reject</button>` : ''}
         </div>
       </td>`;
         tbody.appendChild(tr);
@@ -1234,7 +1241,7 @@
 
     /* ── Interviewer dropdown loader ── */
     function loadInterviewers(selectId) {
-      fetch(JOBS_API_BASE + '/auth/interviewers', {
+      fetch(JOBS_API_BASE + '/job-interviews/school-admins', {
         headers: { 'Authorization': 'Bearer ' + token }
       })
       .then(res => res.ok ? res.json() : Promise.reject(res))
@@ -1242,12 +1249,13 @@
         const sel = document.getElementById(selectId);
         if (!sel) return;
         if (!list.length) {
-          sel.innerHTML = '<option value="">No interviewers found (role_id=3)</option>';
+          sel.innerHTML = '<option value="">No school admins found (role_id=7)</option>';
           return;
         }
-        sel.innerHTML = list.map(i =>
-          `<option value="${i.name}">${i.name} (${i.email})</option>`
-        ).join('');
+        sel.innerHTML = '<option value="">Select an interviewer...</option>' + list.map(i => {
+          const unitDisplay = i.unit_name ? ` (Unit: ${i.unit_name})` : (i.unit_id ? ` (Unit ID: ${i.unit_id})` : '');
+          return `<option value="${i.email}">${i.email}${unitDisplay}</option>`;
+        }).join('');
       })
       .catch(() => {
         const sel = document.getElementById(selectId);

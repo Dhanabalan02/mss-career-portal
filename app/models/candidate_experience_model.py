@@ -19,19 +19,24 @@ class CandidateExperience(Base):
 
     company_name: Mapped[str] = mapped_column(String(255))
     
-    job_title: Mapped[str] = mapped_column(String(255))
+    designation: Mapped[str] = mapped_column(String(255))
     
     employment_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     
-    start_date: Mapped[date] = mapped_column(Date)
+    start_date: Mapped[str] = mapped_column(String(50), nullable=False)
     
-    end_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    end_date: Mapped[str] = mapped_column(String(50), nullable=False)
     
     total_experience: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     
     location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    salary: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+
+    notice_period: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+
     
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, server_default=func.current_timestamp()

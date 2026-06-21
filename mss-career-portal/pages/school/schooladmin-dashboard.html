@@ -1039,7 +1039,7 @@
               <th>Status</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="recent-jobs-tbody">
             <tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">No Recent Job Posts Found</td></tr>
           </tbody>
         </table>
@@ -1158,12 +1158,12 @@
 
   <script>
     /* ── Toast ── */
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(t._timer);
-      t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+    function showToast(msg, type = 'success') {
+      if (window.showToast) {
+        window.showToast(msg, type);
+      } else {
+        console.log(msg);
+      }
     }
 
     /* ── Current Date ── */
@@ -1175,7 +1175,7 @@
         `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
     })();
 
-    const API_BASE = window.API_BASE;
+    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
     const _token = () => localStorage.getItem('access_token') || '';
 
     /* ── Calendar ── */
@@ -1341,7 +1341,7 @@
           }
         }
 
-        const tbody = document.querySelector('.card:first-of-type table tbody');
+        const tbody = document.getElementById('recent-jobs-tbody');
         if (tbody) {
           if (Array.isArray(data.recent_jobs) && data.recent_jobs.length > 0) {
             const statusCls = { Active: 'green', Draft: 'purple', Closed: 'gray' };
@@ -1410,7 +1410,7 @@
           const centerText = document.querySelector('.donut-svg text:first-of-type');
           if (centerText) centerText.textContent = totalRaw;
         }
-      } catch (e) { /* fall through */ }
+      } catch (e) { console.error('Error loading dashboard:', e); }
       renderCalendar();
     }
     loadDashboard();

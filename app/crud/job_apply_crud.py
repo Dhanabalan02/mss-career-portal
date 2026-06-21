@@ -11,7 +11,6 @@ def create_job_application(
     job_id: int,
     resume_doc: Optional[str] = None,
     cover_letter: Optional[str] = None,
-    expected_salary: Optional[str] = None,
     screening_answers: Optional[List[dict]] = None
 ) -> JobApplicant:
     """Creates a new job application record for a candidate and saves their pre-screening answers."""
@@ -20,9 +19,9 @@ def create_job_application(
         user_id=user_id,
         resume_doc=resume_doc,
         cover_letter=cover_letter,
-        expected_salary=expected_salary,
         applicant_job_status=None,  # defaults to pending/None
-        offer_acceptance_status=OfferAcceptanceStatus.PENDING
+        offer_acceptance_status=OfferAcceptanceStatus.PENDING,
+        mss_app_no="TEMP" # Temporary value to satisfy NOT NULL constraint during flush
     )
     db.add(db_applicant)
     db.flush() # Forces the DB to generate the job_applicant_id before committing

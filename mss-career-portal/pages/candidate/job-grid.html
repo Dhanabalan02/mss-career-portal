@@ -339,14 +339,17 @@
                                         <div class="jg-select-wrap">
                                             <select id="f-unit" class="jg-select" onchange="applyFilters()">
                                                 <option value="">All Units</option>
+                                                <option>Head Office</option>
+                                                <option>ORCA Swimming</option>
+                                                <option>MSS Primary School</option>
+                                                <option>MSS Secondary School</option>
+                                                <option>MSS Arts &amp; Crafts</option>
+                                                <option>MSS Sports Academy</option>
                                                 <option>Lady Andal School</option>
                                                 <option>Sir Mutha School (CBSE)</option>
-                                                <option>MSS Higher Secondary School</option>
-                                                <option>Shanthi Sadan</option>
-                                                <option>ORCA Swimming Pool</option>
-                                                <option>Head Office</option>
                                                 <option>Garuda Cricket Academy</option>
                                                 <option>Prem Vihar</option>
+                                                <option>Shanthi Sadan</option>
                                             </select>
                                             <i class="feather-chevron-down jg-select-icon"></i>
                                         </div>
@@ -1229,7 +1232,8 @@
                                                 style="color: #4f46e5; font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
                                             <p style="color: #A0AEC0; margin: 0;">7, Harrington Road, Chetpet,
                                                 <br>Chennai -
-                                                600031</p>
+                                                600031
+                                            </p>
                                         </li>
                                         <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
                                                 style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
@@ -1620,20 +1624,20 @@
                             'Authorization': 'Bearer ' + token
                         }
                     })
-                    .then(function (response) {
-                        return response.json();
-                    })
-                    .then(function (result) {
-                        if (result && result.logged_in) {
-                            window.location.href = '/mss-career-portal/apply?id=' + encodeURIComponent(jobId);
-                        } else {
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (result) {
+                            if (result && result.logged_in) {
+                                window.location.href = '/mss-career-portal/apply?id=' + encodeURIComponent(jobId);
+                            } else {
+                                promptLogin(jobId);
+                            }
+                        })
+                        .catch(function (err) {
+                            console.error('Session check failed:', err);
                             promptLogin(jobId);
-                        }
-                    })
-                    .catch(function (err) {
-                        console.error('Session check failed:', err);
-                        promptLogin(jobId);
-                    });
+                        });
                 };
 
                 function promptLogin(jobId) {
@@ -1681,7 +1685,7 @@
                     var location = getJobLocation(job.school_name);
                     var type = escapeHtml(job.job_type || 'Full Time');
                     var id = job.job_id;
-                    
+
                     var isApplied = appliedJobIds.indexOf(id) !== -1;
                     var ctaText = isApplied ?
                         '<span style="color: #10B981; display: inline-flex; align-items: center; gap: 4px;">Applied <i class="bi bi-check-lg"></i></span>' :
@@ -1689,23 +1693,23 @@
 
                     return '<a href="/mss-career-portal/job-detail?id=' + encodeURIComponent(id) + '" class="jg-card">' +
                         '<div class="jg-card-top">' +
-                            '<div class="jg-card-logo">' +
-                                '<img src="' + logo + '" alt="School Logo">' +
-                            '</div>' +
+                        '<div class="jg-card-logo">' +
+                        '<img src="' + logo + '" alt="School Logo">' +
+                        '</div>' +
                         '</div>' +
                         '<h3 class="jg-card-title">' + title + '</h3>' +
                         '<div class="jg-card-school">' +
-                            '<i class="feather-home"></i> ' + school +
+                        '<i class="feather-home"></i> ' + school +
                         '</div>' +
                         '<div class="jg-card-meta">' +
-                            '<span><i class="feather-map-pin"></i> ' + location + ', Chennai</span>' +
-                            '<span><i class="feather-clock"></i> ' + type + '</span>' +
+                        '<span><i class="feather-map-pin"></i> ' + location + ', Chennai</span>' +
+                        '<span><i class="feather-clock"></i> ' + type + '</span>' +
                         '</div>' +
                         '<div class="jg-card-footer">' +
-                            '<span class="jg-card-salary"></span>' +
-                            '<span class="jg-card-cta">' + ctaText + '</span>' +
+                        '<span class="jg-card-salary"></span>' +
+                        '<span class="jg-card-cta">' + ctaText + '</span>' +
                         '</div>' +
-                    '</a>';
+                        '</a>';
                 }
 
                 function renderPagination() {
@@ -1749,8 +1753,8 @@
                         var jobText = title + ' ' + school + ' ' + department + ' ' + desc;
 
                         var matchesKeyword = !kw || jobText.indexOf(kw) !== -1;
-                        var matchesUnit = !unit || school.indexOf(unit) !== -1;
-                        var matchesCategory = !cat || department.indexOf(cat) !== -1;
+                        var matchesUnit = !unit || school.indexOf(unit) !== -1 || (school !== '' && unit.indexOf(school) !== -1);
+                        var matchesCategory = !cat || department.indexOf(cat) !== -1 || (department !== '' && cat.indexOf(department) !== -1);
                         var matchesLocation = !loc || getJobLocation(job.school_name).toLowerCase() === loc;
 
                         return matchesKeyword && matchesUnit && matchesCategory && matchesLocation;
@@ -1827,19 +1831,33 @@
 
                 // Apply URL params
                 var urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.has('unit')) {
-                    var unitEl = document.getElementById('f-unit');
-                    if (unitEl) unitEl.value = urlParams.get('unit');
-                }
-                if (urlParams.has('cat')) {
-                    var catEl = document.getElementById('f-cat');
-                    if (catEl) catEl.value = urlParams.get('cat');
-                }
-                if (urlParams.has('location')) {
-                    var locEl = document.getElementById('f-location');
-                    if (locEl) locEl.value = urlParams.get('location');
+                
+                function setAndAddOption(elId, val) {
+                    var el = document.getElementById(elId);
+                    if (!el || !val) return;
+                    var found = false;
+                    for (var i = 0; i < el.options.length; i++) {
+                        if (el.options[i].value === val || el.options[i].text === val) {
+                            found = true;
+                            el.value = el.options[i].value;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        var opt = document.createElement('option');
+                        opt.value = val;
+                        opt.text = val;
+                        el.add(opt);
+                        el.value = val;
+                    }
                 }
 
+                if (urlParams.has('unit')) setAndAddOption('f-unit', urlParams.get('unit'));
+                if (urlParams.has('cat')) setAndAddOption('f-cat', urlParams.get('cat'));
+                if (urlParams.has('location')) setAndAddOption('f-location', urlParams.get('location'));
+
+                // --- ADD THIS LINE TO RUN THE FILTERS ON INITIAL PAGE LOAD ---
+                applyFiltersAndRender();
 
                 function loadJobs() {
                     fetch(JOBS_API_BASE + '/jobs/public')
@@ -1864,19 +1882,19 @@
                     fetch(JOBS_API_BASE + '/apply/my-applications', {
                         headers: { 'Authorization': 'Bearer ' + token }
                     })
-                    .then(function(res) {
-                        if (res.ok) return res.json();
-                        return [];
-                    })
-                    .then(function(apps) {
-                        if (apps && Array.isArray(apps)) {
-                            appliedJobIds = apps.map(function(app) { return app.job_id; });
-                        }
-                        loadJobs();
-                    })
-                    .catch(function() {
-                        loadJobs();
-                    });
+                        .then(function (res) {
+                            if (res.ok) return res.json();
+                            return [];
+                        })
+                        .then(function (apps) {
+                            if (apps && Array.isArray(apps)) {
+                                appliedJobIds = apps.map(function (app) { return app.job_id; });
+                            }
+                            loadJobs();
+                        })
+                        .catch(function () {
+                            loadJobs();
+                        });
                 } else {
                     loadJobs();
                 }

@@ -926,7 +926,8 @@
           <!-- Summary -->
           <div class="card">
             <div class="card-header"><span class="card-title">Professional Summary</span></div>
-            <div class="card-body" id="summary-content" style="font-size:13.5px; color:var(--c-text2); line-height:1.8;">
+            <div class="card-body" id="summary-content"
+              style="font-size:13.5px; color:var(--c-text2); line-height:1.8;">
               —
             </div>
           </div>
@@ -1028,7 +1029,8 @@
       <div class="card">
         <div class="card-header">
           <span class="card-title">Interview History</span>
-          <button class="btn btn-primary btn-sm" id="scheduleNextRoundBtn" onclick="scheduleInterview()">+ Schedule Next Round</button>
+          <button class="btn btn-primary btn-sm" id="scheduleNextRoundBtn" onclick="scheduleInterview()">+ Schedule Next
+            Round</button>
         </div>
         <div class="card-body" id="interviews-list">
           <!-- Injected dynamically -->
@@ -1090,26 +1092,26 @@
       fetch(JOBS_API_BASE + '/jobs/applicants/' + applicantId, {
         headers: { 'Authorization': 'Bearer ' + token }
       })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(data => {
-        candidateData = data;
-        renderHeader();
-        renderHero();
-        renderOverviewTab();
-        renderResumeTab();
-        renderSkillsTab();
-        renderPreScreeningTab();
-        renderInterviewsTab();
-        renderOfferTab();
-        renderMassetTab();
-      })
-      .catch(err => {
-        console.error('Failed to load candidate profile:', err);
-        alert('Error loading candidate profile.');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(data => {
+          candidateData = data;
+          renderHeader();
+          renderHero();
+          renderOverviewTab();
+          renderResumeTab();
+          renderSkillsTab();
+          renderPreScreeningTab();
+          renderInterviewsTab();
+          renderOfferTab();
+          renderMassetTab();
+        })
+        .catch(err => {
+          console.error('Failed to load candidate profile:', err);
+          alert('Error loading candidate profile.');
+        });
     }
 
     /* ── Rendering Functions ── */
@@ -1131,13 +1133,17 @@
       const actionsEl = document.getElementById('header-actions');
       actionsEl.innerHTML = '';
 
-      if (candidateData.stage !== 'Rejected') {
+      // If the candidate status is Selected, Offer, Offer Accepted, Onboarding, or Rejected, hide the actions
+      const hideActionsStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Rejected'];
+      const isSelected = candidateData.interviewStatus === 'Selected';
+      const isHold = candidateData.interviewStatus === 'Hold';
+
+      if (!hideActionsStages.includes(candidateData.stage) && !isSelected) {
         actionsEl.innerHTML += `<button class="btn btn-warn" onclick="holdCandidate()"><i class="ti ti-player-pause"></i> Put On Hold</button>`;
         actionsEl.innerHTML += `<button class="btn btn-danger" onclick="rejectCandidate()"><i class="ti ti-circle-x"></i> Reject</button>`;
-      }
-      
-      if (candidateData.stage === 'Applied' || candidateData.stage === 'Screened' || candidateData.stage === 'Interview') {
         actionsEl.innerHTML += `<button class="btn btn-primary" onclick="scheduleInterview()"><i class="ti ti-calendar"></i> Schedule Interview</button>`;
+      } else if (isSelected) {
+        actionsEl.innerHTML += `<span class="badge badge-green" style="font-size: 14px; padding: 8px 12px;">Status: Selected</span>`;
       }
     }
 
@@ -1168,21 +1174,21 @@
 
       // Quick stats
       const statsEl = document.getElementById('overview-quick-stats');
+      const noticePeriod = (candidateData.experience && candidateData.experience.length > 0 && candidateData.experience[0].notice_period) ? candidateData.experience[0].notice_period : '—';
       statsEl.innerHTML = `
         <div class="info-row"><span class="info-label">Applied Date</span><span class="info-value">${candidateData.appliedDate}</span></div>
         <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(candidateData.stage)}">${candidateData.stage}</span></span></div>
         <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${candidateData.interviewStatus}</span></div>
-        <div class="info-row"><span class="info-label">Expected Salary</span><span class="info-value">${candidateData.metadata.expected_salary || '—'}</span></div>
-        <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${candidateData.metadata.profile_status || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
       `;
 
       // Timeline / Stage History
       const timelineEl = document.getElementById('overview-timeline');
       timelineEl.innerHTML = '';
-      
+
       const stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
       const currentIdx = stages.indexOf(candidateData.stage);
-      
+
       stages.forEach((stage, idx) => {
         let dot = '●';
         let color = 'var(--c-text3)';
@@ -1217,17 +1223,37 @@
       const resume = candidateData.metadata.resume_doc;
       const downloadBtn = document.getElementById('downloadResumeBtn');
 
+      const getFilename = (path) => {
+        if (!path) return '';
+        return path.split(/[\\/]/).pop();
+      };
+
       if (resume) {
-        downloadBtn.onclick = () => window.open(JOBS_API_BASE + '/apply/download/' + resume);
+        const resumeName = getFilename(resume);
+        const encodedResume = encodeURIComponent(resume);
+        const downloadUrl = JOBS_API_BASE + '/apply/download/' + encodedResume;
+
+        const doDownload = () => {
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = resumeName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
+
+        downloadBtn.onclick = doDownload;
         downloadBtn.style.display = 'inline-flex';
+
         viewer.innerHTML = `
           <div class="pdf-viewer">
             <div class="icon"><i class="ti ti-file-text"></i></div>
-            <div class="name">${resume}</div>
+            <div class="name">${resumeName}</div>
             <div class="meta">PDF Document</div>
-            <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="window.open('${JOBS_API_BASE}/apply/download/${resume}')">Preview / Download Resume</button>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="inlineDownloadBtn">Download Resume</button>
           </div>
         `;
+        document.getElementById('inlineDownloadBtn').onclick = doDownload;
       } else {
         downloadBtn.style.display = 'none';
         viewer.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:30px;">No resume document uploaded.</div>`;
@@ -1236,16 +1262,28 @@
       const docsEl = document.getElementById('allDocsList');
       docsEl.innerHTML = '';
       if (resume) {
+        const resumeName = getFilename(resume);
+        const encodedResume = encodeURIComponent(resume);
+        const downloadUrl = `${JOBS_API_BASE}/apply/download/${encodedResume}`;
+
         docsEl.innerHTML += `
           <div class="doc-item">
             <div class="doc-icon" style="background:#fee2e2;"><i class="ti ti-file-text"></i></div>
             <div class="doc-info">
-              <div class="doc-name">Resume (${resume})</div>
+              <div class="doc-name">Resume (${resumeName})</div>
               <div class="doc-size">PDF Document</div>
             </div>
-            <button class="btn btn-default btn-sm" onclick="window.open('${JOBS_API_BASE}/apply/download/${resume}')">⬇</button>
+            <button class="btn btn-default btn-sm" id="listDownloadBtn">⬇</button>
           </div>
         `;
+        document.getElementById('listDownloadBtn').onclick = () => {
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = resumeName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
       }
       if (candidateData.metadata.cover_letter) {
         docsEl.innerHTML += `
@@ -1315,13 +1353,13 @@
       if (skillsRendered) return;
       skillsRendered = true;
       const el = document.getElementById('skills-chart');
-      
+
       const skillsList = candidateData.metadata.skills;
       if (!skillsList || !skillsList.length) {
         el.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No skills listed on profile.</div>`;
         return;
       }
-      
+
       el.innerHTML = skillsList.map(skill => `
         <div class="progress-wrap">
           <div class="progress-label">
@@ -1364,7 +1402,7 @@
     function renderInterviewsTab() {
       const listEl = document.getElementById('interviews-list');
       listEl.innerHTML = '';
-      
+
       const nextBtn = document.getElementById('scheduleNextRoundBtn');
       if (candidateData.stage === 'Rejected' || candidateData.stage === 'Onboarding') {
         nextBtn.style.display = 'none';
@@ -1374,9 +1412,9 @@
 
       if (candidateData.interviews && candidateData.interviews.length) {
         candidateData.interviews.forEach(item => {
-          const dateStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleDateString(undefined, {month: 'short', day: 'numeric', year: 'numeric'}) : '';
-          const timeStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'}) : '';
-          
+          const dateStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+          const timeStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
+
           let actionBtn = '';
           if (item.status === 'scheduled' || item.status === 'rescheduled') {
             actionBtn = `
@@ -1427,18 +1465,30 @@
       if (candidateData.offer_letter_doc) {
         el.className = 'card';
         el.style.cssText = 'padding: 20px;';
+        const docName = candidateData.offer_letter_doc.split(/[\\/]/).pop();
+        const encodedDoc = encodeURIComponent(candidateData.offer_letter_doc);
+        const downloadUrl = JOBS_API_BASE + '/apply/download/' + encodedDoc;
+        
         el.innerHTML = `
           <div class="card-header"><span class="card-title">Offer Letter Details</span></div>
           <div class="card-body">
             <p style="font-size:13.5px;margin-bottom:12px;">An offer letter has been generated for this candidate.</p>
             <div class="pdf-viewer">
               <div class="icon"><i class="ti ti-file-text"></i></div>
-              <div class="name">${candidateData.offer_letter_doc}</div>
+              <div class="name">${docName}</div>
               <div class="meta">Status: ${candidateData.offer_acceptance_status.toUpperCase()}</div>
-              <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="window.open('${JOBS_API_BASE}/apply/download/${candidateData.offer_letter_doc}')">Download Offer Letter</button>
+              <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="downloadOfferBtn">Download Offer Letter</button>
             </div>
           </div>
         `;
+        document.getElementById('downloadOfferBtn').onclick = () => {
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = docName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
       } else {
         el.className = 'empty-state';
         el.innerHTML = `
@@ -1483,7 +1533,7 @@
       overlay.innerHTML = `<div class="modal">${htmlContent}</div>`;
 
       // Close on backdrop click
-      overlay.addEventListener('click', function(e) {
+      overlay.addEventListener('click', function (e) {
         if (e.target === overlay) overlay.remove();
       });
 
@@ -1517,7 +1567,11 @@
         </div>
         <div class="form-group">
           <label>Start Time *</label>
-          <input type="time" id="schTime" value="10:00">
+          <input type="time" id="startTime" value="10:00">
+        </div>
+        <div class="form-group">
+          <label>End Time *</label>
+          <input type="time" id="endTime" value="">
         </div>
         <div class="form-group">
           <label>Interviewer *</label>
@@ -1535,7 +1589,7 @@
       <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
       <button class="btn btn-primary" onclick="submitSchedule()"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview</button>
     </div>`);
-      loadInterviewers('schInterviewer');
+      loadSchoolAdmins('schInterviewer');
     }
 
     function toggleMeetingMode() {
@@ -1558,52 +1612,81 @@
       fetch(JOBS_API_BASE + '/auth/interviewers', {
         headers: { 'Authorization': 'Bearer ' + token }
       })
-      .then(res => res.ok ? res.json() : Promise.reject(res))
-      .then(list => {
-        const sel = document.getElementById(selectId);
-        if (!sel) return;
-        if (!list.length) {
-          sel.innerHTML = '<option value="">No interviewers found (role_id=3)</option>';
-          return;
-        }
-        sel.innerHTML = list.map(i =>
-          `<option value="${i.name}">${i.name} (${i.email})</option>`
-        ).join('');
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(list => {
+          const sel = document.getElementById(selectId);
+          if (!sel) return;
+          if (!list.length) {
+            sel.innerHTML = '<option value="">No interviewers found (role_id=3)</option>';
+            return;
+          }
+          const selectedVal = sel.getAttribute('data-selected');
+          sel.innerHTML = list.map(i =>
+            `<option value="${i.name}" ${selectedVal === i.name ? 'selected' : ''}>${i.name} (${i.email})</option>`
+          ).join('');
+        })
+        .catch(() => {
+          const sel = document.getElementById(selectId);
+          if (sel) sel.innerHTML = '<option value="">Failed to load — type manually</option>';
+          // Swap to text input as fallback
+          const wrapper = sel ? sel.parentElement : null;
+          if (wrapper) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = selectId;
+            input.placeholder = 'Enter interviewer name';
+            wrapper.replaceChild(input, sel);
+          }
+        });
+    }
+
+    function loadSchoolAdmins(selectId) {
+      fetch(JOBS_API_BASE + '/job-interviews/school-admins', {
+        headers: { 'Authorization': 'Bearer ' + token }
       })
-      .catch(() => {
-        const sel = document.getElementById(selectId);
-        if (sel) sel.innerHTML = '<option value="">Failed to load — type manually</option>';
-        // Swap to text input as fallback
-        const wrapper = sel ? sel.parentElement : null;
-        if (wrapper) {
-          const input = document.createElement('input');
-          input.type = 'text';
-          input.id = selectId;
-          input.placeholder = 'Enter interviewer name';
-          wrapper.replaceChild(input, sel);
-        }
-      });
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(list => {
+          const sel = document.getElementById(selectId);
+          if (!sel) return;
+          if (!list.length) {
+            sel.innerHTML = '<option value="">No school admins found (role_id=7)</option>';
+            return;
+          }
+          const selectedVal = sel.getAttribute('data-selected');
+          sel.innerHTML = '<option value="">Select an interviewer...</option>' + list.map(i => {
+            const unitDisplay = i.unit_name ? ` (Unit: ${i.unit_name})` : (i.unit_id ? ` (Unit ID: ${i.unit_id})` : '');
+            // For older records, interviewer_name might be string, but here we set value to email
+            return `<option value="${i.email}" ${selectedVal === i.email || selectedVal === i.name ? 'selected' : ''}>${i.email}${unitDisplay}</option>`;
+          }).join('');
+        })
+        .catch(() => {
+          const sel = document.getElementById(selectId);
+          if (sel) sel.innerHTML = '<option value="">Failed to load admins</option>';
+        });
     }
 
     function submitSchedule() {
       const round = document.getElementById('schRound').value.trim();
       const mode = document.getElementById('schMode').value;
       const dateVal = document.getElementById('schDate').value;
-      const timeVal = document.getElementById('schTime').value;
+      const timeVal = document.getElementById('startTime').value;
+      const endtimeVal = document.getElementById('endTime').value;
       const interviewer = document.getElementById('schInterviewer').value.trim();
       const modeInput = document.getElementById('schModeInput').value.trim();
 
-      if (!round || !dateVal || !timeVal || !interviewer) {
+      if (!round || !dateVal || !timeVal || !endtimeVal || !interviewer) {
         alert('Please fill out all required fields.');
         return;
       }
 
       const scheduledAtIso = `${dateVal}T${timeVal}:00`;
+      const endTimeIso = `${dateVal}T${endtimeVal}:00`;
       const payload = {
         job_id: candidateData.job_id,
         job_applicant_id: candidateData.id,
         interview_round: round,
         scheduled_at: scheduledAtIso,
+        end_time_at: endTimeIso,
         interview_mode: mode,
         meeting_link: mode === 'online' ? modeInput : null,
         location: mode === 'offline' ? modeInput : null,
@@ -1618,58 +1701,90 @@
         },
         body: JSON.stringify(payload)
       })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(() => {
-        if (window.showToast) window.showToast('Interview scheduled!', 'success');
-        document.querySelector('.modal-overlay').remove();
-        fetchCandidateProfile();
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to schedule interview.');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(() => {
+          if (window.showToast) window.showToast('Interview scheduled!', 'success');
+          document.querySelector('.modal-overlay').remove();
+          fetchCandidateProfile();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Failed to schedule interview.');
+        });
     }
 
     /* ── Reschedule Modal ── */
     function rescheduleInterviewModal(interviewId) {
+      const interview = candidateData.interviews.find(iv => iv.job_interview_id === interviewId);
+      let initDate = new Date().toISOString().split('T')[0];
+      let initStart = "";
+      let initEnd = "";
+      let initInterviewer = "";
+      
+      if (interview) {
+        if (interview.scheduled_at) {
+          const schAt = interview.scheduled_at;
+          initDate = schAt.split('T')[0];
+          initStart = schAt.split('T')[1].substring(0, 5);
+        }
+        if (interview.end_time_at) {
+          initEnd = interview.end_time_at.split('T')[1].substring(0, 5);
+        }
+        if (interview.interviewer) {
+          initInterviewer = interview.interviewer;
+        }
+      }
+
       openModal(`
     <div class="modal-header">📅 Reschedule Interview</div>
     <div class="modal-body">
       <div class="form-grid">
         <div class="form-group">
           <label>New Date *</label>
-          <input type="date" id="reschDate" value="${new Date().toISOString().split('T')[0]}">
+          <input type="date" id="reschDate" value="${initDate}">
         </div>
         <div class="form-group">
           <label>New Start Time *</label>
-          <input type="time" id="reschTime" value="11:30">
+          <input type="time" id="reschstartTime" value="${initStart}">
         </div>
-        <div class="form-group span2">
-          <label>Reason for Rescheduling</label>
-          <textarea id="reschReason" rows="3" placeholder="Enter reason..."></textarea>
+        <div class="form-group">
+          <label>New End Time *</label>
+          <input type="time" id="reschendTime" value="${initEnd}">
         </div>
+        <div class="form-group">
+        <label>Interviewer (School Admin) *</label>
+        <select id="reschInterviewer" data-selected="${initInterviewer}">
+          <option value="">Loading interviewers…</option>
+        </select>
       </div>
+      <div class="form-group">
+        <label>Reason for Rescheduling</label>
+        <textarea id="reschReason" placeholder="E.g., Interviewer unavailable..."></textarea>
+      </div>
+    </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
       <button class="btn btn-primary" onclick="submitReschedule(${interviewId})">Confirm Reschedule</button>
     </div>`);
+      loadSchoolAdmins('reschInterviewer');
     }
 
     function submitReschedule(interviewId) {
       const dateVal = document.getElementById('reschDate').value;
-      const timeVal = document.getElementById('reschTime').value;
+      const timeVal = document.getElementById('reschstartTime').value;
+      const endtimeVal = document.getElementById('reschendTime').value;
       const reason = document.getElementById('reschReason').value.trim();
 
-      if (!dateVal || !timeVal) {
+      if (!dateVal || !timeVal || !endtimeVal) {
         alert('Please fill out all required fields.');
         return;
       }
 
-      const scheduledAtIso = `${dateVal}T${timeVal}:00`;
+      const scheduledAtIso = `${dateVal}T${timeVal}:00 - ${endtimeVal}`;
       fetch(JOBS_API_BASE + `/job-interviews/${interviewId}/reschedule`, {
         method: 'PATCH',
         headers: {
@@ -1678,22 +1793,24 @@
         },
         body: JSON.stringify({
           scheduled_at: scheduledAtIso,
-          reschedule_reason: reason
+          end_time_at: scheduledAtIso, // Default to same as start time for now
+          reschedule_reason: reason,
+          interviewer_name: interviewer
         })
       })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(() => {
-        if (window.showToast) window.showToast('Interview rescheduled!', 'success');
-        document.querySelector('.modal-overlay').remove();
-        fetchCandidateProfile();
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to reschedule interview.');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(() => {
+          if (window.showToast) window.showToast('Interview rescheduled!', 'success');
+          document.querySelector('.modal-overlay').remove();
+          fetchCandidateProfile();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Failed to reschedule interview.');
+        });
     }
 
     /* ── Remarks Modal ── */
@@ -1710,10 +1827,6 @@
           <option value="rejected">Reject Candidate</option>
         </select>
       </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <label>Interviewer Rating / Score *</label>
-        <input type="text" id="remScore" placeholder="e.g. 8/10 or Good" value="8/10">
-      </div>
       <div class="form-group">
         <label>Feedback Remarks *</label>
         <textarea id="remRemarks" rows="4" placeholder="Enter detailed feedback remarks..."></textarea>
@@ -1727,10 +1840,9 @@
 
     function submitFeedback(interviewId) {
       const status = document.getElementById('remStatus').value;
-      const score = document.getElementById('remScore').value.trim();
       const remarks = document.getElementById('remRemarks').value.trim();
 
-      if (!score || !remarks) {
+      if (!status || !remarks) {
         alert('Please fill out all required fields.');
         return;
       }
@@ -1743,23 +1855,22 @@
         },
         body: JSON.stringify({
           applicant_status: status,
-          score: score,
           remarks: remarks
         })
       })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(() => {
-        if (window.showToast) window.showToast('Interview remarks saved!', 'success');
-        document.querySelector('.modal-overlay').remove();
-        fetchCandidateProfile();
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to submit feedback.');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(() => {
+          if (window.showToast) window.showToast('Interview remarks saved!', 'success');
+          document.querySelector('.modal-overlay').remove();
+          fetchCandidateProfile();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Failed to submit feedback.');
+        });
     }
 
     /* ── Hold Candidate ── */
@@ -1802,19 +1913,19 @@
           remarks: `${reason}. Notes: ${remarks}`
         })
       })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(() => {
-        if (window.showToast) window.showToast('Candidate put on hold.', 'success');
-        document.querySelector('.modal-overlay').remove();
-        fetchCandidateProfile();
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to put candidate on hold.');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(() => {
+          if (window.showToast) window.showToast('Candidate put on hold.', 'success');
+          document.querySelector('.modal-overlay').remove();
+          fetchCandidateProfile();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Failed to put candidate on hold.');
+        });
     }
 
     /* ── Reject Candidate ── */
@@ -1858,19 +1969,19 @@
           remarks: `${reason}. Notes: ${notes}`
         })
       })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
-      .then(() => {
-        if (window.showToast) window.showToast('Candidate rejected.', 'error');
-        document.querySelector('.modal-overlay').remove();
-        fetchCandidateProfile();
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Failed to reject candidate.');
-      });
+        .then(res => {
+          if (!res.ok) throw new Error();
+          return res.json();
+        })
+        .then(() => {
+          if (window.showToast) window.showToast('Candidate rejected.', 'error');
+          document.querySelector('.modal-overlay').remove();
+          fetchCandidateProfile();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Failed to reject candidate.');
+        });
     }
 
     /* ── Mock Application Notes Saver ── */

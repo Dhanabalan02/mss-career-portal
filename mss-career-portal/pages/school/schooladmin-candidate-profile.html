@@ -929,10 +929,8 @@
           <!-- Summary -->
           <div class="card">
             <div class="card-header"><span class="card-title">Professional Summary</span></div>
-            <div class="card-body" style="font-size:13.5px; color:var(--c-text2); line-height:1.8;">
-              Dedicated and passionate Mathematics educator with 6+ years of experience teaching secondary and senior
-              secondary students in CBSE schools. Proven track record of improving student performance in board
-              examinations. Specialist in calculus, algebra, and statistics with strong classroom management skills.
+            <div id="summaryContent" class="card-body" style="font-size:13.5px; color:var(--c-text2); line-height:1.8;">
+              Loading...
             </div>
           </div>
         </div>
@@ -940,45 +938,16 @@
           <!-- Quick stats -->
           <div class="card">
             <div class="card-header"><span class="card-title">Quick Stats</span></div>
-            <div class="card-body">
-              <div class="info-row"><span class="info-label">Applied Date</span><span class="info-value">May 12,
-                  2025</span></div>
-              <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span
-                    class="badge badge-blue">Interview</span></span></div>
-              <div class="info-row"><span class="info-label">Interview Round</span><span class="info-value">Round
-                  2</span></div>
-              <div class="info-row"><span class="info-label">Pre-Screen Score</span><span class="info-value"
-                  style="color:var(--c-green);">9 / 10</span></div>
-              <div class="info-row"><span class="info-label">Skills Match</span><span class="info-value"
-                  style="color:var(--c-green);">87%</span></div>
+            <div id="overviewQuickStats" class="card-body">
+              Loading...
             </div>
           </div>
           <!-- Stage history -->
           <div class="card">
             <div class="card-header"><span class="card-title">Stage History</span></div>
             <div class="card-body">
-              <div class="timeline">
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#ede9fe;color:#7c3aed;">✓</div>
-                  <div class="tl-body">
-                    <div class="tl-title">Applied</div>
-                    <div class="tl-meta">May 12, 2025</div>
-                  </div>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#dbeafe;color:#2563eb;">✓</div>
-                  <div class="tl-body">
-                    <div class="tl-title">Screened</div>
-                    <div class="tl-meta">May 13, 2025</div>
-                  </div>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#fef3c7;color:#d97706;">●</div>
-                  <div class="tl-body">
-                    <div class="tl-title" style="color:var(--c-orange);">Interview (Active)</div>
-                    <div class="tl-meta">Round 2 · May 20, 2025</div>
-                  </div>
-                </div>
+              <div class="timeline" id="overviewTimeline">
+                Loading...
               </div>
             </div>
           </div>
@@ -992,52 +961,16 @@
         <div class="card">
           <div class="card-header">
             <span class="card-title"><i class="ti ti-file-text" aria-hidden="true"></i> Resume</span>
-            <button class="btn btn-default btn-sm" onclick="window.open('#')">⬇ Download</button>
+            <button id="downloadResumeBtn" class="btn btn-default btn-sm" style="display:none;">⬇ Download</button>
           </div>
-          <div class="card-body">
-            <div class="pdf-viewer">
-              <div class="icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
-              <div class="name">Arjun_Mehta_Resume.pdf</div>
-              <div class="meta">2.3 MB · Uploaded May 12, 2025</div>
-              <button class="btn btn-primary btn-sm" style="margin-top:4px;">Preview Resume</button>
-            </div>
+          <div class="card-body" id="pdfViewerContainer">
+            Loading...
           </div>
         </div>
         <div class="card">
           <div class="card-header"><span class="card-title">All Documents</span></div>
-          <div class="card-body">
-            <div class="doc-item">
-              <div class="doc-icon" style="background:#fee2e2;"><i class="ti ti-file-text" aria-hidden="true"></i></div>
-              <div class="doc-info">
-                <div class="doc-name">Resume.pdf</div>
-                <div class="doc-size">2.3 MB</div>
-              </div>
-              <button class="btn btn-default btn-sm">⬇</button>
-            </div>
-            <div class="doc-item">
-              <div class="doc-icon" style="background:#dbeafe;"><i class="ti ti-notes" aria-hidden="true"></i></div>
-              <div class="doc-info">
-                <div class="doc-name">Cover Letter.pdf</div>
-                <div class="doc-size">0.8 MB</div>
-              </div>
-              <button class="btn btn-default btn-sm">⬇</button>
-            </div>
-            <div class="doc-item">
-              <div class="doc-icon" style="background:#d1fae5;"><i class="ti ti-school" aria-hidden="true"></i></div>
-              <div class="doc-info">
-                <div class="doc-name">CTET Certificate.pdf</div>
-                <div class="doc-size">1.1 MB</div>
-              </div>
-              <button class="btn btn-default btn-sm">⬇</button>
-            </div>
-            <div class="doc-item">
-              <div class="doc-icon" style="background:#fef3c7;"><i class="ti ti-trophy" aria-hidden="true"></i></div>
-              <div class="doc-info">
-                <div class="doc-name">Experience Letter.pdf</div>
-                <div class="doc-size">0.5 MB</div>
-              </div>
-              <button class="btn btn-default btn-sm">⬇</button>
-            </div>
+          <div class="card-body" id="allDocsList">
+            Loading...
           </div>
         </div>
       </div>
@@ -1050,7 +983,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Skills Match Analysis</span>
-              <span class="badge badge-green">87% Match</span>
+              <span class="badge badge-green" id="skillsMatchBadge">Skills Match</span>
             </div>
             <div class="card-body">
               <div id="skills-chart"></div>
@@ -1061,48 +994,16 @@
           <div class="card">
             <div class="card-header"><span class="card-title">Work History</span></div>
             <div class="card-body">
-              <div class="timeline">
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#dbeafe;color:#2563eb;"><i class="ti ti-briefcase"
-                      aria-hidden="true"></i></div>
-                  <div class="tl-body">
-                    <div class="tl-title">Senior Math Teacher</div>
-                    <div class="tl-sub">Delhi Public School</div>
-                    <div class="tl-meta">2021 – Present · 4 years · 94% board pass rate</div>
-                  </div>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#ede9fe;color:#7c3aed;"><i class="ti ti-briefcase"
-                      aria-hidden="true"></i></div>
-                  <div class="tl-body">
-                    <div class="tl-title">Math Teacher</div>
-                    <div class="tl-sub">Kendriya Vidyalaya</div>
-                    <div class="tl-meta">2019 – 2021 · 2 years · Grades 9–12</div>
-                  </div>
-                </div>
+              <div class="timeline" id="experienceTimeline">
+                Loading...
               </div>
             </div>
           </div>
           <div class="card">
             <div class="card-header"><span class="card-title">Education</span></div>
             <div class="card-body">
-              <div class="timeline">
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#d1fae5;color:#16a34a;"><i class="ti ti-school"
-                      aria-hidden="true"></i></div>
-                  <div class="tl-body">
-                    <div class="tl-title">B.Ed.</div>
-                    <div class="tl-sub">Delhi University · 2018</div>
-                  </div>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-dot" style="background:#d1fae5;color:#16a34a;"><i class="ti ti-school"
-                      aria-hidden="true"></i></div>
-                  <div class="tl-body">
-                    <div class="tl-title">B.Sc. Mathematics</div>
-                    <div class="tl-sub">Delhi University · 2017 · 82%</div>
-                  </div>
-                </div>
+              <div class="timeline" id="educationTimeline">
+                Loading...
               </div>
             </div>
           </div>
@@ -1115,32 +1016,10 @@
       <div class="card">
         <div class="card-header">
           <span class="card-title">Pre-Screening Responses</span>
-          <span class="badge badge-green">Score: 9 / 10</span>
+          <span class="badge badge-green" id="prescreenScoreBadge">Score: —</span>
         </div>
-        <div class="card-body">
-          <div class="qa-block">
-            <div class="qa-q">How many years of experience do you have teaching Mathematics?</div>
-            <div class="qa-a">6 years, primarily at CBSE secondary level (Grades 9-12).</div>
-            <div class="qa-eval"><i class="ti ti-circle-check" aria-hidden="true"></i> Meets requirement (5+ years)
-            </div>
-          </div>
-          <div class="qa-block">
-            <div class="qa-q">Are you CTET / TET certified?</div>
-            <div class="qa-a">Yes, CTET certified (Paper II) with a valid certification.</div>
-            <div class="qa-eval"><i class="ti ti-circle-check" aria-hidden="true"></i> Meets requirement</div>
-          </div>
-          <div class="qa-block">
-            <div class="qa-q">What is your approach to helping struggling students?</div>
-            <div class="qa-a">I use diagnostic assessments to identify gaps, then personalize practice materials. I
-              offer extra help sessions and use visual learning tools for complex topics.</div>
-            <div class="qa-eval"><i class="ti ti-circle-check" aria-hidden="true"></i> Excellent response</div>
-          </div>
-          <div class="summary-box">
-            <div class="summary-box-title"><i class="ti ti-circle-check" aria-hidden="true"></i> Pre-Screening Summary
-            </div>
-            <div class="summary-box-body">Candidate meets all pre-screening criteria. Strongly recommended for the
-              interview stage.</div>
-          </div>
+        <div class="card-body" id="prescreeningList">
+          Loading...
         </div>
       </div>
     </div>
@@ -1151,48 +1030,8 @@
         <div class="card-header">
           <span class="card-title">Interview History</span>
         </div>
-        <div class="card-body">
-          <!-- Round 1 -->
-          <div class="interview-card">
-            <div class="interview-top">
-              <div>
-                <div class="interview-title">Round 1 – Initial Screening</div>
-                <div class="interview-meta">May 14, 2025 · 10:00 AM · Online · Interviewer: Mrs. Sunita Rao</div>
-              </div>
-              <span class="badge badge-green">Completed</span>
-            </div>
-            <div class="score-grid">
-              <div class="score-cell">
-                <div class="score-num">8<span style="font-size:.8rem;font-weight:400;">/10</span></div>
-                <div class="score-name">Technical Skills</div>
-              </div>
-              <div class="score-cell">
-                <div class="score-num">9<span style="font-size:.8rem;font-weight:400;">/10</span></div>
-                <div class="score-name">Communication</div>
-              </div>
-              <div class="score-cell">
-                <div class="score-num">9<span style="font-size:.8rem;font-weight:400;">/10</span></div>
-                <div class="score-name">Subject Knowledge</div>
-              </div>
-              <div class="score-cell">
-                <div class="score-num">8<span style="font-size:.8rem;font-weight:400;">/10</span></div>
-                <div class="score-name">Culture Fit</div>
-              </div>
-            </div>
-            <div class="interview-feedback">Excellent subject knowledge and communication. Well-prepared with real
-              examples. Strong candidate for the next round.</div>
-            <span class="badge badge-green" style="font-size:11.5px;">Outcome: Proceed to Next Round</span>
-          </div>
-          <!-- Round 2 -->
-          <div class="interview-card active">
-            <div class="interview-top">
-              <div>
-                <div class="interview-title">Round 2 – Technical Interview</div>
-                <div class="interview-meta">May 20, 2025 · 10:00 AM · Online · Interviewer: Dr. Ramesh Gupta</div>
-              </div>
-              <span class="badge badge-orange">Scheduled</span>
-            </div>
-          </div>
+        <div class="card-body" id="interviewHistoryList">
+          Loading...
         </div>
       </div>
     </div>
@@ -1202,9 +1041,7 @@
       <div class="empty-state">
         <div class="icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
         <div class="title">No Offer Generated Yet</div>
-        <div class="body">Candidate is currently in the Interview stage. An offer can be generated after the final
-          interview is completed.</div>
-        <button class="btn btn-primary" onclick="location.href='/mss-career-portal/school/offers'">Go to Offer Management</button>
+        <div class="body">Loading offer details...</div>
       </div>
     </div>
 
@@ -1213,8 +1050,7 @@
       <div class="empty-state">
         <div class="icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
         <div class="title">MASSET Sync Not Initiated</div>
-        <div class="body">MASSET integration becomes available after offer acceptance. This candidate is currently in
-          the Interview stage.</div>
+        <div class="body">Loading MASSET sync status...</div>
       </div>
     </div>
 
@@ -1226,8 +1062,18 @@
     /* Tell portal-layout.js this is school admin session */
     if (!localStorage.getItem('userRole')) localStorage.setItem('userRole', 'schoolAdmin');
 
-    const API_BASE = window.API_BASE || 'http://192.168.0.12:8000';
+    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
     const _token = () => localStorage.getItem('access_token') || '';
+    let candidateData = null;
+
+    function getStageBadgeClass(stage) {
+      const map = {
+        'Applied': 'badge-blue', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
+        'Offer': 'badge-blue', 'Offer Accepted': 'badge-green',
+        'Onboarding': 'badge-green', 'Rejected': 'badge-red'
+      };
+      return map[stage] || 'badge-gray';
+    }
 
     async function loadCandidateProfile() {
       const params = new URLSearchParams(window.location.search);
@@ -1239,35 +1085,39 @@
         });
         if (!res.ok) throw new Error(res.status);
         const c = await res.json();
-        const name = c.name || (c.first_name + ' ' + c.last_name) || 'Candidate';
-        const role = c.job_title || c.position || '';
-        const exp  = c.exp || c.experience || '';
+        candidateData = c;
+
+        const name = c.name || 'Candidate';
+        const role = c.job || '';
+        const exp  = c.exp || '';
+        const meta = c.metadata || {};
+
         /* breadcrumb + header */
         document.getElementById('breadcrumbName').textContent = name;
         document.getElementById('pageTitle').textContent = name;
         document.getElementById('pageSubtitle').textContent = `Applied for: ${role}`;
+
         /* hero */
         document.getElementById('profileAvatar').textContent = c.initials || name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
         document.getElementById('profileName').textContent = name;
         document.getElementById('profileRole').textContent = role + (exp ? ` · ${exp} Experience` : '');
         document.getElementById('profileMeta').innerHTML = [
           c.email ? `<span><i class="ti ti-mail" aria-hidden="true"></i> ${c.email}</span>` : '',
-          c.phone ? `<span><i class="ti ti-device-mobile" aria-hidden="true"></i> ${c.phone}</span>` : '',
-          c.location ? `<span><i class="ti ti-map-pin" aria-hidden="true"></i> ${c.location}</span>` : '',
-          c.education ? `<span><i class="ti ti-school" aria-hidden="true"></i> ${c.education}</span>` : '',
+          c.mobile ? `<span><i class="ti ti-device-mobile" aria-hidden="true"></i> ${c.mobile}</span>` : '',
+          meta.city ? `<span><i class="ti ti-map-pin" aria-hidden="true"></i> ${meta.city}${meta.state ? ', ' + meta.state : ''}</span>` : '',
         ].filter(Boolean).join('');
         document.getElementById('profileBadges').innerHTML = [
-          c.stage ? `<span class="badge badge-blue"><i class="ti ti-point-filled" aria-hidden="true"></i> ${c.stage}</span>` : '',
-          c.match != null ? `<span class="badge badge-green"><i class="ti ti-target" aria-hidden="true"></i> ${c.match}% Match</span>` : '',
-          `<span class="badge badge-gray" style="font-size:11px;">Applied ${c.applied_date || c.appliedDate || ''} · ID: APP-${String(id).padStart(4,'0')}</span>`,
+          c.stage ? `<span class="badge ${getStageBadgeClass(c.stage)}"><i class="ti ti-point-filled" aria-hidden="true"></i> ${c.stage}</span>` : '',
+          `<span class="badge badge-gray" style="font-size:11px;">Applied ${c.appliedDate || ''} · ID: APP-${String(id).padStart(4,'0')}</span>`,
         ].filter(Boolean).join('');
-        /* skills */
-          /* override SKILLS array for renderSkillBars */
-          SKILLS.length = 0;
-          if (c.skills && Array.isArray(c.skills) && c.skills.length) {
-            c.skills.forEach(s => SKILLS.push([typeof s === 'string' ? s : s.name, typeof s === 'object' ? (s.level || 80) : 80]));
-          }
-          skillsRendered = false;
+
+        renderOverviewTab();
+        renderResumeTab();
+        renderSkillsTab();
+        renderPreScreeningTab();
+        renderInterviewsTab();
+        renderOfferTab();
+        renderMassetTab();
       } catch(e) {
         console.warn('Could not load candidate profile', e);
         document.querySelector('.page-content').innerHTML = `
@@ -1275,6 +1125,331 @@
             <h2>Candidate not found</h2>
             <p style="color:var(--text-muted);">The candidate profile could not be loaded or doesn't exist.</p>
             <button class="btn btn-primary" style="margin-top:20px;" onclick="window.history.back()">Go Back</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderOverviewTab() {
+      if (!candidateData) return;
+      document.getElementById('summaryContent').textContent = candidateData.metadata.bio || 'No professional summary provided.';
+
+      const statsEl = document.getElementById('overviewQuickStats');
+      const noticePeriod = (candidateData.experience && candidateData.experience.length > 0 && candidateData.experience[0].notice_period) ? candidateData.experience[0].notice_period : '—';
+      statsEl.innerHTML = `
+        <div class="info-row"><span class="info-label">Applied Date</span><span class="info-value">${candidateData.appliedDate}</span></div>
+        <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(candidateData.stage)}">${candidateData.stage}</span></span></div>
+        <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${candidateData.interviewStatus || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
+      `;
+
+      const timelineEl = document.getElementById('overviewTimeline');
+      timelineEl.innerHTML = '';
+      const stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
+      const currentIdx = stages.indexOf(candidateData.stage);
+
+      stages.forEach((stage, idx) => {
+        let dot = '●';
+        let color = 'var(--c-text3)';
+        let bg = 'var(--c-surface2)';
+        let sub = '';
+
+        if (idx < currentIdx || (candidateData.stage === 'Rejected' && idx === 0)) {
+          dot = '✓';
+          color = 'var(--c-green)';
+          bg = 'var(--c-green-bg)';
+        } else if (stage === candidateData.stage) {
+          dot = '●';
+          color = 'var(--c-orange)';
+          bg = 'var(--c-orange-bg)';
+          sub = ' (Active)';
+        }
+
+        timelineEl.innerHTML += `
+          <div class="tl-item">
+            <div class="tl-dot" style="background:${bg};color:${color};">${dot}</div>
+            <div class="tl-body">
+              <div class="tl-title" style="color:${color};font-weight:700;">${stage}${sub}</div>
+              <div class="tl-meta">${idx <= currentIdx ? candidateData.appliedDate : ''}</div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function renderResumeTab() {
+      if (!candidateData) return;
+      const viewer = document.getElementById('pdfViewerContainer');
+      const resume = candidateData.metadata.resume_doc;
+      const downloadBtn = document.getElementById('downloadResumeBtn');
+
+      const getFilename = (path) => {
+        if (!path) return '';
+        return path.split(/[\\/]/).pop();
+      };
+
+      if (resume) {
+        const resumeName = getFilename(resume);
+        const encodedResume = encodeURIComponent(resume);
+        const downloadUrl = API_BASE + '/apply/download/' + encodedResume;
+
+        const doDownload = () => {
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = resumeName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
+
+        downloadBtn.onclick = doDownload;
+        downloadBtn.style.display = 'inline-flex';
+
+        viewer.innerHTML = `
+          <div class="pdf-viewer">
+            <div class="icon"><i class="ti ti-file-text"></i></div>
+            <div class="name">${resumeName}</div>
+            <div class="meta">PDF Document</div>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="inlineDownloadBtn">Download Resume</button>
+          </div>
+        `;
+        document.getElementById('inlineDownloadBtn').onclick = doDownload;
+      } else {
+        downloadBtn.style.display = 'none';
+        viewer.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:30px;">No resume document uploaded.</div>`;
+      }
+
+      const docsEl = document.getElementById('allDocsList');
+      docsEl.innerHTML = '';
+      if (resume) {
+        const resumeName = getFilename(resume);
+        const encodedResume = encodeURIComponent(resume);
+        const downloadUrl = `${API_BASE}/apply/download/${encodedResume}`;
+
+        docsEl.innerHTML += `
+          <div class="doc-item">
+            <div class="doc-icon" style="background:#fee2e2;"><i class="ti ti-file-text"></i></div>
+            <div class="doc-info">
+              <div class="doc-name">Resume (${resumeName})</div>
+              <div class="doc-size">PDF Document</div>
+            </div>
+            <button class="btn btn-default btn-sm" id="listDownloadBtn">⬇</button>
+          </div>
+        `;
+        document.getElementById('listDownloadBtn').onclick = () => {
+          const a = document.createElement('a');
+          a.href = downloadUrl;
+          a.download = resumeName;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+        };
+      }
+      if (candidateData.metadata.cover_letter) {
+        docsEl.innerHTML += `
+          <div class="doc-item">
+            <div class="doc-icon" style="background:#dbeafe;"><i class="ti ti-notes"></i></div>
+            <div class="doc-info">
+              <div class="doc-name">Cover Letter</div>
+              <div class="doc-size">${candidateData.metadata.cover_letter}</div>
+            </div>
+          </div>
+        `;
+      }
+      if (docsEl.innerHTML === '') {
+        docsEl.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No documents attached.</div>`;
+      }
+    }
+
+    function renderSkillsTab() {
+      if (!candidateData) return;
+      document.getElementById('skillsMatchBadge').textContent = 'Verified Skills';
+
+      const expEl = document.getElementById('experienceTimeline');
+      expEl.innerHTML = '';
+      if (candidateData.experience && candidateData.experience.length) {
+        candidateData.experience.forEach(exp => {
+          expEl.innerHTML += `
+            <div class="tl-item">
+              <div class="tl-dot" style="background:#dbeafe;color:#2563eb;"><i class="ti ti-briefcase"></i></div>
+              <div class="tl-body">
+                <div class="tl-title">${exp.title}</div>
+                <div class="tl-sub">${exp.company} · ${exp.location || 'Location not specified'}</div>
+                <div class="tl-meta">${exp.start_date} – ${exp.end_date} (${exp.type})</div>
+                <div style="font-size:12px;color:var(--c-text2);margin-top:4px;">${exp.description || ''}</div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        expEl.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No work history entries provided.</div>`;
+      }
+
+      const eduEl = document.getElementById('educationTimeline');
+      eduEl.innerHTML = '';
+      if (candidateData.education && candidateData.education.length) {
+        candidateData.education.forEach(edu => {
+          const score = edu.percentage ? `${edu.percentage}%` : (edu.cgpa ? `CGPA: ${edu.cgpa}` : '');
+          eduEl.innerHTML += `
+            <div class="tl-item">
+              <div class="tl-dot" style="background:#d1fae5;color:#16a34a;"><i class="ti ti-school"></i></div>
+              <div class="tl-body">
+                <div class="tl-title">${edu.level} – ${edu.degree}</div>
+                <div class="tl-sub">${edu.institution} (${edu.university})</div>
+                <div class="tl-meta">Graduated: ${edu.end_year} · ${score}</div>
+              </div>
+            </div>
+          `;
+        });
+      } else {
+        eduEl.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No education history entries provided.</div>`;
+      }
+    }
+
+    let skillsRendered = false;
+    function renderSkillsChart() {
+      if (skillsRendered) return;
+      skillsRendered = true;
+      const el = document.getElementById('skills-chart');
+
+      const skillsList = candidateData.metadata.skills;
+      if (!skillsList || !skillsList.length) {
+        el.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No skills listed on profile.</div>`;
+        return;
+      }
+
+      el.innerHTML = skillsList.map(skill => `
+        <div class="progress-wrap">
+          <div class="progress-label">
+            <span>${skill}</span>
+            <span style="font-weight:800;color:var(--c-green)">Verified</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width:0%;background:var(--c-green)" data-target="90"></div>
+          </div>
+        </div>`).join('');
+
+      requestAnimationFrame(() => {
+        el.querySelectorAll('.progress-fill').forEach(bar => {
+          bar.style.width = bar.dataset.target + '%';
+        });
+      });
+    }
+
+    function renderPreScreeningTab() {
+      if (!candidateData) return;
+      const listEl = document.getElementById('prescreeningList');
+      listEl.innerHTML = '';
+
+      if (candidateData.screening && candidateData.screening.length) {
+        document.getElementById('prescreenScoreBadge').textContent = `Responses: ${candidateData.screening.length}`;
+        candidateData.screening.forEach(item => {
+          listEl.innerHTML += `
+            <div class="qa-block">
+              <div class="qa-q">${item.question}</div>
+              <div class="qa-a"><strong>Response:</strong> ${item.answer}</div>
+              ${item.expected_answer ? `<div class="qa-eval"><i class="ti ti-circle-check"></i> Expected Answer: ${item.expected_answer}</div>` : ''}
+            </div>
+          `;
+        });
+      } else {
+        document.getElementById('prescreenScoreBadge').textContent = 'No responses';
+        listEl.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:40px;">No pre-screening questions were answered or required for this role.</div>`;
+      }
+    }
+
+    function renderInterviewsTab() {
+      if (!candidateData) return;
+      const listEl = document.getElementById('interviewHistoryList');
+      listEl.innerHTML = '';
+
+      if (candidateData.interviews && candidateData.interviews.length) {
+        candidateData.interviews.forEach(item => {
+          const formattedDate = item.scheduled_at ? new Date(item.scheduled_at).toLocaleString() : 'Date not set';
+          const isCompleted = item.status === 'completed';
+          const isCancelled = item.status === 'cancelled';
+          const badgeColor = isCompleted ? 'badge-green' : (isCancelled ? 'badge-red' : 'badge-orange');
+          const badgeText = item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : 'Scheduled';
+
+          let remarksHTML = '';
+          if (item.remarks && item.remarks.remarks) {
+            remarksHTML = `
+              <div class="interview-feedback">
+                <strong>Feedback:</strong> ${item.remarks.remarks}
+                ${item.remarks.applicant_status ? `<br><span class="badge badge-gray" style="margin-top:5px;">Outcome: ${item.remarks.applicant_status}</span>` : ''}
+              </div>
+            `;
+          }
+
+          listEl.innerHTML += `
+            <div class="interview-card ${isCompleted ? '' : 'active'}">
+              <div class="interview-top">
+                <div>
+                  <div class="interview-title">${item.round}</div>
+                  <div class="interview-meta">${formattedDate} · Mode: ${item.mode || '—'} · Interviewer: ${item.interviewer || '—'}</div>
+                  ${item.meeting_link ? `<div class="interview-meta">Meeting: <a href="${item.meeting_link}" target="_blank">${item.meeting_link}</a></div>` : ''}
+                  ${item.location ? `<div class="interview-meta">Location: ${item.location}</div>` : ''}
+                </div>
+                <span class="badge ${badgeColor}">${badgeText}</span>
+              </div>
+              ${remarksHTML}
+            </div>
+          `;
+        });
+      } else {
+        listEl.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:30px;">No interview history found.</div>`;
+      }
+    }
+
+    function renderOfferTab() {
+      if (!candidateData) return;
+      const el = document.getElementById('tab-offer');
+      if (candidateData.offer_acceptance_status) {
+        el.innerHTML = `
+          <div class="card">
+            <div class="card-header"><span class="card-title">Offer Details</span></div>
+            <div class="card-body">
+              <div class="info-row"><span class="info-label">Status</span><span class="info-value"><span class="badge badge-green">${candidateData.offer_acceptance_status}</span></span></div>
+              ${candidateData.offer_letter_doc ? `
+                <div class="info-row">
+                  <span class="info-label">Offer Letter</span>
+                  <span class="info-value">
+                    <a href="${API_BASE}/apply/download/${encodeURIComponent(candidateData.offer_letter_doc)}" target="_blank">Download Offer Letter</a>
+                  </span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="empty-state">
+            <div class="icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+            <div class="title">No Offer Generated Yet</div>
+            <div class="body">Candidate is currently in the ${candidateData.stage} stage. Offers are managed under Offer Management.</div>
+            <button class="btn btn-primary" onclick="location.href='/mss-career-portal/school/offers'">Go to Offer Management</button>
+          </div>
+        `;
+      }
+    }
+
+    function renderMassetTab() {
+      if (!candidateData) return;
+      const el = document.getElementById('tab-masset');
+      if (candidateData.sync_masset === 1) {
+        el.innerHTML = `
+          <div class="empty-state">
+            <div class="icon" style="background:#d1fae5;color:#16a34a;"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+            <div class="title">Synced to MASSET</div>
+            <div class="body">This candidate's profile has been successfully synchronized with the main MASSET database.</div>
+          </div>
+        `;
+      } else {
+        el.innerHTML = `
+          <div class="empty-state">
+            <div class="icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
+            <div class="title">MASSET Sync Pending</div>
+            <div class="body">Sync to MASSET becomes available after the candidate accepts the offer.</div>
           </div>
         `;
       }
@@ -1288,35 +1463,7 @@
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.getElementById('tab-' + id).classList.add('active');
       el.classList.add('active');
-      if (id === 'skills') renderSkillBars();
-    }
-
-    /* ── Skills bars (rendered once on demand) ─────────────────── */
-    const SKILLS = [];
-
-    let skillsRendered = false;
-    function renderSkillBars() {
-      if (skillsRendered) return;
-      skillsRendered = true;
-      const el = document.getElementById('skills-chart');
-      el.innerHTML = SKILLS.map(([label, pct]) => `
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>${label}</span>
-        <span style="font-weight:800;color:${pct >= 80 ? 'var(--c-green)' : 'var(--c-orange)'};">${pct}%</span>
-      </div>
-      <div class="progress-bar">
-        <div class="progress-fill"
-             style="width:0%;background:${pct >= 80 ? 'var(--c-green)' : 'var(--c-orange)'}"
-             data-target="${pct}"></div>
-      </div>
-    </div>`).join('');
-
-      requestAnimationFrame(() => {
-        el.querySelectorAll('.progress-fill').forEach(bar => {
-          bar.style.width = bar.dataset.target + '%';
-        });
-      });
+      if (id === 'skills') renderSkillsChart();
     }
 
     /* ── Modal helper ─────────────────────────────────────────── */
@@ -1343,10 +1490,11 @@
     }
 
     function holdCandidate() {
+      const name = candidateData ? candidateData.name : 'Candidate';
       openModal(`
     <div class="modal-header">⏸ Put Candidate On Hold</div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">Arjun Mehta will be placed on hold. You can reactivate at any time.</p>
+      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">${name} will be placed on hold. You can reactivate at any time.</p>
       <div class="form-group" style="margin-bottom:12px;">
         <label>Reason for Hold *</label>
         <select>
@@ -1367,10 +1515,11 @@
     }
 
     function rejectCandidate() {
+      const name = candidateData ? candidateData.name : 'Candidate';
       openModal(`
     <div class="modal-header"><i class="ti ti-circle-x" aria-hidden="true"></i> Reject Candidate</div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">Arjun Mehta will be marked as rejected for this position.</p>
+      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">${name} will be marked as rejected for this position.</p>
       <div class="form-group" style="margin-bottom:12px;">
         <label>Rejection Reason *</label>
         <select>

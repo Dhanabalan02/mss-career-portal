@@ -1209,7 +1209,7 @@
               vacancies: j.vacancy_count || 1,
               status: mappedStatus,
               date: formattedDate,
-              applicants: 0,
+              applicants: j.applicant_count || 0,
               location: j.school_name || 'Lady Andal School',
               is_clone: j.is_clone
             };

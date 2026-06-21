@@ -1619,12 +1619,11 @@
 
     /* ── Toast ── */
     function showToast(msg, type = 'success') {
-      const icons = { success: 'ti-circle-check', error: 'ti-circle-x', info: 'ti-info-circle' };
-      const t = document.getElementById('toast');
-      t.className = `toast t-${type} show`;
-      t.innerHTML = `<i class="ti ${icons[type]}" aria-hidden="true"></i>${msg}`;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+      if (window.showToast) {
+        window.showToast(msg, type);
+      } else {
+        console.log(msg);
+      }
     }
 
     /* ── Dark theme watcher ── */

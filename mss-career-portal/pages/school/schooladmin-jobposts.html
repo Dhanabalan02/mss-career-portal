@@ -1127,7 +1127,7 @@
 
   <script src="portal-layout.js"></script>
   <script>
-    const API_BASE = window.API_BASE || 'http://192.168.0.12:8000';
+    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
     const _token = () => localStorage.getItem('access_token') || '';
 
     /* ── DATA ────────────────────────────────────────────────────── */
@@ -1135,6 +1135,7 @@
 
     const STATUS_META = {
       Active: { badge: 'badge-green', dot: '#3B6D11' },
+      Publish: { badge: 'badge-green', dot: '#3B6D11' },
       Draft: { badge: 'badge-amber', dot: '#854F0B' },
       Closed: { badge: 'badge-red', dot: '#A32D2D' },
     };
@@ -1185,7 +1186,8 @@
       });
 
       document.getElementById('resultCount').textContent = `Showing ${jobs.length} result${jobs.length !== 1 ? 's' : ''}`;
-      document.getElementById('selectAll').checked = false;
+      const selectAllEl = document.getElementById('selectAll');
+      if (selectAllEl) selectAllEl.checked = false;
     }
 
     /* ── FILTER ──────────────────────────────────────────────────── */
@@ -1198,7 +1200,7 @@
 
       const filtered = JOBS.filter(j =>
         (!q || j.title.toLowerCase().includes(q) || j.dept.toLowerCase().includes(q) || j.location.toLowerCase().includes(q)) &&
-        (!st || j.status === st) &&
+        (!st || (st === 'Active' && (j.status === 'Active' || j.status === 'Publish' || j.status === 'publish')) || j.status === st) &&
         (!dt || j.dept === dt) &&
         (!lt || j.location === lt) &&
         (!tt || j.type === tt)
@@ -1290,6 +1292,23 @@
       pg.appendChild(next);
     }
 
+    function recalcJobStats() {
+      const allCount = JOBS.length;
+      const activeCount = JOBS.filter(j => j.status === 'Active' || j.status === 'Publish' || j.status === 'publish').length;
+      const draftCount = JOBS.filter(j => j.status === 'Draft' || j.status === 'draft').length;
+      const closedCount = JOBS.filter(j => j.status === 'Closed' || j.status === 'closed').length;
+
+      const scAllVal = document.querySelector('.sc-all .stat-value');
+      const scActiveVal = document.querySelector('.sc-active .stat-value');
+      const scDraftVal = document.querySelector('.sc-draft .stat-value');
+      const scClosedVal = document.querySelector('.sc-closed .stat-value');
+
+      if (scAllVal) scAllVal.textContent = allCount;
+      if (scActiveVal) scActiveVal.textContent = activeCount;
+      if (scDraftVal) scDraftVal.textContent = draftCount;
+      if (scClosedVal) scClosedVal.textContent = closedCount;
+    }
+
     /* ── INIT ────────────────────────────────────────────────────── */
     async function loadJobs() {
       try {
@@ -1300,7 +1319,8 @@
           const data = await res.json();
           JOBS = Array.isArray(data.jobs) ? data.jobs : [];
         }
-      } catch (e) { /* fallback empty */ }
+      } catch (e) { console.error('Error loading jobs:', e); }
+      recalcJobStats();
       renderJobs(JOBS);
       buildPagination(JOBS.length, 10);
     }

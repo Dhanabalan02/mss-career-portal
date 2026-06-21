@@ -1566,12 +1566,18 @@
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fa-regular fa-calendar-xmark"></i>No interviews match the current filters.</div></td></tr>`;
         return;
       }
+      const selectedCandidates = new Set();
+      data.forEach(iv => {
+        if (iv.candidate_status === 'selected') {
+          selectedCandidates.add(iv.candidate_id);
+        }
+      });
+
       tbody.innerHTML = '';
       data.forEach(iv => {
         const sc = iv.status === 'Completed' ? 'pill-completed' : iv.status === 'Cancelled' ? 'pill-cancelled' : 'pill-scheduled';
         const [abg, aclr] = avatarColor(iv.candidate);
-        const isCompleted = iv.status.toLowerCase() === 'completed';
-        const disableAttr = isCompleted ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : '';
+        const disableAttr = selectedCandidates.has(iv.candidate_id) ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : '';
         tbody.innerHTML += `
       <tr>
         <td>
@@ -1878,12 +1884,12 @@
 
     /* ── Toast ── */
     let toastTimer;
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').textContent = msg;
-      toast.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
+    function showToast(msg, type = 'success') {
+      if (window.showToast) {
+        window.showToast(msg, type);
+      } else {
+        console.log(msg);
+      }
     }
 
     /* ── Filters ── */
@@ -1996,6 +2002,8 @@
             time: iv.time,
             interviewer: iv.interviewer,
             status: iv.status,
+            candidate_id: iv.candidate_id,
+            candidate_status: iv.candidate_status,
           }));
         }
         if (Array.isArray(data.candidates)) {
