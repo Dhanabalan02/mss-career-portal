@@ -231,18 +231,6 @@
                                             <div class="mss-field-inner">
                                                 <select id="srch-unit" class="mss-select">
                                                     <option value="">Any Unit</option>
-                                                    <!-- <option>Central Administration</option> -->
-                                                    <option>Head Office</option>
-                                                    <option>ORCA Swimming</option>
-                                                    <option>MSS Primary School</option>
-                                                    <option>MSS Secondary School</option>
-                                                    <option>MSS Arts &amp; Crafts</option>
-                                                    <option>MSS Sports Academy</option>
-                                                    <option>Lady Andal School</option>
-                                                    <option>Sir Mutha School (CBSE)</option>
-                                                    <option>Garuda Cricket Academy</option>
-                                                    <option>Prem Vihar</option>
-                                                    <option>Shanthi Sadan</option>
                                                 </select>
                                                 <i class="feather-chevron-down mss-select-arrow"></i>
                                             </div>
@@ -2032,6 +2020,31 @@
 
             initJobs();
             window.addEventListener('candidate_login_success', initJobs);
+            
+            function fetchUnits() {
+                var select = document.getElementById('srch-unit');
+                if (!select) return;
+                
+                fetch(AUTH_API_BASE + '/auth/units')
+                    .then(function(res) {
+                        if (!res.ok) throw new Error('Failed to fetch units');
+                        return res.json();
+                    })
+                    .then(function(units) {
+                        select.innerHTML = '<option value="">Any Unit</option>';
+                        units.forEach(function(unit) {
+                            var option = document.createElement('option');
+                            option.value = unit.unit_name;
+                            option.textContent = unit.unit_name;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(function(err) {
+                        console.error('Error fetching units:', err);
+                    });
+            }
+            
+            fetchUnits();
         })();
 
     </script>

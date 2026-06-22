@@ -1247,14 +1247,6 @@
               <label>School / Unit</label>
               <select id="school">
                 <option value="">Select School</option>
-                <option>Lady Andal School</option>
-                <option>Sir Mutha School (CBSE)</option>
-                <option>MSS Higher Secondary School</option>
-                <option>Shanthi Sadan</option>
-                <option>ORCA Swimming Pool</option>
-                <option>Head Office</option>
-                <option>Garuda Cricket Academy</option>
-                <option>Prem Vihar</option>
               </select>
             </div>
             <div class="form-group">
@@ -2627,10 +2619,32 @@
       }
     }
 
+    async function fetchUnits() {
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const res = await fetch(apiBase + '/auth/units');
+        if (!res.ok) throw new Error('Failed to fetch units');
+        const units = await res.json();
+        const select = document.getElementById('school');
+        if (select) {
+          select.innerHTML = '<option value="">Select School</option>';
+          units.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.unit_name;
+            opt.textContent = u.unit_name;
+            select.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching units:', err);
+      }
+    }
+
     async function initializePage() {
       await Promise.all([
         initEduSelect(),
-        initSkillSelect()
+        initSkillSelect(),
+        fetchUnits()
       ]);
       
       if (editJobId) {

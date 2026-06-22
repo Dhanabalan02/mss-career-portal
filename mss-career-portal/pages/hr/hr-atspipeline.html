@@ -1607,7 +1607,7 @@
 
     /* ── Helpers ── */
     const initials = name => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    const scoreClass = s => s >= 90 ? 'match-high' : s >= 75 ? 'match-mid' : 'match-low';
+
 
     /* ── Render ── */
     function buildCard(c) {
@@ -1639,7 +1639,6 @@
     </div>
     <div class="card-footer">
       <span class="days-ago"><i class="ti ti-clock" aria-hidden="true"></i>${c.daysAgo}d ago</span>
-      <span class="match-badge ${scoreClass(c.match)}">${c.match}% match</span>
     </div>
   </div>`;
     }

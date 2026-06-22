@@ -357,6 +357,8 @@ def get_candidate_profile_db(db: Session, user_id: int) -> dict:
             "notice_period": experience[0].notice_period if experience else None,
             "employment_type": experience[0].employment_type if experience else None,
             "languages": meta.languages,
+            "blood_group": meta.blood_group,
+            "marital_status": meta.marital_status,
         } if meta else None,
         "education": [
             {
@@ -431,6 +433,8 @@ def update_candidate_profile_db(db: Session, user_id: int, data: dict) -> dict:
         
         meta.about = metadata_in.get("about", meta.about)
         meta.languages = metadata_in.get("languages", meta.languages)
+        meta.blood_group = metadata_in.get("blood_group", meta.blood_group)
+        meta.marital_status = metadata_in.get("marital_status", meta.marital_status)
         
         skills = metadata_in.get("skills")
         if isinstance(skills, list):

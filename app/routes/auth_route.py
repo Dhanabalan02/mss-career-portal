@@ -83,6 +83,8 @@ class CandidateMetadataUpdate(BaseModel):
     languages: Optional[str] = None
     designation: Optional[str] = None
     company: Optional[str] = None
+    blood_group: Optional[str] = None
+    marital_status: Optional[str] = None
     experience: Optional[str] = None
     salary: Optional[str] = None
     notice_period: Optional[str] = None
@@ -114,6 +116,15 @@ class CandidateRegisterRequest(BaseModel):
 
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+@router.get("/units")
+def get_units(
+    db: Session = Depends(get_db)
+):
+    """Fetch all units to display in dropdowns/filters"""
+    from app.models.unit_model import Units
+    units_list = db.query(Units).all()
+    return [{"id": u.id, "unit_name": u.unit_name} for u in units_list]
 
 @router.post("/user/login")
 def user_login(

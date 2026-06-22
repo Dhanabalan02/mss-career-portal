@@ -1199,6 +1199,28 @@
                   <option>Prefer not to say</option>
                 </select>
               </div>
+              <div>
+                <label class="cp-field-label">Marital Status</label>
+                <select id="pfMaritalStatus">
+                  <option value="">Select Status</option>
+                  <option>Single</option>
+                  <option>Married</option>
+                </select>
+              </div>
+              <div>
+                <label class="cp-field-label">Blood Group</label>
+                <select id="pfBloodGroup">
+                  <option value="">Select Blood Group</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -1729,6 +1751,8 @@
       // 2. Metadata details
       const meta = data.metadata || {};
       if (document.getElementById('pfDob')) document.getElementById('pfDob').value = meta.date_of_birth || '';
+      if (document.getElementById('pfBloodGroup') && meta.blood_group) document.getElementById('pfBloodGroup').value = meta.blood_group;
+      if (document.getElementById('pfMaritalStatus') && meta.marital_status) document.getElementById('pfMaritalStatus').value = meta.marital_status;
       if (document.getElementById('pfAbout')) document.getElementById('pfAbout').value = meta.about || '';
       if (document.getElementById('pfDesig')) document.getElementById('pfDesig').value = meta.designation || '';
       if (document.getElementById('pfComp')) document.getElementById('pfComp').value = meta.company || '';
@@ -1971,6 +1995,8 @@
           mobile: document.getElementById('pfMobile').value.trim(),
           metadata: {
             date_of_birth: document.getElementById('pfDob') ? document.getElementById('pfDob').value : null,
+            blood_group: document.getElementById('pfBloodGroup') ? document.getElementById('pfBloodGroup').value : null,
+            marital_status: document.getElementById('pfMaritalStatus') ? document.getElementById('pfMaritalStatus').value : null,
             city: city || null,
             state: state || null,
             about: document.getElementById('pfAbout') ? document.getElementById('pfAbout').value.trim() : null,

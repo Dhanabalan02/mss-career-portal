@@ -14,6 +14,7 @@ from app.models.userlogin_model import UserLoginLog
 from app.models.userlogin_model import LoginStatus
 from app.models.admin_model import Admins
 from app.models.user_roles_model import UserRoles
+from app.models.unit_model import Units
 
 __all__ = [
     "Base",
@@ -36,5 +37,6 @@ __all__ = [
     "Users",
     "Admins",
     "LoginStatus",
-    "UserRoles"
+    "UserRoles",
+    "Units"
 ]

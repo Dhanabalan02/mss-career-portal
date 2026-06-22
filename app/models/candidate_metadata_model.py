@@ -18,6 +18,10 @@ class CandidateMetadata(Base):
     
     date_of_birth: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     
+    blood_group: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
+    marital_status: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    
     personal_address: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
