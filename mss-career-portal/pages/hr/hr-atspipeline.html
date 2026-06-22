@@ -1420,6 +1420,123 @@
         padding: 14px;
       }
     }
+
+    /* ── Modals ── */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .45);
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+      padding: 20px;
+      backdrop-filter: blur(2px);
+    }
+    .modal.open {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--surface);
+      width: 100%;
+      max-width: 540px;
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+    .modal-close {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text-3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .15s;
+    }
+    .modal-close:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: transparent;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-2);
+    }
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--text);
+      background: var(--bg);
+      transition: all .2s;
+    }
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+      background: var(--surface);
+    }
+    .recommend-toggle {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    .rec-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      background-color: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      font-size: 13px;
+    }
+    .rec-btn:hover { background-color: var(--surface-2); }
+    #statusSelected.active { background-color: #d1e7dd; border-color: #a3cfbb; color: #0f5132; }
+    #statusNextround.active { background-color: #cff4fc; border-color: #9eeaf9; color: #055160; }
+    #statusRejected.active { background-color: #f8d7da; border-color: #f1aeb5; color: #842029; }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
   </style>
 </head>
 
@@ -1489,7 +1606,7 @@
       <div class="dtab active" onclick="switchTab('overview')"><i class="ti ti-user" aria-hidden="true"></i> Overview
       </div>
       <div class="dtab" onclick="switchTab('timeline')"><i class="ti ti-timeline" aria-hidden="true"></i> Timeline</div>
-      <!-- <div class="dtab" onclick="switchTab('actions')"><i class="ti ti-bolt" aria-hidden="true"></i> Actions</div> -->
+      <div class="dtab" onclick="switchTab('actions')"><i class="ti ti-bolt" aria-hidden="true"></i> Actions</div>
     </div>
 
     <div class="drawer-body">
@@ -1516,30 +1633,30 @@
 
       <!-- Actions tab -->
       <div class="tab-panel" id="tab-actions">
-        <div class="section stage-move-section">
+        <div class="section stage-move-section" id="secMoveStage">
           <div class="section-title">Move to Stage</div>
           <div class="stage-pills" id="stagePills"></div>
         </div>
 
-        <div class="section">
+        <div class="section" id="secQuickActions">
           <div class="section-title">Quick Actions</div>
           <div class="action-grid">
-            <button class="action-btn ab-interview" onclick="doAction('interview')">
-              <i class="ti ti-calendar-plus" aria-hidden="true"></i> Schedule Interview
+            <button class="action-btn ab-feedback" id="btnActionFeedback" onclick="doFeedbackAction()" style="display:none; background: var(--teal); color: #fff;">
+              <i class="ti ti-message-circle" aria-hidden="true"></i> Submit Feedback
             </button>
-            <button class="action-btn ab-offer" onclick="doAction('offer')">
-              <i class="ti ti-file-invoice" aria-hidden="true"></i> Send Offer Letter
-            </button>
-            <button class="action-btn ab-hold" onclick="doAction('hold')">
+            <button class="action-btn ab-hold" id="btnActionHold" onclick="doAction('hold')">
               <i class="ti ti-player-pause" aria-hidden="true"></i> Put On Hold
             </button>
-            <button class="action-btn ab-reject" onclick="doAction('reject')">
+            <button class="action-btn ab-reject" id="btnActionReject" onclick="doAction('reject')">
               <i class="ti ti-user-x" aria-hidden="true"></i> Reject Candidate
+            </button>
+            <button class="action-btn ab-sync-masset" id="btnActionSyncMasset" onclick="syncToMasset()" style="display:none; background: var(--purple); color: #fff;">
+              <i class="ti ti-refresh" aria-hidden="true"></i> Sync to MASSET
             </button>
           </div>
         </div>
 
-        <div class="section">
+        <div class="section" id="secNotes">
           <div class="section-title">Notes</div>
           <textarea class="notes-area" id="notesArea" placeholder="Add notes about this candidate…"></textarea>
           <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="saveNotes()">
@@ -1548,6 +1665,47 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Feedback Modal -->
+  <div class="modal" id="feedbackModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title"><i class="ti ti-message-circle"></i> Interview Feedback</div>
+        <button class="modal-close" onclick="closeModal('feedbackModal')"><i class="ti ti-x"></i></button>
+      </div>
+      <input type="hidden" id="feedbackJobInterviewId">
+      <div class="form-group">
+        <label>Candidate</label>
+        <input type="text" id="feedbackCandidate" readonly style="background:var(--surface-2);cursor:default;">
+      </div>
+      <div class="form-group">
+        <label>Interview Round</label>
+        <input type="text" id="feedbackRound" placeholder="e.g., Technical Round 1, HR Interview">
+      </div>
+      <div class="form-group">
+        <label>Interview Remarks / Feedback</label>
+        <textarea id="feedbackRemarks" placeholder="Enter detailed interview notes..." style="min-height:120px; resize: vertical;"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Interview Outcome / Status</label>
+        <div class="recommend-toggle">
+          <button type="button" class="rec-btn" id="statusSelected" onclick="setStatus('SELECTED')">
+            <i class="ti ti-circle-check"></i> Selected
+          </button>
+          <button type="button" class="rec-btn" id="statusNextround" onclick="setStatus('NEXT_ROUND')">
+            <i class="ti ti-arrow-right-circle"></i> Next Round
+          </button>
+          <button type="button" class="rec-btn" id="statusRejected" onclick="setStatus('REJECTED')">
+            <i class="ti ti-circle-x"></i> Reject
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('feedbackModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveFeedback()">Submit Feedback</button>
+      </div>
     </div>
   </div>
 
@@ -1794,6 +1952,27 @@
       // Notes
       document.getElementById('notesArea').value = c.notes || '';
 
+      // Action visibility
+      if (c.stage === 'Offer Accepted') {
+        document.getElementById('secMoveStage').style.display = 'none';
+        document.getElementById('secNotes').style.display = 'none';
+        document.getElementById('btnActionFeedback').style.display = 'none';
+        document.getElementById('btnActionHold').style.display = 'none';
+        document.getElementById('btnActionReject').style.display = 'none';
+        document.getElementById('btnActionSyncMasset').style.display = 'flex';
+      } else {
+        document.getElementById('secMoveStage').style.display = 'block';
+        document.getElementById('secNotes').style.display = 'block';
+        document.getElementById('btnActionSyncMasset').style.display = 'none';
+        document.getElementById('btnActionHold').style.display = 'flex';
+        document.getElementById('btnActionReject').style.display = 'flex';
+        if (c.stage === 'Interview') {
+          document.getElementById('btnActionFeedback').style.display = 'flex';
+        } else {
+          document.getElementById('btnActionFeedback').style.display = 'none';
+        }
+      }
+
       switchTab('overview');
       document.getElementById('drawer').classList.add('active');
       document.getElementById('overlay').classList.add('active');
@@ -1806,7 +1985,7 @@
     }
 
     function switchTab(tab) {
-      const tabs = ['overview', 'timeline'];
+      const tabs = ['overview', 'timeline', 'actions'];
       document.querySelectorAll('.dtab').forEach((el, i) => el.classList.toggle('active', tabs[i] === tab));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');
@@ -1875,14 +2054,16 @@
     // Capture portal-layout's showToast before this script shadows window.showToast
     const _portalShowToast = window.showToast || null;
 
-    function showToast(msg, type = 'success') {
+    // Define showToast as a variable to prevent hoisting override before capture
+    const showToast = function(msg, type = 'success') {
       const mappedType = type === 'danger' ? 'error' : type;
       if (_portalShowToast) {
         _portalShowToast(msg, mappedType);
       } else {
         console.log('[Toast]', msg);
       }
-    }
+    };
+    window.showToast = showToast;
 
     function getStageFromPoint(x, y) {
       const el = document.elementFromPoint(x, y);
@@ -2109,6 +2290,122 @@
       } catch (e) { /* keep sample data if API unreachable */ }
       renderKanban(candidates);
     }
+
+    /* ── Feedback Modal ── */
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    async function doFeedbackAction() {
+      const c = candidates.find(x => x.id === activeId);
+      if (!c) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/applicants/${c.id}`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        if (res.ok) {
+          const profile = await res.json();
+          if (profile.interviews && profile.interviews.length > 0) {
+            const activeIv = profile.interviews.find(iv => iv.status === 'scheduled' || iv.status === 'rescheduled');
+            if (activeIv) {
+              openFeedbackModal(c.name, activeIv.round, activeIv.job_interview_id);
+            } else {
+              showToast('No active interview found for this candidate.', 'warning');
+            }
+          } else {
+            showToast('No interview history for this candidate.', 'warning');
+          }
+        }
+      } catch (err) {
+        showToast('Failed to fetch candidate details', 'error');
+      }
+    }
+
+    function openFeedbackModal(candidateName, currentRound, jobInterviewId) {
+      document.getElementById('feedbackCandidate').value = candidateName || '';
+      document.getElementById('feedbackRound').value = currentRound || '';
+      document.getElementById('feedbackJobInterviewId').value = jobInterviewId || '';
+      selectedStatus = "";
+      document.querySelectorAll('.recommend-toggle .rec-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('feedbackRemarks').value = '';
+      document.getElementById('feedbackModal').classList.add('open');
+    }
+
+    let selectedStatus = "";
+    function setStatus(statusValue) {
+      document.querySelectorAll('.recommend-toggle .rec-btn').forEach(btn => btn.classList.remove('active'));
+      if (statusValue === 'SELECTED') document.getElementById('statusSelected').classList.add('active');
+      if (statusValue === 'NEXT_ROUND') document.getElementById('statusNextround').classList.add('active');
+      if (statusValue === 'REJECTED') document.getElementById('statusRejected').classList.add('active');
+      selectedStatus = statusValue;
+    }
+
+    async function saveFeedback() {
+      const jobInterviewId = document.getElementById('feedbackJobInterviewId').value;
+      const roundValue = document.getElementById('feedbackRound').value.trim();
+      const remarksValue = document.getElementById('feedbackRemarks').value.trim();
+
+      if (!jobInterviewId || !roundValue || !remarksValue || !selectedStatus) {
+        showToast('Please fill all required fields.', 'warning');
+        return;
+      }
+
+      const payload = {
+        round: roundValue,
+        remarks: remarksValue,
+        applicant_status: selectedStatus.toLowerCase()
+      };
+
+      try {
+        const response = await fetch(`${API_BASE}/job-interviews/${jobInterviewId}/remarks`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${_token()}`
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          closeModal('feedbackModal');
+          showToast('Feedback submitted successfully');
+          loadCandidates(); // Refresh ATS Pipeline
+        } else {
+          showToast(`Submission failed.`, 'danger');
+        }
+      } catch (error) {
+        showToast('Network error, could not submit data.', 'danger');
+      }
+    }
+
+    async function syncToMasset() {
+      const c = candidates.find(x => x.id === activeId);
+      if (!c) return;
+
+      try {
+        const response = await fetch(`${API_BASE}/hr/masset/${c.id}/sync`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${_token()}`
+          },
+          body: JSON.stringify({})
+        });
+
+        const data = await response.json();
+        if (response.ok && data.success) {
+          showToast('Candidate successfully synced to MASSET!');
+          closeDrawer();
+          loadCandidates(); // Refresh ATS Pipeline
+        } else {
+          showToast(data.error || 'Failed to sync with MASSET.', 'danger');
+        }
+      } catch (error) {
+        showToast('Network error, could not sync to MASSET.', 'danger');
+      }
+    }
+
     loadCandidates();
   </script>
 

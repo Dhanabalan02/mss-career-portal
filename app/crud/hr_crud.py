@@ -234,6 +234,26 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
     if not _is_hr_role(db, admin_id) and job.job_posted_by != admin_id:
         raise HTTPException(status_code=403, detail="Access denied")
 
+    # Check if candidate is moving from Offer/Offer Accepted to Interview
+    if (app_record.applicant_stage in (ApplicantStage.OFFER, ApplicantStage.OFFER_ACCEPTED)) and stage == "Interview":
+        # Find the latest interview schedule for this applicant
+        latest_interview = (
+            db.query(JobInterviewSchedule)
+            .filter(JobInterviewSchedule.job_applicant_id == applicant_id)
+            .order_by(JobInterviewSchedule.job_interview_id.desc())
+            .first()
+        )
+        if latest_interview:
+            # Find the corresponding remark
+            from app.models.interview_remarks_model import InterviewRemark, ApplicantStatus
+            remark = (
+                db.query(InterviewRemark)
+                .filter(InterviewRemark.job_interview_id == latest_interview.job_interview_id)
+                .first()
+            )
+            if remark and remark.applicant_status == ApplicantStatus.SELECTED:
+                remark.applicant_status = ApplicantStatus.NEXT_ROUND
+
     for attr, value in fields.items():
         setattr(app_record, attr, value)
 

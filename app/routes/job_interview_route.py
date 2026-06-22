@@ -23,7 +23,8 @@ from app.models import (
     JobInterviewSchedule,
     JobApplicant,
     ApplicantJobStatus,
-    InterviewStatus
+    InterviewStatus,
+    ApplicantStage
 )
 from app.routes.interview_auth_route import get_current_admin_id
 
@@ -456,6 +457,7 @@ def submit_interview_remarks_route(
         if applicant:
             if form_data.applicant_status == ApplicantStatus.SELECTED:
                 applicant.applicant_job_status = ApplicantJobStatus.SELECTED
+                applicant.applicant_stage = ApplicantStage.OFFER
             elif form_data.applicant_status == ApplicantStatus.REJECTED:
                 applicant.applicant_job_status = ApplicantJobStatus.REJECTED
             elif form_data.applicant_status == ApplicantStatus.HOLD:

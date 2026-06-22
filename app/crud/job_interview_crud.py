@@ -66,6 +66,13 @@ def schedule_interview(
     db.add(job_interview)
     db.commit()
     db.refresh(job_interview)
+
+    from app.models.job_applicant_model import JobApplicant, ApplicantStage
+    applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_applicant_id).first()
+    if applicant:
+        applicant.applicant_stage = ApplicantStage.INTERVIEW
+        db.commit()
+
     logger.info(f"Interview scheduled: id={job_interview.job_interview_id} for applicant={job_applicant_id}")
     return job_interview
 
@@ -177,7 +184,7 @@ def submit_interview_remarks(
     remarks: Optional[str] = None,
 ) -> InterviewRemark:
     """Creates or updates the remarks/result for an interview (one remark record per interview)."""
-    get_job_interview_or_404(db, job_interview_id)
+    interview = get_job_interview_or_404(db, job_interview_id)
 
     interview_remark = (
         db.query(InterviewRemark)
@@ -204,4 +211,13 @@ def submit_interview_remarks(
 
     db.commit()
     db.refresh(interview_remark)
+
+    from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus, ApplicantStage
+    applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == interview.job_applicant_id).first()
+    if applicant:
+        applicant.applicant_job_status = ApplicantJobStatus(applicant_status.value)
+        if applicant_status == ApplicantStatus.SELECTED:
+            applicant.applicant_stage = ApplicantStage.OFFER
+        db.commit()
+
     return interview_remark

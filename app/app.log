@@ -91,3 +91,182 @@ ImportError: cannot import name '_days_ago' from 'app.crud.common' (C:\Tasks\mss
 [2026-06-22 21:58:04] INFO in database: Database engine created successfully.
 [2026-06-22 21:58:04] INFO in main: FastAPI application has started successfully.
 [2026-06-22 21:59:59] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-22 22:10:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:10:15] INFO in database: Database engine created successfully.
+[2026-06-22 22:10:23] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:10:23] INFO in database: Database engine created successfully.
+[2026-06-22 22:10:24] INFO in main: FastAPI application has started successfully.
+[2026-06-22 22:12:31] INFO in auth_crud: Successful login for candidate email: ezakiel12@gmail.com from IP: 127.0.0.1
+[2026-06-22 22:12:50] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-22 22:13:02] INFO in job_interview_crud: Interview scheduled: id=6 for applicant=13
+[2026-06-22 22:13:23] INFO in job_interview_crud: Interview remarks created: job_interview_id=6
+[2026-06-22 22:16:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:16:41] INFO in database: Database engine created successfully.
+[2026-06-22 22:16:42] INFO in main: FastAPI application has started successfully.
+[2026-06-22 22:17:58] INFO in job_interview_crud: Interview scheduled: id=7 for applicant=13
+[2026-06-22 22:36:42] INFO in job_interview_crud: Interview remarks created: job_interview_id=7
+[2026-06-22 22:44:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:44:40] INFO in database: Database engine created successfully.
+[2026-06-22 22:44:40] INFO in main: FastAPI application has started successfully.
+[2026-06-22 22:44:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:44:45] INFO in database: Database engine created successfully.
+[2026-06-22 22:44:45] INFO in main: FastAPI application has started successfully.
+[2026-06-22 22:44:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:44:51] INFO in database: Database engine created successfully.
+[2026-06-22 22:44:52] INFO in main: FastAPI application has started successfully.
+[2026-06-22 22:44:58] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:44:58] INFO in database: Database engine created successfully.
+[2026-06-22 22:44:58] INFO in main: FastAPI application has started successfully.
+[2026-06-22 22:48:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:48:42] INFO in database: Database engine created successfully.
+[2026-06-22 22:48:54] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:48:54] INFO in database: Database engine created successfully.
+[2026-06-22 22:51:50] INFO in job_interview_crud: Interview scheduled: id=8 for applicant=13
+[2026-06-22 22:52:03] INFO in job_interview_crud: Interview remarks created: job_interview_id=8
+[2026-06-22 22:52:12] INFO in hr_crud: Attempting to sync candidate 12 to http://192.168.0.8/synchrms/api/career_sync.php
+[2026-06-22 22:52:12] INFO in hr_crud: Payload: {'candidate_id': 12, 'masset_employee_id': 'EMP-0012', 'first_name': 'Ramesh', 'last_name': 'Kannan', 'email': 'ramesramesh0724@gmail.com', 'phone': '09500755440', 'date_of_birth': '2003-12-26', 'gender': 'Male', 'marital_status': 'single', 'designation': 'Maths', 'unit_name': 'Lady Andal School', 'action': 'appointment_order'}
+[2026-06-22 22:52:19] INFO in hr_crud: Attempting to sync candidate 12 to http://192.168.0.8/synchrms/api/career_sync.php
+[2026-06-22 22:52:19] INFO in hr_crud: Payload: {'candidate_id': 12, 'masset_employee_id': 'EMP-0012', 'first_name': 'Ramesh', 'last_name': 'Kannan', 'email': 'ramesramesh0724@gmail.com', 'phone': '09500755440', 'date_of_birth': '2003-12-26', 'gender': 'Male', 'marital_status': 'single', 'designation': 'Maths', 'unit_name': 'Lady Andal School', 'action': 'appointment_order'}
+[2026-06-22 22:52:22] ERROR in hr_crud: MASSET Sync Failed. Exact issue: HTTPConnectionPool(host='192.168.0.8', port=80): Max retries exceeded with url: /synchrms/api/career_sync.php (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad0fed5e0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)'))
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\util\connection.py", line 85, in create_connection
+    raise err
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\util\connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connectionpool.py", line 493, in _make_request
+    conn.request(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 500, in request
+    self.endheaders()
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\http\client.py", line 1333, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\http\client.py", line 1093, in _send_output
+    self.send(msg)
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\http\client.py", line 1037, in send
+    self.connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 331, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 213, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad0fed5e0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\util\retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='192.168.0.8', port=80): Max retries exceeded with url: /synchrms/api/career_sync.php (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad0fed5e0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\crud\hr_crud.py", line 448, in sync_masset
+    response = requests.post(webhook_url, json=payload, timeout=10)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\api.py", line 134, in post
+    return request("post", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\adapters.py", line 717, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPConnectionPool(host='192.168.0.8', port=80): Max retries exceeded with url: /synchrms/api/career_sync.php (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad0fed5e0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)'))
+[2026-06-22 22:52:29] ERROR in hr_crud: MASSET Sync Failed. Exact issue: HTTPConnectionPool(host='192.168.0.8', port=80): Max retries exceeded with url: /synchrms/api/career_sync.php (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad10b62d0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)'))
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\util\connection.py", line 85, in create_connection
+    raise err
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\util\connection.py", line 73, in create_connection
+    sock.connect(sa)
+TimeoutError: timed out
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connectionpool.py", line 493, in _make_request
+    conn.request(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 500, in request
+    self.endheaders()
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\http\client.py", line 1333, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\http\client.py", line 1093, in _send_output
+    self.send(msg)
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\http\client.py", line 1037, in send
+    self.connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 331, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connection.py", line 213, in _new_conn
+    raise ConnectTimeoutError(
+urllib3.exceptions.ConnectTimeoutError: (<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad10b62d0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\adapters.py", line 696, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\urllib3\util\retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='192.168.0.8', port=80): Max retries exceeded with url: /synchrms/api/career_sync.php (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad10b62d0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\crud\hr_crud.py", line 448, in sync_masset
+    response = requests.post(webhook_url, json=payload, timeout=10)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\api.py", line 134, in post
+    return request("post", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\requests\adapters.py", line 717, in send
+    raise ConnectTimeout(e, request=request)
+requests.exceptions.ConnectTimeout: HTTPConnectionPool(host='192.168.0.8', port=80): Max retries exceeded with url: /synchrms/api/career_sync.php (Caused by ConnectTimeoutError(<HTTPConnection(host='192.168.0.8', port=80) at 0x21ad10b62d0>, 'Connection to 192.168.0.8 timed out. (connect timeout=10)'))
+[2026-06-22 22:52:31] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:52:31] INFO in database: Database engine created successfully.
+[2026-06-22 22:52:33] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 22:52:33] INFO in database: Database engine created successfully.
+[2026-06-22 22:52:33] INFO in main: FastAPI application has started successfully.
