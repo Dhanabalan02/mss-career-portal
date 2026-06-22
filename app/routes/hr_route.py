@@ -9,6 +9,7 @@ from app.core.database import get_db
 from app.routes.interview_auth_route import get_current_admin_id
 from app.crud.hr_crud import (
     get_ats_candidates,
+    update_candidate_stage,
     get_interviews,
     get_masset_candidates,
     sync_masset,
@@ -26,6 +27,20 @@ def ats_pipeline(
 ):
     candidates = get_ats_candidates(db, admin_id)
     return {"candidates": candidates}
+
+
+class StageUpdateRequest(BaseModel):
+    stage: str
+
+
+@router.patch("/ats-pipeline/{applicant_id}/stage")
+def update_ats_stage(
+    applicant_id: int,
+    payload: StageUpdateRequest,
+    db: Session = Depends(get_db),
+    admin_id: int = Depends(get_current_admin_id),
+):
+    return update_candidate_stage(db, admin_id, applicant_id, payload.stage)
 
 
 @router.get("/interviews")

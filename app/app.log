@@ -1,0 +1,93 @@
+[2026-06-22 20:55:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 20:55:28] INFO in database: Database engine created successfully.
+[2026-06-22 20:55:28] INFO in main: FastAPI application has started successfully.
+[2026-06-22 20:55:41] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 20:55:41] INFO in database: Database engine created successfully.
+[2026-06-22 20:55:42] INFO in main: FastAPI application has started successfully.
+[2026-06-22 20:56:16] INFO in auth_crud: Admin ID 5 logged out from IP: 127.0.0.1
+[2026-06-22 20:56:27] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-22 21:04:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:04:50] INFO in database: Database engine created successfully.
+[2026-06-22 21:04:51] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:39:28] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-22 21:40:10] INFO in auth_crud: New candidate registered with email: ezakiel12@gmail.com from IP: 127.0.0.1
+[2026-06-22 21:40:59] INFO in job_apply_crud: Job application created: applicant_id=13, mss_app_no=MSS-APP-13, job_id=19, user_id=11
+[2026-06-22 21:41:27] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-22 21:48:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:48:04] INFO in database: Database engine created successfully.
+[2026-06-22 21:48:05] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:48:06] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:48:06] INFO in database: Database engine created successfully.
+[2026-06-22 21:48:06] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:48:13] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:48:13] INFO in database: Database engine created successfully.
+[2026-06-22 21:48:14] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:51:37] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:51:37] INFO in database: Database engine created successfully.
+[2026-06-22 21:51:40] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:55:38] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:55:38] INFO in database: Database engine created successfully.
+[2026-06-22 21:55:39] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:56:11] ERROR in main: Unhandled error on GET /hr/ats-pipeline: cannot import name '_days_ago' from 'app.crud.common' (C:\Tasks\mss-career-portal\app\crud\common.py)
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\hr_route.py", line 28, in ats_pipeline
+    candidates = get_ats_candidates(db, admin_id)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\hr_crud.py", line 167, in get_ats_candidates
+    "timeline": build_dynamic_timeline(app, stage),
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\hr_crud.py", line 52, in build_dynamic_timeline
+    from app.crud.common import _days_ago
+ImportError: cannot import name '_days_ago' from 'app.crud.common' (C:\Tasks\mss-career-portal\app\crud\common.py)
+[2026-06-22 21:58:04] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 21:58:04] INFO in database: Database engine created successfully.
+[2026-06-22 21:58:04] INFO in main: FastAPI application has started successfully.
+[2026-06-22 21:59:59] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1

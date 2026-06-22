@@ -171,16 +171,17 @@ def apply_for_job_route(
             if poster:
                 poster_role = poster.user_roles.role_name if poster.user_roles else ""
                 recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team"] else "schoolAdmin"
-                create_notification(
-                    db=db,
-                    recipient_user_id=poster.admin_id,
-                    recipient_type=recipient_type,
-                    title="New Job Application",
-                    message=f"New application received from {candidate_name} for '{job.job_title}'.",
-                    notification_type="new_application",
-                    sender_user_id=user_id,
-                    sender_type="candidate"
-                )
+                if recipient_type == "schoolAdmin":
+                    create_notification(
+                        db=db,
+                        recipient_user_id=poster.admin_id,
+                        recipient_type=recipient_type,
+                        title="New Job Application",
+                        message=f"New application received from {candidate_name} for '{job.job_title}'.",
+                        notification_type="new_application",
+                        sender_user_id=user_id,
+                        sender_type="candidate"
+                    )
             
             # 3. Notify HR Users
             notify_hr_users(
@@ -279,16 +280,17 @@ def respond_to_offer_route(
             if poster:
                 poster_role = poster.user_roles.role_name if poster.user_roles else ""
                 recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team"] else "schoolAdmin"
-                create_notification(
-                    db=db,
-                    recipient_user_id=poster.admin_id,
-                    recipient_type=recipient_type,
-                    title=f"Offer {status_cap}",
-                    message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}'.",
-                    notification_type=f"offer_{payload.status.lower()}",
-                    sender_user_id=user_id,
-                    sender_type="candidate"
-                )
+                if recipient_type == "schoolAdmin":
+                    create_notification(
+                        db=db,
+                        recipient_user_id=poster.admin_id,
+                        recipient_type=recipient_type,
+                        title=f"Offer {status_cap}",
+                        message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}'.",
+                        notification_type=f"offer_{payload.status.lower()}",
+                        sender_user_id=user_id,
+                        sender_type="candidate"
+                    )
                 
             # 3. Notify HR Users
             notify_hr_users(

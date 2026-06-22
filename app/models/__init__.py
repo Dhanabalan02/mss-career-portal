@@ -5,7 +5,7 @@ from app.models.candidate_metadata_model import CandidateMetadata
 from app.models.candidate_screening_answer_model import CandidateScreeningAnswer
 from app.models.interview_remarks_model import ApplicantStatus, InterviewRemark
 from app.models.interview_schedule_model import InterviewMode, InterviewStatus, JobInterviewSchedule
-from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus
+from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus, ApplicantStage
 from app.models.job_post_model import JobPost, JobStatus
 from app.models.job_prescreeningquestion_model import JobPreScreeningQuestion
 from app.models.notification_logs_model import NotificationLog
@@ -28,6 +28,7 @@ __all__ = [
     "InterviewStatus",
     "JobApplicant",
     "ApplicantJobStatus",
+    "ApplicantStage",
     "JobInterviewSchedule",
     "JobPost",
     "JobStatus",

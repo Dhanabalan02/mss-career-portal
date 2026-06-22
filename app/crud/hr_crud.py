@@ -1,27 +1,26 @@
 from typing import Optional
 from datetime import date, datetime
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, or_
 import requests
 from app.core.logger import logger
 
-from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus, OfferAcceptanceStatus
+from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus, OfferAcceptanceStatus, ApplicantStage
 from app.models.job_post_model import JobPost
 from app.models.interview_schedule_model import JobInterviewSchedule, InterviewStatus
 from app.models.user_model import Users
 from app.models.candidate_metadata_model import CandidateMetadata
 from app.models.candidate_experience_model import CandidateExperience
 from app.models.admin_model import Admins
+from app.models.unit_model import Units
 from app.crud.common import (
     get_initials, get_color, parse_skills, compute_exp_str, compute_stage, compute_offer_status
 )
-
 
 def _is_hr_role(db: Session, admin_id: int) -> bool:
     from sqlalchemy.orm import joinedload
     admin = db.query(Admins).options(joinedload(Admins.user_roles)).filter(Admins.admin_id == admin_id).first()
     return admin is not None and admin.user_roles.role_name in {"hr_head", "hr_team", "hr_admin"}
-
 
 def _days_ago(dt) -> int:
     if not dt:
@@ -49,6 +48,56 @@ def _format_date(d) -> str:
     except Exception:
         return str(d)
 
+def build_dynamic_timeline(app, stage: str) -> list:
+    applied_days = f"{_days_ago(app.created_at)} days ago" if app.created_at else "Recently"
+    
+    stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding']
+    try:
+        current_idx = stages.index(stage)
+    except ValueError:
+        current_idx = 0
+        
+    tl = []
+    # 1. Applied
+    if current_idx >= 0:
+        s_status = 'done' if current_idx > 0 else 'current'
+        tl.append({'t': 'Application Received', 'd': applied_days, 's': s_status})
+    
+    # 2. Screened
+    if current_idx >= 1:
+        s_status = 'done' if current_idx > 1 else 'current'
+        tl.append({'t': 'Resume Screened', 'd': 'System Evaluated', 's': s_status})
+    elif current_idx == 0:
+        tl.append({'t': 'Resume Screening', 'd': 'Pending', 's': 'pending'})
+        
+    # 3. Interview
+    if current_idx >= 2:
+        s_status = 'done' if current_idx > 2 else 'current'
+        tl.append({'t': 'Interview Process', 'd': 'In Progress' if s_status == 'current' else 'Cleared', 's': s_status})
+    elif current_idx == 1:
+        tl.append({'t': 'Interview', 'd': 'Pending', 's': 'pending'})
+
+    # 4. Offer
+    if current_idx >= 3:
+        s_status = 'done' if current_idx > 3 else 'current'
+        tl.append({'t': 'Offer Extended', 'd': 'Sent to Candidate', 's': s_status})
+    elif current_idx == 2:
+        tl.append({'t': 'Offer Generation', 'd': 'Awaiting Decision', 's': 'pending'})
+        
+    # 5. Offer Accepted
+    if current_idx >= 4:
+        s_status = 'done' if current_idx > 4 else 'current'
+        tl.append({'t': 'Offer Accepted', 'd': 'Candidate Agreed', 's': s_status})
+    elif current_idx == 3:
+        tl.append({'t': 'Offer Acceptance', 'd': 'Awaiting Reply', 's': 'pending'})
+        
+    # 6. Onboarding
+    if current_idx >= 5:
+        tl.append({'t': 'Onboarding Initiated', 'd': 'In Progress', 's': 'current'})
+    elif current_idx == 4:
+        tl.append({'t': 'Onboarding', 'd': 'Upcoming', 's': 'pending'})
+
+    return tl
 
 def get_ats_candidates(db: Session, admin_id: int) -> list:
     query = (
@@ -60,7 +109,7 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
     if not _is_hr_role(db, admin_id):
         query = query.filter(JobPost.job_posted_by == admin_id)
     rows = (
-        query.filter(JobApplicant.applicant_job_status != ApplicantJobStatus.REJECTED)
+        query.filter(or_(JobApplicant.applicant_job_status != ApplicantJobStatus.REJECTED, JobApplicant.applicant_job_status.is_(None)))
         .order_by(JobApplicant.created_at.desc())
         .all()
     )
@@ -89,7 +138,10 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
     for idx, (app, user, meta, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
         has_interview = app.job_applicant_id in interviewed_ids
-        stage = compute_stage(app, has_interview)
+        
+        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage) if app.applicant_stage else "applied"
+        from app.crud.common import _STAGE_ENUM_TO_LABEL
+        stage = _STAGE_ENUM_TO_LABEL.get(stage_val, "Applied")
         exp_str = compute_exp_str(
             exps_map.get(user.user_id, [])
         )
@@ -111,8 +163,86 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
             "notes": notes,
             "skills": skills,
             "color": color,
+            "timeline": build_dynamic_timeline(app, stage),
         })
     return out
+
+
+_STAGE_TO_FIELDS = {
+    'Applied': {
+        'applicant_stage': ApplicantStage.APPLIED,
+        'applicant_job_status': None,
+        'issue_offer': 0,
+        'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
+        'sync_masset': 0,
+    },
+    'Screened': {
+        'applicant_stage': ApplicantStage.SCREENED,
+        'applicant_job_status': ApplicantJobStatus.SELECTED,
+        'issue_offer': 0,
+        'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
+        'sync_masset': 0,
+    },
+    'Interview': {
+        'applicant_stage': ApplicantStage.INTERVIEW,
+        'applicant_job_status': ApplicantJobStatus.NEXT_ROUND,
+        'issue_offer': 0,
+        'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
+        'sync_masset': 0,
+    },
+    'Offer': {
+        'applicant_stage': ApplicantStage.OFFER,
+        'applicant_job_status': ApplicantJobStatus.SELECTED,
+        'issue_offer': 1,
+        'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
+        'sync_masset': 0,
+    },
+    'Offer Accepted': {
+        'applicant_stage': ApplicantStage.OFFER_ACCEPTED,
+        'applicant_job_status': ApplicantJobStatus.SELECTED,
+        'issue_offer': 1,
+        'offer_acceptance_status': OfferAcceptanceStatus.ACCEPTED,
+        'sync_masset': 0,
+    },
+    'Onboarding': {
+        'applicant_stage': ApplicantStage.ONBOARDING,
+        'applicant_job_status': ApplicantJobStatus.SELECTED,
+        'issue_offer': 1,
+        'offer_acceptance_status': OfferAcceptanceStatus.ACCEPTED,
+        'sync_masset': 1,
+    },
+}
+
+
+def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage: str):
+    from fastapi import HTTPException
+    fields = _STAGE_TO_FIELDS.get(stage)
+    if fields is None:
+        raise HTTPException(status_code=400, detail=f"Invalid stage: {stage}")
+
+    # Verify the applicant exists and the caller has access to the job
+    row = (
+        db.query(JobApplicant, JobPost)
+        .join(JobPost, JobApplicant.job_id == JobPost.job_id)
+        .filter(JobApplicant.job_applicant_id == applicant_id)
+        .first()
+    )
+    if not row:
+        raise HTTPException(status_code=404, detail="Applicant not found")
+
+    app_record, job = row
+    if not _is_hr_role(db, admin_id) and job.job_posted_by != admin_id:
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    for attr, value in fields.items():
+        setattr(app_record, attr, value)
+
+    db.commit()
+    
+    from app.crud.common import check_and_close_job_if_filled
+    check_and_close_job_if_filled(db, job.job_id)
+
+    return {"ok": True, "applicant_id": applicant_id, "stage": stage}
 
 
 def get_interviews(db: Session, admin_id: int) -> dict:
@@ -267,6 +397,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str)
         return {"error": "Applicant not found"}
 
     user = db.query(Users).filter(Users.user_id == app.user_id).first()
+    user_metadata = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == app.user_id).first()
     job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
 
     # Generate local MASSET employee ID if not already present
@@ -280,9 +411,11 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str)
         "last_name": user.last_name if user else "",
         "email": user.email if user else "",
         "phone": user.mobile if user else "",
-        "job_title": job.job_title if job else "",
-        "school_name": job.school_name if job else "",
-        "offer_date": app.offer_issued_date.isoformat() if app.offer_issued_date else None,
+        "date_of_birth": user_metadata.date_of_birth.strftime('%Y-%m-%d') if (user_metadata and user_metadata.date_of_birth and hasattr(user_metadata.date_of_birth, 'strftime')) else (user_metadata.date_of_birth if user_metadata and user_metadata.date_of_birth else ""),
+        'gender': user.gender if user else "",
+        "marital_status": user_metadata.marital_status if user_metadata else "", 
+        "designation": job.job_title if job else "",
+        "unit_name": job.school_name if job else "",
         "action": "appointment_order"
     }
 
@@ -477,20 +610,9 @@ def get_hr_reports(
         school_hires_q = school_hires_q.filter(JobApplicant.created_at <= end_dt)
         
     school_hires = school_hires_q.group_by(JobPost.school_name).all()
-    # Initialize with all required units set to 0 for a complete, structured response
-    school_comparison = {
-        "Head Office": 0,
-        "ORCA Swimming": 0,
-        "MSS Primary School": 0,
-        "MSS Secondary School": 0,
-        "MSS Arts & Crafts": 0,
-        "MSS Sports Academy": 0,
-        "Lady Andal School": 0,
-        "Sir Mutha School (CBSE)": 0,
-        "Garuda Cricket Academy": 0,
-        "Prem Vihar": 0,
-        "Shanthi Sadan": 0,
-    }
+    # Initialize with all units from DB to 0 for a complete, structured response
+    all_units = db.query(Units).all()
+    school_comparison = {u.unit_name: 0 for u in all_units}
     for row in school_hires:
         if row[0]:
             school_comparison[row[0]] = row[1]
@@ -514,18 +636,49 @@ def get_hr_reports(
         dept_vacancies_q = dept_vacancies_q.filter(JobPost.created_at <= end_dt)
         
     dept_vacancies = dept_vacancies_q.group_by(JobPost.department).all()
-    # Initialize with specified department categories
-    vacancy_gap = {
-        "Teaching Staff": 0,
-        "Administration": 0,
-        "Physical Education": 0,
-        "Arts & Music": 0,
-        "Sports Coaching": 0,
-        "Support Staff": 0,
-    }
+
+    dept_hires_q = (
+        db.query(JobPost.department, func.count(JobApplicant.job_applicant_id))
+        .join(JobApplicant, JobPost.job_id == JobApplicant.job_id)
+        .filter(JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED)
+    )
+    if not is_hr:
+        dept_hires_q = dept_hires_q.filter(JobPost.job_posted_by == admin_id)
+    if school_name:
+        dept_hires_q = dept_hires_q.filter(JobPost.school_name == school_name)
+    if department:
+        dept_hires_q = dept_hires_q.filter(JobPost.department == department)
+    if job_type:
+        dept_hires_q = dept_hires_q.filter(JobPost.job_type == job_type)
+    if start_dt:
+        dept_hires_q = dept_hires_q.filter(JobApplicant.created_at >= start_dt)
+    if end_dt:
+        dept_hires_q = dept_hires_q.filter(JobApplicant.created_at <= end_dt)
+
+    dept_hires = dept_hires_q.group_by(JobPost.department).all()
+
+    vacancy_gap = {}
+    default_depts = [
+        "Teaching Staff", "Administration", "Physical Education", 
+        "Arts & Music", "Sports Coaching", "Support Staff"
+    ]
+    for dept in default_depts:
+        vacancy_gap[dept] = {"vacancies": 0, "hired": 0, "gap": 0}
+
     for row in dept_vacancies:
         if row[0]:
-            vacancy_gap[row[0]] = row[1] or 0
+            if row[0] not in vacancy_gap:
+                vacancy_gap[row[0]] = {"vacancies": 0, "hired": 0, "gap": 0}
+            vacancy_gap[row[0]]["vacancies"] = row[1] or 0
+
+    for row in dept_hires:
+        if row[0]:
+            if row[0] not in vacancy_gap:
+                vacancy_gap[row[0]] = {"vacancies": 0, "hired": 0, "gap": 0}
+            vacancy_gap[row[0]]["hired"] = row[1] or 0
+
+    for dept in vacancy_gap:
+        vacancy_gap[dept]["gap"] = max(0, vacancy_gap[dept]["vacancies"] - vacancy_gap[dept]["hired"])
 
     # Budget (Mock logic as requested by design but dynamic structure)
     budget = {

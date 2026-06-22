@@ -1774,7 +1774,7 @@
         c.skills.map(s => `<span class="skill-chip">${s}</span>`).join('');
 
       // Timeline
-      const tl = TIMELINES[c.stage] || [];
+      const tl = c.timeline || TIMELINES[c.stage] || [];
       document.getElementById('timelineEl').innerHTML = tl.map(t => `
     <div class="tl-item">
       <div class="tl-dot ${t.s === 'done' ? 'done' : t.s === 'current' ? 'current' : 'pending'}"></div>
@@ -1812,16 +1812,36 @@
       document.getElementById('tab-' + tab).classList.add('active');
     }
 
+    async function persistStageChange(candidate, newStage) {
+      const prevStage = candidate.stage;
+      candidate.stage = newStage;
+      renderKanban(getFiltered());
+      showToast(`${candidate.name} moved to ${newStage}`, 'success');
+      try {
+        const res = await fetch(`${API_BASE}/hr/ats-pipeline/${candidate.id}/stage`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${_token()}`
+          },
+          body: JSON.stringify({ stage: newStage })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      } catch (err) {
+        candidate.stage = prevStage;
+        renderKanban(getFiltered());
+        showToast('Failed to save stage change', 'danger');
+      }
+    }
+
     function moveStage(newStage) {
       const c = candidates.find(x => x.id === activeId);
       if (!c || c.stage === newStage) return;
-      c.stage = newStage;
-      renderKanban(getFiltered());
-      // Refresh pills
+      // Refresh drawer pills immediately before the async call re-renders
       document.getElementById('stagePills').innerHTML = STAGES.map(s =>
         `<div class="stage-pill ${s === newStage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
       ).join('');
-      showToast(`${c.name} moved to ${newStage}`, 'success');
+      persistStageChange(c, newStage);
     }
 
     function doAction(type) {
@@ -1852,13 +1872,15 @@
     }
 
     /* ── Toast ── */
+    // Capture portal-layout's showToast before this script shadows window.showToast
+    const _portalShowToast = window.showToast || null;
+
     function showToast(msg, type = 'success') {
-      var mappedType = type;
-      if (type === 'danger') mappedType = 'error';
-      if (window.showToast) {
-        window.showToast(msg, mappedType);
+      const mappedType = type === 'danger' ? 'error' : type;
+      if (_portalShowToast) {
+        _portalShowToast(msg, mappedType);
       } else {
-        console.log(msg);
+        console.log('[Toast]', msg);
       }
     }
 
@@ -1912,9 +1934,7 @@
       const targetStage = mobileDrag.targetStage || mobileDrag.sourceStage;
       const card = candidates.find(c => c.id === mobileDrag.id);
       if (card && targetStage && card.stage !== targetStage) {
-        card.stage = targetStage;
-        renderKanban(getFiltered());
-        showToast(`${card.name} moved to ${targetStage}`, 'success');
+        persistStageChange(card, targetStage);
       }
       clearMobileDrag();
     }
@@ -2062,9 +2082,7 @@
       e.preventDefault();
       const c = candidates.find(x => x.id === dragSrcId);
       if (c && c.stage !== stage) {
-        c.stage = stage;
-        renderKanban(getFiltered());
-        showToast(`${c.name} moved to ${stage}`, 'success');
+        persistStageChange(c, stage);
       }
       document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
     }

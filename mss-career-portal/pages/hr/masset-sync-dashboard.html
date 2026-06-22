@@ -1192,9 +1192,6 @@
         <div class="page-subtitle">Real-time sync status &amp; onboarding pipeline</div>
       </div>
       <div class="header-actions">
-        <button class="btn btn-light" onclick="exportReport()">
-          <i class="ti ti-file-export" aria-hidden="true"></i> Export Report
-        </button>
         <button class="btn btn-primary" onclick="refreshAll()">
           <i class="ti ti-refresh" aria-hidden="true"></i> Refresh Status
         </button>
@@ -1276,7 +1273,6 @@
           <option>Sync Pending</option>
           <option>Syncing</option>
           <option>AO Pending</option>
-          <option>Onboarding</option>
           <option>Onboarded</option>
           <option>Sync Failed</option>
         </select>
@@ -1292,11 +1288,6 @@
             <i class="ti ti-table" aria-hidden="true"></i>
             Candidates
             <span class="row-count" id="rowCount">0</span>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-light btn-sm" onclick="showToast('Columns configuration coming soon','info')">
-              <i class="ti ti-columns" aria-hidden="true"></i> Columns
-            </button>
           </div>
         </div>
         <div style="overflow-x:auto">
@@ -1447,6 +1438,7 @@
     /* ── Render events ── */
     function renderEvents() {
       const feed = document.getElementById('eventsFeed');
+      if (!feed) return; // Prevent crash if widget is removed from DOM
       const badge = { success: 't-success', info: 't-info', error: 't-error' };
       const label = { success: 'Completed', info: 'Info', error: 'Failed' };
 
@@ -1532,9 +1524,6 @@
     function refreshAll() {
       showToast('Status refreshed successfully', 'success');
       renderTable(getFiltered());
-    }
-    function exportReport() {
-      showToast('Preparing report export…', 'info');
     }
 
     /* ── Logs Drawer ── */

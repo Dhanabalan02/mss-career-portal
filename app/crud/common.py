@@ -64,8 +64,25 @@ def compute_exp_str(experiences, meta_exp: Optional[str] = None) -> str:
     return "Fresher"
 
 
+_STAGE_ENUM_TO_LABEL = {
+    "applied": "Applied",
+    "screened": "Screened",
+    "interview": "Interview",
+    "offer": "Offer",
+    "offer_accepted": "Offer Accepted",
+    "onboarding": "Onboarding",
+}
+
+
 def compute_stage(app, has_interview: bool) -> str:
     from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus
+
+    # Prefer the explicit ATS stage column when present
+    if app.applicant_stage is not None:
+        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage)
+        return _STAGE_ENUM_TO_LABEL.get(stage_val, 'Applied')
+
+    # Fallback: derive stage from legacy fields (for existing rows without applicant_stage)
     status = app.applicant_job_status
     if status == ApplicantJobStatus.REJECTED:
         return 'Rejected'
@@ -77,7 +94,7 @@ def compute_stage(app, has_interview: bool) -> str:
         return 'Offer'
     if app.issue_offer:
         return 'Offer'
-    if has_interview:
+    if has_interview or status == ApplicantJobStatus.NEXT_ROUND:
         return 'Interview'
     if status in (ApplicantJobStatus.SELECTED, ApplicantJobStatus.HOLD):
         return 'Screened'
@@ -95,3 +112,21 @@ def compute_offer_status(app) -> str:
     if app.applicant_job_status == ApplicantJobStatus.SELECTED:
         return 'awaiting'
     return 'awaiting'
+
+def check_and_close_job_if_filled(db, job_id: int):
+    from app.models.job_post_model import JobPost
+    from app.models.job_applicant_model import JobApplicant, OfferAcceptanceStatus
+    
+    job = db.query(JobPost).filter(JobPost.job_id == job_id).first()
+    if not job or job.job_status != "publish":
+        return
+        
+    hired_count = db.query(JobApplicant).filter(
+        JobApplicant.job_id == job_id,
+        JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED
+    ).count()
+    
+    if hired_count >= job.vacancy_count:
+        job.job_status = "closed"
+        db.commit()
+

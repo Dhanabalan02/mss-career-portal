@@ -1398,9 +1398,8 @@
       <div class="table-wrap" style="margin-bottom:22px;">
         <div class="table-header">
           <div>
-            <div class="table-title" id="jobTitle">Senior Mathematics Teacher</div>
+            <div class="table-title" id="jobTitle"></div>
             <div id="jobMeta" style="font-size:12px;color:var(--text3);margin-top:4px;">
-              JOB-2026-001 • Academics • Full Time • Chennai
             </div>
           </div>
 
@@ -1411,34 +1410,33 @@
 
             <div>
               <div class="stat-label">Department</div>
-              <div>Academics</div>
+              <div></div>
             </div>
 
             <div>
               <div class="stat-label">Employment Type</div>
-              <div>Full Time</div>
+              <div></div>
             </div>
 
             <div>
               <div class="stat-label">Experience</div>
-              <div>5-8 Years</div>
+              <div></div>
             </div>
-
-            <!-- <div>c
-              <div class="stat-label">Salary Range</div>
-              <div>₹8,00,000 - ₹12,00,000</div>
-            </div> -->
 
             <div>
               <div class="stat-label">Vacancies</div>
-              <div>3</div>
+              <div></div>
+            </div>
+
+            <div>
+              <div class="stat-label">Closing Date</div>
+              <div></div>
             </div>
 
             <div>
               <div class="stat-label">Status</div>
-              <span class="badge badge-accepted">Open</span>
+              <span class="badge badge-accepted"></span>
             </div>
-
           </div>
         </div>
       </div>
@@ -1448,25 +1446,25 @@
 
         <div class="stat-card sc-applications">
           <div class="stat-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
-          <div class="stat-value">247</div>
+          <div class="stat-value"></div>
           <div class="stat-label">Applications</div>
         </div>
 
         <div class="stat-card sc-shortlisted">
           <div class="stat-icon"><i class="ti ti-user-check" aria-hidden="true"></i></div>
-          <div class="stat-value">68</div>
+          <div class="stat-value"></div>
           <div class="stat-label">Shortlisted</div>
         </div>
 
         <div class="stat-card sc-interview">
           <div class="stat-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
-          <div class="stat-value">38</div>
+          <div class="stat-value"></div>
           <div class="stat-label">Interview Scheduled</div>
         </div>
 
         <div class="stat-card sc-offers">
           <div class="stat-icon"><i class="ti ti-send" aria-hidden="true"></i></div>
-          <div class="stat-value">31</div>
+          <div class="stat-value"></div>
           <div class="stat-label">Offers Released</div>
         </div>
 
@@ -1538,7 +1536,7 @@
           document.getElementById('jobTitle').textContent = j.title || '';
           const expRange = j.min_exp && j.max_exp ? `${j.min_exp}-${j.max_exp} Years` : j.min_exp || '';
           document.getElementById('jobMeta').textContent =
-            `${j.job_unique_id || j.job_id || ''} • ${j.dept || ''} • ${j.type || ''} • ${j.school || ''}`;
+            `• ${j.dept || ''} • ${j.type || ''} • ${j.school || ''}`;
           /* stat cards */
           const sv = document.querySelectorAll('.stat-value');
           if (sv.length >= 4) {
@@ -1554,8 +1552,16 @@
             formGridDivs.forEach(d => {
               const lbl = d.querySelector('.stat-label');
               if (lbl && lbl.textContent.trim() === label) {
-                const valEl = d.querySelector('div:not(.stat-label)');
-                if (valEl) valEl.textContent = val;
+                const valEl = d.querySelector('div:not(.stat-label)') || d.querySelector('span:not(.stat-label)');
+                if (valEl) {
+                  valEl.textContent = val;
+                  if (label === 'Status' && valEl.classList.contains('badge')) {
+                     const s = val.toLowerCase();
+                     if (s === 'active') valEl.className = 'badge badge-accepted';
+                     else if (s === 'closed') valEl.className = 'badge badge-rejected';
+                     else valEl.className = 'badge badge-screened';
+                  }
+                }
               }
             });
           };
@@ -1563,6 +1569,8 @@
           setField('Employment Type', j.type);
           setField('Experience', expRange);
           setField('Vacancies', j.vacancies);
+          setField('Closing Date', j.closing_date);
+          setField('Status', j.status);
 
           /* description content */
           if (j.description) {

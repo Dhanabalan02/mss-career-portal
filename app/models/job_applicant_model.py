@@ -27,6 +27,15 @@ class OfferAcceptanceStatus(str, PyEnum):
     REJECTED = "rejected"
 
 
+class ApplicantStage(str, PyEnum):
+    APPLIED = "applied"
+    SCREENED = "screened"
+    INTERVIEW = "interview"
+    OFFER = "offer"
+    OFFER_ACCEPTED = "offer_accepted"
+    ONBOARDING = "onboarding"
+
+
 class JobApplicant(Base):
     __tablename__ = "job_applicants"
 
@@ -41,6 +50,12 @@ class JobApplicant(Base):
 
     applicant_job_status: Mapped[Optional[ApplicantJobStatus]] = mapped_column(
         Enum(ApplicantJobStatus, name="applicant_job_status_enum",
+             values_callable=lambda x: [e.value for e in x]),
+        nullable=True,
+    )
+
+    applicant_stage: Mapped[Optional[ApplicantStage]] = mapped_column(
+        Enum(ApplicantStage, name="applicant_stage_enum",
              values_callable=lambda x: [e.value for e in x]),
         nullable=True,
     )

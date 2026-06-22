@@ -1380,9 +1380,8 @@
       <div class="table-wrap" style="margin-bottom:22px;">
         <div class="table-header">
           <div>
-            <div class="table-title" id="jobTitle">Senior Mathematics Teacher</div>
+            <div class="table-title" id="jobTitle"></div>
             <div style="font-size:12px;color:var(--text3);margin-top:4px;" id="jobSubtitle">
-              JOB-2026-001 • Academics • Full Time • Chennai
             </div>
           </div>
 
@@ -1393,23 +1392,23 @@
 
             <div>
               <div class="stat-label">Department</div>
-              <div id="jobDept">Academics</div>
+              <div id="jobDept"></div>
             </div>
 
             <div>
               <div class="stat-label">Employment Type</div>
-              <div id="jobType">Full Time</div>
+              <div id="jobType"></div>
             </div>
 
             <div>
               <div class="stat-label">Experience</div>
-              <div id="jobExperience">5-8 Years</div>
+              <div id="jobExperience"></div>
             </div>
 
-            <!-- <div>
-              <div class="stat-label">Salary Range</div>
-              <div id="jobSalary">₹8,00,000 - ₹12,00,000</div>
-            </div> -->
+            <div>
+              <div class="stat-label">Closing Date</div>
+              <div id="jobClosingdate"></div>
+            </div>
 
             <div>
               <div class="stat-label">Vacancies</div>
@@ -1628,16 +1627,17 @@
 
       function renderJobDetails(job) {
         document.getElementById('jobTitle').textContent = job.job_title || 'Untitled Job';
-        
-        // Format subtitle: UNIQUE_ID • Dept • Type • Location
-        const uniqueId = job.job_unique_id || `JOB-${job.job_id}`;
-        const dept = job.department || 'N/A';
-        const type = job.job_type || 'Full-time';
-        const location = job.school_name || 'Lady Andal School';
-        document.getElementById('jobSubtitle').textContent = `${uniqueId} • ${dept} • ${type} • ${location}`;
+
+        const dept = job.department;
+        const type = job.job_type;
+        const location = job.school_name;
+        const closing_date = job.closing_date;
+
+        document.getElementById('jobSubtitle').textContent = `${dept} • ${type} • ${location}`;
 
         document.getElementById('jobDept').textContent = dept;
         document.getElementById('jobType').textContent = type;
+        document.getElementById('jobClosingdate').textContent = closing_date;
         
         // Format experience
         let exp = 'N/A';
@@ -1647,9 +1647,6 @@
           exp = `${min} - ${max}`;
         }
         document.getElementById('jobExperience').textContent = exp;
-
-        // Salary range
-        // document.getElementById('jobSalary').textContent = job.salary_range ? job.salary_range : 'Not disclosed';
         
         // Vacancies
         document.getElementById('jobVacancies').textContent = job.vacancy_count || 1;

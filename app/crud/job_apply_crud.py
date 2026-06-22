@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models import JobApplicant, CandidateScreeningAnswer, JobPreScreeningQuestion
 from app.models.candidate_screening_answer_model import CandidateStatus
-from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus
+from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus, ApplicantStage
 from app.core.logger import logger
 
 def create_job_application(
@@ -19,9 +19,10 @@ def create_job_application(
         user_id=user_id,
         resume_doc=resume_doc,
         cover_letter=cover_letter,
-        applicant_job_status=None,  # defaults to pending/None
+        applicant_job_status=None,
         offer_acceptance_status=OfferAcceptanceStatus.PENDING,
-        mss_app_no="TEMP" # Temporary value to satisfy NOT NULL constraint during flush
+        applicant_stage=ApplicantStage.APPLIED,
+        mss_app_no="TEMP"
     )
     db.add(db_applicant)
     db.flush() # Forces the DB to generate the job_applicant_id before committing
@@ -102,4 +103,9 @@ def respond_to_offer(db: Session, user_id: int, job_id: int, status_str: str) ->
         return False
     
     db.commit()
+    
+    if status_str.lower() == 'accepted':
+        from app.crud.common import check_and_close_job_if_filled
+        check_and_close_job_if_filled(db, job_id)
+        
     return True

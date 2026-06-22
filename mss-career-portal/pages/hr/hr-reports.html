@@ -8,6 +8,7 @@
   <link rel="icon" href="images/mss-logo.svg" type="image/svg+xml">
 
   <script src="portal-layout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="portal-layout.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -526,6 +527,144 @@
       background: var(--surface);
     }
 
+    /* ── Monthly Trend Stats ── */
+    .trend-stats {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .trend-stat {
+      flex: 1;
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      position: relative;
+    }
+
+    .trend-stat + .trend-stat::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: var(--border);
+    }
+
+    .trend-stat-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.3px;
+      line-height: 1;
+    }
+
+    .trend-stat-lbl {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .trend-stat-peak {
+      font-size: 10px;
+      color: var(--primary);
+      font-weight: 600;
+      margin-top: 1px;
+    }
+
+    /* ── Custom Bar Chart ── */
+    .trend-bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 210px;
+      padding: 32px 0 28px;
+    }
+
+    .trend-bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 5px;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .trend-bar-val {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      transition: color .2s;
+      min-height: 14px;
+    }
+
+    .trend-bar-wrap {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .trend-bar {
+      width: 100%;
+      border-radius: 5px 5px 0 0;
+      background: linear-gradient(180deg, #93c5fd, #2563eb);
+      transition: height .65s cubic-bezier(.4, 0, .2, 1), opacity .18s;
+      min-height: 4px;
+      position: relative;
+    }
+
+    .trend-bar.peak {
+      background: linear-gradient(180deg, #fbbf24, #d97706);
+    }
+
+    .trend-bar-col:hover .trend-bar {
+      opacity: 0.75;
+    }
+
+    .trend-bar-col:hover .trend-bar-val {
+      color: var(--primary);
+    }
+
+    .trend-bar-col.peak-col .trend-bar-val {
+      color: var(--warning);
+    }
+
+    .trend-bar-lbl {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+    }
+
+    .trend-peak-badge {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--warning);
+      color: #fff;
+      font-size: 8px;
+      font-weight: 700;
+      padding: 2px 5px;
+      border-radius: 4px;
+      white-space: nowrap;
+      pointer-events: none;
+      letter-spacing: .04em;
+    }
+
     /* ── Bar Charts ── */
     .chart-row {
       margin-bottom: 16px;
@@ -819,9 +958,6 @@
         <div class="page-subtitle">Analytics and insights across your hiring pipeline</div>
       </div>
       <div class="header-actions" style="display:flex; gap:8px;">
-        <button class="btn btn-outline" style="border:1px solid var(--border-strong); background:var(--card); color:var(--text);" onclick="exportCSV()">
-          Export CSV
-        </button>
         <button class="btn btn-primary" onclick="exportExcel()">
           <svg viewBox="0 0 24 24">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -843,17 +979,6 @@
         <div class="filter-divider"></div>
         <select id="unitFilter">
           <option value="">All Units</option>
-          <option>Head Office</option>
-          <option>ORCA Swimming</option>
-          <option>MSS Primary School</option>
-          <option>MSS Secondary School</option>
-          <option>MSS Arts &amp; Crafts</option>
-          <option>MSS Sports Academy</option>
-          <option>Lady Andal School</option>
-          <option>Sir Mutha School (CBSE)</option>
-          <option>Garuda Cricket Academy</option>
-          <option>Prem Vihar</option>
-          <option>Shanthi Sadan</option>
         </select>
         <select id="categoryFilter">
           <option value="">All Categories</option>
@@ -940,40 +1065,33 @@
           <div class="card-title">Recruitment Pipeline</div>
           <span class="card-badge" id="pipeline-badge">Loading…</span>
         </div>
-        <div id="pipeline-rows"></div>
+        <div class="chart-container" style="position: relative; height:200px; width:100%">
+          <canvas id="pipelineChart"></canvas>
+        </div>
       </div>
 
       <div class="charts-grid">
         <div class="card">
           <div class="card-header">
             <div class="card-title">Monthly Hiring Trend</div>
-            <span class="card-badge">2025</span>
+            <span class="card-badge" id="trendBadge">2026</span>
           </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">January</span><span class="chart-val">18 hires</span></div>
-            <div class="bar-track">
-              <div class="bar-fill blue" style="width:40%"></div>
+          <div class="trend-stats" id="trendStats">
+            <div class="trend-stat">
+              <span class="trend-stat-val" id="trendTotal">—</span>
+              <span class="trend-stat-lbl">Total Hires</span>
+            </div>
+            <div class="trend-stat">
+              <span class="trend-stat-val" id="trendAvg">—</span>
+              <span class="trend-stat-lbl">Avg / Month</span>
+            </div>
+            <div class="trend-stat">
+              <span class="trend-stat-val" id="trendPeakVal">—</span>
+              <span class="trend-stat-lbl">Peak Month</span>
+              <span class="trend-stat-peak" id="trendPeakMonth"></span>
             </div>
           </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">February</span><span class="chart-val">24 hires</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill blue" style="width:55%"></div>
-            </div>
-          </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">March</span><span class="chart-val">31 hires</span></div>
-            <div class="bar-track">
-              <div class="bar-fill blue" style="width:70%"></div>
-            </div>
-          </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">April</span><span class="chart-val">42 hires</span></div>
-            <div class="bar-track">
-              <div class="bar-fill blue" style="width:95%"></div>
-            </div>
-          </div>
+          <div id="trendBarView"></div>
         </div>
         <div class="card" id="unitComparisonCard">
           <div class="card-header">
@@ -1021,7 +1139,7 @@
         <div class="card">
           <div class="card-header">
             <div class="card-title">Budget vs Hiring</div>
-            <span class="card-badge">FY 2025</span>
+            <span class="card-badge">FY 2026</span>
           </div>
           <div class="budget-stats">
             <div class="budget-box">
@@ -1048,29 +1166,8 @@
             <div class="card-title">Vacancy Gap Analysis</div>
             <span class="card-badge">By category</span>
           </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">Teaching Staff</span><span class="chart-val">8
-                vacancies</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill purple" style="width:70%"></div>
-            </div>
-          </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">Administration</span><span class="chart-val">4
-                vacancies</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill purple" style="width:30%"></div>
-            </div>
-          </div>
-          <div class="chart-row">
-            <div class="chart-meta"><span class="chart-name">Arts &amp; Music</span><span class="chart-val">2
-                vacancies</span>
-            </div>
-            <div class="bar-track">
-              <div class="bar-fill purple" style="width:15%"></div>
-            </div>
+          <div class="chart-container" style="position: relative; height:200px; width:100%">
+            <canvas id="vacancyGapChart"></canvas>
           </div>
         </div>
       </div>
@@ -1134,6 +1231,8 @@
     const _token = () => localStorage.getItem('access_token') || '';
 
     let _reportData = null;
+    let vacancyGapChartInstance = null;
+    let pipelineChartInstance = null;
 
     function showToast(msg, type = 'success') {
       if (window.showToast) {
@@ -1143,30 +1242,81 @@
       }
     }
 
-    function updateChartCard(title, dataObj, suffix, colorClass) {
-      const card = Array.from(document.querySelectorAll('.card')).find(
-        c => c.querySelector('.card-title')?.textContent === title
-      );
-      if (!card) return;
-      card.querySelectorAll('.chart-row, .empty-msg').forEach(r => r.remove());
-      const entries = Object.entries(dataObj || {});
-      if (!entries.length) {
-        const p = document.createElement('p');
-        p.className = 'empty-msg';
-        p.textContent = 'No data for selected filters';
-        card.appendChild(p);
+    function renderMonthlyTrendChart(dataObj) {
+      const container = document.getElementById('trendBarView');
+      if (!container) return;
+      const labels = Object.keys(dataObj || {});
+      const values = Object.values(dataObj || {});
+
+      // Populate stat pills
+      const total = values.reduce((s, v) => s + v, 0);
+      const avg = labels.length ? (total / labels.length).toFixed(1) : '0';
+      const peakIdx = values.indexOf(Math.max(...values));
+      document.getElementById('trendTotal').textContent = total || '—';
+      document.getElementById('trendAvg').textContent = labels.length ? avg : '—';
+      document.getElementById('trendPeakVal').textContent = values[peakIdx] ?? '—';
+      document.getElementById('trendPeakMonth').textContent = labels[peakIdx] ?? '';
+
+      if (!labels.length) {
+        container.innerHTML = '<div class="empty-msg">No data available</div>';
         return;
       }
-      const maxVal = Math.max(...entries.map(e => e[1])) || 1;
-      entries.forEach(([name, val]) => {
-        const pct = Math.round((val / maxVal) * 100);
-        const row = document.createElement('div');
-        row.className = 'chart-row';
-        row.innerHTML =
-          `<div class="chart-meta"><span class="chart-name">${name}</span>` +
-          `<span class="chart-val">${val} ${suffix}</span></div>` +
-          `<div class="bar-track"><div class="bar-fill ${colorClass}" style="width:${pct}%"></div></div>`;
-        card.appendChild(row);
+      const maxVal = Math.max(...values) || 1;
+
+      const chart = document.createElement('div');
+      chart.className = 'trend-bar-chart';
+
+      labels.forEach((lbl, i) => {
+        const val = values[i];
+        const isPeak = i === peakIdx;
+        const col = document.createElement('div');
+        col.className = 'trend-bar-col' + (isPeak ? ' peak-col' : '');
+        col.innerHTML = `
+          <div class="trend-bar-val">${val || ''}</div>
+          <div class="trend-bar-wrap">
+            <div class="trend-bar${isPeak ? ' peak' : ''}" style="height:0%">
+              ${isPeak ? '<span class="trend-peak-badge">PEAK</span>' : ''}
+            </div>
+          </div>
+          <div class="trend-bar-lbl">${lbl}</div>
+        `;
+        chart.appendChild(col);
+      });
+
+      container.innerHTML = '';
+      container.appendChild(chart);
+
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        labels.forEach((_, i) => {
+          const bar = chart.children[i].querySelector('.trend-bar');
+          const heightPct = Math.max((values[i] / maxVal) * 100, 2);
+          if (bar) bar.style.height = heightPct + '%';
+        });
+      }));
+    }
+
+    function renderVacancyGapChart(dataObj) {
+      const ctx = document.getElementById('vacancyGapChart');
+      if (!ctx) return;
+      if (vacancyGapChartInstance) vacancyGapChartInstance.destroy();
+      const labels = Object.keys(dataObj || {});
+      const vacancies = labels.map(l => dataObj[l].vacancies || 0);
+      const hired = labels.map(l => dataObj[l].hired || 0);
+      
+      vacancyGapChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            { label: 'Vacancies', data: vacancies, backgroundColor: '#8b5cf6' },
+            { label: 'Hired', data: hired, backgroundColor: '#10b981' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        }
       });
     }
 
@@ -1200,25 +1350,34 @@
       });
     }
 
-    function updatePipelineStages(stages, total) {
-      const container = document.getElementById('pipeline-rows');
-      if (!container) return;
-      container.innerHTML = '';
-      const colorMap = {
-        Applied: 'blue', Screened: 'blue', Interview: 'cyan',
-        Offer: 'orange', 'Offer Accepted': 'green', Onboarding: 'purple', Rejected: 'orange'
-      };
-      const totalVal = total || 1;
-      Object.entries(stages).forEach(([stage, count]) => {
-        const pct = Math.min(Math.round((count / totalVal) * 100), 100);
-        const row = document.createElement('div');
-        row.className = 'chart-row';
-        row.innerHTML =
-          `<div class="chart-meta"><span class="chart-name">${stage}</span>` +
-          `<span class="chart-val">${count}</span></div>` +
-          `<div class="bar-track"><div class="bar-fill ${colorMap[stage] || 'blue'}" style="width:${pct}%"></div></div>`;
-        container.appendChild(row);
+    function renderPipelineChart(stages, total) {
+      const ctx = document.getElementById('pipelineChart');
+      if (!ctx) return;
+      if (pipelineChartInstance) pipelineChartInstance.destroy();
+      
+      const labels = Object.keys(stages || {});
+      const data = Object.values(stages || {});
+      
+      pipelineChartInstance = new Chart(ctx.getContext('2d'), {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: [
+              '#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'right' }
+          }
+        }
       });
+      
       const badge = document.getElementById('pipeline-badge');
       if (badge) badge.textContent = `${total ?? 0} total applicants`;
     }
@@ -1290,95 +1449,6 @@
 
       const badge = document.querySelector('.insights-card .card-badge');
       if (badge) badge.textContent = `${items.length} highlights`;
-    }
-
-    function exportCSV() {
-      if (!_reportData) {
-        showToast('No report data loaded');
-        return;
-      }
-
-      const d = _reportData;
-      const separator = ['---', '---']; // Visual anchor for separate blocks
-
-      const rows = [
-        // Meta Header Block
-        ['RECRUITMENT REPORT', ''],
-        ['Generated On:', new Date().toLocaleDateString()],
-        [],
-
-        // KPI Summary Section
-        ['## KPI Summary', ''],
-        ['Metric', 'Value'],
-        ['Total Hires', d.total_hires ?? 0],
-        ['Open Vacancies', d.open_jobs ?? 0],
-        ['Closed Jobs', d.closed_jobs ?? 0],
-        ['Fulfillment Rate', `${d.fulfillment_rate ?? 0}%`],
-        ['Total Applicants', d.total_applicants ?? 0],
-        ['Selected', d.selected ?? 0],
-        ['On Hold', d.on_hold ?? 0],
-        ['Rejected', d.rejected ?? 0],
-        ['Offer Sent', d.offer_sent ?? 0],
-        ['Offer Accepted', d.offer_accepted ?? 0],
-        ['Onboarded', d.onboarded ?? 0],
-        [],
-        separator,
-        [],
-
-        // Pipeline Stages Section
-        ['## Pipeline Stages', ''],
-        ['Stage', 'Count'],
-        ...Object.entries(d.stages || {}).map(([k, v]) => [k, v]),
-        [],
-        separator,
-        [],
-
-        // Monthly Hiring Trend Section
-        ['## Monthly Hiring Trend', ''],
-        ['Month', 'Hires'],
-        ...Object.entries(d.monthly_trend || {}).map(([k, v]) => [k, v]),
-        [],
-        separator,
-        [],
-
-        // School Comparison Section
-        ['## School Comparison', ''],
-        ['School', 'Hires'],
-        ...Object.entries(d.school_comparison || {}).map(([k, v]) => [k, v]),
-        [],
-        separator,
-        [],
-
-        // Vacancy Gap Section
-        ['## Vacancy Gap by Department', ''],
-        ['Department', 'Open Vacancies'],
-        ...Object.entries(d.vacancy_gap || {}).map(([k, v]) => [k, v]),
-      ];
-
-      // Map rows, escape quotes, and join with commas
-      // Uses \r\n (Carriage Return Line Feed) for native Excel compatibility
-      const csvContent = rows.map(r =>
-        r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')
-      ).join('\r\n');
-
-      // Add UTF-8 BOM (\uFEFF) to make sure Excel opens it perfectly with zero encoding issues
-      const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-
-      // Safe DOM download trigger
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `recruitment-report-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.style.display = 'none';
-      document.body.appendChild(a);
-
-      a.click();
-
-      // Clean up
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      showToast('Report exported as CSV');
     }
 
     function exportExcel() {
@@ -1792,13 +1862,13 @@
         document.getElementById('kpi-rate-delta').textContent =
           `${d.onboarded ?? 0} onboarded`;
 
-        // Pipeline stages funnel
-        if (d.stages) updatePipelineStages(d.stages, d.total_applicants);
+        // Pipeline stages pie chart
+        if (d.stages) renderPipelineChart(d.stages, d.total_applicants);
 
-        // Bar charts
-        if (d.monthly_trend) updateChartCard('Monthly Hiring Trend', d.monthly_trend, 'hires', 'blue');
+        // Chart.js charts
+        if (d.monthly_trend) renderMonthlyTrendChart(d.monthly_trend);
         if (d.school_comparison) updateUnitComparisonCard(d.school_comparison);
-        if (d.vacancy_gap) updateChartCard('Vacancy Gap Analysis', d.vacancy_gap, 'vacancies', 'purple');
+        if (d.vacancy_gap) renderVacancyGapChart(d.vacancy_gap);
 
         // Budget card
         if (d.budget) {
@@ -1827,7 +1897,33 @@
       }
     }
 
-    loadReports();
+    async function fetchUnits() {
+      try {
+        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const res = await fetch(apiBase + '/auth/units');
+        if (!res.ok) throw new Error('Failed to fetch units');
+        const units = await res.json();
+        const select = document.getElementById('unitFilter');
+        if (select) {
+          select.innerHTML = '<option value="">All Units</option>';
+          units.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.unit_name;
+            opt.textContent = u.unit_name;
+            select.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.error('Error fetching units:', err);
+      }
+    }
+
+    async function init() {
+      await fetchUnits();
+      loadReports();
+    }
+
+    init();
 
     document.querySelectorAll('.filter-bar input, .filter-bar select').forEach(el => {
       el.addEventListener('change', loadReports);
