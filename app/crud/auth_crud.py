@@ -549,3 +549,13 @@ def update_candidate_resume_db(db: Session, user_id: int, resume_path: str) -> d
     meta.resume_doc = resume_path
     db.commit()
     return {"message": "Resume uploaded successfully", "resume_doc": resume_path}
+
+def update_candidate_profile_image_db(db: Session, user_id: int, image_path: str) -> dict:
+    """Updates candidate's profile image path in the users table."""
+    user = db.query(Users).filter(Users.user_id == user_id, Users.user_status == 1).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Candidate not found.")
+        
+    user.image_path = image_path
+    db.commit()
+    return {"message": "Profile image uploaded successfully", "image_path": image_path}

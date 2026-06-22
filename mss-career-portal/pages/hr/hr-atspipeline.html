@@ -1009,26 +1009,6 @@
       }
     }
 
-    .ai-card {
-      background: linear-gradient(135deg, #f0effe 0%, #e8f1ff 100%);
-      border: 1px solid #c4b5fd;
-      border-radius: var(--radius-sm);
-      padding: 13px 14px;
-      margin-bottom: 18px;
-      font-size: 13px;
-      color: #4c1d95;
-      line-height: 1.6;
-      display: flex;
-      gap: 10px;
-    }
-
-    .ai-card i {
-      font-size: 18px;
-      color: var(--purple);
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
     .section {
       margin-bottom: 22px;
     }
@@ -1465,15 +1445,9 @@
           </div>
           <select class="filter-select" id="jobFilter" onchange="filterCards()">
             <option value="">All Jobs</option>
-            <option>Mathematics Teacher</option>
-            <option>Science Teacher</option>
-            <option>English Teacher</option>
           </select>
           <select class="filter-select" id="schoolFilter" onchange="filterCards()">
             <option value="">All Schools</option>
-            <option>ABC School</option>
-            <option>XYZ School</option>
-            <option>Sunrise Academy</option>
           </select>
         </div>
       </div>
@@ -1515,17 +1489,13 @@
       <div class="dtab active" onclick="switchTab('overview')"><i class="ti ti-user" aria-hidden="true"></i> Overview
       </div>
       <div class="dtab" onclick="switchTab('timeline')"><i class="ti ti-timeline" aria-hidden="true"></i> Timeline</div>
-      <div class="dtab" onclick="switchTab('actions')"><i class="ti ti-bolt" aria-hidden="true"></i> Actions</div>
+      <!-- <div class="dtab" onclick="switchTab('actions')"><i class="ti ti-bolt" aria-hidden="true"></i> Actions</div> -->
     </div>
 
     <div class="drawer-body">
 
       <!-- Overview tab -->
       <div class="tab-panel active" id="tab-overview">
-        <div class="ai-card" id="aiCard">
-          <i class="ti ti-sparkles" aria-hidden="true"></i>
-          <div id="aiText"></div>
-        </div>
         <div class="section">
           <div class="section-title">Personal Info</div>
           <table class="info-table" id="infoTable"></table>
@@ -1665,7 +1635,6 @@
       </button>
     </div>
     <div class="card-tags">
-      <span class="tag"><i class="ti ti-briefcase" aria-hidden="true"></i>${c.exp}</span>
       <span class="tag"><i class="ti ti-building" aria-hidden="true"></i>${c.school}</span>
     </div>
     <div class="card-footer">
@@ -1789,19 +1758,13 @@
       const [avBg, avFg] = STAGE_META[c.stage].av;
       const avEl = document.getElementById('dAvatar');
       avEl.textContent = initials(c.name);
-      avEl.style.cssText = `background:${avBg};color:${avFg};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600`;
+      // avEl.style.cssText = `background:${avBg};color:${avFg};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600`;
 
       document.getElementById('dName').textContent = c.name;
       document.getElementById('dPos').textContent = c.position + ' · ' + c.school;
 
-      // AI insight
-      const matchLabel = c.match >= 90 ? 'Excellent' : c.match >= 75 ? 'Good' : 'Fair';
-      document.getElementById('aiText').innerHTML =
-        `<strong>AI Summary:</strong> ${c.notes} — Match score: <strong>${c.match}% (${matchLabel})</strong>.`;
-
       // Info table
       document.getElementById('infoTable').innerHTML = `
-    <tr><td class="lbl">Experience</td><td class="val">${c.exp}</td></tr>
     <tr><td class="lbl">School</td><td class="val">${c.school}</td></tr>
     <tr><td class="lbl">Email</td><td class="val"><a class="link" href="mailto:${c.email}">${c.email}</a></td></tr>
     <tr><td class="lbl">Phone</td><td class="val">${c.phone}</td></tr>
@@ -1844,7 +1807,7 @@
     }
 
     function switchTab(tab) {
-      const tabs = ['overview', 'timeline', 'actions'];
+      const tabs = ['overview', 'timeline'];
       document.querySelectorAll('.dtab').forEach((el, i) => el.classList.toggle('active', tabs[i] === tab));
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.getElementById('tab-' + tab).classList.add('active');

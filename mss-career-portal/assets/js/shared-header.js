@@ -582,6 +582,7 @@ async function loginUser() {
 
         applyAuthUI();
         alert("Login Successful");
+        window.dispatchEvent(new CustomEvent('candidate_login_success'));
 
         // var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
         // if (pendingJobId) {
@@ -655,6 +656,7 @@ async function registerCandidate(form) {
         form.reset();
         applyAuthUI();
         alert("Account created successfully!");
+        window.dispatchEvent(new CustomEvent('candidate_login_success'));
 
         var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
         if (pendingJobId) {

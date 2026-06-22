@@ -433,7 +433,11 @@
       });
       if (res.ok) {
         const data = await res.json();
-        NOTIFICATIONS[getRole()] = data;
+        
+        // Deduplicate notifications by ID to fix duplicate display issue
+        const uniqueData = Array.from(new Map(data.map(item => [item.id, item])).values());
+        
+        NOTIFICATIONS[getRole()] = uniqueData;
         renderNotifications();
       }
     } catch(e) { console.warn('Failed to fetch notifications', e); }

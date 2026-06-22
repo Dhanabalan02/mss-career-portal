@@ -1878,26 +1878,35 @@
                         });
                 }
 
-                if (token && userType === 'candidate') {
-                    fetch(JOBS_API_BASE + '/apply/my-applications', {
-                        headers: { 'Authorization': 'Bearer ' + token }
-                    })
-                        .then(function (res) {
-                            if (res.ok) return res.json();
-                            return [];
+                function initJobs() {
+                    token = localStorage.getItem('access_token');
+                    userType = localStorage.getItem('user_type');
+                    
+                    if (token && userType === 'candidate') {
+                        fetch(JOBS_API_BASE + '/apply/my-applications', {
+                            headers: { 'Authorization': 'Bearer ' + token }
                         })
-                        .then(function (apps) {
-                            if (apps && Array.isArray(apps)) {
-                                appliedJobIds = apps.map(function (app) { return app.job_id; });
-                            }
-                            loadJobs();
-                        })
-                        .catch(function () {
-                            loadJobs();
-                        });
-                } else {
-                    loadJobs();
+                            .then(function (res) {
+                                if (res.ok) return res.json();
+                                return [];
+                            })
+                            .then(function (apps) {
+                                if (apps && Array.isArray(apps)) {
+                                    appliedJobIds = apps.map(function (app) { return app.job_id; });
+                                }
+                                loadJobs();
+                            })
+                            .catch(function () {
+                                loadJobs();
+                            });
+                    } else {
+                        appliedJobIds = [];
+                        loadJobs();
+                    }
                 }
+
+                initJobs();
+                window.addEventListener('candidate_login_success', initJobs);
             })();
         </script>
 

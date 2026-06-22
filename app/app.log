@@ -19,3 +19,181 @@
 [2026-06-21 22:14:02] INFO in main: FastAPI application has started successfully.
 [2026-06-21 22:14:53] INFO in config: Constructing the database URL from environment variables.
 [2026-06-21 22:14:53] INFO in database: Database engine created successfully.
+[2026-06-22 09:40:20] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 09:40:20] INFO in database: Database engine created successfully.
+[2026-06-22 09:40:27] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 09:40:27] INFO in database: Database engine created successfully.
+[2026-06-22 09:40:28] INFO in main: FastAPI application has started successfully.
+[2026-06-22 09:42:42] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (2006, "MySQL server has gone away (ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))")
+[SQL: SELECT admins.admin_id AS admins_admin_id, admins.role_id AS admins_role_id, admins.unit_id AS admins_unit_id, admins.email AS admins_email, admins.password AS admins_password, admins.is_active AS admins_is_active, admins.created_at AS admins_created_at, admins.updated_at AS admins_updated_at, user_roles_1.role_id AS user_roles_1_role_id, user_roles_1.role_name AS user_roles_1_role_name 
+FROM admins LEFT OUTER JOIN user_roles AS user_roles_1 ON user_roles_1.role_id = admins.role_id 
+WHERE admins.email = %(email_1)s AND admins.is_active = %(is_active_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'email_1': 'ramesramesh0724@gmail.com', 'is_active_1': 1, 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 834, in _write_bytes
+    self._sock.sendall(data)
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 581, in query
+    self._execute_command(COMMAND.COM_QUERY, sql)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 886, in _execute_command
+    self._write_bytes(packet)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 837, in _write_bytes
+    raise err.OperationalError(
+pymysql.err.OperationalError: (2006, "MySQL server has gone away (ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\auth_route.py", line 125, in user_login
+    return authenticate_user_roles(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 581, in query
+    self._execute_command(COMMAND.COM_QUERY, sql)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 886, in _execute_command
+    self._write_bytes(packet)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 837, in _write_bytes
+    raise err.OperationalError(
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2006, "MySQL server has gone away (ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))")
+[SQL: SELECT admins.admin_id AS admins_admin_id, admins.role_id AS admins_role_id, admins.unit_id AS admins_unit_id, admins.email AS admins_email, admins.password AS admins_password, admins.is_active AS admins_is_active, admins.created_at AS admins_created_at, admins.updated_at AS admins_updated_at, user_roles_1.role_id AS user_roles_1_role_id, user_roles_1.role_name AS user_roles_1_role_name 
+FROM admins LEFT OUTER JOIN user_roles AS user_roles_1 ON user_roles_1.role_id = admins.role_id 
+WHERE admins.email = %(email_1)s AND admins.is_active = %(is_active_1)s 
+ LIMIT %(param_1)s]
+[parameters: {'email_1': 'ramesramesh0724@gmail.com', 'is_active_1': 1, 'param_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-22 09:43:44] WARNING in auth_crud: Failed login attempt for email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 09:43:53] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 09:48:43] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 09:50:05] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 10:56:02] INFO in auth_crud: New candidate registered with email: tharun123@gmail.com from IP: 127.0.0.1
+[2026-06-22 11:37:41] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-22 12:04:19] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-22 12:09:36] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 12:13:15] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:13:15] INFO in database: Database engine created successfully.
+[2026-06-22 12:13:15] INFO in main: FastAPI application has started successfully.
+[2026-06-22 12:13:21] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:13:21] INFO in database: Database engine created successfully.
+[2026-06-22 12:13:21] INFO in main: FastAPI application has started successfully.
+[2026-06-22 12:13:31] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:13:31] INFO in database: Database engine created successfully.
+[2026-06-22 12:13:31] INFO in main: FastAPI application has started successfully.
+[2026-06-22 12:15:14] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:15:14] INFO in database: Database engine created successfully.
+[2026-06-22 12:15:15] INFO in main: FastAPI application has started successfully.
+[2026-06-22 12:15:51] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-22 12:16:51] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-22 12:17:02] WARNING in auth_crud: Failed login attempt for email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 12:17:11] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-22 12:20:23] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:20:23] INFO in database: Database engine created successfully.
+[2026-06-22 12:20:24] INFO in main: FastAPI application has started successfully.
+[2026-06-22 12:23:00] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:23:01] INFO in database: Database engine created successfully.
+[2026-06-22 12:28:20] INFO in config: Constructing the database URL from environment variables.
+[2026-06-22 12:28:21] INFO in database: Database engine created successfully.

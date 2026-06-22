@@ -1592,14 +1592,6 @@
       list.appendChild(div);
     }
 
-    /* ── Photo upload ── */
-    document.getElementById('photoUpload').addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const url = URL.createObjectURL(file);
-      const inner = document.getElementById('cpAvatarInner');
-      inner.innerHTML = `<img src="${url}" alt="Photo">`;
-    });
 
     /* ── Resume upload ── */
     document.getElementById('resumeUpload').addEventListener('change', async e => {
@@ -1664,7 +1656,13 @@
       const notice = document.getElementById('pfNotice')?.value;
       const desig = document.getElementById('pfDesig')?.value.trim();
 
-      if (name) { document.getElementById('cpSidebarName').textContent = name; document.getElementById('cpAvatarInner').textContent = name[0].toUpperCase(); }
+      if (name) { 
+        document.getElementById('cpSidebarName').textContent = name; 
+        const inner = document.getElementById('cpAvatarInner');
+        if (!inner.querySelector('img')) {
+          inner.textContent = name[0].toUpperCase(); 
+        }
+      }
       if (desig) document.getElementById('cpSidebarRole').textContent = desig;
       if (email) document.getElementById('cpContactEmail').textContent = email;
       if (mobile) document.getElementById('cpContactPhone').textContent = mobile;
@@ -1830,7 +1828,12 @@
       
       // Sidebar details
       const initials = fullName ? fullName.charAt(0).toUpperCase() : '?';
-      document.getElementById('cpAvatarInner').textContent = initials;
+      if (data.image_path) {
+        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+        document.getElementById('cpAvatarInner').innerHTML = `<img src="${apiBase}/${data.image_path}" alt="Profile Image" style="width:100%; height:100%; object-fit:cover;">`;
+      } else {
+        document.getElementById('cpAvatarInner').textContent = initials;
+      }
       document.getElementById('cpSidebarName').textContent = fullName || 'Your Name';
       document.getElementById('cpContactEmail').textContent = data.email || '—';
       document.getElementById('cpContactPhone').textContent = data.mobile || '—';
@@ -1850,6 +1853,39 @@
         document.getElementById(id)?.addEventListener('change', () => { cpUpdateSidebar(); cpCalcCompletion(); });
       });
  
+      /* Photo Upload */
+      const photoUpload = document.getElementById('photoUpload');
+      if (photoUpload) {
+        photoUpload.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          const token = localStorage.getItem('access_token');
+          if (!token) return;
+          
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          try {
+            const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+            const res = await fetch(apiBase + '/auth/candidate/upload-profile-image', {
+              method: 'POST',
+              headers: { 'Authorization': 'Bearer ' + token },
+              body: formData
+            });
+            
+            if (!res.ok) throw new Error('Upload failed');
+            
+            const data = await res.json();
+            document.getElementById('cpAvatarInner').innerHTML = `<img src="${apiBase}/${data.image_path}" alt="Profile Image" style="width:100%; height:100%; object-fit:cover;">`;
+            showToast('Profile image updated!', 'success');
+          } catch (err) {
+            console.error(err);
+            showToast('Failed to upload profile image.', 'danger');
+          }
+        });
+      }
+
       /* Save */
       document.getElementById('saveProfileBtn').addEventListener('click', async () => {
         const token = localStorage.getItem('access_token');

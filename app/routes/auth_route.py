@@ -16,6 +16,7 @@ from app.crud.auth_crud import (
     update_candidate_profile_db,
     get_interviewers_db,
     update_candidate_resume_db,
+    update_candidate_profile_image_db,
 )
 from app.core.config import settings
 from app.core.database import get_db
@@ -249,8 +250,11 @@ def update_candidate_profile(
     return update_candidate_profile_db(db, user_id=candidate_id, data=form_data.model_dump(exclude_unset=True))
 
 
+from pathlib import Path
 import os
 import time
+
+ROUTE_BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 @router.post("/candidate/upload-resume")
 async def upload_candidate_resume(
@@ -259,17 +263,41 @@ async def upload_candidate_resume(
     candidate_id: int = Depends(_get_candidate_id_from_token)
 ):
     """Uploads and updates the candidate's resume document."""
-    upload_dir = "uploads/resumes"
+    upload_dir = ROUTE_BASE_DIR / "uploads" / "resumes"
     os.makedirs(upload_dir, exist_ok=True)
     
     file_extension = os.path.splitext(file.filename)[1]
     unique_filename = f"resume_{candidate_id}_{int(time.time())}{file_extension}"
-    file_path = os.path.join(upload_dir, unique_filename).replace("\\", "/")
+    file_path = upload_dir / unique_filename
     
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
         
-    return update_candidate_resume_db(db, user_id=candidate_id, resume_path=file_path)
+    db_path = f"uploads/resumes/{unique_filename}"
+    return update_candidate_resume_db(db, user_id=candidate_id, resume_path=db_path)
+
+
+@router.post("/candidate/upload-profile-image")
+async def upload_candidate_profile_image(
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    candidate_id: int = Depends(_get_candidate_id_from_token)
+):
+    """Uploads and updates the candidate's profile image."""
+    upload_dir = ROUTE_BASE_DIR / "uploads" / "profile_images"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    file_extension = os.path.splitext(file.filename)[1]
+    unique_filename = f"profile_{candidate_id}_{int(time.time())}{file_extension}"
+    file_path = upload_dir / unique_filename
+    
+    with open(file_path, "wb") as buffer:
+        buffer.write(await file.read())
+        
+    # Store relative path for DB so that frontend URL construction works
+    db_path = f"uploads/profile_images/{unique_filename}"
+    return update_candidate_profile_image_db(db, user_id=candidate_id, image_path=db_path)
+
 
 
 def _get_hr_id_from_token(authorization: Optional[str] = Header(default=None)) -> int:

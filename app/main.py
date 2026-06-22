@@ -190,6 +190,9 @@ app.include_router(school_admin_router)
 app.include_router(notification_router)
 app.include_router(interview_auth_router)
 
+# Mount uploads folder
+app.mount("/uploads", StaticFiles(directory=str(BASE_DIR / "uploads")), name="uploads")
+
 # Mount frontend static files as a fallback for asset requests
 app.mount("/mss-career-portal", StaticFiles(directory=str(BASE_DIR / "mss-career-portal"), html=True), name="mss-career-portal")
 
