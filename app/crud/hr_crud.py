@@ -139,9 +139,9 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
         name = f"{user.first_name} {user.last_name}".strip()
         has_interview = app.job_applicant_id in interviewed_ids
         
-        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage) if app.applicant_stage else "applied"
-        from app.crud.common import _STAGE_ENUM_TO_LABEL
-        stage = _STAGE_ENUM_TO_LABEL.get(stage_val, "Applied")
+        from app.crud.common import compute_stage
+        stage = compute_stage(app, has_interview)
+        
         exp_str = compute_exp_str(
             exps_map.get(user.user_id, [])
         )

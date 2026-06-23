@@ -2,7 +2,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 from app.models import JobApplicant, CandidateScreeningAnswer, JobPreScreeningQuestion
 from app.models.candidate_screening_answer_model import CandidateStatus
-from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus, ApplicantStage
+from app.models.job_applicant_model import ApplicantJobStatus, ApplicantStage, OfferAcceptanceStatus
 from app.core.logger import logger
 
 def create_job_application(
@@ -48,10 +48,13 @@ def create_job_application(
             score = (correct_count / total_qs) * 100
             if score >= 60:
                 final_status = CandidateStatus.SCREENED
+                db_applicant.applicant_stage = ApplicantStage.SCREENED
             elif score >= 10:
                 final_status = CandidateStatus.APPLIED
+                db_applicant.applicant_stage = ApplicantStage.APPLIED
             else:
                 final_status = CandidateStatus.INELIGIBLE
+                db_applicant.applicant_job_status = ApplicantJobStatus.REJECTED
         else:
             final_status = CandidateStatus.APPLIED
 

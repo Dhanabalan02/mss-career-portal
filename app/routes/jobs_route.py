@@ -248,26 +248,21 @@ def get_applicants_route(
         )
         
         # Calculate stage and status text
-        stage_val = "Applied"
+        from app.crud.common import compute_stage
+        stage_val = compute_stage(app, len(interviews) > 0)
         interview_status = "Pending"
         
         if app.applicant_job_status == "rejected":
-            stage_val = "Rejected"
             interview_status = "Rejected"
         elif app.sync_masset == 1:
-            stage_val = "Onboarding"
             interview_status = "Synced to MASSET"
         elif app.offer_acceptance_status == "accepted":
-            stage_val = "Offer Accepted"
             interview_status = "Offer Accepted"
         elif app.offer_acceptance_status == "expired":
-            stage_val = "Offer"
             interview_status = "Offer Expired"
         elif app.issue_offer == 1 or app.offer_letter_doc:
-            stage_val = "Offer"
             interview_status = "Offer Sent"
         elif len(interviews) > 0:
-            stage_val = "Interview"
             latest_int = interviews[0]
             remark = db.query(InterviewRemark).filter(InterviewRemark.job_interview_id == latest_int.job_interview_id).first()
             if remark and remark.applicant_status:
@@ -280,13 +275,10 @@ def get_applicants_route(
             else:
                 interview_status = latest_int.status.value.capitalize() if hasattr(latest_int.status, 'value') else str(latest_int.status).capitalize()
         elif app.applicant_job_status == "hold":
-            stage_val = "Screened"
             interview_status = "On Hold"
         elif app.applicant_job_status == "selected":
-            stage_val = "Screened"
             interview_status = "Selected"
         elif app.applicant_job_status:
-            stage_val = "Screened"
             interview_status = f"Screened ({app.applicant_job_status})"
             
         # Calculate experience from CandidateExperience

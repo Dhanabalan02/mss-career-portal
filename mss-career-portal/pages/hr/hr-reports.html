@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reports Dashboard - TMSS Career</title>
+  <title>Reports Dashboard - TMSS Career Portal</title>
   <link rel="icon" href="images/mss-logo.svg" type="image/svg+xml">
 
   <script src="portal-layout.js"></script>
@@ -1458,11 +1458,13 @@
         return;
       }
 
+      const escapeXml = (str) => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+
       // Generate current date for filename and report header
       const todayStr = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
 
       // Build Styles
-      let xml = `<?xml version="1.0"?>
+      let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <?mso-application progid="Excel.Sheet"?>
 <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
  xmlns:o="urn:schemas-microsoft-com:office:office"
@@ -1566,7 +1568,7 @@
 
       // Build Dashboard Worksheet
       xml += ` <Worksheet ss:Name="Dashboard">
-  <Table ss:ExpandedColumnCount="12" x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="20">
+  <Table x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="20">
    <Column ss:Index="1" ss:Width="25"/>
    <Column ss:Index="2" ss:Width="110"/>
    <Column ss:Index="3" ss:Width="50"/>
@@ -1598,45 +1600,45 @@
    <!-- KPI Cards Row 1 -->
    <Row ss:Height="25">
     <Cell ss:Index="2" ss:StyleID="CardLabel"><Data ss:Type="String">Total Hires</Data></Cell>
-    <Cell ss:StyleID="CardValGreen"><Data ss:Type="Number">${d.total_hires ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardValGreen"><Data ss:Type="Number">${Number(d.total_hires || 0)}</Data></Cell>
     
     <Cell ss:Index="5" ss:StyleID="CardLabel"><Data ss:Type="String">Open Vacancies</Data></Cell>
-    <Cell ss:StyleID="CardValOrange"><Data ss:Type="Number">${d.open_jobs ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardValOrange"><Data ss:Type="Number">${Number(d.open_jobs || 0)}</Data></Cell>
     
     <Cell ss:Index="8" ss:StyleID="CardLabel"><Data ss:Type="String">Closed Jobs</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.closed_jobs ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.closed_jobs || 0)}</Data></Cell>
     
     <Cell ss:Index="11" ss:StyleID="CardLabel"><Data ss:Type="String">Fulfillment Rate</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="String">${d.fulfillment_rate ?? 0}%</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="String">${escapeXml(d.fulfillment_rate ?? 0)}%</Data></Cell>
    </Row>
    <Row ss:Height="10"/>
 
    <!-- KPI Cards Row 2 -->
    <Row ss:Height="25">
     <Cell ss:Index="2" ss:StyleID="CardLabel"><Data ss:Type="String">Total Applicants</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.total_applicants ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.total_applicants || 0)}</Data></Cell>
     
     <Cell ss:Index="5" ss:StyleID="CardLabel"><Data ss:Type="String">Selected</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.selected ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.selected || 0)}</Data></Cell>
     
     <Cell ss:Index="8" ss:StyleID="CardLabel"><Data ss:Type="String">On Hold</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.on_hold ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.on_hold || 0)}</Data></Cell>
     
     <Cell ss:Index="11" ss:StyleID="CardLabel"><Data ss:Type="String">Rejected</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.rejected ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.rejected || 0)}</Data></Cell>
    </Row>
    <Row ss:Height="10"/>
 
    <!-- KPI Cards Row 3 -->
    <Row ss:Height="25">
     <Cell ss:Index="2" ss:StyleID="CardLabel"><Data ss:Type="String">Offer Sent</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.offer_sent ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.offer_sent || 0)}</Data></Cell>
     
     <Cell ss:Index="5" ss:StyleID="CardLabel"><Data ss:Type="String">Offer Accepted</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.offer_accepted ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.offer_accepted || 0)}</Data></Cell>
     
     <Cell ss:Index="8" ss:StyleID="CardLabel"><Data ss:Type="String">Onboarded</Data></Cell>
-    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${d.onboarded ?? 0}</Data></Cell>
+    <Cell ss:StyleID="CardVal"><Data ss:Type="Number">${Number(d.onboarded || 0)}</Data></Cell>
    </Row>
    <Row ss:Height="15"/>
 
@@ -1654,8 +1656,8 @@
       const stagesEntries = Object.entries(d.stages || {});
       stagesEntries.forEach(([stage, count]) => {
         xml += `   <Row ss:Height="20">
-    <Cell ss:Index="2" ss:StyleID="TableCell"><Data ss:Type="String">${stage}</Data></Cell>
-    <Cell ss:StyleID="NumberCell"><Data ss:Type="Number">${count}</Data></Cell>
+    <Cell ss:Index="2" ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(stage)}</Data></Cell>
+    <Cell ss:StyleID="NumberCell"><Data ss:Type="Number">${Number(count) || 0}</Data></Cell>
    </Row>
 `;
       });
@@ -1674,14 +1676,14 @@
       trendEntries.forEach(([month]) => {
         const idxAttr = firstTrend ? ' ss:Index="2"' : '';
         firstTrend = false;
-        xml += `    <Cell${idxAttr} ss:StyleID="TableHeader"><Data ss:Type="String">${month}</Data></Cell>\n`;
+        xml += `    <Cell${idxAttr} ss:StyleID="TableHeader"><Data ss:Type="String">${escapeXml(month)}</Data></Cell>\n`;
       });
       xml += `   </Row>\n   <Row ss:Height="20">\n`;
       firstTrend = true;
       trendEntries.forEach(([, count]) => {
         const idxAttr = firstTrend ? ' ss:Index="2"' : '';
         firstTrend = false;
-        xml += `    <Cell${idxAttr} ss:StyleID="NumberCell"><Data ss:Type="Number">${count}</Data></Cell>\n`;
+        xml += `    <Cell${idxAttr} ss:StyleID="NumberCell"><Data ss:Type="Number">${Number(count) || 0}</Data></Cell>\n`;
       });
       xml += `   </Row>\n   <Row ss:Height="15"/>\n`;
 
@@ -1699,8 +1701,8 @@
       const schoolEntries = Object.entries(d.school_comparison || {});
       schoolEntries.forEach(([school, count]) => {
         xml += `   <Row ss:Height="20">
-    <Cell ss:Index="2" ss:StyleID="TableCell"><Data ss:Type="String">${school}</Data></Cell>
-    <Cell ss:StyleID="NumberCell"><Data ss:Type="Number">${count}</Data></Cell>
+    <Cell ss:Index="2" ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(school)}</Data></Cell>
+    <Cell ss:StyleID="NumberCell"><Data ss:Type="Number">${Number(count) || 0}</Data></Cell>
    </Row>
 `;
       });
@@ -1721,8 +1723,8 @@
       const gapEntries = Object.entries(d.vacancy_gap || {});
       gapEntries.forEach(([dept, vacancies]) => {
         xml += `   <Row ss:Height="20">
-    <Cell ss:Index="2" ss:StyleID="TableCell"><Data ss:Type="String">${dept}</Data></Cell>
-    <Cell ss:StyleID="NumberCell"><Data ss:Type="Number">${vacancies}</Data></Cell>
+    <Cell ss:Index="2" ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(dept)}</Data></Cell>
+    <Cell ss:StyleID="NumberCell"><Data ss:Type="Number">${Number(vacancies) || 0}</Data></Cell>
    </Row>
 `;
       });
@@ -1733,7 +1735,7 @@
 
       // Build Raw Data Worksheet
       xml += ` <Worksheet ss:Name="Raw Data">
-  <Table ss:ExpandedColumnCount="5" x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="20">
+  <Table x:FullColumns="1" x:FullRows="1" ss:DefaultRowHeight="20">
    <Column ss:Index="1" ss:Width="180"/>
    <Column ss:Index="2" ss:Width="100"/>
    <Column ss:Index="3" ss:Width="120"/>
@@ -1765,9 +1767,9 @@
       ];
       metrics.forEach(([cat, item, val]) => {
         xml += `   <Row ss:Height="20">
-    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${cat}</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${item}</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="${typeof val === 'number' ? 'Number' : 'String'}">${val}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(cat)}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(item)}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="${typeof val === 'number' ? 'Number' : 'String'}">${typeof val === 'string' ? escapeXml(val) : val}</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">—</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">${new Date().toISOString()}</Data></Cell>
    </Row>\n`;
@@ -1777,8 +1779,8 @@
       stagesEntries.forEach(([stage, count]) => {
         xml += `   <Row ss:Height="20">
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">Pipeline Stage</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${stage}</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="Number">${count}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(stage)}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="Number">${Number(count) || 0}</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">${d.total_applicants ? Math.round((count / d.total_applicants) * 100) + '%' : '0%'}</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">${new Date().toISOString()}</Data></Cell>
    </Row>\n`;
@@ -1788,8 +1790,8 @@
       schoolEntries.forEach(([school, count]) => {
         xml += `   <Row ss:Height="20">
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">School Comparison</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${school}</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="Number">${count}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(school)}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="Number">${Number(count) || 0}</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">—</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">${new Date().toISOString()}</Data></Cell>
    </Row>\n`;
@@ -1799,8 +1801,8 @@
       gapEntries.forEach(([dept, vacancies]) => {
         xml += `   <Row ss:Height="20">
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">Vacancy Gap</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${dept}</Data></Cell>
-    <Cell ss:StyleID="TableCell"><Data ss:Type="Number">${vacancies}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="String">${escapeXml(dept)}</Data></Cell>
+    <Cell ss:StyleID="TableCell"><Data ss:Type="Number">${Number(vacancies) || 0}</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">—</Data></Cell>
     <Cell ss:StyleID="TableCell"><Data ss:Type="String">${new Date().toISOString()}</Data></Cell>
    </Row>\n`;
@@ -1811,7 +1813,7 @@
 </Workbook>`;
 
       // Trigger download as .xls
-      const blob = new Blob([xml], { type: 'application/vnd.ms-excel' });
+      const blob = new Blob(["\ufeff", xml], { type: 'application/vnd.ms-excel;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

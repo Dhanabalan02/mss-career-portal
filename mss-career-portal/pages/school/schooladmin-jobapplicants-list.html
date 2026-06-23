@@ -736,7 +736,18 @@ async function loadApplicants() {
     });
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
-    CANDIDATES = Array.isArray(data.applicants) ? data.applicants : [];
+    CANDIDATES = Array.isArray(data.applicants) ? data.applicants.map(c => {
+      c.stage = c.applicant_stage || c.stage || 'Applied';
+      let expVal = null;
+      if (Array.isArray(c.candidate_experience) && c.candidate_experience.length > 0) {
+        expVal = c.candidate_experience[0].total_experience;
+      } else if (c.candidate_experience) {
+        expVal = c.candidate_experience.total_experience;
+      }
+      expVal = expVal || c.total_experience || c.experience || c.exp;
+      c.exp = expVal ? (String(expVal).toLowerCase().includes('year') ? expVal : `${expVal}`) : 'N/A';
+      return c;
+    }) : [];
     
     const totalCount = CANDIDATES.length;
     const interviewCount = CANDIDATES.filter(c => c.stage === 'Interview').length;

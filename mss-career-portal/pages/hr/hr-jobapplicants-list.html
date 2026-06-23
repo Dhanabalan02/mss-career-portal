@@ -1007,6 +1007,9 @@
           subtitle.textContent = `${data.stats.total} total candidates across all positions`;
         }
 
+        // The backend now guarantees properly cased stage strings, 
+        // so no frontend normalization is needed.
+
         // Render stage chips
         renderStageChips(data.chips);
 
@@ -1061,7 +1064,8 @@
       const map = {
         'Applied': 'badge-applied', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
         'Offer': 'badge-offer', 'Offer Accepted': 'badge-accepted',
-        'Onboarding': 'badge-onboarding', 'Rejected': 'badge-rejected'
+        'Onboarding': 'badge-onboarding', 'Rejected': 'badge-rejected',
+        'Awaiting Offer': 'badge-offer'
       };
       return `<span class="badge ${map[stage] || ''}">${stage}</span>`;
     }

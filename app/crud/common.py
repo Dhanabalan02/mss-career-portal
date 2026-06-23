@@ -69,32 +69,42 @@ _STAGE_ENUM_TO_LABEL = {
     "offer": "Offer",
     "offer_accepted": "Offer Accepted",
     "onboarding": "Onboarding",
+    "rejected": "Rejected",
 }
 
 
 def compute_stage(app, has_interview: bool) -> str:
     from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus
 
-    # Prefer the explicit ATS stage column when present
-    if app.applicant_stage is not None:
-        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage)
-        return _STAGE_ENUM_TO_LABEL.get(stage_val, 'Applied')
-
-    # Fallback: derive stage from legacy fields (for existing rows without applicant_stage)
-    status = app.applicant_job_status
-    if status == ApplicantJobStatus.REJECTED:
-        return 'Rejected'
+    # 1. Deterministic definitive statuses take highest precedence
+    # If a candidate is synced to Masset, they are onboarding.
     if app.sync_masset:
         return 'Onboarding'
-    if app.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED:
+        
+    # If the candidate accepted the offer, they are in Offer Accepted stage.
+    offer_status_val = app.offer_acceptance_status.value if hasattr(app.offer_acceptance_status, 'value') else str(app.offer_acceptance_status)
+    if offer_status_val == "accepted":
         return 'Offer Accepted'
-    if app.offer_acceptance_status in (OfferAcceptanceStatus.EXPIRED, OfferAcceptanceStatus.REJECTED):
+        
+    # If the candidate is rejected, they are Rejected.
+    job_status_val = app.applicant_job_status.value if hasattr(app.applicant_job_status, 'value') else str(app.applicant_job_status)
+    if job_status_val == "rejected":
+        return 'Rejected'
+
+    # 2. Prefer the explicit ATS stage column when present and not overridden by definitive statuses
+    if app.applicant_stage is not None:
+        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage)
+        stage_val_norm = stage_val.lower().strip().replace(" ", "_").replace("-", "_")
+        return _STAGE_ENUM_TO_LABEL.get(stage_val_norm, 'Applied')
+
+    # 3. Fallback: derive stage from legacy fields
+    if offer_status_val in ("expired", "rejected"):
         return 'Offer'
     if app.issue_offer:
         return 'Offer'
-    if has_interview or status == ApplicantJobStatus.NEXT_ROUND:
+    if has_interview or job_status_val == "next_round":
         return 'Interview'
-    if status in (ApplicantJobStatus.SELECTED, ApplicantJobStatus.HOLD):
+    if job_status_val in ("selected", "hold"):
         return 'Screened'
     return 'Applied'
 
