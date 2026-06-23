@@ -178,7 +178,7 @@ _STAGE_TO_FIELDS = {
     },
     'Screened': {
         'applicant_stage': ApplicantStage.SCREENED,
-        'applicant_job_status': ApplicantJobStatus.SELECTED,
+        'applicant_job_status': None,
         'issue_offer': 0,
         'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
         'sync_masset': 0,

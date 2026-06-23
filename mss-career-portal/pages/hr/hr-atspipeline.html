@@ -1831,10 +1831,8 @@
         <span class="badge ${m.badge}">${cards.length}</span>
       </div>
       <div class="card-list">${cards.map(buildCard).join('')}${empty}</div>`;
-
         container.appendChild(colEl);
       });
-
       updateStats(data);
     }
 

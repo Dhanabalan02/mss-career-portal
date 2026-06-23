@@ -1141,7 +1141,6 @@
       if (!hideActionsStages.includes(candidateData.stage) && !isSelected) {
         actionsEl.innerHTML += `<button class="btn btn-warn" onclick="holdCandidate()"><i class="ti ti-player-pause"></i> Put On Hold</button>`;
         actionsEl.innerHTML += `<button class="btn btn-danger" onclick="rejectCandidate()"><i class="ti ti-circle-x"></i> Reject</button>`;
-        actionsEl.innerHTML += `<button class="btn btn-primary" onclick="scheduleInterview()"><i class="ti ti-calendar"></i> Schedule Interview</button>`;
       } else if (isSelected) {
         actionsEl.innerHTML += `<span class="badge badge-green" style="font-size: 14px; padding: 8px 12px;">Status: Selected</span>`;
       }
