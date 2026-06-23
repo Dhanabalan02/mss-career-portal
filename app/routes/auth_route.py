@@ -277,14 +277,13 @@ async def upload_candidate_resume(
     upload_dir = ROUTE_BASE_DIR / "uploads" / "resumes"
     os.makedirs(upload_dir, exist_ok=True)
     
-    file_extension = os.path.splitext(file.filename)[1]
-    unique_filename = f"resume_{candidate_id}_{int(time.time())}{file_extension}"
-    file_path = upload_dir / unique_filename
+    filename = file.filename
+    file_path = upload_dir / filename
     
     with open(file_path, "wb") as buffer:
         buffer.write(await file.read())
         
-    db_path = f"uploads/resumes/{unique_filename}"
+    db_path = f"uploads/resumes/{filename}"
     return update_candidate_resume_db(db, user_id=candidate_id, resume_path=db_path)
 
 

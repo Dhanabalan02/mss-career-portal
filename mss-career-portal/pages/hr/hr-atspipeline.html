@@ -1564,7 +1564,7 @@
             <option value="">All Jobs</option>
           </select>
           <select class="filter-select" id="schoolFilter" onchange="filterCards()">
-            <option value="">All Schools</option>
+            <option value="">All Units</option>
           </select>
         </div>
       </div>
@@ -1844,12 +1844,17 @@
       const offers = data.filter(c => c.stage === 'Offer' || c.stage === 'Offer Accepted').length;
       const onboarding = data.filter(c => c.stage === 'Onboarding').length;
 
+      const deltaTotal = window.apiStats?.deltas?.total || '+3 this week';
+      const deltaInterview = window.apiStats?.deltas?.interview || '+1 today';
+      const deltaOffers = window.apiStats?.deltas?.offers || 'Offer + Accepted';
+      const deltaOnboarding = window.apiStats?.deltas?.onboarding || 'On track';
+
       grid.innerHTML = `
     <div class="stat-card sc-total" onclick="scrollToStage(null)">
       <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-users" aria-hidden="true"></i></div>
       <div class="stat-value">${total}</div>
       <div class="stat-label">Total Candidates</div>
-      <div class="stat-delta">+3 this week</div>
+      <div class="stat-delta">${deltaTotal}</div>
     </div>
     <div class="stat-card sc-applied" onclick="scrollToStage('Applied')">
       <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-file-text" aria-hidden="true"></i></div>
@@ -1861,19 +1866,18 @@
       <div class="stat-icon" style="background:var(--orange-light);color:var(--orange)"><i class="ti ti-microphone-2" aria-hidden="true"></i></div>
       <div class="stat-value">${interview}</div>
       <div class="stat-label">In Interview</div>
-      <div class="stat-delta">+1 today</div>
     </div>
     <div class="stat-card sc-offer" onclick="scrollToStage('Offer')">
       <div class="stat-icon" style="background:var(--purple-light);color:var(--purple)"><i class="ti ti-file-invoice" aria-hidden="true"></i></div>
       <div class="stat-value">${offers}</div>
       <div class="stat-label">Offers Active</div>
-      <div class="stat-delta">Offer + Accepted</div>
+      <div class="stat-delta">${deltaOffers}</div>
     </div>
     <div class="stat-card sc-onboarding" onclick="scrollToStage('Onboarding')">
       <div class="stat-icon" style="background:var(--warning-light);color:var(--warning)"><i class="ti ti-user-check" aria-hidden="true"></i></div>
       <div class="stat-value">${onboarding}</div>
       <div class="stat-label">Onboarding</div>
-      <div class="stat-delta">On track</div>
+      <div class="stat-delta">${deltaOnboarding}</div>
     </div>`;
     }
 
@@ -2276,13 +2280,19 @@
           const data = await res.json();
           if (Array.isArray(data.candidates)) {
             candidates = data.candidates;
+            window.apiStats = data.stats || null;
             // Populate filter dropdowns from live data
             const jobs = [...new Set(candidates.map(c => c.position).filter(Boolean))];
             const schools = [...new Set(candidates.map(c => c.school).filter(Boolean))];
             const jobSel = document.getElementById('jobFilter');
             const schSel = document.getElementById('schoolFilter');
-            jobSel.innerHTML = '<option value="">All Jobs</option>' + jobs.map(j => `<option>${j}</option>`).join('');
-            schSel.innerHTML = '<option value="">All Schools</option>' + schools.map(s => `<option>${s}</option>`).join('');
+            
+            const escapeHtml = (unsafe) => (unsafe || '').toString()
+              .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+              
+            jobSel.innerHTML = '<option value="">All Jobs</option>' + jobs.map(j => `<option value="${escapeHtml(j)}">${escapeHtml(j)}</option>`).join('');
+            schSel.innerHTML = '<option value="">All Units</option>' + schools.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
           }
         }
       } catch (e) { /* keep sample data if API unreachable */ }

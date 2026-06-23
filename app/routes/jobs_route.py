@@ -290,17 +290,13 @@ def get_applicants_route(
             interview_status = f"Screened ({app.applicant_job_status})"
             
         # Calculate experience from CandidateExperience
-        exp_years = 0.0
         exp_records = db.query(CandidateExperience).filter(CandidateExperience.user_id == user.user_id).all()
         total_days = 0
-        
         for exp_rec in exp_records:
-            # Safely handle start_date conversion if it is a string
             start_dt = exp_rec.start_date
             if isinstance(start_dt, str):
                 start_dt = datetime.strptime(start_dt.split()[0], "%Y-%m-%d").date()
                 
-            # Safely handle end_date conversion if it is a string or missing
             end_dt = exp_rec.end_date or date.today()
             if isinstance(end_dt, str):
                 end_dt = datetime.strptime(end_dt.split()[0], "%Y-%m-%d").date()
@@ -310,11 +306,9 @@ def get_applicants_route(
                 
         if total_days > 0:
             exp_years = round(total_days / 365.25, 1)
+            exp_str = f"{exp_years} yrs"
         else:
-            # realistic fallback
-            exp_years = round((user.user_id % 8) + 1.2, 1)
-            
-        exp_str = f"{exp_years} yrs"
+            exp_str = "—"
         
         # Increment chip counts
         if stage_val in chip_counts:
@@ -353,8 +347,6 @@ def get_applicants_route(
             "job": job_title,
             "appliedDate": app.created_at.strftime("%Y-%m-%d") if app.created_at else "",
             "exp": exp_str,
-            "min_exp": job_post.min_exp if job_post and job_post.min_exp is not None else 0,
-            "max_exp": job_post.max_exp if job_post and job_post.max_exp is not None else 0,
             "stage": stage_val,
             "interviewStatus": interview_status,
             "interview_round": interviews[0].interview_round if len(interviews) > 0 else "",
@@ -362,13 +354,32 @@ def get_applicants_route(
             "color": color
         })
         
+    unique_jobs_count = len(set(app.job_id for app in all_applicants))
+    interview_pct = round((interviewing_count / total_count * 100), 1) if total_count > 0 else 0
+    accepted_count = chip_counts.get("Offer Accepted", 0)
+    
+    # Calculate onboarding this month
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    onboarding_this_month = 0
+    for app in all_applicants:
+        if app.applicant_stage and app.applicant_stage.value == "Onboarding":
+            if app.updated_at and app.updated_at.month == current_month and app.updated_at.year == current_year:
+                onboarding_this_month += 1
+
     return {
         "applicants": serialized_applicants,
         "stats": {
             "total": total_count,
             "interview": interviewing_count,
             "offers": offers_count,
-            "onboarding": onboarding_count
+            "onboarding": onboarding_count,
+            "deltas": {
+                "total": f"Across {unique_jobs_count} position{'s' if unique_jobs_count != 1 else ''}",
+                "interview": f"{interview_pct}% of pipeline",
+                "offers": f"{accepted_count} accepted so far",
+                "onboarding": f"{onboarding_this_month} active this month"
+            }
         },
         "chips": chip_counts
     }
@@ -421,11 +432,12 @@ def get_applicant_detail_route(
             
         if start_dt and end_dt:
             total_days += (end_dt - start_dt).days
+            
     if total_days > 0:
         exp_years = round(total_days / 365.25, 1)
+        exp_str = f"{exp_years} yrs"
     else:
-        exp_years = round((user.user_id % 8) + 1.2, 1)
-    exp_str = f"{exp_years} yrs"
+        exp_str = "—"
 
     # Get latest stage info
     interviews = (
@@ -479,8 +491,9 @@ def get_applicant_detail_route(
             (lambda s: (__import__("json").loads(s) if s.startswith("[") else [x.strip() for x in s.split(",") if x.strip()]))(meta.skills)
         ) if (meta and meta.skills) else [],
         "profile_status": meta.profile_status if (meta and meta.profile_status) else "",
-        "resume_doc": app.resume_doc or (meta.resume_doc if meta else None) or "",
+        "resume_doc": app.resume_doc or (getattr(meta, "resume_doc", None) if meta else None) or "",
         "cover_letter": app.cover_letter or "",
+        "about": meta.about if (meta and meta.about) else "",
         "bio": "Dynamic educator committed to student growth."
     }
 
@@ -903,7 +916,7 @@ def get_dashboard_stats(
     scheduled_interviews_q = (
         db.query(JobInterviewSchedule)
         .join(JobPost, JobInterviewSchedule.job_id == JobPost.job_id)
-        .filter(JobInterviewSchedule.status == InterviewStatus.SCHEDULED)
+        .filter(JobInterviewSchedule.status.in_([InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]))
     )
     if not is_hr:
         scheduled_interviews_q = scheduled_interviews_q.filter(JobPost.job_posted_by == admin_id)

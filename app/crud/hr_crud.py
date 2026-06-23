@@ -160,6 +160,7 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
             "email": user.email,
             "phone": user.mobile or "",
             "daysAgo": _days_ago(app.created_at),
+            "updated_at": app.updated_at,
             "notes": notes,
             "skills": skills,
             "color": color,
@@ -283,10 +284,10 @@ def get_interviews(db: Session, admin_id: int) -> dict:
     for idx, (iv, user, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
         is_rescheduled = iv.status.value.lower() == "rescheduled" if iv.status else False
-        date_val = iv.rescheduled_date if is_rescheduled and iv.rescheduled_date else iv.scheduled_date
+        date_val = iv.scheduled_date
         
-        start_val = iv.rescheduled_start_time if is_rescheduled and iv.rescheduled_start_time else iv.start_time
-        end_val = iv.rescheduled_end_time if is_rescheduled and iv.rescheduled_end_time else iv.end_time
+        start_val = iv.start_time
+        end_val = iv.end_time
         
         time_str = _format_time(start_val) if start_val else ""
         if end_val:

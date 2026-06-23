@@ -826,7 +826,7 @@
     <header class="page-header">
       <div>
         <div class="page-title">Job Applicants</div>
-        <div class="page-subtitle">247 total candidates across all positions</div>
+        <div class="page-subtitle" id="pageSubtitle">0 total candidates across all positions</div>
       </div>
     </header>
 
@@ -845,7 +845,6 @@
           <div class="stat-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
           <div class="stat-label">In Interview</div>
-          <div class="stat-delta">15.4% of pipeline</div>
         </div>
         <div class="stat-card sc-offers">
           <div class="stat-icon"><i class="ti ti-send" aria-hidden="true"></i></div>
@@ -996,6 +995,18 @@
         document.querySelector('.sc-offers .stat-value').textContent = data.stats.offers;
         document.querySelector('.sc-onboarding .stat-value').textContent = data.stats.onboarding;
 
+        if (data.stats.deltas) {
+          document.querySelector('.sc-total .stat-delta').textContent = data.stats.deltas.total;
+          document.querySelector('.sc-offers .stat-delta').textContent = data.stats.deltas.offers;
+          document.querySelector('.sc-onboarding .stat-delta').textContent = data.stats.deltas.onboarding;
+        }
+
+        // Update subtitle
+        const subtitle = document.getElementById('pageSubtitle');
+        if (subtitle) {
+          subtitle.textContent = `${data.stats.total} total candidates across all positions`;
+        }
+
         // Render stage chips
         renderStageChips(data.chips);
 
@@ -1109,13 +1120,13 @@
       </td>
       <td style="color:var(--text2);max-width:180px;">${c.job}</td>
       <td style="color:var(--text3);white-space:nowrap;">${c.appliedDate}</td>
-      <td style="font-weight:500;">${c.min_exp}-${c.max_exp} yrs</td>
+      <td style="font-weight:500;">${c.exp}</td>
       <td>${stageBadge(displayStage)}</td>
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button class="action-btn blue" onclick="event.stopPropagation(); location.href='/mss-career-portal/hr/candidate-profile?id=${c.id}'">Profile</button>
-          ${(canAction && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled') ? `<button class="action-btn green" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})">Schedule</button>` : ''}
+          ${(showActions && c.stage === 'Screened' && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled') ? `<button class="action-btn green" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})">Schedule</button>` : ''}
           ${canAction ? `<button class="action-btn red" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')">Reject</button>` : ''}
         </div>
       </td>`;

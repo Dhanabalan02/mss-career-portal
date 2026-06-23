@@ -1048,7 +1048,6 @@
           <option value="">All Status</option>
           <option>Active</option>
           <option>Draft</option>
-          <option>Closed</option>
         </select>
         <select class="filter-select" id="fDept" onchange="filterJobs()">
           <option value="">All Departments</option>
@@ -1083,11 +1082,6 @@
           <div class="stat-icon"><i class="ti ti-pencil"></i></div>
           <div class="stat-value">0</div>
           <div class="stat-label">Draft</div>
-        </div>
-        <div class="stat-card sc-closed" onclick="quickFilter('Closed')">
-          <div class="stat-icon"><i class="ti ti-archive"></i></div>
-          <div class="stat-value">0</div>
-          <div class="stat-label">Closed</div>
         </div>
       </div>
 
@@ -1195,14 +1189,12 @@
       const q = document.getElementById('searchInput').value.toLowerCase();
       const st = document.getElementById('fStatus').value;
       const dt = document.getElementById('fDept').value;
-      const lt = document.getElementById('fLoc').value;
       const tt = document.getElementById('fType').value;
 
       const filtered = JOBS.filter(j =>
-        (!q || j.title.toLowerCase().includes(q) || j.dept.toLowerCase().includes(q) || j.location.toLowerCase().includes(q)) &&
+        (!q || j.title.toLowerCase().includes(q) || j.dept.toLowerCase().includes(q)) &&
         (!st || (st === 'Active' && (j.status === 'Active' || j.status === 'Publish' || j.status === 'publish')) || j.status === st) &&
         (!dt || j.dept === dt) &&
-        (!lt || j.location === lt) &&
         (!tt || j.type === tt)
       );
       renderJobs(filtered);
@@ -1215,7 +1207,7 @@
 
     function clearFilters() {
       document.getElementById('searchInput').value = '';
-      ['fStatus', 'fDept', 'fLoc', 'fType'].forEach(id => document.getElementById(id).value = '');
+      ['fStatus', 'fDept', 'fType'].forEach(id => document.getElementById(id).value = '');
       filterJobs();
     }
 
@@ -1296,17 +1288,14 @@
       const allCount = JOBS.length;
       const activeCount = JOBS.filter(j => j.status === 'Active' || j.status === 'Publish' || j.status === 'publish').length;
       const draftCount = JOBS.filter(j => j.status === 'Draft' || j.status === 'draft').length;
-      const closedCount = JOBS.filter(j => j.status === 'Closed' || j.status === 'closed').length;
 
       const scAllVal = document.querySelector('.sc-all .stat-value');
       const scActiveVal = document.querySelector('.sc-active .stat-value');
       const scDraftVal = document.querySelector('.sc-draft .stat-value');
-      const scClosedVal = document.querySelector('.sc-closed .stat-value');
 
       if (scAllVal) scAllVal.textContent = allCount;
       if (scActiveVal) scActiveVal.textContent = activeCount;
       if (scDraftVal) scDraftVal.textContent = draftCount;
-      if (scClosedVal) scClosedVal.textContent = closedCount;
     }
 
     /* ── INIT ────────────────────────────────────────────────────── */

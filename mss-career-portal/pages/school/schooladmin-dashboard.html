@@ -915,7 +915,7 @@
     <div class="page-header">
       <div>
         <div class="page-title">Dashboard</div>
-        <div class="page-subtitle">Welcome back, Sunita — here's what's happening at your school today.</div>
+        <div class="page-subtitle">Welcome back — here's what's happening at your school today.</div>
       </div>
       <div class="header-actions">
         <div class="date-badge">
@@ -1219,18 +1219,22 @@
       for (let d = 1; d <= daysInMonth; d++) {
         const el = document.createElement('div');
         el.className = 'cal-day';
-        el.textContent = d;
 
         const key = `${calYear}-${calMonth + 1}-${d}`;
+        const isToday = d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear();
 
-        if (d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear()) {
+        if (isToday) {
           el.classList.add('today');
         }
 
         if (interviewDates[key]) {
+          const dayEvents = interviewDates[key] || [];
+          const evText = dayEvents.length === 1 ? dayEvents[0].name.split(' ')[0] : dayEvents.length + ' Interviews';
           el.classList.add('has-interview');
+          el.innerHTML = `<span style="font-weight:${isToday ? '700' : '500'};">${d}</span><div style="font-size:9px; color:#F59E0B; margin-top:2px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; padding:0 2px; font-weight:600;">${evText}</div>`;
           el.addEventListener('click', () => showPopup(key, d));
         } else {
+          el.innerHTML = `<span style="font-weight:${isToday ? '700' : '500'};">${d}</span>`;
           el.addEventListener('click', () => hidePopup());
         }
 

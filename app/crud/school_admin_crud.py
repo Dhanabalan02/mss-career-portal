@@ -81,8 +81,6 @@ def _get_admin_job_filter(db: Session, admin_id: int):
     else:
         return JobPost.job_id == -1
 
-
-
 def get_school_dashboard(db: Session, admin_id: int) -> dict:
     job_filter = _get_admin_job_filter(db, admin_id)
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
@@ -192,16 +190,25 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .all()
     )
     interviewed_recent = set()
+    user_ids = []
     if recent_app_rows:
         rids = [a.job_applicant_id for a, _, _ in recent_app_rows]
+        user_ids = [u.user_id for _, u, _ in recent_app_rows]
         iv_result = db.query(JobInterviewSchedule.job_applicant_id).filter(
             JobInterviewSchedule.job_applicant_id.in_(rids)
         ).distinct().all()
         interviewed_recent = {r[0] for r in iv_result}
 
+    exps_map = {}
+    if user_ids:
+        exps = db.query(CandidateExperience).filter(CandidateExperience.user_id.in_(user_ids)).all()
+        for e in exps:
+            exps_map.setdefault(e.user_id, []).append(e)
+
     recent_applicants = []
     for ci, (app, user, job) in enumerate(recent_app_rows):
         stage = compute_stage(app, app.job_applicant_id in interviewed_recent)
+        exp_str = compute_exp_str(exps_map.get(user.user_id, []))
         recent_applicants.append({
             "id": app.job_applicant_id,
             "name": f"{user.first_name} {user.last_name}".strip(),
@@ -209,6 +216,7 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
             "email": user.email,
             "position": job.job_title or "",
             "applied_date": _format_date(app.created_at.date() if app.created_at else None),
+            "experience": exp_str,
             "stage": stage,
             "status": (app.applicant_job_status.value if app.applicant_job_status else ""),
             "color": INTERVIEW_COLORS[ci % len(INTERVIEW_COLORS)],
@@ -436,6 +444,7 @@ def get_school_offers(db: Session, admin_id: int) -> list:
             "offer_expiry_date": str(app.offer_expiry_date) if app.offer_expiry_date else "",
             "offer_remarks": app.offer_remarks or "",
             "offer_template": app.offer_template or "",
+            "offer_letter_doc": app.offer_letter_doc or "",
         })
     return out
 

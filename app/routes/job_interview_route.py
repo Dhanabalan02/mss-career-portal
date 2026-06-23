@@ -462,6 +462,11 @@ def submit_interview_remarks_route(
                 applicant.applicant_job_status = ApplicantJobStatus.REJECTED
             elif form_data.applicant_status == ApplicantStatus.HOLD:
                 applicant.applicant_job_status = ApplicantJobStatus.HOLD
+        
+        # Extract fields to avoid detached instance issues after commit
+        job_id_val = interview_schedule.job_id
+        applicant_user_id_val = applicant.user_id if applicant else None
+        
         db.commit()
         
         # Send Notifications
@@ -469,9 +474,9 @@ def submit_interview_remarks_route(
             from app.models import JobPost, Users
             from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
             
-            job = db.query(JobPost).filter(JobPost.job_id == interview_schedule.job_id).first()
-            if applicant and job:
-                candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
+            job = db.query(JobPost).filter(JobPost.job_id == job_id_val).first()
+            if applicant_user_id_val and job:
+                candidate = db.query(Users).filter(Users.user_id == applicant_user_id_val).first()
                 if candidate:
                     candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
                     status_str = form_data.applicant_status.value.lower() if hasattr(form_data.applicant_status, 'value') else str(form_data.applicant_status).lower()
@@ -488,12 +493,21 @@ def submit_interview_remarks_route(
                     )
                     
                     # 2. Notify School Admin
+                    if status_str == "selected":
+                        admin_title = "Offer Letter Request"
+                        admin_message = f"Candidate {candidate_name} has been selected for '{job.job_title}'. Please generate and issue an offer letter."
+                        admin_type = "offer_request"
+                    else:
+                        admin_title = "Application Status Update"
+                        admin_message = f"Application status for candidate {candidate_name} has been updated to {status_str}."
+                        admin_type = "status_update"
+                        
                     notify_school_admin(
                         db=db,
                         admin_id=job.job_posted_by,
-                        title="Application Status Update",
-                        message=f"Application status for candidate {candidate_name} has been updated to {status_str}.",
-                        notification_type="status_update",
+                        title=admin_title,
+                        message=admin_message,
+                        notification_type=admin_type,
                         sender_user_id=admin_id,
                         sender_type="hr"
                     )

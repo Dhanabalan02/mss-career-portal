@@ -229,7 +229,7 @@
       padding: 18px 20px;
       box-shadow: var(--shadow);
       cursor: pointer;
-      transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1);
+      transition: transform .2s cubic-bezier(.4, 0, .2, 1), box-shadow .2s cubic-bezier(.4, 0, .2, 1);
       position: relative;
       overflow: hidden;
     }
@@ -245,11 +245,25 @@
     }
 
     /* Color variants — top border */
-    .stat-card.c-total   { border-top-color: var(--accent); }
-    .stat-card.c-awaiting { border-top-color: var(--red); }
-    .stat-card.c-pending { border-top-color: var(--amber); }
-    .stat-card.c-sent    { border-top-color: var(--purple); }
-    .stat-card.c-accepted { border-top-color: var(--green); }
+    .stat-card.c-total {
+      border-top-color: var(--accent);
+    }
+
+    .stat-card.c-awaiting {
+      border-top-color: var(--red);
+    }
+
+    .stat-card.c-pending {
+      border-top-color: var(--amber);
+    }
+
+    .stat-card.c-sent {
+      border-top-color: var(--purple);
+    }
+
+    .stat-card.c-accepted {
+      border-top-color: var(--green);
+    }
 
     .stat-icon {
       width: 36px;
@@ -262,11 +276,30 @@
       margin-bottom: 12px;
     }
 
-    .stat-icon.blue   { background: var(--accent-bg);  color: var(--accent); }
-    .stat-icon.amber  { background: var(--amber-bg);   color: var(--amber); }
-    .stat-icon.purple { background: var(--purple-bg);  color: var(--purple); }
-    .stat-icon.green  { background: var(--green-bg);   color: var(--green); }
-    .stat-icon.red    { background: var(--red-bg);     color: var(--red); }
+    .stat-icon.blue {
+      background: var(--accent-bg);
+      color: var(--accent);
+    }
+
+    .stat-icon.amber {
+      background: var(--amber-bg);
+      color: var(--amber);
+    }
+
+    .stat-icon.purple {
+      background: var(--purple-bg);
+      color: var(--purple);
+    }
+
+    .stat-icon.green {
+      background: var(--green-bg);
+      color: var(--green);
+    }
+
+    .stat-icon.red {
+      background: var(--red-bg);
+      color: var(--red);
+    }
 
     .stat-value {
       font-size: 28px;
@@ -289,8 +322,13 @@
       margin-top: 4px;
     }
 
-    .stat-delta.up   { color: var(--green); }
-    .stat-delta.warn { color: var(--amber); }
+    .stat-delta.up {
+      color: var(--green);
+    }
+
+    .stat-delta.warn {
+      color: var(--amber);
+    }
 
     /* ── Toolbar ─────────────────────────────────────── */
     .toolbar {
@@ -1423,12 +1461,12 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       const q = document.getElementById('searchInput').value.toLowerCase();
       const statusCheck = document.getElementById('statusFilter').value;
       const roleCheck = document.getElementById('jobFilter').value;
-      
+
       let res = CANDIDATES.filter(c => {
         let match = true;
         if (q) match = match && (c.name.toLowerCase().includes(q) || (c.school && c.school.toLowerCase().includes(q)));
         if (statusCheck) {
-          if (statusCheck === 'pending' && !['pending','draft','awaiting'].includes(c.status)) match = false;
+          if (statusCheck === 'pending' && !['pending', 'draft', 'awaiting'].includes(c.status)) match = false;
           else if (statusCheck !== 'pending' && c.status !== statusCheck) match = false;
         }
         if (roleCheck) match = match && c.role === roleCheck;
@@ -1601,7 +1639,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         await loadCandidates();
         closeModal();
         showToast('<i class="ti ti-device-floppy" aria-hidden="true"></i> Offer saved for ' + candidateName);
-      } catch(e) {
+      } catch (e) {
         console.warn('API error', e);
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error saving offer', 'error');
       }
@@ -1631,7 +1669,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         await loadCandidates();
         closeModal();
         showToast('<i class="ti ti-rocket" aria-hidden="true"></i> Offer issued to ' + candidateName + ' via system!');
-      } catch(e) {
+      } catch (e) {
         console.warn('API error', e);
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error issuing offer', 'error');
       }
@@ -1681,7 +1719,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         if (!res.ok) throw new Error(res.status);
         await loadCandidates();
         showToast('Offer status updated to ' + newStatus);
-      } catch(e) {
+      } catch (e) {
         console.warn('API error', e);
         showToast('<i class="ti ti-alert-triangle" aria-hidden="true"></i> Error updating status', 'error');
       }
@@ -1772,24 +1810,117 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       downloadOffer(_viewCandidateId);
     }
 
-    /* ── Download (stub) ────────────────────────── */
+    /* ── Download ────────────────────────── */
+    /* ── Download ────────────────────────── */
     function downloadOffer(id) {
       const c = CANDIDATES.find(c => c.id === id);
-      showToast('<i class="ti ti-file-text" aria-hidden="true"></i> Downloading offer PDF for ' + c.name);
+      if (c && c.offer_letter_doc) {
+        showToast('<i class="ti ti-file-text" aria-hidden="true"></i> Downloading offer document for ' + c.name);
+
+        // Injecting standard PDF/Print styles into the HTML template
+        const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Offer Letter - ${c.name}</title>
+  <style>
+    /* Reset and Page Setup */
+    @page {
+      size: letter; /* Can be changed to 'A4' if preferred */
+      margin: 1in;  /* Standard 1-inch margins */
+    }
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #333333;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact; /* Ensures colors & backgrounds render */
+      print-color-adjust: exact;
+    }
+    
+    /* Layout & Formatting Constraints */
+    .offer-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* Typography Rules for PDFs */
+    h1, h2, h3, h4 {
+      color: #111111;
+      font-weight: 600;
+      margin-top: 0;
+    }
+    p {
+      margin-bottom: 1.2em;
+    }
+    
+    /* Avoid breaking elements (like signature blocks) across pages */
+    .no-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    
+    /* Automatically trigger print dialog if they open the HTML file */
+    @media print {
+      body { margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="offer-container">
+    ${c.offer_letter_doc}
+  </div>
+</body>
+</html>`;
+
+        // Create a blob from the formatted HTML string
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Offer_Letter_${c.name.replace(/\s+/g, '_')}.html`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } else {
+        showToast('No offer document available for ' + (c ? c.name : 'candidate'), 'error');
+      }
     }
 
     function exportOffers() {
       showToast('<i class="ti ti-download" aria-hidden="true"></i> Exporting offer records…');
     }
 
-    /* ── Toast ──────────────────────────────────── */
-    function showToast(msg, type = 'success') {
-      if (window.showToast) {
-        window.showToast(msg, type);
-      } else {
-        console.log(msg);
+    /* ── Fetch Jobs for Filter ──────────────────── */
+    async function fetchJobs() {
+      try {
+        const jobsRes = await fetch(`${API_BASE}/school/jobs`, {
+          headers: { Authorization: `Bearer ${_token()}` }
+        });
+        if (jobsRes.ok) {
+          const jobsData = await jobsRes.json();
+          const jobsArray = jobsData.jobs || jobsData; // Support both {jobs: [...]} and [...] 
+          const fJob = document.getElementById('fJob');
+          if (Array.isArray(jobsArray) && jobsArray.length > 0) {
+            fJob.innerHTML = '<option value="">All Job Posts</option>';
+            jobsArray.forEach(j => {
+              const o = document.createElement('option');
+              o.value = j.title || j.job_title;
+              o.textContent = j.title || j.job_title;
+              fJob.appendChild(o);
+            });
+          }
+        }
+      } catch (err) {
+        console.error(err);
       }
     }
+
+    /* ── Toast handled by portal-layout.js ── */
 
     /* ── Helpers ─────────────────────────────────── */
     function fmtDate(val) {
@@ -1821,19 +1952,20 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
     /* ── Load from API ──────────────────────────── */
     async function loadCandidates() {
       try {
-        const jobsRes = await fetch(`${API_BASE}/jobs/`, {
+        const jobsRes = await fetch(`${API_BASE}/school/jobs`, {
           headers: { Authorization: `Bearer ${_token()}` }
         });
         const fJob = document.getElementById('jobFilter');
         if (jobsRes.ok) {
           const jobsData = await jobsRes.json();
-          if (jobsData && jobsData.length > 0) {
+          const jobsArray = jobsData.jobs || jobsData; // Support both {jobs: [...]} and [...] 
+          if (Array.isArray(jobsArray) && jobsArray.length > 0) {
             fJob.innerHTML = '<option value="">All Positions</option>';
-            jobsData.forEach(j => { 
-              const o = document.createElement('option'); 
-              o.value = j.job_title; 
-              o.textContent = j.job_title; 
-              fJob.appendChild(o); 
+            jobsArray.forEach(j => {
+              const o = document.createElement('option');
+              o.value = j.title || j.job_title;
+              o.textContent = j.title || j.job_title;
+              fJob.appendChild(o);
             });
           } else {
             fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
@@ -1841,7 +1973,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         } else {
           fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
         }
-      } catch(e) {
+      } catch (e) {
         const fJob = document.getElementById('jobFilter');
         if (fJob && fJob.options.length <= 1) {
           fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
@@ -1854,30 +1986,31 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         });
         if (!response.ok) throw new Error('Failed to load offers');
         const json = await response.json();
-        
+
         CANDIDATES = json.candidates.map(c => {
-           return {
-             id: c.id,
-             name: c.name,
-             initials: c.initials,
-             av: c.av,
-             role: c.role,
-             dept: c.dept,
-             school: c.school,
-             exp: c.exp,
-             status: c.status,
-             updated: c.updated,
-             offerData: {
-               salary: c.offered_salary,
-               probation: c.probation_period,
-               joining: c.joining_date,
-               expiry: c.offer_expiry_date,
-               notes: c.offer_remarks,
-               template: c.offer_template
-             }
-           };
+          return {
+            id: c.id,
+            name: c.name,
+            initials: c.initials,
+            av: c.av,
+            role: c.role,
+            dept: c.dept,
+            school: c.school,
+            exp: c.exp,
+            status: c.status,
+            updated: c.updated,
+            offer_letter_doc: c.offer_letter_doc,
+            offerData: {
+              salary: c.offered_salary,
+              probation: c.probation_period,
+              joining: c.joining_date,
+              expiry: c.offer_expiry_date,
+              notes: c.offer_remarks,
+              template: c.offer_template
+            }
+          };
         });
-        
+
         data = [...CANDIDATES];
         recalcStats();
         applyFilters();

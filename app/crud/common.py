@@ -46,22 +46,20 @@ def parse_skills(skills_str: Optional[str]) -> List[str]:
 def compute_exp_str(experiences, meta_exp: Optional[str] = None) -> str:
     if meta_exp:
         return meta_exp
-    total_days = 0
-    today = date.today()
+    total_years = 0.0
     for exp in experiences:
-        if exp.start_date:
-            end = exp.end_date if exp.end_date else today
-            try:
-                total_days += (end - exp.start_date).days
-            except TypeError:
-                pass
-    yrs = total_days // 365
-    months = (total_days % 365) // 30
-    if yrs > 0:
-        return f"{yrs} Yrs" + (f" {months}m" if months else "")
-    elif months > 0:
-        return f"{months} Months"
-    return "Fresher"
+        if getattr(exp, "total_experience", None):
+            import re
+            match = re.search(r"[\d\.]+", exp.total_experience)
+            if match:
+                try:
+                    total_years += float(match.group())
+                except ValueError:
+                    pass
+                    
+    if total_years > 0:
+        return f"{round(total_years, 1)} yrs"
+    return "—"
 
 
 _STAGE_ENUM_TO_LABEL = {

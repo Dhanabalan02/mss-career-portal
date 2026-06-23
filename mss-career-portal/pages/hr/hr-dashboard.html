@@ -13,7 +13,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&display=swap"
     rel="stylesheet">
-    <link rel="stylesheet" href="portal-layout.css">
+  <link rel="stylesheet" href="portal-layout.css">
   <style>
     /* ─── RESET & BASE ─────────────────────────────────────────── */
     *,
@@ -513,7 +513,7 @@
       border-radius: 12px;
       padding: 18px 20px;
       cursor: pointer;
-      transition: transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1);
+      transition: transform .2s cubic-bezier(.4, 0, .2, 1), box-shadow .2s cubic-bezier(.4, 0, .2, 1);
       position: relative;
       overflow: hidden;
     }
@@ -1084,12 +1084,14 @@
     <div class="page-header">
       <div>
         <div class="page-title">Dashboard</div>
-        <div class="page-subtitle">Welcome back, Sarah &middot; Thursday, 15 May 2025</div>
+        <div class="page-subtitle" id="dashboard-date">Welcome back, Loading...</div>
       </div>
       <div class="header-actions">
-        <button class="btn" onclick="location.href='/mss-career-portal/hr/reports'"><i class="ti ti-chart-bar" aria-hidden="true"></i>
+        <button class="btn" onclick="location.href='/mss-career-portal/hr/reports'"><i class="ti ti-chart-bar"
+            aria-hidden="true"></i>
           Reports</button>
-        <button class="btn btn-primary" onclick="location.href='/mss-career-portal/hr/jobpost-create'">+ Post New Job</button>
+        <button class="btn btn-primary" onclick="location.href='/mss-career-portal/hr/jobpost-create'">+ Post New
+          Job</button>
       </div>
     </div>
 
@@ -1198,7 +1200,7 @@
     let curView = 'month'; // 'month', 'week', 'day'
     let selectedDate = new Date();
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    
+
     let allInterviews = [];
 
     // Fetch interviews globally
@@ -1206,36 +1208,36 @@
       fetch(JOBS_API_BASE + '/hr/interviews', {
         headers: { 'Authorization': 'Bearer ' + token }
       })
-      .then(res => res.json())
-      .then(data => {
-        allInterviews = data.interviews || [];
-        renderCal(); // re-render once we have data
-      })
-      .catch(err => console.error("Error fetching interviews for calendar", err));
+        .then(res => res.json())
+        .then(data => {
+          allInterviews = data.interviews || [];
+          renderCal(); // re-render once we have data
+        })
+        .catch(err => console.error("Error fetching interviews for calendar", err));
     }
 
     function renderCal() {
       const grid = document.getElementById('calGrid');
       grid.innerHTML = '';
-      
+
       if (curView === 'month') {
         document.getElementById('calTitle').textContent = `${monthNames[curMonth]} ${curYear}`;
         grid.style.display = 'grid';
         grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
         grid.style.flexDirection = '';
         grid.style.gap = '6px';
-        
+
         ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(d => {
           const el = document.createElement('div');
           el.className = 'cal-dayname';
           el.textContent = d;
           grid.appendChild(el);
         });
-        
+
         const firstDay = new Date(curYear, curMonth, 1).getDay();
         const daysInMonth = new Date(curYear, curMonth + 1, 0).getDate();
         const prevDays = new Date(curYear, curMonth, 0).getDate();
-        
+
         for (let i = firstDay - 1; i >= 0; i--) {
           const el = document.createElement('div');
           el.className = 'cal-day other-month';
@@ -1244,16 +1246,16 @@
         }
         for (let d = 1; d <= daysInMonth; d++) {
           const isToday = new Date().getDate() === d && new Date().getMonth() === curMonth && new Date().getFullYear() === curYear;
-          
+
           const dayEvents = allInterviews.filter(ev => {
             const evD = new Date(ev.date);
             return evD.getDate() === d && evD.getMonth() === curMonth && evD.getFullYear() === curYear;
           });
           const hasEv = dayEvents.length > 0;
-          
+
           const el = document.createElement('div');
           el.className = 'cal-day' + (isToday ? ' today' : '') + (hasEv ? ' has-event' : '');
-          
+
           if (hasEv) {
             const evText = dayEvents.length === 1 ? dayEvents[0].candidate.split(' ')[0] : dayEvents.length + ' Interviews';
             el.innerHTML = `<span style="font-weight:${isToday ? '700' : '500'};">${d}</span><div style="font-size:9px; color:var(--amber-mid); margin-top:2px; text-align:center; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; padding:0 2px; font-weight:600;">${evText}</div>`;
@@ -1268,62 +1270,62 @@
         startOfWeek.setDate(selectedDate.getDate() - selectedDate.getDay());
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
-        
+
         document.getElementById('calTitle').textContent = `${startOfWeek.getDate()} ${monthNames[startOfWeek.getMonth()]} - ${endOfWeek.getDate()} ${monthNames[endOfWeek.getMonth()]} ${startOfWeek.getFullYear()}`;
-        
+
         grid.style.display = 'flex';
         grid.style.flexDirection = 'column';
         grid.style.gap = '8px';
-        
-        for(let i=0; i<7; i++) {
+
+        for (let i = 0; i < 7; i++) {
           const d = new Date(startOfWeek);
           d.setDate(d.getDate() + i);
-          
+
           const dayEvents = allInterviews.filter(ev => {
             const evD = new Date(ev.date);
             return evD.getDate() === d.getDate() && evD.getMonth() === d.getMonth() && evD.getFullYear() === d.getFullYear();
           });
-          
+
           const row = document.createElement('div');
           row.style.display = 'flex';
           row.style.background = 'var(--bg1)';
           row.style.border = '1px solid var(--border)';
           row.style.borderRadius = 'var(--radius-sm)';
           row.style.padding = '10px';
-          
+
           const dateBox = document.createElement('div');
           dateBox.style.width = '60px';
           dateBox.style.textAlign = 'center';
           dateBox.style.borderRight = '1px solid var(--border)';
           dateBox.style.paddingRight = '10px';
           dateBox.style.marginRight = '10px';
-          dateBox.innerHTML = `<div style="font-size:12px;color:var(--text3)">${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]}</div><div style="font-size:18px;font-weight:600;color:var(--text1)">${d.getDate()}</div>`;
+          dateBox.innerHTML = `<div style="font-size:12px;color:var(--text3)">${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][d.getDay()]}</div><div style="font-size:18px;font-weight:600;color:var(--text1)">${d.getDate()}</div>`;
           row.appendChild(dateBox);
-          
+
           const evBox = document.createElement('div');
           evBox.style.flex = '1';
-          if(dayEvents.length === 0) {
-             evBox.innerHTML = '<div style="color:var(--text3);font-size:12px;margin-top:10px;">No interviews scheduled</div>';
+          if (dayEvents.length === 0) {
+            evBox.innerHTML = '<div style="color:var(--text3);font-size:12px;margin-top:10px;">No interviews scheduled</div>';
           } else {
-             evBox.innerHTML = dayEvents.map(ev => `<div style="background:var(--blue-light);color:var(--blue-dark);padding:6px 10px;border-radius:4px;margin-bottom:4px;font-size:12px;"><b>${ev.time}</b> &middot; ${ev.candidate} (${ev.position})</div>`).join('');
+            evBox.innerHTML = dayEvents.map(ev => `<div style="background:var(--blue-light);color:var(--blue-dark);padding:6px 10px;border-radius:4px;margin-bottom:4px;font-size:12px;"><b>${ev.time}</b> &middot; ${ev.candidate} (${ev.position})</div>`).join('');
           }
           row.appendChild(evBox);
           grid.appendChild(row);
         }
-        
+
       } else if (curView === 'day') {
         document.getElementById('calTitle').textContent = `${selectedDate.getDate()} ${monthNames[selectedDate.getMonth()]} ${selectedDate.getFullYear()}`;
-        
+
         grid.style.display = 'flex';
         grid.style.flexDirection = 'column';
         grid.style.gap = '8px';
-        
+
         const dayEvents = allInterviews.filter(ev => {
           const evD = new Date(ev.date);
           return evD.getDate() === selectedDate.getDate() && evD.getMonth() === selectedDate.getMonth() && evD.getFullYear() === selectedDate.getFullYear();
         });
-        
-        if(dayEvents.length === 0) {
+
+        if (dayEvents.length === 0) {
           grid.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3);">No interviews scheduled for this day.</div>';
         } else {
           grid.innerHTML = dayEvents.map(ev => `
@@ -1357,16 +1359,16 @@
       el.classList.add('active');
       curView = v;
       if (v === 'month') {
-         curMonth = selectedDate.getMonth();
-         curYear = selectedDate.getFullYear();
+        curMonth = selectedDate.getMonth();
+        curYear = selectedDate.getFullYear();
       }
       renderCal();
     }
 
     function showDayEvents(d, m, y) {
       const dayEvents = allInterviews.filter(ev => {
-         const evD = new Date(ev.date);
-         return evD.getDate() === d && evD.getMonth() === m && evD.getFullYear() === y;
+        const evD = new Date(ev.date);
+        return evD.getDate() === d && evD.getMonth() === m && evD.getFullYear() === y;
       });
       const htmlEvents = dayEvents.map(ev => `
         <div class="modal-event">
@@ -1385,95 +1387,95 @@
 
     /* ── DYNAMIC DATA FETCHING ────────────────────────────────────── */
     if (token) {
-        // 1. Fetch Stats & Funnel Data
-        fetch(JOBS_API_BASE + '/jobs/dashboard/stats', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
+      // 1. Fetch Stats & Funnel Data
+      fetch(JOBS_API_BASE + '/jobs/dashboard/stats', {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
         .then(res => {
-            if (!res.ok) throw new Error('Failed to load stats');
-            return res.json();
+          if (!res.ok) throw new Error('Failed to load stats');
+          return res.json();
         })
         .then(data => {
-            // Render Stats
-            const stats = [
-              { label: 'Active Jobs', value: data.active_jobs, icon: '<i class="ti ti-briefcase" aria-hidden="true"></i>', color: '#185FA5', bg: '#E6F1FB', url: '/mss-career-portal/hr/jobpost-list?status=active' },
-              { label: 'Total Applicants', value: data.total_applicants, icon: '<i class="ti ti-users" aria-hidden="true"></i>', color: '#3B6D11', bg: '#EAF3DE', url: '/mss-career-portal/hr/jobapplicants-list' },
-              { label: 'Scheduled Interviews', value: data.scheduled_interviews, icon: '<i class="ti ti-calendar" aria-hidden="true"></i>', color: '#993C1D', bg: '#FAECE7', url: '/mss-career-portal/hr/interviews' },
-              { label: 'MASSET Sync Pending', value: data.masset_sync_pending, icon: '<i class="ti ti-refresh" aria-hidden="true"></i>', color: '#0C447C', bg: '#B5D4F4', url: '/mss-career-portal/hr/masset-candidates' },
-              { label: 'Onboarded Candidates', value: data.onboarded_candidates, icon: '<i class="ti ti-school" aria-hidden="true"></i>', color: '#0F6E56', bg: '#9FE1CB', url: '/mss-career-portal/hr/masset-candidates?status=onboarded' },
-            ];
+          // Render Stats
+          const stats = [
+            { label: 'Active Jobs', value: data.active_jobs, icon: '<i class="ti ti-briefcase" aria-hidden="true"></i>', color: '#185FA5', bg: '#E6F1FB', url: '/mss-career-portal/hr/jobpost-list?status=active' },
+            { label: 'Total Applicants', value: data.total_applicants, icon: '<i class="ti ti-users" aria-hidden="true"></i>', color: '#3B6D11', bg: '#EAF3DE', url: '/mss-career-portal/hr/jobapplicants-list' },
+            { label: 'Scheduled Interviews', value: data.scheduled_interviews, icon: '<i class="ti ti-calendar" aria-hidden="true"></i>', color: '#993C1D', bg: '#FAECE7', url: '/mss-career-portal/hr/interviews' },
+            { label: 'MASSET Sync Pending', value: data.masset_sync_pending, icon: '<i class="ti ti-refresh" aria-hidden="true"></i>', color: '#0C447C', bg: '#B5D4F4', url: '/mss-career-portal/hr/masset-candidates' },
+            { label: 'Onboarded Candidates', value: data.onboarded_candidates, icon: '<i class="ti ti-school" aria-hidden="true"></i>', color: '#0F6E56', bg: '#9FE1CB', url: '/mss-career-portal/hr/masset-candidates?status=onboarded' },
+          ];
 
-            const sg = document.getElementById('statGrid');
-            sg.innerHTML = '';
-            stats.forEach(s => {
-              const d = document.createElement('div');
-              d.className = 'stat-card';
-              d.style.setProperty('--card-accent', s.color);
-              d.innerHTML = `
+          const sg = document.getElementById('statGrid');
+          sg.innerHTML = '';
+          stats.forEach(s => {
+            const d = document.createElement('div');
+            d.className = 'stat-card';
+            d.style.setProperty('--card-accent', s.color);
+            d.innerHTML = `
                 <div class="stat-icon" style="background:${s.bg};color:${s.color};">${s.icon}</div>
                 <div class="stat-value" style="color:${s.color};">${s.value}</div>
                 <div class="stat-label">${s.label}</div>`;
-              d.onclick = () => location.href = s.url;
-              sg.appendChild(d);
-            });
+            d.onclick = () => location.href = s.url;
+            sg.appendChild(d);
+          });
 
-            // Render Funnel
-            const funnelEl = document.getElementById('funnelChart');
-            funnelEl.innerHTML = '';
-            const maxVal = data.total_applicants || 1;
-            data.funnel.forEach(f => {
-              const pct = Math.round(f.count / maxVal * 100);
-              const row = document.createElement('div');
-              row.className = 'funnel-row';
-              row.innerHTML = `
+          // Render Funnel
+          const funnelEl = document.getElementById('funnelChart');
+          funnelEl.innerHTML = '';
+          const maxVal = data.total_applicants || 1;
+          data.funnel.forEach(f => {
+            const pct = Math.round(f.count / maxVal * 100);
+            const row = document.createElement('div');
+            row.className = 'funnel-row';
+            row.innerHTML = `
                 <div class="funnel-label">${f.stage}</div>
                 <div class="funnel-bar-bg">
                   <div class="funnel-bar-fill" data-fill style="background:${f.color}; width: 0%;" data-pct="${pct}">${f.count}</div>
                 </div>
                 <div class="funnel-pct">${pct}%</div>`;
-              funnelEl.appendChild(row);
-            });
-            
-            requestAnimationFrame(() => {
-              setTimeout(() => {
-                document.querySelectorAll('[data-fill]').forEach(el => {
-                  el.style.width = el.dataset.pct + '%';
-                });
-              }, 200);
-            });
+            funnelEl.appendChild(row);
+          });
+
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              document.querySelectorAll('[data-fill]').forEach(el => {
+                el.style.width = el.dataset.pct + '%';
+              });
+            }, 200);
+          });
         })
         .catch(err => console.error('Error loading stats:', err));
 
-        // 2. Fetch Recent Job Posts
-        fetch(JOBS_API_BASE + '/jobs/', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
+      // 2. Fetch Recent Job Posts
+      fetch(JOBS_API_BASE + '/jobs/', {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
         .then(res => {
-            if (!res.ok) throw new Error('Failed to load jobs');
-            return res.json();
+          if (!res.ok) throw new Error('Failed to load jobs');
+          return res.json();
         })
         .then(jobs => {
-            const jobTable = document.getElementById('jobTable');
-            jobTable.innerHTML = `<thead><tr>
+          const jobTable = document.getElementById('jobTable');
+          jobTable.innerHTML = `<thead><tr>
               <th>Job Title</th><th>Department</th><th>Location</th>
               <th style="text-align:center;">Vacancies</th><th>Status</th>
               <th>Published</th><th></th>
             </tr></thead>`;
-            const jBody = document.createElement('tbody');
-            
-            if (!jobs || jobs.length === 0) {
-                jBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No job posts created yet.</td></tr>';
-            } else {
-                jobs.slice(0, 5).forEach(j => {
-                  const tr = document.createElement('tr');
-                  const pubDate = j.start_date ? new Date(j.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
-                  const statusLabel = j.job_status === 'publish' ? 'Active' : (j.job_status === 'draft' ? 'Draft' : 'Closed');
-                  
-                  tr.innerHTML = `
+          const jBody = document.createElement('tbody');
+
+          if (!jobs || jobs.length === 0) {
+            jBody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">No job posts created yet.</td></tr>';
+          } else {
+            jobs.slice(0, 5).forEach(j => {
+              const tr = document.createElement('tr');
+              const pubDate = j.start_date ? new Date(j.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
+              const statusLabel = j.job_status === 'publish' ? 'Active' : (j.job_status === 'draft' ? 'Draft' : 'Closed');
+
+              tr.innerHTML = `
                     <td><div class="td-name">${j.job_title}</div></td>
                     <td class="td-muted">${j.department || '—'}</td>
                     <td>${j.school_name || 'Chetpet'}</td>
@@ -1481,38 +1483,38 @@
                     <td>${statusBadge(statusLabel)}</td>
                     <td class="td-muted">${pubDate}</td>
                     <td><a class="action-link" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.job_id}'">View</a></td>`;
-                  tr.onclick = () => location.href = '/mss-career-portal/hr/jobpost-details?id=' + j.job_id;
-                  jBody.appendChild(tr);
-                });
-            }
-            jobTable.appendChild(jBody);
+              tr.onclick = () => location.href = '/mss-career-portal/hr/jobpost-details?id=' + j.job_id;
+              jBody.appendChild(tr);
+            });
+          }
+          jobTable.appendChild(jBody);
         })
         .catch(err => console.error('Error loading jobs:', err));
 
-        // 3. Fetch Recent Applicants
-        fetch(JOBS_API_BASE + '/jobs/dashboard/recent-applicants', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        })
+      // 3. Fetch Recent Applicants
+      fetch(JOBS_API_BASE + '/jobs/dashboard/recent-applicants', {
+        headers: {
+          'Authorization': 'Bearer ' + token
+        }
+      })
         .then(res => {
-            if (!res.ok) throw new Error('Failed to load recent applicants');
-            return res.json();
+          if (!res.ok) throw new Error('Failed to load recent applicants');
+          return res.json();
         })
         .then(applicants => {
-            const appTable = document.getElementById('applicantTable');
-            appTable.innerHTML = `<thead><tr>
+          const appTable = document.getElementById('applicantTable');
+          appTable.innerHTML = `<thead><tr>
               <th>Candidate</th><th>Applied Job</th><th>Experience</th>
               <th>Stage</th><th>Interview Status</th><th></th>
             </tr></thead>`;
-            const aBody = document.createElement('tbody');
-            
-            if (!applicants || applicants.length === 0) {
-                aBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No applications received yet.</td></tr>';
-            } else {
-                applicants.forEach(c => {
-                  const tr = document.createElement('tr');
-                  tr.innerHTML = `
+          const aBody = document.createElement('tbody');
+
+          if (!applicants || applicants.length === 0) {
+            aBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No applications received yet.</td></tr>';
+          } else {
+            applicants.forEach(c => {
+              const tr = document.createElement('tr');
+              tr.innerHTML = `
                     <td>
                       <div class="td-flex">
                         <div class="avatar-sm" style="background:${c.color};">${c.initials}</div>
@@ -1524,14 +1526,35 @@
                     <td>${stageBadge(c.stage)}</td>
                     <td class="td-muted">${c.interviewStatus}</td>
                     <td><a class="action-link" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/candidate-profile?applicant_id=${c.job_applicant_id}'">Profile</a></td>`;
-                  tr.onclick = () => location.href = '/mss-career-portal/hr/candidate-profile?applicant_id=' + c.job_applicant_id;
-                  aBody.appendChild(tr);
-                });
-            }
-            appTable.appendChild(aBody);
+              tr.onclick = () => location.href = '/mss-career-portal/hr/candidate-profile?applicant_id=' + c.job_applicant_id;
+              aBody.appendChild(tr);
+            });
+          }
+          appTable.appendChild(aBody);
         })
         .catch(err => console.error('Error loading applicants:', err));
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const dateElement = document.getElementById("dashboard-date");
+
+      // Get the current date
+      const today = new Date();
+
+      // Format options to match "Thursday, 15 May 2025"
+      const options = {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      };
+
+      // Format the date based on user's locale (or 'en-GB' for the specific format)
+      const formattedDate = today.toLocaleDateString('en-GB', options);
+
+      // Update the HTML text
+      dateElement.textContent = `Welcome back, ${formattedDate}`;
+    });
 
     /* ── PENDING ACTIONS ─────────────────────────────────────────── */
     function loadPendingActions() {
@@ -1540,30 +1563,30 @@
           'Authorization': 'Bearer ' + token
         }
       })
-      .then(r => r.json())
-      .then(data => {
-        const pendingActions = [
-          { icon: '<i class="ti ti-clipboard-list" aria-hidden="true"></i>', iconBg: '#E6F1FB', title: 'Pre-Screen Review', desc: data.pre_screen_count + ' applications pending review', url: '/mss-career-portal/hr/jobapplicants-list', count: data.pre_screen_count, countBg: '#378ADD' },
-          { icon: '<i class="ti ti-calendar-event" aria-hidden="true"></i>', iconBg: '#FEF4E6', title: 'Upcoming Interviews', desc: data.interviews_count + ' interviews scheduled', url: '/mss-career-portal/hr/interviews', count: data.interviews_count, countBg: '#F59E0B' },
-          { icon: '<i class="ti ti-refresh" aria-hidden="true"></i>', iconBg: '#E8E8E8', title: 'MASSET Sync', desc: data.masset_sync_count + ' profiles need syncing', url: '/mss-career-portal/hr/masset-candidates', count: data.masset_sync_count, countBg: '#6B7280' }
-        ];
-        const pendingEl = document.getElementById('pendingList');
-        pendingEl.innerHTML = '';
-        pendingActions.forEach(a => {
-          const div = document.createElement('div');
-          div.className = 'pending-item';
-          div.innerHTML = `
+        .then(r => r.json())
+        .then(data => {
+          const pendingActions = [
+            { icon: '<i class="ti ti-clipboard-list" aria-hidden="true"></i>', iconBg: '#E6F1FB', title: 'Pre-Screen Review', desc: data.pre_screen_count + ' applications pending review', url: '/mss-career-portal/hr/jobapplicants-list', count: data.pre_screen_count, countBg: '#378ADD' },
+            { icon: '<i class="ti ti-calendar-event" aria-hidden="true"></i>', iconBg: '#FEF4E6', title: 'Upcoming Interviews', desc: data.interviews_count + ' interviews scheduled', url: '/mss-career-portal/hr/interviews', count: data.interviews_count, countBg: '#F59E0B' },
+            { icon: '<i class="ti ti-refresh" aria-hidden="true"></i>', iconBg: '#E8E8E8', title: 'MASSET Sync', desc: data.masset_sync_count + ' profiles need syncing', url: '/mss-career-portal/hr/masset-candidates', count: data.masset_sync_count, countBg: '#6B7280' }
+          ];
+          const pendingEl = document.getElementById('pendingList');
+          pendingEl.innerHTML = '';
+          pendingActions.forEach(a => {
+            const div = document.createElement('div');
+            div.className = 'pending-item';
+            div.innerHTML = `
         <div class="pending-icon" style="background:${a.iconBg};">${a.icon}</div>
         <div>
           <div class="pending-title">${a.title}</div>
           <div class="pending-desc">${a.desc}</div>
         </div>
         <div class="pending-count" style="background:${a.countBg};">${a.count}</div>`;
-          div.onclick = () => location.href = a.url;
-          pendingEl.appendChild(div);
-        });
-      })
-      .catch(console.error);
+            div.onclick = () => location.href = a.url;
+            pendingEl.appendChild(div);
+          });
+        })
+        .catch(console.error);
     }
     loadPendingActions();
   </script>

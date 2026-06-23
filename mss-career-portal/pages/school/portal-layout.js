@@ -524,6 +524,7 @@
     clearTimeout(showToast._t);
     showToast._t = setTimeout(() => toast.classList.remove('is-visible'), 2800);
   }
+  window.showToast = showToast;
 
   /* ── Avatar initials from email ───────────────────────────── */
   function updateAvatar() {

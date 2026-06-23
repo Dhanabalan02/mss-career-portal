@@ -25,8 +25,45 @@ def ats_pipeline(
     db: Session = Depends(get_db),
     admin_id: int = Depends(get_current_admin_id),
 ):
+    from datetime import datetime
     candidates = get_ats_candidates(db, admin_id)
-    return {"candidates": candidates}
+    
+    total_count = len(candidates)
+    unique_jobs_count = len(set(c.get("job_id") for c in candidates if c.get("job_id")))
+    
+    interviewing_count = sum(1 for c in candidates if c.get("stage") == "Interview")
+    interview_pct = round((interviewing_count / total_count * 100), 1) if total_count > 0 else 0
+    
+    offers_count = sum(1 for c in candidates if c.get("stage") in ["Offer", "Offer Accepted"])
+    accepted_count = sum(1 for c in candidates if c.get("stage") == "Offer Accepted")
+    
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+    onboarding_this_month = 0
+    for c in candidates:
+        if c.get("stage") == "Onboarding":
+            updated = c.get("updated_at")
+            if updated and updated.month == current_month and updated.year == current_year:
+                onboarding_this_month += 1
+                
+    # Remove updated_at from serialization just to keep response clean (optional, but good practice)
+    for c in candidates:
+        c.pop("updated_at", None)
+
+    stats = {
+        "total": total_count,
+        "interview": interviewing_count,
+        "offers": offers_count,
+        "onboarding": sum(1 for c in candidates if c.get("stage") == "Onboarding"),
+        "deltas": {
+            "total": f"Across {unique_jobs_count} position{'s' if unique_jobs_count != 1 else ''}",
+            "interview": f"{interview_pct}% of pipeline",
+            "offers": f"{accepted_count} accepted so far",
+            "onboarding": f"{onboarding_this_month} active this month"
+        }
+    }
+
+    return {"candidates": candidates, "stats": stats}
 
 
 class StageUpdateRequest(BaseModel):

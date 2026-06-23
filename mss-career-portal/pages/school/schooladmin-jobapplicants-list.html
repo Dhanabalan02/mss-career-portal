@@ -753,6 +753,9 @@ async function loadApplicants() {
     if (scOffersVal) scOffersVal.textContent = offersCount;
     if (scOnboardingVal) scOnboardingVal.textContent = onboardingCount;
     
+    const subtitleEl = document.querySelector('.page-subtitle');
+    if (subtitleEl) subtitleEl.textContent = `${totalCount} total candidate${totalCount !== 1 ? 's' : ''} across all positions`;
+    
     /* update stage counts */
     STAGE_CONFIG.forEach(sc => sc.count = 0);
     CANDIDATES.forEach(c => {
@@ -762,18 +765,19 @@ async function loadApplicants() {
     renderChips();
 
     /* fetch jobs for dropdown */
-    const jobsRes = await fetch(`${API_BASE}/jobs/`, {
+    const jobsRes = await fetch(`${API_BASE}/school/jobs`, {
       headers: { Authorization: `Bearer ${_token()}` }
     });
     const fJob = document.getElementById('fJob');
     if (jobsRes.ok) {
       const jobsData = await jobsRes.json();
-      if (jobsData && jobsData.length > 0) {
+      const jobsArray = jobsData.jobs || jobsData; // Support both {jobs: [...]} and [...] 
+      if (Array.isArray(jobsArray) && jobsArray.length > 0) {
         fJob.innerHTML = '<option value="">All Job Posts</option>';
-        jobsData.forEach(j => { 
+        jobsArray.forEach(j => { 
           const o = document.createElement('option'); 
-          o.value = j.job_title; 
-          o.textContent = j.job_title; 
+          o.value = j.title || j.job_title; 
+          o.textContent = j.title || j.job_title; 
           fJob.appendChild(o); 
         });
       } else {

@@ -1170,7 +1170,7 @@
 
     function renderOverviewTab() {
       // Bio
-      document.getElementById('summary-content').textContent = candidateData.metadata.bio || 'No professional summary provided.';
+      document.getElementById('summary-content').textContent = candidateData.metadata.about || 'No professional summary provided.';
 
       // Quick stats
       const statsEl = document.getElementById('overview-quick-stats');
@@ -1336,7 +1336,7 @@
             <div class="tl-item">
               <div class="tl-dot" style="background:#d1fae5;color:#16a34a;"><i class="ti ti-school"></i></div>
               <div class="tl-body">
-                <div class="tl-title">${edu.level} – ${edu.degree}</div>
+                <div class="tl-title">${edu.degree} – ${edu.specialization}</div>
                 <div class="tl-sub">${edu.institution} (${edu.university})</div>
                 <div class="tl-meta">Graduated: ${edu.end_year} · ${score}</div>
               </div>
@@ -1404,10 +1404,10 @@
       listEl.innerHTML = '';
 
       const nextBtn = document.getElementById('scheduleNextRoundBtn');
-      if (candidateData.stage === 'Rejected' || candidateData.stage === 'Onboarding') {
-        nextBtn.style.display = 'none';
-      } else {
+      if (candidateData.stage === 'Screened') {
         nextBtn.style.display = 'inline-flex';
+      } else {
+        nextBtn.style.display = 'none';
       }
 
       if (candidateData.interviews && candidateData.interviews.length) {

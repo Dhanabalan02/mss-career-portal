@@ -1577,7 +1577,8 @@
       data.forEach(iv => {
         const sc = iv.status === 'Completed' ? 'pill-completed' : iv.status === 'Cancelled' ? 'pill-cancelled' : 'pill-scheduled';
         const [abg, aclr] = avatarColor(iv.candidate);
-        const disableAttr = selectedCandidates.has(iv.candidate_id) ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : '';
+        const isActionDisabled = selectedCandidates.has(iv.candidate_id) || iv.status.toLowerCase() === 'cancelled' || iv.status.toLowerCase() === 'completed';
+        const disableAttr = isActionDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : '';
         tbody.innerHTML += `
       <tr>
         <td>
@@ -1644,9 +1645,9 @@
         return;
       }
 
-      // Convert to ISO string
-      const scheduledAt = new Date(`${date}T${startTime}:00`).toISOString();
-      const endTimeAt = new Date(`${date}T${endTime}:00`).toISOString();
+      // Format as YYYY-MM-DDTHH:MM:SS
+      const scheduledAt = `${date}T${startTime}:00`;
+      const endTimeAt = `${date}T${endTime}:00`;
 
       try {
         const response = await fetch(`${API_BASE}/job-interviews/${id}/reschedule`, {
