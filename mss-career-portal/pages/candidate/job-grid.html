@@ -1588,7 +1588,7 @@
         <script src="../../assets/js/shared-header.js?v=2"></script>
         <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
-        <script>
+<script>
             (function () {
                 var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : 'http://' + window.location.hostname + ':8000';
                 var allJobs = [];
@@ -1907,6 +1907,7 @@
                             return res.json();
                         })
                         .then(function(units) {
+                            var currentVal = select.value;
                             select.innerHTML = '<option value="">All Units</option>';
                             units.forEach(function(unit) {
                                 var option = document.createElement('option');
@@ -1914,6 +1915,10 @@
                                 option.textContent = unit.unit_name;
                                 select.appendChild(option);
                             });
+                            if (currentVal) {
+                                setAndAddOption('f-unit', currentVal);
+                                applyFiltersAndRender();
+                            }
                         })
                         .catch(function(err) {
                             console.error('Error fetching units:', err);
