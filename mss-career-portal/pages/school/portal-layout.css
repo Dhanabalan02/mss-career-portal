@@ -154,7 +154,7 @@ body>.sidebar:not(#portalSidebar) {
   font-family: var(--portal-font) !important;
   font-size: 17px !important;
   font-weight: 800 !important;
-  color: var(--portal-primary) !important;
+  color: #0A014F !important;
   letter-spacing: -.3px !important;
   white-space: nowrap !important;
   line-height: 1 !important;
@@ -252,7 +252,7 @@ body.dark-theme .portal-theme-toggle .portal-moon-icon {
   height: 36px !important;
   min-width: 36px !important;
   border-radius: 50% !important;
-  background: linear-gradient(135deg, var(--portal-primary) 0%, var(--portal-accent) 100%) !important;
+  background: linear-gradient(135deg, #0a014f, #14008a) !important;
   color: #FFFFFF !important;
   display: inline-flex !important;
   align-items: center !important;
