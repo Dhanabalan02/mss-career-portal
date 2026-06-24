@@ -521,4 +521,180 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         window.print();
       }, 250); /* small delay lets fonts render before the dialog opens */
     });
-  
+  <\/script>
+</body>
+
+</html>`;
+
+/* Open in a hidden iframe so the parent page is unaffected */
+const iframe = document.createElement('iframe');
+iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;border:none;';
+document.body.appendChild(iframe);
+
+iframe.onload = function () {
+/* iframe content fires its own window.print() via the script above.
+Clean up after the dialog closes (or after a safe timeout). */
+setTimeout(function () {
+document.body.removeChild(iframe);
+}, 60000); /* 60 s — enough time for the user to interact with the dialog */
+};
+
+const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+iframeDoc.open();
+iframeDoc.write(htmlContent);
+iframeDoc.close();
+
+} else {
+showToast('No offer document available for ' + (c ? c.name : 'candidate'), 'error');
+}
+}
+function exportOffers() {
+showToast('<i class="ti ti-download" aria-hidden="true"></i> Exporting offer records…');
+}
+
+/* ── Fetch Jobs for Filter ──────────────────── */
+async function fetchJobs() {
+try {
+const jobsRes = await fetch(`${API_BASE}/school/jobs`, {
+headers: { Authorization: `Bearer ${_token()}` }
+});
+if (jobsRes.ok) {
+const jobsData = await jobsRes.json();
+const jobsArray = jobsData.jobs || jobsData; // Support both {jobs: [...]} and [...]
+const fJob = document.getElementById('fJob');
+if (Array.isArray(jobsArray) && jobsArray.length > 0) {
+fJob.innerHTML = '<option value="">All Job Posts</option>';
+jobsArray.forEach(j => {
+const o = document.createElement('option');
+o.value = j.title || j.job_title;
+o.textContent = j.title || j.job_title;
+fJob.appendChild(o);
+});
+}
+}
+} catch (err) {
+console.error(err);
+}
+}
+
+/* ── Toast handled by portal-layout.js ── */
+
+/* ── Helpers ─────────────────────────────────── */
+function fmtDate(val) {
+if (!val) return '';
+const d = new Date(val);
+return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function personIcon() {
+return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+  <circle cx="12" cy="7" r="4" />
+</svg>`;
+}
+function briefcaseIcon() {
+return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+  <rect x="2" y="7" width="20" height="14" rx="2" />
+  <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+</svg>`;
+}
+function deptIcon() {
+return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+  <polyline points="9 22 9 12 15 12 15 22" />
+</svg>`;
+}
+function schoolIcon() {
+return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+  stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0">
+  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+  <path d="M6 12v5c3 3 9 3 12 0v-5" />
+</svg>`;
+}
+
+/* ── Close modal on overlay click ───────────── */
+document.getElementById('offerModal').addEventListener('click', function (e) {
+if (e.target === this) closeModal();
+});
+document.getElementById('viewOfferModal').addEventListener('click', function (e) {
+if (e.target === this) closeViewModal();
+});
+
+/* ── Load from API ──────────────────────────── */
+async function loadCandidates() {
+try {
+const jobsRes = await fetch(`${API_BASE}/school/jobs`, {
+headers: { Authorization: `Bearer ${_token()}` }
+});
+const fJob = document.getElementById('jobFilter');
+if (jobsRes.ok) {
+const jobsData = await jobsRes.json();
+const jobsArray = jobsData.jobs || jobsData; // Support both {jobs: [...]} and [...]
+if (Array.isArray(jobsArray) && jobsArray.length > 0) {
+fJob.innerHTML = '<option value="">All Positions</option>';
+jobsArray.forEach(j => {
+const o = document.createElement('option');
+o.value = j.title || j.job_title;
+o.textContent = j.title || j.job_title;
+fJob.appendChild(o);
+});
+} else {
+fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
+}
+} else {
+fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
+}
+} catch (e) {
+const fJob = document.getElementById('jobFilter');
+if (fJob && fJob.options.length <= 1) { fJob.innerHTML='<option value="" disabled selected>No Job posts</option>' ; } }
+  try { const response=await fetch(`${API_BASE}/school/offers`, { headers: { 'Authorization' : `Bearer ${_token()}` }
+  }); if (!response.ok) throw new Error('Failed to load offers'); const json=await response.json();
+  CANDIDATES=json.candidates.map(c=> {
+  return {
+  id: c.id,
+  name: c.name,
+  initials: c.initials,
+  av: c.av,
+  role: c.role,
+  dept: c.dept,
+  school: c.school,
+  exp: c.exp,
+  status: c.status,
+  updated: c.updated,
+  offer_letter_doc: c.offer_letter_doc,
+  offerData: {
+  salary: c.offered_salary,
+  probation: c.probation_period,
+  joining: c.joining_date,
+  expiry: c.offer_expiry_date,
+  notes: c.offer_remarks,
+  template: c.offer_template
+  }
+  };
+  });
+
+  data = [...CANDIDATES];
+  recalcStats();
+  applyFilters();
+  } catch (error) {
+  console.error('Error loading candidates:', error);
+  }
+  }
+
+  function initMinDates() {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  const minDateStr = `${yyyy}-${mm}-${dd}`;
+  const joiningInput = document.getElementById('offJoining');
+  if (joiningInput) joiningInput.min = minDateStr;
+  const expiryInput = document.getElementById('offExpiry');
+  if (expiryInput) expiryInput.min = minDateStr;
+  }
+
+  // Init
+  initMinDates();
+  loadCandidates();
