@@ -464,7 +464,7 @@
       border-top-color: var(--purple);
     }
 
-    .sc-onboarding {
+    .sc-onboarded {
       border-top-color: var(--warning);
     }
 
@@ -592,7 +592,7 @@
       background: var(--teal);
     }
 
-    .col-dot-onboarding {
+    .col-dot-onboarded {
       background: var(--warning);
     }
 
@@ -634,7 +634,7 @@
       color: var(--teal);
     }
 
-    .b-onboarding {
+    .b-onboarded {
       background: var(--warning-light);
       color: var(--warning);
     }
@@ -1715,7 +1715,7 @@
   <script src="portal-layout.js"></script>
   <script>
     /* ── Data ── */
-    const STAGES = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
+    const STAGES = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
 
     const STAGE_META = {
       'Applied': { dot: 'applied', badge: 'b-applied', border: '#2563eb', av: ['#dbeafe', '#1d4ed8'] },
@@ -1723,10 +1723,10 @@
       'Interview': { dot: 'interview', badge: 'b-interview', border: '#ea580c', av: ['#ffedd5', '#c2410c'] },
       'Offer': { dot: 'offer', badge: 'b-offer', border: '#7c3aed', av: ['#ede9fe', '#6d28d9'] },
       'Offer Accepted': { dot: 'accepted', badge: 'b-accepted', border: '#0d9488', av: ['#ccfbf1', '#0f766e'] },
-      'Onboarding': { dot: 'onboarding', badge: 'b-onboarding', border: '#d97706', av: ['#fef3c7', '#b45309'] },
+      'Onboarded': { dot: 'onboarded', badge: 'b-onboarded', border: '#d97706', av: ['#fef3c7', '#b45309'] },
     };
 
-    const API_BASE = window.AUTH_API_BASE || 'http://localhost:8000';
+    const API_BASE = window.AUTH_API_BASE;
     const _token = () => localStorage.getItem('access_token') || '';
 
     let candidates = [];
@@ -1736,8 +1736,8 @@
       'Screened': [{ t: 'Application Received', d: '5 days ago', s: 'done' }, { t: 'Resume Screened', d: '4 days ago', s: 'done' }, { t: 'Phone Screen', d: 'Scheduled', s: 'current' }, { t: 'Interview', d: 'Pending', s: 'pending' }],
       'Interview': [{ t: 'Application Received', d: '8 days ago', s: 'done' }, { t: 'Screened', d: '7 days ago', s: 'done' }, { t: 'Round 1 Interview', d: '3 days ago', s: 'done' }, { t: 'Technical Assessment', d: 'Ongoing', s: 'current' }, { t: 'Final Decision', d: 'Pending', s: 'pending' }],
       'Offer': [{ t: 'Applied & Screened', d: '12 days ago', s: 'done' }, { t: 'Interviews Cleared', d: '5 days ago', s: 'done' }, { t: 'Offer Sent', d: '2 days ago', s: 'done' }, { t: 'Awaiting Acceptance', d: 'Pending', s: 'current' }],
-      'Offer Accepted': [{ t: 'All Rounds Cleared', d: '15 days ago', s: 'done' }, { t: 'Offer Accepted', d: '3 days ago', s: 'done' }, { t: 'Onboarding Initiated', d: 'Tomorrow', s: 'current' }],
-      'Onboarding': [{ t: 'All Rounds Cleared', d: '20 days ago', s: 'done' }, { t: 'Offer Accepted', d: '10 days ago', s: 'done' }, { t: 'Onboarding Started', d: '3 days ago', s: 'done' }, { t: 'Joining Confirmed', d: 'Next week', s: 'current' }],
+      'Offer Accepted': [{ t: 'All Rounds Cleared', d: '15 days ago', s: 'done' }, { t: 'Offer Accepted', d: '3 days ago', s: 'done' }, { t: 'onboarded Initiated', d: 'Tomorrow', s: 'current' }],
+      'Onboarded': [{ t: 'All Rounds Cleared', d: '20 days ago', s: 'done' }, { t: 'Offer Accepted', d: '10 days ago', s: 'done' }, { t: 'onboarded Started', d: '3 days ago', s: 'done' }, { t: 'Joining Confirmed', d: 'Next week', s: 'current' }],
     };
 
     /* ── State ── */
@@ -1842,12 +1842,12 @@
       const applied = data.filter(c => c.stage === 'Applied').length;
       const interview = data.filter(c => c.stage === 'Interview').length;
       const offers = data.filter(c => c.stage === 'Offer' || c.stage === 'Offer Accepted').length;
-      const onboarding = data.filter(c => c.stage === 'Onboarding').length;
+      const onboarded = data.filter(c => c.stage === 'Onboarded').length;
 
       const deltaTotal = window.apiStats?.deltas?.total || '+3 this week';
       const deltaInterview = window.apiStats?.deltas?.interview || '+1 today';
       const deltaOffers = window.apiStats?.deltas?.offers || 'Offer + Accepted';
-      const deltaOnboarding = window.apiStats?.deltas?.onboarding || 'On track';
+      const deltaOnboarded = window.apiStats?.deltas?.onboarded || 'On track';
 
       grid.innerHTML = `
     <div class="stat-card sc-total" onclick="scrollToStage(null)">
@@ -1873,11 +1873,11 @@
       <div class="stat-label">Offers Active</div>
       <div class="stat-delta">${deltaOffers}</div>
     </div>
-    <div class="stat-card sc-onboarding" onclick="scrollToStage('Onboarding')">
+    <div class="stat-card sc-onboarded" onclick="scrollToStage('Onboarded')">
       <div class="stat-icon" style="background:var(--warning-light);color:var(--warning)"><i class="ti ti-user-check" aria-hidden="true"></i></div>
-      <div class="stat-value">${onboarding}</div>
-      <div class="stat-label">Onboarding</div>
-      <div class="stat-delta">${deltaOnboarding}</div>
+      <div class="stat-value">${onboarded}</div>
+      <div class="stat-label">Onboarded</div>
+      <div class="stat-delta">${deltaOnboarded}</div>
     </div>`;
     }
 

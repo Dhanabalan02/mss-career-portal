@@ -960,7 +960,7 @@
         <div class="card">
           <div class="card-header">
             <span class="card-title"><i class="ti ti-file-text" aria-hidden="true"></i> Resume</span>
-            <button class="btn btn-default btn-sm" id="downloadResumeBtn" onclick="window.open('#')">⬇ Download</button>
+            <button class="btn btn-default btn-sm" id="downloadResumeBtn" onclick="window.open('#')">Download</button>
           </div>
           <div class="card-body">
             <div class="pdf-viewer" id="pdfViewerContainer">
@@ -1062,7 +1062,7 @@
     if (!localStorage.getItem('userRole')) localStorage.setItem('userRole', 'hr');
 
     /* ── API Configuration ── */
-    const JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : 'http://localhost:8000';
+    const JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : '';
     const token = localStorage.getItem('access_token');
 
     // Parse applicant ID
@@ -1233,6 +1233,10 @@
         const encodedResume = encodeURIComponent(resume);
         const downloadUrl = JOBS_API_BASE + '/apply/download/' + encodedResume;
 
+        const doView = () => {
+          window.open(downloadUrl + '?inline=true', '_blank');
+        };
+
         const doDownload = () => {
           const a = document.createElement('a');
           a.href = downloadUrl;
@@ -1250,10 +1254,10 @@
             <div class="icon"><i class="ti ti-file-text"></i></div>
             <div class="name">${resumeName}</div>
             <div class="meta">PDF Document</div>
-            <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="inlineDownloadBtn">Download Resume</button>
+            <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="inlineDownloadBtn">View Resume</button>
           </div>
         `;
-        document.getElementById('inlineDownloadBtn').onclick = doDownload;
+        document.getElementById('inlineDownloadBtn').onclick = doView;
       } else {
         downloadBtn.style.display = 'none';
         viewer.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:30px;">No resume document uploaded.</div>`;
@@ -1777,6 +1781,7 @@
       const dateVal = document.getElementById('reschDate').value;
       const timeVal = document.getElementById('reschstartTime').value;
       const endtimeVal = document.getElementById('reschendTime').value;
+      const interviewer = document.getElementById('reschInterviewer').value;
       const reason = document.getElementById('reschReason').value.trim();
 
       if (!dateVal || !timeVal || !endtimeVal) {
@@ -1784,7 +1789,8 @@
         return;
       }
 
-      const scheduledAtIso = `${dateVal}T${timeVal}:00 - ${endtimeVal}`;
+      const scheduledAtIso = `${dateVal}T${timeVal}:00`;
+      const endTimeIso = `${dateVal}T${endtimeVal}:00`;
       fetch(JOBS_API_BASE + `/job-interviews/${interviewId}/reschedule`, {
         method: 'PATCH',
         headers: {
@@ -1793,7 +1799,7 @@
         },
         body: JSON.stringify({
           scheduled_at: scheduledAtIso,
-          end_time_at: scheduledAtIso, // Default to same as start time for now
+          end_time_at: endTimeIso,
           reschedule_reason: reason,
           interviewer_name: interviewer
         })

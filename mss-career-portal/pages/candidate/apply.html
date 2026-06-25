@@ -861,23 +861,33 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=2"></script>
+    <script src="../../assets/js/shared-header.js?v=4"></script>
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
 
 
     <script>
-        var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : 'http://192.168.0.12:8000';
+        var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : '';
         var jobQuestions = [];
         var selectedResumeFile = null;
         var jobId = null;
         var token = localStorage.getItem('access_token');
 
+        function showToast(message, type = 'info') {
+            var mappedType = type;
+            if (type === 'danger') mappedType = 'error';
+            if (window.showMssToast) {
+                window.showMssToast(message, mappedType);
+            } else {
+                alert(message);
+            }
+        }
+
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
             jobId = urlParams.get('id');
             if (!jobId) {
-                alert('No job selected. Redirecting to job list.');
+                showToast('No job selected. Redirecting to job list.', 'error');
                 window.location.href = '/mss-career-portal/job-grid';
                 return;
             }
@@ -903,7 +913,7 @@
                         localStorage.removeItem('user_name');
                         localStorage.removeItem('user_email');
                         localStorage.removeItem('user_id');
-                        alert('Your session has expired. Please log in again.');
+                        showToast('Your session has expired. Please log in again.', 'error');
                         window.location.href = '/mss-career-portal/home';
                     }
                 })
@@ -914,7 +924,7 @@
                     localStorage.removeItem('user_name');
                     localStorage.removeItem('user_email');
                     localStorage.removeItem('user_id');
-                    alert('Your session has expired. Please log in again.');
+                    showToast('Your session has expired. Please log in again.', 'error');
                     window.location.href = '/mss-career-portal/home';
                 });
         });
@@ -932,7 +942,7 @@
                     }
                 });
             } else {
-                alert('Please log in to apply for this job.');
+                showToast('Please log in to apply for this job.', 'error');
                 window.location.href = '/mss-career-portal/job-grid';
             }
         }
@@ -981,7 +991,7 @@
                 })
                 .catch(err => {
                     console.error('Error fetching job details:', err);
-                    alert('Failed to load job details. Redirecting to job grid.');
+                    showToast('Failed to load job details. Redirecting to job grid.', 'error');
                     window.location.href = '/mss-career-portal/job-grid';
                 });
         }
@@ -1061,9 +1071,11 @@
             let valid = true;
             fields.forEach(selector => {
                 const field = $(selector)[0];
-                if (field && !field.checkValidity()) {
-                    field.reportValidity();
-                    valid = false;
+                if (field) {
+                    $(field).trigger('blur');
+                    if (!field.checkValidity() || $(field).hasClass('is-invalid')) {
+                        valid = false;
+                    }
                 }
             });
             return valid;
@@ -1099,7 +1111,7 @@
 
         function validateStep3() {
             if (!selectedResumeFile) {
-                alert('Please upload your resume to continue.');
+                showToast('Please upload your resume to continue.', 'error');
                 return false;
             }
             return true;
@@ -1165,7 +1177,7 @@
 
         function submitApplication() {
             if (!$('#certify1').is(':checked') || !$('#certify2').is(':checked')) {
-                alert('Please certify and authorize all statements to submit.');
+                showToast('Please certify and authorize all statements to submit.', 'error');
                 return;
             }
 
@@ -1213,6 +1225,8 @@
                     .then(result => {
                         const refNo = result.mss_app_no || ('MSS-APP-' + result.job_applicant_id);
                         $('#ref-number-display').text(refNo);
+                        
+                        showToast('Application Submitted Successfully!', 'success');
 
                         $('#apply-form').fadeOut(300, function () {
                             $('#form-steps').fadeOut(300);
@@ -1223,7 +1237,7 @@
                     })
                     .catch(err => {
                         console.error('Error submitting application:', err);
-                        alert(err.message || 'An error occurred while submitting your application. Please try again.');
+                        showToast(err.message || 'An error occurred while submitting your application. Please try again.', 'error');
                     })
                     .finally(() => {
                         submitBtn.html(originalBtnText).prop('disabled', false);
@@ -1235,7 +1249,7 @@
                 var formData = new FormData();
                 formData.append('file', selectedResumeFile);
                 
-                var uploadUrl = (typeof AUTH_API_BASE !== 'undefined' ? AUTH_API_BASE : 'http://127.0.0.1:8000') + '/auth/candidate/upload-resume';
+                var uploadUrl = (typeof AUTH_API_BASE !== 'undefined' ? AUTH_API_BASE : '') + '/auth/candidate/upload-resume';
                 
                 fetch(uploadUrl, {
                     method: 'POST',
@@ -1253,7 +1267,7 @@
                 })
                 .catch(err => {
                     console.error('Resume upload error:', err);
-                    alert('Error uploading resume: ' + err.message);
+                    showToast('Error uploading resume: ' + err.message, 'error');
                     submitBtn.html(originalBtnText).prop('disabled', false);
                 });
             } else {

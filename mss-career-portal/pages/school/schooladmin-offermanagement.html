@@ -13,7 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="portal-layout.css">
-  <script src="portal-layout.js" defer></script>
+  <script src="portal-layout.js"></script>
   <style>
     /* ── Base & Tokens ─────────────────────────────── */
     *,
@@ -1351,12 +1351,11 @@
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
-
   <script>
     /* ── Init sidebar ──────────────────────────── */
     if (typeof initSidebar === 'function') initSidebar('offer-management');
 
-    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+    const API_BASE = window.AUTH_API_BASE;
     const _token = () => localStorage.getItem('access_token') || '';
 
     /* ── Data ──────────────────────────────────── */
@@ -1505,7 +1504,10 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       // Reset fields
       ['offSalary', 'offProbation', 'offJoining', 'offExpiry', 'offNotes'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.value = '';
+        if (el) {
+          if (el._flatpickr) el._flatpickr.clear();
+          else el.value = '';
+        }
       });
 
       // Set min date to today's local date to prevent past dates selection
@@ -1514,10 +1516,18 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const dd = String(today.getDate()).padStart(2, '0');
       const minDateStr = `${yyyy}-${mm}-${dd}`;
+      
       const joiningInput = document.getElementById('offJoining');
-      if (joiningInput) joiningInput.min = minDateStr;
+      if (joiningInput) {
+        if (joiningInput._flatpickr) joiningInput._flatpickr.set('minDate', minDateStr);
+        else joiningInput.min = minDateStr;
+      }
+      
       const expiryInput = document.getElementById('offExpiry');
-      if (expiryInput) expiryInput.min = minDateStr;
+      if (expiryInput) {
+        if (expiryInput._flatpickr) expiryInput._flatpickr.set('minDate', minDateStr);
+        else expiryInput.min = minDateStr;
+      }
 
       document.querySelectorAll('.template-card').forEach(el => el.classList.remove('selected'));
       document.getElementById('previewPanel').classList.remove('visible');
@@ -2057,6 +2067,13 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         if (!response.ok) throw new Error('Failed to load offers');
         const json = await response.json();
 
+        const formatOfferDate = (dStr) => {
+          if (!dStr) return '—';
+          const d = new Date(dStr);
+          if (isNaN(d)) return dStr; // Fallback if backend sends '2 days ago'
+          return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        };
+
         CANDIDATES = json.candidates.map(c => {
           return {
             id: c.id,
@@ -2068,7 +2085,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
             school: c.school,
             exp: c.exp,
             status: c.status,
-            updated: c.updated,
+            updated: formatOfferDate(c.updated),
             offer_letter_doc: c.offer_letter_doc,
             offerData: {
               salary: c.offered_salary,

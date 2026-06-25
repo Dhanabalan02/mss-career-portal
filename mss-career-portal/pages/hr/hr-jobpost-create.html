@@ -13,7 +13,7 @@
     href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="portal-layout.css">
-  <script src="portal-layout.js" defer></script>
+  <script src="portal-layout.js?v=2"></script>
   <style>
     *,
     *::before,
@@ -1215,7 +1215,7 @@
           <div class="form-grid">
             <div class="form-group span2">
               <label>Job Title <span class="req">*</span></label>
-              <input type="text" id="jobTitle" placeholder="e.g. Senior Mathematics Teacher" oninput="syncPreview()">
+              <input type="text" id="jobTitle" placeholder="e.g. Senior Mathematics Teacher" oninput="this.value = this.value.replace(/[0-9]/g, ''); syncPreview()">
             </div>
             <div class="form-group">
               <label>Department <span class="req">*</span></label>
@@ -1868,7 +1868,12 @@
       const prevPostingDetailsDiv = document.getElementById('prevPostingDetails');
       if (prevPostingDetailsDiv) {
         const closeDate = document.getElementById('closeDate').value;
-        prevPostingDetailsDiv.textContent = closeDate ? `Closes on: ${closeDate}` : 'No closing date specified.';
+        let formattedDate = closeDate;
+        if (closeDate && closeDate.includes('-')) {
+          const parts = closeDate.split('-');
+          if (parts.length === 3) formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+        prevPostingDetailsDiv.textContent = closeDate ? `Closes on: ${formattedDate}` : 'No closing date specified.';
       }
 
       // Pre-screening questions list
@@ -2042,9 +2047,9 @@
 
       let displayCloseDate = closingDate;
       try {
-        const d = new Date(closingDate);
-        if (!isNaN(d.getTime())) {
-          displayCloseDate = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const parts = closingDate.split('-');
+        if (parts.length === 3) {
+          displayCloseDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
         }
       } catch (e) { }
 
@@ -2205,7 +2210,7 @@
       }
 
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE;
         const url = editJobId ? `${apiBase}/jobs/${editJobId}` : `${apiBase}/jobs/`;
         const method = editJobId ? 'PUT' : 'POST';
         const res = await fetch(url, {
@@ -2543,7 +2548,7 @@
       }
       
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
         const res = await fetch(`${apiBase}/jobs/${editJobId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -2621,7 +2626,7 @@
 
     async function fetchUnits() {
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
         const res = await fetch(apiBase + '/auth/units');
         if (!res.ok) throw new Error('Failed to fetch units');
         const units = await res.json();

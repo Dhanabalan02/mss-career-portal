@@ -1439,7 +1439,7 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js"></script>
+    <script src="../../assets/js/shared-header.js?v=4"></script>
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
   <script>
@@ -1636,7 +1636,7 @@
         const formData = new FormData();
         formData.append('file', file);
         
-        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+        const apiBase = window.AUTH_API_BASE;
         const res = await fetch(apiBase + '/auth/candidate/upload-resume', {
             method: 'POST',
             headers: {
@@ -1715,7 +1715,7 @@
       }
       
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+        const apiBase = window.AUTH_API_BASE;
         const res = await fetch(apiBase + '/auth/candidate/profile', {
           headers: { 'Authorization': 'Bearer ' + token }
         });
@@ -1855,7 +1855,7 @@
       // Sidebar details
       const initials = fullName ? fullName.charAt(0).toUpperCase() : '?';
       if (data.image_path) {
-        const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+        const apiBase = window.AUTH_API_BASE;
         document.getElementById('cpAvatarInner').innerHTML = `<img src="${apiBase}/${data.image_path}" alt="Profile Image" style="width:100%; height:100%; object-fit:cover;">`;
       } else {
         document.getElementById('cpAvatarInner').textContent = initials;
@@ -1893,7 +1893,7 @@
           formData.append('file', file);
           
           try {
-            const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+            const apiBase = window.AUTH_API_BASE;
             const res = await fetch(apiBase + '/auth/candidate/upload-profile-image', {
               method: 'POST',
               headers: { 'Authorization': 'Bearer ' + token },
@@ -2019,7 +2019,7 @@
         };
         
         try {
-          const apiBase = window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+          const apiBase = window.AUTH_API_BASE;
           const saveBtn = document.getElementById('saveProfileBtn');
           saveBtn.disabled = true;
           saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';

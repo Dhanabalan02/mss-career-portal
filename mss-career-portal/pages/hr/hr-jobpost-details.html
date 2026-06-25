@@ -12,7 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <script src="portal-layout.js" defer></script>
+  <script src="portal-layout.js"></script>
   <style>
     :root {
       --bg: #ffffff;
@@ -1606,7 +1606,7 @@
         };
 
         try {
-          const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+          const apiBase = window.AUTH_API_BASE;
           const res = await fetch(`${apiBase}/jobs/${jobId}`, {
             method: 'GET',
             headers: headers

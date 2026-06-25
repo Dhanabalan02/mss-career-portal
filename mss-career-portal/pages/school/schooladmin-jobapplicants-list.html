@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="portal-layout.css">
-<script src="portal-layout.js" defer></script>
+<script src="portal-layout.js"></script>
 <style>
 /* ════════════════════════════════════════
    DESIGN TOKENS
@@ -288,12 +288,31 @@ tbody tr:hover { background: var(--bg2); }
 /* ── Interview status ── */
 .interview-status { display: flex; align-items: center; gap: 5px; font-size: 13px; }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
 .status-scheduled { color: var(--amber); }
 .status-scheduled .status-dot { background: var(--amber); }
+
 .status-completed { color: var(--teal); }
 .status-completed .status-dot { background: var(--teal); }
+
 .status-pending   { color: var(--text3); }
 .status-pending   .status-dot { background: var(--text3); }
+
+/* New Rescheduled Styles */
+.status-rescheduled { color: var(--accent); } 
+.status-rescheduled .status-dot { 
+  background: var(--accent); 
+}
+
+.status-selected { color: var(--green); }
+.status-selected .status-dot { background: var(--green); }
+
+.status-rejected { color: var(--red); }
+.status-rejected .status-dot { background: var(--red); }
+
+.status-hold { color: var(--amber); }
+.status-hold .status-dot { background: var(--amber); }
+
 
 /* ── Action buttons ── */
 .action-btn {
@@ -549,7 +568,7 @@ tbody tr:hover { background: var(--bg2); }
 /* ── School admin nav (portal-layout.js) ── */
 localStorage.setItem('userRole', 'schoolAdmin');
 
-const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+const API_BASE = window.AUTH_API_BASE;
 const _token = () => localStorage.getItem('access_token') || '';
 
 /* ── Candidate data (merged from original source) ── */
@@ -601,11 +620,22 @@ function stageBadge(stage) {
 }
 
 function interviewStatusHtml(s) {
-  if (s === 'Scheduled') return `<span class="interview-status status-scheduled"><span class="status-dot"></span>Scheduled</span>`;
-  if (s === 'Completed') return `<span class="interview-status status-completed"><span class="status-dot"></span>Completed</span>`;
-  if (s === 'Pending')   return `<span class="interview-status status-pending"><span class="status-dot"></span>Pending</span>`;
-  return `<span style="color:var(--text3);">—</span>`;
+  if (!s) return `<span style="color:var(--text3);">—</span>`;
+  
+  const sLower = s.toLowerCase();
+  if (sLower === 'rescheduled' || sLower.includes('rescheduled')) {
+    return `<span class="interview-status status-rescheduled"><span class="status-dot"></span>${s}</span>`;
+  }
+  if (sLower === 'scheduled') return `<span class="interview-status status-scheduled"><span class="status-dot"></span>Scheduled</span>`;
+  if (sLower === 'completed') return `<span class="interview-status status-completed"><span class="status-dot"></span>Completed</span>`;
+  if (sLower === 'pending')   return `<span class="interview-status status-pending"><span class="status-dot"></span>Pending</span>`;
+  if (sLower === 'selected')  return `<span class="interview-status status-selected"><span class="status-dot"></span>Selected</span>`;
+  if (sLower === 'rejected')  return `<span class="interview-status status-rejected"><span class="status-dot"></span>Rejected</span>`;
+  if (sLower === 'hold' || sLower === 'on hold') return `<span class="interview-status status-hold"><span class="status-dot"></span>${s}</span>`;
+  
+  return `<span style="color:var(--text3);">${s}</span>`;
 }
+
 
 function avatarGradient(name) {
   const p = [
@@ -746,6 +776,7 @@ async function loadApplicants() {
       }
       expVal = expVal || c.total_experience || c.experience || c.exp;
       c.exp = expVal ? (String(expVal).toLowerCase().includes('year') ? expVal : `${expVal}`) : 'N/A';
+      c.interviewStatus = c.interview_status || c.interviewStatus || c.status;
       return c;
     }) : [];
     

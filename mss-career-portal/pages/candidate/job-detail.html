@@ -403,7 +403,7 @@
                                                 </li> -->
                                                 <li>
                                                     <i class="fas fa-eye"></i>
-                                                    <span class="twm-title">8160 Views</span>
+                                                    <span class="twm-title" id="jdSideViews">0 Views</span>
                                                 </li>
                                                 <!-- <li>
                                                     <i class="fas fa-file-signature"></i>
@@ -952,13 +952,13 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=2"></script>
+    <script src="../../assets/js/shared-header.js?v=4"></script>
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
     <!-- Job Detail API integration -->
     <script>
         (function () {
-            var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : 'http://192.168.0.12:8000';
+            var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : '';
 
             window.handleApplyClick = function (event, jobId) {
                 if (event) {
@@ -1155,6 +1155,9 @@
 
                 var sideQualification = document.getElementById('jdSideQualification');
                 if (sideQualification) sideQualification.textContent = job.education_qualification || '—';
+
+                var sideViews = document.getElementById('jdSideViews');
+                if (sideViews) sideViews.textContent = (job.views || 0) + ' Views';
 
                 // Dynamically update school logo
                 var logoEl = document.querySelector('.twm-mid-content .twm-media img');

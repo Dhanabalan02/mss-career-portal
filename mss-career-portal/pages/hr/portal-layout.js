@@ -4,12 +4,20 @@
 (function () {
   'use strict';
 
-  /* ── Auth guard ───────────────────────────────────────────── */
-  // HR & School Admin pages require a logged-in session. If the access
-  // token is missing — after logout, or a stale/bookmarked URL — bounce
-  // back to the public site before any portal UI is built. getRole() and
-  // currentPage() below are function declarations, so they're hoisted and
-  // safe to call this early in the script.
+  // Define the master base API URL dynamically depending on environment
+  var rawBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://127.0.0.1:8000'
+    : 'https://stagecareer.themadrassevasadan.org';
+
+  // CRITICAL: Strip any accidental trailing slashes so concatenations don't form double slashes (//)
+  var AUTH_API_BASE = rawBaseUrl.replace(/\/$/, '');
+
+  // CRITICAL: Bind explicitly to global window object so scripts outside this IIFE can read them immediately
+  window.AUTH_API_BASE = AUTH_API_BASE;
+  window.JOBS_API_BASE = AUTH_API_BASE;
+  window.API_BASE = AUTH_API_BASE;
+
+  /* -- Auth guard --------------------------------------------- */
   function getBaseUrl() {
     var url = new URL(window.location.href);
     var pathParts = url.pathname.split('/');
@@ -29,9 +37,7 @@
     return;
   }
 
-  var AUTH_API_BASE = 'http://127.0.0.1:8000';
-
-  /* ── Role config ──────────────────────────────────────────── */
+  /* -- Role config -------------------------------------------- */
   const PORTAL_ROLES = {
     candidate: {
       brandTitle: 'TMSS Career',
@@ -84,18 +90,17 @@
     }
   };
 
-  /* ── Notification data ────────────────────────────────────── */
-  // Test/demo notification data removed.
+  /* -- Notification data --------------------------------------- */
   const NOTIFICATIONS = {
     candidate: [],
     hr: [],
     schoolAdmin: []
   };
 
-  /* ── Internal state ───────────────────────────────────────── */
+  /* -- Internal state ------------------------------------------ */
   let notificationFilter = 'all';
 
-  /* ── Utilities ────────────────────────────────────────────── */
+  /* -- Utilities ----------------------------------------------- */
   function portalIcon(name) {
     return `<i class="ti ti-${name}" aria-hidden="true"></i>`;
   }
@@ -154,7 +159,7 @@
     document.head.appendChild(link);
   }
 
-  /* ── Theme ────────────────────────────────────────────────── */
+  /* -- Theme --------------------------------------------------- */
   function applyStoredTheme() {
     if (localStorage.getItem('portalTheme') === 'dark') document.body.classList.add('dark-theme');
   }
@@ -164,7 +169,7 @@
     localStorage.setItem('portalTheme', dark ? 'dark' : 'light');
   };
 
-  /* ── Header ───────────────────────────────────────────────── */
+  /* -- Header -------------------------------------------------- */
   function buildHeader() {
     if (qs('.portal-topbar')) return;
     const cfg = getConfig();
@@ -205,7 +210,7 @@
     document.body.prepend(el);
   }
 
-  /* ── Sidebar ──────────────────────────────────────────────── */
+  /* -- Sidebar -------------------------------------------------- */
   function buildSidebar() {
     if (qs('#portalSidebar')) { updateSidebar(); return; }
 
@@ -284,8 +289,6 @@
       }).join('');
   }
 
-
-
   function markActiveLink() {
     const page = currentPage();
     qsa('#portalSidebar nav a').forEach(link => {
@@ -295,6 +298,8 @@
       active ? link.setAttribute('aria-current', 'page') : link.removeAttribute('aria-current');
     });
   }
+
+  syncSidebarDockState();
 
   function syncSidebarDockState() {
     const sidebar = qs('#portalSidebar');
@@ -346,7 +351,7 @@
     if (trigger) trigger.setAttribute('aria-expanded', 'false');
   }
 
-  /* ── Notifications ────────────────────────────────────────── */
+  /* -- Notifications ------------------------------------------ */
   function buildNotificationsPanel() {
     if (qs('.portal-notifications')) { renderNotifications(); return; }
 
@@ -406,7 +411,6 @@
           </li>`).join('')
       : `<li class="portal-notification-empty">No notifications here.</li>`;
 
-    /* Update filter tabs */
     qsa('[data-notification-filter]').forEach(tab => {
       const active = tab.dataset.notificationFilter === notificationFilter;
       tab.classList.toggle('is-active', active);
@@ -428,15 +432,13 @@
 
   async function fetchNotifications() {
     try {
+      // Normalizing slash cleanly to avoid AUTH_API_BASE + //notifications/
       const res = await fetch(`${AUTH_API_BASE}/notifications/`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('access_token')}` }
       });
       if (res.ok) {
         const data = await res.json();
-        
-        // Deduplicate notifications by ID to fix duplicate display issue
         const uniqueData = Array.from(new Map(data.map(item => [item.id, item])).values());
-        
         NOTIFICATIONS[getRole()] = uniqueData;
         renderNotifications();
       }
@@ -489,7 +491,7 @@
     if (trigger) trigger.setAttribute('aria-expanded', String(open));
   };
 
-  /* ── Toast ────────────────────────────────────────────────── */
+  /* -- Toast --------------------------------------------------- */
   function showToast(msg, type = 'success') {
     let toast = qs('[data-portal-toast]');
     if (!toast) {
@@ -516,7 +518,7 @@
     showToast._t = setTimeout(() => toast.classList.remove('is-visible'), 2800);
   }
 
-  /* ── Avatar initials from email ───────────────────────────── */
+  /* -- Avatar initials from email ------------------------------ */
   function updateAvatar() {
     const role = getRole();
     const email = role === 'hr'
@@ -529,7 +531,7 @@
       : getConfig().avatarFallback;
   }
 
-  /* ── Logout ───────────────────────────────────────────────── */
+  /* -- Logout -------------------------------------------------- */
   function clearSession() {
     ['candidateRegistration', 'googleUser', 'hrLoggedIn', 'hrEmail', 'userRole', 'candidateEmail',
       'access_token', 'user_type', 'user_name', 'user_email', 'user_id']
@@ -549,7 +551,7 @@
       .finally(() => { clearSession(); goHome(); });
   }
 
-  /* ── Event wiring ─────────────────────────────────────────── */
+  /* -- Event wiring -------------------------------------------- */
   function bindEvents() {
     document.addEventListener('click', e => {
       if (e.target.closest('[data-theme-toggle]')) { toggleDarkTheme(); return; }
@@ -573,7 +575,6 @@
 
       if (e.target.closest('[data-logout]')) { logout(); return; }
 
-      /* Close notifications when clicking outside */
       const panel = qs('.portal-notifications');
       if (panel?.classList.contains('is-open') && !e.target.closest('.portal-notifications')) {
         toggleNotifications(false);
@@ -595,11 +596,9 @@
     window.addEventListener('resize', syncSidebarDockState);
   }
 
-  /* ── Exposed helper for existing pages ─────────────────────── */
+  /* -- Exposed helper for existing pages ----------------------- */
   window.updateNotificationBadge = updateBadge;
   window.portalIcon = portalIcon;
-  window.AUTH_API_BASE = AUTH_API_BASE;
-  window.API_BASE = AUTH_API_BASE;
   window.showToast = showToast;
 
   ensurePortalStylesheet();
@@ -626,20 +625,18 @@
     } catch (e) { console.warn('Sidebar counts error', e); }
   }
 
-  /* ── Flatpickr Integration ── */
+  /* -- Flatpickr Integration -- */
   function ensureFlatpickr(callback) {
     if (window.flatpickr) {
       if (callback) callback();
       return;
     }
 
-    // Inject Flatpickr CSS
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
     document.head.appendChild(link);
 
-    // Inject custom Flatpickr styling overrides for premium look
     const style = document.createElement('style');
     style.id = 'flatpickr-custom-theme';
     style.textContent = `
@@ -719,7 +716,6 @@
     `;
     document.head.appendChild(style);
 
-    // Inject Flatpickr JS
     const script = document.createElement('script');
     script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
     script.onload = () => {
@@ -738,11 +734,12 @@
       const maxDate = input.getAttribute('max');
       const defaultValue = input.value;
 
-      // Temporary change type to text to prevent native date picker overlay
       input.type = 'text';
 
       flatpickr(input, {
         dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd-m-Y',
         defaultDate: defaultValue || null,
         minDate: minDate || null,
         maxDate: maxDate || null,
@@ -773,7 +770,7 @@
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  /* ── Boot ─────────────────────────────────────────────────── */
+  /* -- Boot ---------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
     ensurePortalStylesheet();
     ensureTablerIcons();
@@ -793,4 +790,3 @@
   });
 
 })();
-

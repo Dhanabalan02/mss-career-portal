@@ -1463,7 +1463,6 @@
           jobTable.innerHTML = `<thead><tr>
               <th>Job Title</th><th>Department</th><th>Location</th>
               <th style="text-align:center;">Vacancies</th><th>Status</th>
-              <th>Published</th><th></th>
             </tr></thead>`;
           const jBody = document.createElement('tbody');
 
@@ -1472,7 +1471,6 @@
           } else {
             jobs.slice(0, 5).forEach(j => {
               const tr = document.createElement('tr');
-              const pubDate = j.start_date ? new Date(j.start_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '—';
               const statusLabel = j.job_status === 'publish' ? 'Active' : (j.job_status === 'draft' ? 'Draft' : 'Closed');
 
               tr.innerHTML = `
@@ -1481,7 +1479,6 @@
                     <td>${j.school_name || 'Chetpet'}</td>
                     <td style="text-align:center;font-weight:700;">${j.vacancy_count || 1}</td>
                     <td>${statusBadge(statusLabel)}</td>
-                    <td class="td-muted">${pubDate}</td>
                     <td><a class="action-link" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.job_id}'">View</a></td>`;
               tr.onclick = () => location.href = '/mss-career-portal/hr/jobpost-details?id=' + j.job_id;
               jBody.appendChild(tr);
