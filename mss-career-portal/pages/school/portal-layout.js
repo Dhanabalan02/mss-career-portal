@@ -752,6 +752,8 @@
 
       flatpickr(input, {
         dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd M Y',
         defaultDate: defaultValue || null,
         minDate: minDate || null,
         maxDate: maxDate || null,

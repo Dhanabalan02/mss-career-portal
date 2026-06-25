@@ -1,0 +1,22 @@
+[2026-06-25 11:48:40] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:48:41] INFO in database: Database engine created successfully.
+[2026-06-25 11:48:54] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:48:54] INFO in database: Database engine created successfully.
+[2026-06-25 11:49:03] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:49:03] INFO in database: Database engine created successfully.
+[2026-06-25 11:49:03] INFO in main: FastAPI application has started successfully.
+[2026-06-25 11:49:11] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-25 11:49:23] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1
+[2026-06-25 11:49:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:49:52] INFO in database: Database engine created successfully.
+[2026-06-25 11:49:52] INFO in main: FastAPI application has started successfully.
+[2026-06-25 11:52:20] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:52:20] INFO in database: Database engine created successfully.
+[2026-06-25 11:54:16] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:54:16] INFO in database: Database engine created successfully.
+[2026-06-25 11:54:16] INFO in main: FastAPI application has started successfully.
+[2026-06-25 11:54:16] INFO in auth_crud: Admin ID 4 logged out from IP: 127.0.0.1
+[2026-06-25 11:54:24] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 11:54:24] INFO in database: Database engine created successfully.
+[2026-06-25 11:54:31] INFO in main: FastAPI application has started successfully.
+[2026-06-25 11:54:42] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1

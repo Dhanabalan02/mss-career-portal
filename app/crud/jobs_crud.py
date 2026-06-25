@@ -49,6 +49,13 @@ def get_published_job_post_or_404(db: Session, job_id: int) -> JobPost:
     if not job_post:
         logger.warning(f"Published job post not found: {job_id}")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Job post not found.")
+        
+    if job_post.views is None:
+        job_post.views = 0
+    job_post.views += 1
+    db.commit()
+    db.refresh(job_post)
+    
     return job_post
 
 

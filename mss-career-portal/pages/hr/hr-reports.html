@@ -1227,7 +1227,7 @@
       window.location.replace('/mss-career-portal/hr/dashboard');
     }
 
-    const API_BASE = window.AUTH_API_BASE || 'http://localhost:8000';
+    const API_BASE = window.AUTH_API_BASE;
     const _token = () => localStorage.getItem('access_token') || '';
 
     let _reportData = null;
@@ -1901,7 +1901,7 @@
 
     async function fetchUnits() {
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE;
         const res = await fetch(apiBase + '/auth/units');
         if (!res.ok) throw new Error('Failed to fetch units');
         const units = await res.json();

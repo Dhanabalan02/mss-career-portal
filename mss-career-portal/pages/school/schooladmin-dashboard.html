@@ -841,9 +841,12 @@
     }
 
     .badge.gray {
-      background: var(--surface);
+      background: var(--surface-2);
       color: var(--text-secondary);
-      border: 1px solid var(--border);
+    }
+
+    .badge.gray .badge-dot {
+      background: var(--text-secondary);
     }
 
     /* ── Toast ── */
@@ -1062,7 +1065,7 @@
               <th>Applied Date</th>
               <th>Experience</th>
               <th>Stage</th>
-              <th>Status</th>
+              <th>Interview Status</th>
             </tr>
           </thead>
           <tbody id="recent-applicants-tbody">
@@ -1176,7 +1179,7 @@
         `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
     })();
 
-    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+    const API_BASE = window.AUTH_API_BASE;
     const _token = () => localStorage.getItem('access_token') || '';
 
     /* ── Calendar ── */
@@ -1367,8 +1370,39 @@
         const applicantsTbody = document.getElementById('recent-applicants-tbody');
         if (applicantsTbody) {
           if (Array.isArray(data.recent_applicants) && data.recent_applicants.length > 0) {
-            const getStageCls = st => ({'Applied':'gray','Screening':'blue','Interview':'orange','Offer':'purple','Onboarding':'green'}[st] || 'gray');
-            const getStatusCls = s => ({'Selected':'green','On Hold':'orange','Rejected':'red','Offer Sent':'purple'}[s] || 'gray');
+            const getStageCls = st => {
+              const map = {
+                'applied': 'blue',
+                'screened': 'cyan',
+                'screening': 'cyan',
+                'interview': 'orange',
+                'offer': 'purple',
+                'offer accepted': 'green',
+                'accepted': 'green',
+                'onboarding': 'green',
+                'rejected': 'red'
+              };
+              return map[(st || '').toLowerCase().trim()] || 'gray';
+            };
+            const getStatusCls = s => {
+              const map = {
+                'selected': 'green',
+                'completed': 'green',
+                'offer accepted': 'green',
+                'synced to masset': 'green',
+                'on hold': 'orange',
+                'hold': 'orange',
+                'scheduled': 'orange',
+                'next round': 'orange',
+                'rejected': 'red',
+                'cancelled': 'red',
+                'offer expired': 'red',
+                'offer sent': 'purple',
+                'rescheduled': 'purple',
+                'pending': 'gray'
+              };
+              return map[(s || '').toLowerCase().trim()] || 'gray';
+            };
             applicantsTbody.innerHTML = data.recent_applicants.map(a => `
               <tr onclick="window.location.href='/mss-career-portal/school/candidate-profile?id=${a.id}'">
                 <td>

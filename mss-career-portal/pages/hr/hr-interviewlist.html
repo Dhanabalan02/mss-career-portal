@@ -1538,10 +1538,10 @@
     <span id="toastMsg"></span>
   </div>
 
-
+  <script src="portal-layout.js"></script>
   <script>
 
-    const API_BASE = window.AUTH_API_BASE || 'http://localhost:8000';
+    const API_BASE = window.AUTH_API_BASE;
     const _token = () => localStorage.getItem('access_token') || '';
 
     /* ── Candidate data with positions (populated from API) ── */
@@ -1885,13 +1885,15 @@
 
     /* ── Toast ── */
     let toastTimer;
-    function showToast(msg, type = 'success') {
-      if (window.showToast) {
-        window.showToast(msg, type);
+    const _portalShowToast = window.showToast || null;
+    const showToast = function(msg, type = 'success') {
+      if (_portalShowToast) {
+        _portalShowToast(msg, type);
       } else {
         console.log(msg);
       }
-    }
+    };
+    window.showToast = showToast;
 
     /* ── Filters ── */
     function applyFilters() {
@@ -1901,7 +1903,7 @@
       const iv = document.getElementById('interviewerFilter').value;
       renderTable(interviews.filter(i =>
         (!s || i.candidate.toLowerCase().includes(s)) &&
-        (!r || i.round === r) &&
+        (!r || (i.round && i.round.startsWith(r))) &&
         (!st || i.status === st) &&
         (!iv || i.interviewer === iv)
       ));
@@ -2029,7 +2031,6 @@
 
   </script>
 
-  <script src="portal-layout.js"></script>
 </body>
 
 </html>

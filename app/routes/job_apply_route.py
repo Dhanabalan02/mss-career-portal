@@ -318,31 +318,53 @@ def my_applications_page():
     return serve_html_with_base("mss-career-portal/pages/candidate/dashboard.html", "/mss-career-portal/pages/candidate/")
 
 @router.get("/download/{filename:path}")
-def download_resume_route(filename: str):
+def download_resume_route(filename: str, inline: bool = False):
     import os
     from fastapi import HTTPException
     from fastapi.responses import FileResponse
+    import mimetypes
+    
+    print(f"DEBUG download: original filename = {repr(filename)}")
+    
+    from pathlib import Path
+
+    # Base directory of the project (parent of 'app')
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
     
     # Normalize path separators
     normalized_path = filename.replace("\\", "/")
+    print(f"DEBUG download: normalized_path = {repr(normalized_path)}")
     download_name = os.path.basename(normalized_path)
     
-    # Determine the target path
-    target_path = None
-    if os.path.exists(normalized_path):
-        target_path = normalized_path
-    else:
-        fallback_path = os.path.join("app", "uploads", "resumes", download_name)
-        if os.path.exists(fallback_path):
+    # Check absolute path from BASE_DIR
+    target_path = BASE_DIR / normalized_path
+    
+    if not target_path.exists():
+        # Fallback to app/uploads/resumes
+        fallback_path = BASE_DIR / "app" / "uploads" / "resumes" / download_name
+        if fallback_path.exists():
             target_path = fallback_path
+        else:
+            # Fallback to root uploads/resumes
+            fallback_path2 = BASE_DIR / "uploads" / "resumes" / download_name
+            if fallback_path2.exists():
+                target_path = fallback_path2
+            else:
+                target_path = None
             
+    print(f"DEBUG download: target_path = {repr(target_path)}")
     if not target_path:
         raise HTTPException(status_code=404, detail="File not found")
         
-    # By specifying filename, FastAPI automatically sets: 
-    # Content-Disposition: attachment; filename="your_file.pdf"
+    media_type, _ = mimetypes.guess_type(str(target_path))
+    if not media_type:
+        media_type = "application/octet-stream"
+
+    content_disposition_type = "inline" if inline else "attachment"
+
     return FileResponse(
         target_path, 
-        media_type="application/octet-stream", 
-        filename=download_name
+        media_type=media_type, 
+        filename=download_name,
+        content_disposition_type=content_disposition_type
     )

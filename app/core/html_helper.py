@@ -12,7 +12,7 @@ def serve_html_with_base(relative_file_path: str, base_href: str) -> HTMLRespons
     if not file_path.exists():
         return HTMLResponse(content=f"Page not found: {relative_file_path}", status_code=404)
 
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
         content = f.read()
 
     # Inject the <base> tag right after the <head> tag

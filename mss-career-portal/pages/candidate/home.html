@@ -1240,7 +1240,7 @@
                                             btn.innerHTML = 'Uploading... <i class="feather-loader fa-spin"></i>';
                                             btn.disabled = true;
                                             
-                                            var url = (typeof AUTH_API_BASE !== 'undefined' ? AUTH_API_BASE : 'http://127.0.0.1:8000') + '/auth/candidate/upload-resume';
+                                            var url = (typeof AUTH_API_BASE !== 'undefined' ? AUTH_API_BASE : '') + '/auth/candidate/upload-resume';
                                             
                                             fetch(url, {
                                                 method: 'POST',
@@ -1555,21 +1555,21 @@
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
                                                 <input name="username" type="text" required="" class="form-control"
-                                                    placeholder="Usearname*">
+                                                    placeholder="Username*">
                                             </div>
                                         </div>
 
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
-                                                <input name="email" type="text" class="form-control" required=""
-                                                    placeholder="Password*">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12">
-                                            <div class="form-group mb-3">
-                                                <input name="phone" type="text" class="form-control" required=""
+                                                <input name="email" type="email" id="candidate_email" class="form-control" required=""
                                                     placeholder="Email*">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-group mb-3">
+                                                <input name="password" type="password" class="form-control" required=""
+                                                    placeholder="Password*">
                                             </div>
                                         </div>
 
@@ -1607,21 +1607,21 @@
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
                                                 <input name="username" type="text" required="" class="form-control"
-                                                    placeholder="Usearname*">
+                                                    placeholder="Username*">
                                             </div>
                                         </div>
 
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
-                                                <input name="email" type="text" class="form-control" required=""
-                                                    placeholder="Password*">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12">
-                                            <div class="form-group mb-3">
-                                                <input name="phone" type="text" class="form-control" required=""
+                                                <input name="email" type="email" id="employer_email" class="form-control" required=""
                                                     placeholder="Email*">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-group mb-3">
+                                                <input name="password" type="password" class="form-control" required=""
+                                                    placeholder="Password*">
                                             </div>
                                         </div>
 
@@ -1716,7 +1716,7 @@
 
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
-                                                <input name="email" type="text" class="form-control" required=""
+                                                <input name="password" type="password" class="form-control" required=""
                                                     placeholder="Password*">
                                             </div>
                                         </div>
@@ -1749,13 +1749,13 @@
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
                                                 <input name="username" type="text" required="" class="form-control"
-                                                    placeholder="Usearname*">
+                                                    placeholder="Username*">
                                             </div>
                                         </div>
 
                                         <div class="col-lg-12">
                                             <div class="form-group mb-3">
-                                                <input name="email" type="text" class="form-control" required=""
+                                                <input name="password" type="password" class="form-control" required=""
                                                     placeholder="Password*">
                                             </div>
                                         </div>
@@ -1827,7 +1827,7 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=2"></script>
+    <script src="../../assets/js/shared-header.js?v=4"></script>
     <script>
         $(document).ready(function () {
             $('.mss-hero-carousel').owlCarousel({

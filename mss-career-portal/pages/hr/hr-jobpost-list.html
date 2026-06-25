@@ -1170,7 +1170,7 @@
       };
 
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE;
         const res = await fetch(`${apiBase}/jobs/`, {
           method: 'GET',
           headers: headers
@@ -1380,7 +1380,7 @@
         return;
       }
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE;
         const res = await fetch(`${apiBase}/jobs/${jobId}/clone?publish=${publish}`, {
           method: 'POST',
           headers: {
@@ -1420,7 +1420,7 @@
         return;
       }
       try {
-        const apiBase = window.AUTH_API_BASE || 'http://localhost:8000';
+        const apiBase = window.AUTH_API_BASE;
         const res = await fetch(`${apiBase}/jobs/${jobId}/close`, {
           method: 'PATCH',
           headers: {

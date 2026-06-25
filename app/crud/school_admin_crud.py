@@ -2,13 +2,21 @@ from datetime import date, datetime
 from typing import Optional
 from sqlalchemy.orm import Session
 
-from app.models.job_applicant_model import JobApplicant, ApplicantJobStatus, OfferAcceptanceStatus
-from app.models.job_post_model import JobPost, JobStatus
-from app.models.interview_schedule_model import JobInterviewSchedule, InterviewStatus
-from app.models.user_model import Users
-from app.models.candidate_metadata_model import CandidateMetadata
-from app.models.candidate_experience_model import CandidateExperience
-from app.models.admin_model import Admins
+from app.models import(
+    JobApplicant, 
+    ApplicantJobStatus, 
+    OfferAcceptanceStatus,
+    JobPost, 
+    JobStatus,
+    JobInterviewSchedule, 
+    InterviewStatus,
+    Users,
+    InterviewRemark,
+    CandidateMetadata,
+    CandidateExperience,
+    Admins
+)
+
 from app.crud.common import (
     get_initials, get_color, get_av_class, parse_skills,
     compute_exp_str, compute_stage, compute_offer_status,
@@ -277,7 +285,7 @@ def get_school_jobs(db: Session, admin_id: int) -> list:
     return out
 
 
-def get_school_job_detail(db: Session, admin_id: int, job_id: int) -> Optional[dict]:
+def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[dict]:
     job_filter = _get_admin_job_filter(db, admin_id)
     job = db.query(JobPost).filter(
         JobPost.job_id == job_id,
@@ -367,20 +375,33 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
         name = f"{user.first_name} {user.last_name}".strip()
         has_interview = app.job_applicant_id in interviewed_ids
         stage = compute_stage(app, has_interview)
-        exp_str = compute_exp_str(
-            exps_map.get(user.user_id, [])
-        )
+        exp_str = compute_exp_str(exps_map.get(user.user_id, []))
         color = get_color(idx)
+        
+        # --- NEW INTERVIEW STATUS LOGIC ---
         interview_status = "Pending"
         if has_interview:
             last_iv = (
                 db.query(JobInterviewSchedule)
                 .filter(JobInterviewSchedule.job_applicant_id == app.job_applicant_id)
-                .order_by(JobInterviewSchedule.scheduled_date.desc())
+                .order_by(JobInterviewSchedule.scheduled_date.desc()) # Grabbing latest interview
                 .first()
             )
-            if last_iv and last_iv.status:
-                interview_status = last_iv.status.value.capitalize()
+            if last_iv:
+                # Query the InterviewRemark table using the interview ID
+                remark = db.query(InterviewRemark).filter(InterviewRemark.job_interview_id == last_iv.job_interview_id).first()
+                
+                if remark and remark.applicant_status:
+                    if remark.applicant_status == "next_round":
+                        interview_status = "Next Round"
+                    else:
+                        interview_status = remark.applicant_status.capitalize()
+                elif last_iv.status == "completed":
+                    interview_status = "Completed"
+                elif last_iv.status:
+                    interview_status = last_iv.status.value.capitalize() if hasattr(last_iv.status, 'value') else str(last_iv.status).capitalize()
+        # ----------------------------------
+
         out.append({
             "id": app.job_applicant_id,
             "job_id": app.job_id,

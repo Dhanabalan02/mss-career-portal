@@ -1062,7 +1062,7 @@
     /* Tell portal-layout.js this is school admin session */
     if (!localStorage.getItem('userRole')) localStorage.setItem('userRole', 'schoolAdmin');
 
-    const API_BASE = window.API_BASE || window.AUTH_API_BASE || 'http://127.0.0.1:8000';
+    const API_BASE = window.AUTH_API_BASE;
     const _token = () => localStorage.getItem('access_token') || '';
     let candidateData = null;
 

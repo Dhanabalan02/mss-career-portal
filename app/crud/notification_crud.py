@@ -84,7 +84,8 @@ def create_notification(
         is_read=0,
         notification_type=notification_type,
         recipient_email=recipient_email,
-        recipient_mobile=recipient_mobile
+        recipient_mobile=recipient_mobile,
+        updated_at=datetime.datetime.utcnow()
     )
     db.add(db_notification)
     db.commit()

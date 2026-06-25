@@ -149,7 +149,17 @@
       ['candidateLoginModal', 'candidateRegisterModal'].forEach(function (modalId) {
         var modal = doc.getElementById(modalId);
         if (!modal) return;
-        modalHost.appendChild(document.importNode(modal, true));
+        var clonedModal = document.importNode(modal, true);
+
+        // Rewrite social buttons dynamically to use the correct API Base URL
+        clonedModal.querySelectorAll('.mss-social-btn').forEach(function (btn) {
+          var href = btn.getAttribute('href');
+          if (href && href.indexOf('http://localhost:8000') === 0) {
+            btn.setAttribute('href', href.replace('http://localhost:8000', AUTH_API_BASE));
+          }
+        });
+
+        modalHost.appendChild(clonedModal);
       });
       injectCriticalModalFix();
 
@@ -198,17 +208,21 @@
 
 
 // document.getElementById("loginBtn").addEventListener("click", loginUser);
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
 
-    const btn = e.target.closest("#loginBtn");
+  const btn = e.target.closest("#loginBtn");
 
-    if (btn) {
-        loginUser();
-    }
+  if (btn) {
+    loginUser();
+  }
 
 });
 
-var AUTH_API_BASE = 'http://127.0.0.1:8000';
+var AUTH_API_BASE = window.AUTH_API_BASE || (
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://127.0.0.1:8000'
+    : window.location.origin
+);
 
 // Roles that belong to internal portals get redirected straight there on
 // login since they have no place on the public candidate-facing site.
@@ -216,462 +230,462 @@ var HR_ROLES = ['hr_head', 'hr_admin', 'hr_team'];
 var SCHOOL_ADMIN_ROLE = 'school_admin';
 
 function getBaseUrl() {
-    var url = new URL(window.location.href);
-    var pathParts = url.pathname.split('/');
-    var pagesIndex = pathParts.indexOf('pages');
-    if (pagesIndex !== -1) {
-        return url.origin + pathParts.slice(0, pagesIndex).join('/') + '/';
-    }
-    var idx = pathParts.indexOf('mss-career-portal');
-    if (idx !== -1) {
-        return url.origin + pathParts.slice(0, idx + 1).join('/') + '/';
-    }
-    return url.origin + '/';
+  var url = new URL(window.location.href);
+  var pathParts = url.pathname.split('/');
+  var pagesIndex = pathParts.indexOf('pages');
+  if (pagesIndex !== -1) {
+    return url.origin + pathParts.slice(0, pagesIndex).join('/') + '/';
+  }
+  var idx = pathParts.indexOf('mss-career-portal');
+  if (idx !== -1) {
+    return url.origin + pathParts.slice(0, idx + 1).join('/') + '/';
+  }
+  return url.origin + '/';
 }
 
 function getDashboardUrl(userType) {
-    if (HR_ROLES.indexOf(userType) !== -1) {
-        return '/mss-career-portal/hr/dashboard';
-    }
-    if (userType === SCHOOL_ADMIN_ROLE) {
-        return '/mss-career-portal/school/dashboard';
-    }
-    return null;
+  if (HR_ROLES.indexOf(userType) !== -1) {
+    return '/mss-career-portal/hr/dashboard';
+  }
+  if (userType === SCHOOL_ADMIN_ROLE) {
+    return '/mss-career-portal/school/dashboard';
+  }
+  return null;
 }
 
 function getInitial(name, email) {
-    var source = (name || '').trim() || (email || '').trim();
-    return source ? source.charAt(0).toUpperCase() : '?';
+  var source = (name || '').trim() || (email || '').trim();
+  return source ? source.charAt(0).toUpperCase() : '?';
 }
 
 function buildAvatarHtml(initial) {
-    return '' +
-        '<div class="mss-profile-wrap" style="position:relative;">' +
-            '<button type="button" class="mss-profile-btn" onclick="toggleMssProfileMenu(event)" ' +
-                'style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#6366F1);' +
-                'color:#fff;border:none;font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.95rem;' +
-                'cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + initial + '</button>' +
-            '<div class="mss-profile-menu" id="mssProfileMenu" style="display:none;position:absolute;top:46px;right:0;' +
-                'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);min-width:160px;overflow:hidden;z-index:1100;">' +
-                '<a href="/mss-career-portal/profile" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;font-size:0.85rem;' +
-                    'color:#0F172A;text-decoration:none;">My Profile</a>' +
-                '<a href="javascript:;" onclick="mssLogout()" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;' +
-                    'font-size:0.85rem;color:#DC2626;text-decoration:none;border-top:1px solid #F1F5F9;">Logout</a>' +
-            '</div>' +
-        '</div>';
+  return '' +
+    '<div class="mss-profile-wrap" style="position:relative;">' +
+    '<button type="button" class="mss-profile-btn" onclick="toggleMssProfileMenu(event)" ' +
+    'style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#6366F1);' +
+    'color:#fff;border:none;font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.95rem;' +
+    'cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + initial + '</button>' +
+    '<div class="mss-profile-menu" id="mssProfileMenu" style="display:none;position:absolute;top:46px;right:0;' +
+    'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);min-width:160px;overflow:hidden;z-index:1100;">' +
+    '<a href="/mss-career-portal/profile" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;font-size:0.85rem;' +
+    'color:#0F172A;text-decoration:none;">My Profile</a>' +
+    '<a href="javascript:;" onclick="mssLogout()" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;' +
+    'font-size:0.85rem;color:#DC2626;text-decoration:none;border-top:1px solid #F1F5F9;">Logout</a>' +
+    '</div>' +
+    '</div>';
 }
 
 window.toggleMssProfileMenu = function (e) {
-    if (e) e.stopPropagation();
-    var menu = document.getElementById('mssProfileMenu');
-    if (!menu) return;
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  if (e) e.stopPropagation();
+  var menu = document.getElementById('mssProfileMenu');
+  if (!menu) return;
+  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 };
 
-window.showMssToast = function(message, type) {
-    var toastType = type || 'success';
-    var toast = document.createElement('div');
-    toast.className = 'mss-toast ' + toastType;
-    
-    var iconClass = 'feather-check-circle';
-    if (toastType === 'error') {
-        iconClass = 'feather-alert-circle';
-    } else if (toastType === 'warning') {
-        iconClass = 'feather-alert-triangle';
-    } else if (toastType === 'info') {
-        iconClass = 'feather-info';
-    }
-    
-    toast.innerHTML = '<i class="' + iconClass + '"></i><span>' + message + '</span>';
-    document.body.appendChild(toast);
-    if (window.feather) window.feather.replace();
+window.showMssToast = function (message, type) {
+  var toastType = type || 'success';
+  var toast = document.createElement('div');
+  toast.className = 'mss-toast ' + toastType;
 
-    requestAnimationFrame(function () {
-        toast.classList.add('show');
-    });
+  var iconClass = 'feather-check-circle';
+  if (toastType === 'error') {
+    iconClass = 'feather-alert-circle';
+  } else if (toastType === 'warning') {
+    iconClass = 'feather-alert-triangle';
+  } else if (toastType === 'info') {
+    iconClass = 'feather-info';
+  }
 
+  toast.innerHTML = '<i class="' + iconClass + '"></i><span>' + message + '</span>';
+  document.body.appendChild(toast);
+  if (window.feather) window.feather.replace();
+
+  requestAnimationFrame(function () {
+    toast.classList.add('show');
+  });
+
+  setTimeout(function () {
+    toast.classList.remove('show');
     setTimeout(function () {
-        toast.classList.remove('show');
-        setTimeout(function () {
-            toast.remove();
-        }, 250);
-    }, 3000);
+      toast.remove();
+    }, 250);
+  }, 3000);
 };
 
 window.mssNotifications = [];
 
 function buildNotificationBellHtml() {
-    return '' +
-        '<div class="mss-notification-wrap" style="position:relative; margin-right: 12px; display: flex; align-items: center;">' +
-            '<button type="button" class="mss-notification-btn" onclick="toggleMssNotificationMenu(event)" ' +
-                'style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);' +
-                'color:#94A3B8;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;' +
-                'cursor:pointer;flex-shrink:0;position:relative;transition:all 0.2s;" ' +
-                'onmouseover="this.style.color=\'#F8FAFC\';this.style.borderColor=\'rgba(255,255,255,0.25)\';this.style.background=\'rgba(255,255,255,0.1)\'" ' +
-                'onmouseout="this.style.color=\'#94A3B8\';this.style.borderColor=\'rgba(255,255,255,0.1)\';this.style.background=\'rgba(255,255,255,0.06)\'">' +
-                '<i class="feather-bell" style="font-size:1.1rem;"></i>' +
-                '<span class="mss-notification-badge" id="mssNotificationBadge" style="display:none;position:absolute;top:-2px;right:-2px;' +
-                    'background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
-                    'display:flex;align-items:center;justify-content:center;border:2px solid #0F172A;line-height:1;">0</span>' +
-            '</button>' +
-            '<div class="mss-notification-dropdown" id="mssNotificationDropdown" style="display:none;position:absolute;top:46px;right:0;' +
-                'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);width:320px;z-index:1100;overflow:hidden;">' +
-                '<div style="padding:12px 16px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center;">' +
-                    '<span style="font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.9rem;color:#0F172A;">Notifications</span>' +
-                    '<button onclick="mssMarkAllRead(event)" style="background:none;border:none;color:#3B82F6;font-family:\'Rubik\',sans-serif;' +
-                        'font-size:0.75rem;font-weight:600;cursor:pointer;padding:0;">Mark all read</button>' +
-                '</div>' +
-                '<div id="mssNotificationList" style="max-height:280px;overflow-y:auto;font-family:\'Rubik\',sans-serif;font-size:0.82rem;color:#475569;">' +
-                    '<div style="padding:20px;text-align:center;color:#94A3B8;">Loading...</div>' +
-                '</div>' +
-            '</div>' +
-        '</div>';
+  return '' +
+    '<div class="mss-notification-wrap" style="position:relative; margin-right: 12px; display: flex; align-items: center;">' +
+    '<button type="button" class="mss-notification-btn" onclick="toggleMssNotificationMenu(event)" ' +
+    'style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);' +
+    'color:#94A3B8;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;' +
+    'cursor:pointer;flex-shrink:0;position:relative;transition:all 0.2s;" ' +
+    'onmouseover="this.style.color=\'#F8FAFC\';this.style.borderColor=\'rgba(255,255,255,0.25)\';this.style.background=\'rgba(255,255,255,0.1)\'" ' +
+    'onmouseout="this.style.color=\'#94A3B8\';this.style.borderColor=\'rgba(255,255,255,0.1)\';this.style.background=\'rgba(255,255,255,0.06)\'">' +
+    '<i class="feather-bell" style="font-size:1.1rem;"></i>' +
+    '<span class="mss-notification-badge" id="mssNotificationBadge" style="display:none;position:absolute;top:-2px;right:-2px;' +
+    'background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
+    'display:flex;align-items:center;justify-content:center;border:2px solid #0F172A;line-height:1;">0</span>' +
+    '</button>' +
+    '<div class="mss-notification-dropdown" id="mssNotificationDropdown" style="display:none;position:absolute;top:46px;right:0;' +
+    'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);width:320px;z-index:1100;overflow:hidden;">' +
+    '<div style="padding:12px 16px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center;">' +
+    '<span style="font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.9rem;color:#0F172A;">Notifications</span>' +
+    '<button onclick="mssMarkAllRead(event)" style="background:none;border:none;color:#3B82F6;font-family:\'Rubik\',sans-serif;' +
+    'font-size:0.75rem;font-weight:600;cursor:pointer;padding:0;">Mark all read</button>' +
+    '</div>' +
+    '<div id="mssNotificationList" style="max-height:280px;overflow-y:auto;font-family:\'Rubik\',sans-serif;font-size:0.82rem;color:#475569;">' +
+    '<div style="padding:20px;text-align:center;color:#94A3B8;">Loading...</div>' +
+    '</div>' +
+    '</div>' +
+    '</div>';
 }
 
 window.toggleMssNotificationMenu = function (e) {
-    if (e) e.stopPropagation();
-    var menu = document.getElementById('mssNotificationDropdown');
-    if (!menu) return;
-    
-    var profileMenu = document.getElementById('mssProfileMenu');
-    if (profileMenu) profileMenu.style.display = 'none';
-    
-    var isOpen = menu.style.display === 'block';
-    if (isOpen) {
-        menu.style.display = 'none';
-    } else {
-        menu.style.display = 'block';
-        fetchCandidateNotifications();
-    }
+  if (e) e.stopPropagation();
+  var menu = document.getElementById('mssNotificationDropdown');
+  if (!menu) return;
+
+  var profileMenu = document.getElementById('mssProfileMenu');
+  if (profileMenu) profileMenu.style.display = 'none';
+
+  var isOpen = menu.style.display === 'block';
+  if (isOpen) {
+    menu.style.display = 'none';
+  } else {
+    menu.style.display = 'block';
+    fetchCandidateNotifications();
+  }
 };
 
 async function fetchCandidateNotifications() {
-    var token = localStorage.getItem('access_token');
-    if (!token) return;
-    try {
-        var response = await fetch(AUTH_API_BASE + '/notifications/', {
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        });
-        if (response.ok) {
-            var data = await response.json();
-            window.mssNotifications = data;
-            renderCandidateNotifications();
-        }
-    } catch (e) {
-        console.warn('Failed to fetch candidate notifications', e);
+  var token = localStorage.getItem('access_token');
+  if (!token) return;
+  try {
+    var response = await fetch(AUTH_API_BASE + '/notifications/', {
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    if (response.ok) {
+      var data = await response.json();
+      window.mssNotifications = data;
+      renderCandidateNotifications();
     }
+  } catch (e) {
+    console.warn('Failed to fetch candidate notifications', e);
+  }
 }
 
 function renderCandidateNotifications() {
-    var listContainer = document.getElementById('mssNotificationList');
-    var badge = document.getElementById('mssNotificationBadge');
-    
-    var notes = window.mssNotifications || [];
-    var unreadCount = notes.filter(function (n) { return !n.read; }).length;
-    
-    if (badge) {
-        if (unreadCount > 0) {
-            badge.style.display = 'flex';
-            badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-        } else {
-            badge.style.display = 'none';
-        }
+  var listContainer = document.getElementById('mssNotificationList');
+  var badge = document.getElementById('mssNotificationBadge');
+
+  var notes = window.mssNotifications || [];
+  var unreadCount = notes.filter(function (n) { return !n.read; }).length;
+
+  if (badge) {
+    if (unreadCount > 0) {
+      badge.style.display = 'flex';
+      badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+    } else {
+      badge.style.display = 'none';
     }
-    
-    if (!listContainer) return;
-    
-    if (notes.length === 0) {
-        listContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#94A3B8;">No notifications.</div>';
-        return;
-    }
-    
-    var html = notes.map(function (n) {
-        var itemBg = n.read ? '#ffffff' : '#F8FAFC';
-        var titleColor = n.read ? '#64748B' : '#0F172A';
-        var fontWeight = n.read ? '500' : '700';
-        return '' +
-            '<div class="mss-notification-item" onclick="mssMarkSingleRead(event, ' + n.id + ')" ' +
-                'style="padding:12px 16px;border-bottom:1px solid #F1F5F9;cursor:pointer;transition:all 0.2s;' +
-                'background:' + itemBg + ';display:flex;flex-direction:column;gap:4px;" ' +
-                'onmouseover="this.style.background=\'#F1F5F9\'" ' +
-                'onmouseout="this.style.background=\'' + itemBg + '\'">' +
-                '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">' +
-                    '<span style="font-weight:' + fontWeight + ';color:' + titleColor + ';font-size:0.82rem;line-height:1.25;">' + n.title + '</span>' +
-                    '<span style="font-size:0.7rem;color:#94A3B8;white-space:nowrap;">' + n.time + '</span>' +
-                '</div>' +
-                '<span style="color:#64748B;font-size:0.78rem;line-height:1.4;">' + n.message + '</span>' +
-            '</div>';
-    }).join('');
-    
-    listContainer.innerHTML = html;
+  }
+
+  if (!listContainer) return;
+
+  if (notes.length === 0) {
+    listContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#94A3B8;">No notifications.</div>';
+    return;
+  }
+
+  var html = notes.map(function (n) {
+    var itemBg = n.read ? '#ffffff' : '#F8FAFC';
+    var titleColor = n.read ? '#64748B' : '#0F172A';
+    var fontWeight = n.read ? '500' : '700';
+    return '' +
+      '<div class="mss-notification-item" onclick="mssMarkSingleRead(event, ' + n.id + ')" ' +
+      'style="padding:12px 16px;border-bottom:1px solid #F1F5F9;cursor:pointer;transition:all 0.2s;' +
+      'background:' + itemBg + ';display:flex;flex-direction:column;gap:4px;" ' +
+      'onmouseover="this.style.background=\'#F1F5F9\'" ' +
+      'onmouseout="this.style.background=\'' + itemBg + '\'">' +
+      '<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;">' +
+      '<span style="font-weight:' + fontWeight + ';color:' + titleColor + ';font-size:0.82rem;line-height:1.25;">' + n.title + '</span>' +
+      '<span style="font-size:0.7rem;color:#94A3B8;white-space:nowrap;">' + n.time + '</span>' +
+      '</div>' +
+      '<span style="color:#64748B;font-size:0.78rem;line-height:1.4;">' + n.message + '</span>' +
+      '</div>';
+  }).join('');
+
+  listContainer.innerHTML = html;
 }
 
 window.mssMarkSingleRead = async function (e, id) {
-    if (e) e.stopPropagation();
-    var token = localStorage.getItem('access_token');
-    if (!token) return;
-    
-    var note = (window.mssNotifications || []).find(function (n) { return n.id === id; });
-    if (note && !note.read) {
-        note.read = true;
-        renderCandidateNotifications();
-    }
-    
-    try {
-        await fetch(AUTH_API_BASE + '/notifications/' + id + '/read', {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        });
-        fetchCandidateNotifications();
-    } catch (e) {
-        console.error('Error marking notification as read', e);
-    }
+  if (e) e.stopPropagation();
+  var token = localStorage.getItem('access_token');
+  if (!token) return;
+
+  var note = (window.mssNotifications || []).find(function (n) { return n.id === id; });
+  if (note && !note.read) {
+    note.read = true;
+    renderCandidateNotifications();
+  }
+
+  try {
+    await fetch(AUTH_API_BASE + '/notifications/' + id + '/read', {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    fetchCandidateNotifications();
+  } catch (e) {
+    console.error('Error marking notification as read', e);
+  }
 };
 
 window.mssMarkAllRead = async function (e) {
-    if (e) e.stopPropagation();
-    var token = localStorage.getItem('access_token');
-    if (!token) return;
-    
-    (window.mssNotifications || []).forEach(function (n) { n.read = true; });
-    renderCandidateNotifications();
-    
-    try {
-        await fetch(AUTH_API_BASE + '/notifications/mark-all-read', {
-            method: 'PUT',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        });
-        fetchCandidateNotifications();
-    } catch (e) {
-        console.error('Error marking all notifications as read', e);
-    }
+  if (e) e.stopPropagation();
+  var token = localStorage.getItem('access_token');
+  if (!token) return;
+
+  (window.mssNotifications || []).forEach(function (n) { n.read = true; });
+  renderCandidateNotifications();
+
+  try {
+    await fetch(AUTH_API_BASE + '/notifications/mark-all-read', {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    });
+    fetchCandidateNotifications();
+  } catch (e) {
+    console.error('Error marking all notifications as read', e);
+  }
 };
 
 document.addEventListener('click', function (e) {
-    var profileMenu = document.getElementById('mssProfileMenu');
-    if (profileMenu && profileMenu.style.display === 'block') {
-        if (!e.target.closest('.mss-profile-wrap')) profileMenu.style.display = 'none';
-    }
-    
-    var notifMenu = document.getElementById('mssNotificationDropdown');
-    if (notifMenu && notifMenu.style.display === 'block') {
-        if (!e.target.closest('.mss-notification-wrap')) notifMenu.style.display = 'none';
-    }
+  var profileMenu = document.getElementById('mssProfileMenu');
+  if (profileMenu && profileMenu.style.display === 'block') {
+    if (!e.target.closest('.mss-profile-wrap')) profileMenu.style.display = 'none';
+  }
+
+  var notifMenu = document.getElementById('mssNotificationDropdown');
+  if (notifMenu && notifMenu.style.display === 'block') {
+    if (!e.target.closest('.mss-notification-wrap')) notifMenu.style.display = 'none';
+  }
 });
 
 window.mssLogout = function () {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('user_type');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('user_email');
-    localStorage.removeItem('user_id');
-    window.location.reload();
+  localStorage.removeItem('access_token');
+  localStorage.removeItem('user_type');
+  localStorage.removeItem('user_name');
+  localStorage.removeItem('user_email');
+  localStorage.removeItem('user_id');
+  window.location.reload();
 };
 
 function applyAuthUI() {
-    var token = localStorage.getItem('access_token');
-    var userType = localStorage.getItem('user_type');
-    if (!token || userType !== 'candidate') return;
+  var token = localStorage.getItem('access_token');
+  var userType = localStorage.getItem('user_type');
+  if (!token || userType !== 'candidate') return;
 
-    var initial = getInitial(localStorage.getItem('user_name'), localStorage.getItem('user_email'));
-    var avatarHtml = buildAvatarHtml(initial);
+  var initial = getInitial(localStorage.getItem('user_name'), localStorage.getItem('user_email'));
+  var avatarHtml = buildAvatarHtml(initial);
 
-    document.querySelectorAll('#mss-header').forEach(function (header) {
-        var loginLinks = header.querySelectorAll('[data-bs-target="#candidateLoginModal"]');
-        var applyLinks = header.querySelectorAll('[data-bs-target="#candidateRegisterModal"]');
+  document.querySelectorAll('#mss-header').forEach(function (header) {
+    var loginLinks = header.querySelectorAll('[data-bs-target="#candidateLoginModal"]');
+    var applyLinks = header.querySelectorAll('[data-bs-target="#candidateRegisterModal"]');
 
-        loginLinks.forEach(function (loginLink, idx) {
-            var applyLink = applyLinks[idx];
-            var container = loginLink.parentElement;
-            if (!container) return;
+    loginLinks.forEach(function (loginLink, idx) {
+      var applyLink = applyLinks[idx];
+      var container = loginLink.parentElement;
+      if (!container) return;
 
-            loginLink.style.display = 'none';
-            if (applyLink) applyLink.style.display = 'none';
+      loginLink.style.display = 'none';
+      if (applyLink) applyLink.style.display = 'none';
 
-            if (!container.querySelector('.mss-notification-wrap')) {
-                var bellWrap = document.createElement('div');
-                bellWrap.innerHTML = buildNotificationBellHtml();
-                container.appendChild(bellWrap.firstChild);
-            }
+      if (!container.querySelector('.mss-notification-wrap')) {
+        var bellWrap = document.createElement('div');
+        bellWrap.innerHTML = buildNotificationBellHtml();
+        container.appendChild(bellWrap.firstChild);
+      }
 
-            if (!container.querySelector('.mss-profile-wrap')) {
-                var wrap = document.createElement('div');
-                wrap.innerHTML = avatarHtml;
-                container.appendChild(wrap.firstChild);
-            }
-        });
+      if (!container.querySelector('.mss-profile-wrap')) {
+        var wrap = document.createElement('div');
+        wrap.innerHTML = avatarHtml;
+        container.appendChild(wrap.firstChild);
+      }
     });
-    
-    if (window.feather) window.feather.replace();
-    
-    fetchCandidateNotifications();
-    
-    if (!window.mssNotificationInterval) {
-        window.mssNotificationInterval = setInterval(function () {
-            fetchCandidateNotifications();
-        }, 30000);
-    }
+  });
+
+  if (window.feather) window.feather.replace();
+
+  fetchCandidateNotifications();
+
+  if (!window.mssNotificationInterval) {
+    window.mssNotificationInterval = setInterval(function () {
+      fetchCandidateNotifications();
+    }, 30000);
+  }
 }
 
 
 async function loginUser() {
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("lp1").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("lp1").value;
 
 
 
-    if (!email || !password) {
-        alert("Please enter email and password");
-        return;
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      AUTH_API_BASE + "/auth/user/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    console.log("Login response:", result);
+
+    if (!response.ok) {
+      alert(result.message || result.detail || "Login Failed");
+      return;
     }
 
-    try {
-        const response = await fetch(
-            AUTH_API_BASE + "/auth/user/login",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    email,
-                    password
-                })
-            }
-        );
-
-        const result = await response.json();
-
-        console.log("Login response:", result);
-
-        if (!response.ok) {
-            alert(result.message || result.detail || "Login Failed");
-            return;
-        }
-
-        if (result.access_token) {
-            localStorage.setItem("access_token", result.access_token);
-            localStorage.setItem("user_type", result.user_type || "");
-            localStorage.setItem("user_name", result.name || "");
-            localStorage.setItem("user_email", email);
-            localStorage.setItem("user_id", result.user_id != null ? String(result.user_id) : "");
-        }
-
-        // HR and school-admin roles have no place on the public site —
-        // send them straight to their respective internal dashboards.
-        const dashboardUrl = getDashboardUrl(result.user_type);
-        if (dashboardUrl) {
-            window.location.href = dashboardUrl;
-            return;
-        }
-
-        // Candidate: stay on the current page, just close the login modal
-        // and swap it for the profile avatar.
-        const loginModalEl = document.getElementById('candidateLoginModal');
-        if (loginModalEl && typeof bootstrap !== 'undefined') {
-            const instance = bootstrap.Modal.getInstance(loginModalEl);
-            if (instance) instance.hide();
-        }
-
-        applyAuthUI();
-        alert("Login Successful");
-        window.dispatchEvent(new CustomEvent('candidate_login_success'));
-
-        // var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
-        // if (pendingJobId) {
-        //     sessionStorage.removeItem('pending_apply_job_id');
-        //     window.location.href = 'apply.html?id=' + encodeURIComponent(pendingJobId);
-        // }
-
-    } catch (error) {
-        console.error(error);
-        alert("Unable to connect to server");
+    if (result.access_token) {
+      localStorage.setItem("access_token", result.access_token);
+      localStorage.setItem("user_type", result.user_type || "");
+      localStorage.setItem("user_name", result.name || "");
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("user_id", result.user_id != null ? String(result.user_id) : "");
     }
+
+    // HR and school-admin roles have no place on the public site —
+    // send them straight to their respective internal dashboards.
+    const dashboardUrl = getDashboardUrl(result.user_type);
+    if (dashboardUrl) {
+      window.location.href = dashboardUrl;
+      return;
+    }
+
+    // Candidate: stay on the current page, just close the login modal
+    // and swap it for the profile avatar.
+    const loginModalEl = document.getElementById('candidateLoginModal');
+    if (loginModalEl && typeof bootstrap !== 'undefined') {
+      const instance = bootstrap.Modal.getInstance(loginModalEl);
+      if (instance) instance.hide();
+    }
+
+    applyAuthUI();
+    alert("Login Successful");
+    window.dispatchEvent(new CustomEvent('candidate_login_success'));
+
+    // var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
+    // if (pendingJobId) {
+    //     sessionStorage.removeItem('pending_apply_job_id');
+    //     window.location.href = 'apply.html?id=' + encodeURIComponent(pendingJobId);
+    // }
+
+  } catch (error) {
+    console.error(error);
+    alert("Unable to connect to server");
+  }
 }
 
 document.addEventListener("submit", function (e) {
-    var form = e.target;
-    if (!form || !form.closest || !form.closest("#candidateRegisterModal")) return;
-    e.preventDefault();
-    registerCandidate(form);
+  var form = e.target;
+  if (!form || !form.closest || !form.closest("#candidateRegisterModal")) return;
+  e.preventDefault();
+  registerCandidate(form);
 });
 
 async function registerCandidate(form) {
-    if (typeof form.reportValidity === "function" && !form.reportValidity()) return;
+  if (typeof form.reportValidity === "function" && !form.reportValidity()) return;
 
-    var data = new FormData(form);
-    var firstName = (data.get("firstname") || "").trim();
-    var lastName = (data.get("lastname") || "").trim();
-    var email = (data.get("email") || "").trim();
-    var mobile = (data.get("phone") || "").trim();
-    var password = data.get("password") || "";
+  var data = new FormData(form);
+  var firstName = (data.get("firstname") || "").trim();
+  var lastName = (data.get("lastname") || "").trim();
+  var email = (data.get("email") || "").trim();
+  var mobile = (data.get("phone") || "").trim();
+  var password = data.get("password") || "";
 
-    if (!firstName || !lastName || !email || !mobile || !password) {
-        alert("Please fill in all fields.");
-        return;
+  if (!firstName || !lastName || !email || !mobile || !password) {
+    alert("Please fill in all fields.");
+    return;
+  }
+
+  try {
+    const response = await fetch(AUTH_API_BASE + "/auth/candidate/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+        first_name: firstName,
+        last_name: lastName,
+        mobile: mobile,
+        password: password
+      })
+    });
+
+    const result = await response.json();
+    console.log("Register response:", result);
+
+    if (!response.ok) {
+      alert(result.message || result.detail || "Registration failed");
+      return;
     }
 
-    try {
-        const response = await fetch(AUTH_API_BASE + "/auth/candidate/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                email: email,
-                first_name: firstName,
-                last_name: lastName,
-                mobile: mobile,
-                password: password
-            })
-        });
-
-        const result = await response.json();
-        console.log("Register response:", result);
-
-        if (!response.ok) {
-            alert(result.message || result.detail || "Registration failed");
-            return;
-        }
-
-        if (result.access_token) {
-            localStorage.setItem("access_token", result.access_token);
-            localStorage.setItem("user_type", result.user_type || "candidate");
-            localStorage.setItem("user_name", result.name || (firstName + " " + lastName));
-            localStorage.setItem("user_email", email);
-            localStorage.setItem("user_id", result.user_id != null ? String(result.user_id) : "");
-        }
-
-        const modalEl = document.getElementById("candidateRegisterModal");
-        if (modalEl && typeof bootstrap !== "undefined") {
-            const instance = bootstrap.Modal.getInstance(modalEl);
-            if (instance) instance.hide();
-        }
-
-        form.reset();
-        applyAuthUI();
-        alert("Account created successfully!");
-        window.dispatchEvent(new CustomEvent('candidate_login_success'));
-
-        var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
-        if (pendingJobId) {
-            sessionStorage.removeItem('pending_apply_job_id');
-            window.location.href = '/mss-career-portal/apply?id=' + encodeURIComponent(pendingJobId);
-        }
-
-    } catch (error) {
-        console.error(error);
-        alert("Unable to connect to server");
+    if (result.access_token) {
+      localStorage.setItem("access_token", result.access_token);
+      localStorage.setItem("user_type", result.user_type || "candidate");
+      localStorage.setItem("user_name", result.name || (firstName + " " + lastName));
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("user_id", result.user_id != null ? String(result.user_id) : "");
     }
+
+    const modalEl = document.getElementById("candidateRegisterModal");
+    if (modalEl && typeof bootstrap !== "undefined") {
+      const instance = bootstrap.Modal.getInstance(modalEl);
+      if (instance) instance.hide();
+    }
+
+    form.reset();
+    applyAuthUI();
+    alert("Account created successfully!");
+    window.dispatchEvent(new CustomEvent('candidate_login_success'));
+
+    var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
+    if (pendingJobId) {
+      sessionStorage.removeItem('pending_apply_job_id');
+      window.location.href = '/mss-career-portal/apply?id=' + encodeURIComponent(pendingJobId);
+    }
+
+  } catch (error) {
+    console.error(error);
+    alert("Unable to connect to server");
+  }
 }
 
 // --- Flatpickr Integration ---
-(function() {
+(function () {
   function ensureFlatpickr(callback) {
     if (window.flatpickr) {
       if (callback) callback();
@@ -788,6 +802,8 @@ async function registerCandidate(form) {
 
       flatpickr(input, {
         dateFormat: 'Y-m-d',
+        altInput: true,
+        altFormat: 'd M Y',
         defaultDate: defaultValue || null,
         minDate: minDate || null,
         maxDate: maxDate || null,
@@ -830,6 +846,166 @@ async function registerCandidate(form) {
       initDateInputs();
       setupMutationObserver();
     });
+  }
+
+  // Inject custom validation styles for premium look
+  if (!document.getElementById('mss-shared-validation-styles')) {
+    const style = document.createElement('style');
+    style.id = 'mss-shared-validation-styles';
+    style.textContent = `
+      .mss-modal-field.is-invalid { border-color: #dc3545 !important; }
+      .mss-modal-field.is-valid { border-color: #10b981 !important; }
+      .form-control.is-invalid { border-color: #dc3545 !important; }
+      .form-control.is-valid { border-color: #10b981 !important; }
+      .mss-modal-field.is-invalid ~ .invalid-feedback,
+      .form-control.is-invalid ~ .invalid-feedback,
+      .is-invalid ~ .invalid-feedback {
+        display: block !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function validateNameField(input) {
+    const $input = $(input);
+    const val = $input.val().trim();
+    const hasDigits = /\d/.test(val);
+    const $container = $input.closest('.mss-modal-field');
+    const $insertAfterTarget = $container.length > 0 ? $container : $input;
+
+    let $feedback = $insertAfterTarget.next('.invalid-feedback');
+    if ($feedback.length === 0) {
+      $insertAfterTarget.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem;">Name cannot contain numbers.</div>');
+      $feedback = $insertAfterTarget.next('.invalid-feedback');
+    }
+
+    if (val === '') {
+      $input.removeClass('is-invalid is-valid');
+      $container.removeClass('is-invalid is-valid');
+      $feedback.hide();
+    } else if (!hasDigits) {
+      $input.removeClass('is-invalid').addClass('is-valid');
+      $container.removeClass('is-invalid').addClass('is-valid');
+      $feedback.hide();
+    } else {
+      $input.removeClass('is-valid').addClass('is-invalid');
+      $container.removeClass('is-valid').addClass('is-invalid');
+      $feedback.show();
+    }
+  }
+
+  function validateEmailField(input) {
+    const $input = $(input);
+    const val = $input.val().trim();
+
+    // This regex makes the '@' symbol and everything before it optional.
+    // It accepts full emails or just domain suffixes like 'test.com', 'domain.org', etc.
+    const regex = /^([^\s@]+@)?[^\s@]+\.(com|org|in)$/i;
+
+    const $container = $input.closest('.mss-modal-field');
+    const $insertAfterTarget = $container.length > 0 ? $container : $input;
+
+    let $feedback = $insertAfterTarget.next('.invalid-feedback');
+    if ($feedback.length === 0) {
+      $insertAfterTarget.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem;">Please enter a valid domain or email ending in .com, .org, or .in</div>');
+      $feedback = $insertAfterTarget.next('.invalid-feedback');
+    }
+
+    if (val === '') {
+      $input.removeClass('is-invalid is-valid');
+      $container.removeClass('is-invalid is-valid');
+      $feedback.hide();
+    } else if (regex.test(val)) {
+      $input.removeClass('is-invalid').addClass('is-valid');
+      $container.removeClass('is-invalid').addClass('is-valid');
+      $feedback.hide();
+    } else {
+      $input.removeClass('is-valid').addClass('is-invalid');
+      $container.removeClass('is-valid').addClass('is-invalid');
+      $feedback.show();
+    }
+  }
+
+  function validatePhoneField(input) {
+    const $input = $(input);
+    const val = $input.val().trim();
+    const hasLetters = /[a-zA-Z]/.test(val);
+    const $container = $input.closest('.mss-modal-field');
+    const $insertAfterTarget = $container.length > 0 ? $container : $input;
+
+    let $feedback = $insertAfterTarget.next('.invalid-feedback');
+    if ($feedback.length === 0) {
+      $insertAfterTarget.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem;">Mobile number can only contain digits.</div>');
+      $feedback = $insertAfterTarget.next('.invalid-feedback');
+    }
+
+    if (val === '') {
+      $input.removeClass('is-invalid is-valid');
+      $container.removeClass('is-invalid is-valid');
+      $feedback.hide();
+    } else if (!hasLetters && val.length >= 7) {
+      $input.removeClass('is-invalid').addClass('is-valid');
+      $container.removeClass('is-invalid').addClass('is-valid');
+      $feedback.hide();
+    } else {
+      $input.removeClass('is-valid').addClass('is-invalid');
+      $container.removeClass('is-valid').addClass('is-invalid');
+      $feedback.show();
+    }
+  }
+
+  // Real-time listener for inputs using jQuery delegation
+  $(document).on('input keyup blur', 'input[name="firstname"], input[name="lastname"], input[name="username"], input[type="email"], input[name="email"], input[type="tel"], input[name="phone"]', function () {
+    if (this.name === 'firstname' || this.name === 'lastname' || this.name === 'username') {
+      validateNameField(this);
+    } else if (this.type === 'email' || this.name === 'email') {
+      validateEmailField(this);
+    } else if (this.type === 'tel' || this.name === 'phone') {
+      validatePhoneField(this);
+    }
+  });
+
+  // Submit blocker if any invalid fields exist
+  $(document).on('submit', 'form', function (e) {
+    const form = this;
+    const nameInputs = form.querySelectorAll('input[name="firstname"], input[name="lastname"], input[name="username"]');
+    const emailInputs = form.querySelectorAll('input[type="email"], input[name="email"]');
+    const phoneInputs = form.querySelectorAll('input[type="tel"], input[name="phone"]');
+
+    nameInputs.forEach(validateNameField);
+    emailInputs.forEach(validateEmailField);
+    phoneInputs.forEach(validatePhoneField);
+
+    if ($(form).find('.is-invalid').length > 0) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      alert("Please correct the errors in the form before submitting.");
+    }
+  });
+
+  // Rewrite any existing static social login buttons in the document (e.g. from mockup forms)
+  function rewriteAllPageSocialLinks() {
+    document.querySelectorAll('a.mss-social-btn, .google-clr, .linkedin-clr').forEach(function (btn) {
+      var href = btn.getAttribute('href');
+      if (href) {
+        if (href.indexOf('http://localhost:8000') === 0) {
+          btn.setAttribute('href', href.replace('http://localhost:8000', AUTH_API_BASE));
+        } else if (href === 'javascript' || href === 'javascript:;') {
+          if (btn.classList.contains('google-clr') || btn.querySelector('.fa-google')) {
+            btn.setAttribute('href', AUTH_API_BASE + '/auth/google/login');
+          } else if (btn.classList.contains('linkedin-clr') || btn.querySelector('.fa-linkedin')) {
+            btn.setAttribute('href', AUTH_API_BASE + '/auth/linkedin/login');
+          }
+        }
+      }
+    });
+  }
+
+  // Run on load and also watch for DOM changes
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', rewriteAllPageSocialLinks);
+  } else {
+    rewriteAllPageSocialLinks();
   }
 })();
 

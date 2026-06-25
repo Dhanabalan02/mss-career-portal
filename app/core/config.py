@@ -23,9 +23,6 @@ class Settings(BaseSettings):
     LINKEDIN_CLIENT_SECRET: Optional[str] = None
     LINKEDIN_REDIRECT_URI: Optional[str] = None
 
-    # Frontend base URL — used to redirect back after OAuth callback
-    FRONTEND_URL: str = "http://127.0.0.1:5500"
-
     # Database Settings
     DB_USER: str
     DB_PASSWORD: str
