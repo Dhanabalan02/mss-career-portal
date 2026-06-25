@@ -248,7 +248,7 @@ function buildAvatarHtml(initial) {
     return '' +
         '<div class="mss-profile-wrap" style="position:relative;">' +
             '<button type="button" class="mss-profile-btn" onclick="toggleMssProfileMenu(event)" ' +
-                'style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3B82F6,#6366F1);' +
+                'style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg, #cc8cfc, #7b2cbf);' +
                 'color:#fff;border:none;font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.95rem;' +
                 'cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + initial + '</button>' +
             '<div class="mss-profile-menu" id="mssProfileMenu" style="display:none;position:absolute;top:46px;right:0;' +
@@ -303,17 +303,24 @@ window.mssNotifications = [];
 function buildNotificationBellHtml() {
     return '' +
         '<div class="mss-notification-wrap" style="position:relative; margin-right: 12px; display: flex; align-items: center;">' +
-            '<button type="button" class="mss-notification-btn" onclick="toggleMssNotificationMenu(event)" ' +
-                'style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.06);' +
-                'color:#94A3B8;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;' +
-                'cursor:pointer;flex-shrink:0;position:relative;transition:all 0.2s;" ' +
-                'onmouseover="this.style.color=\'#F8FAFC\';this.style.borderColor=\'rgba(255,255,255,0.25)\';this.style.background=\'rgba(255,255,255,0.1)\'" ' +
-                'onmouseout="this.style.color=\'#94A3B8\';this.style.borderColor=\'rgba(255,255,255,0.1)\';this.style.background=\'rgba(255,255,255,0.06)\'">' +
-                '<i class="feather-bell" style="font-size:1.1rem;"></i>' +
-                '<span class="mss-notification-badge" id="mssNotificationBadge" style="display:none;position:absolute;top:-2px;right:-2px;' +
-                    'background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
-                    'display:flex;align-items:center;justify-content:center;border:2px solid #0F172A;line-height:1;">0</span>' +
-            '</button>' +
+'<button type="button" class="mss-notification-btn" onclick="toggleMssNotificationMenu(event)" ' +
+    'style="width:36px;height:36px;border-radius:50%;' +
+    'background:rgba(255,255,255,0.15);' +
+    'color:#FFFFFF;' +
+    'border:1px solid rgba(255,255,255,0.3);' +
+    'display:flex;align-items:center;justify-content:center;' +
+    'cursor:pointer;flex-shrink:0;position:relative;transition:all 0.2s;" ' +
+    'onmouseover="this.style.color=\'#FFFFFF\';' +
+    'this.style.borderColor=\'rgba(255,255,255,0.5)\';' +
+    'this.style.background=\'rgba(255,255,255,0.25)\'" ' +
+    'onmouseout="this.style.color=\'#FFFFFF\';' +
+    'this.style.borderColor=\'rgba(255,255,255,0.3)\';' +
+    'this.style.background=\'rgba(255,255,255,0.15)\'">' +
+    '<i class="feather-bell" style="font-size:1.1rem;"></i>' +
+    '<span class="mss-notification-badge" id="mssNotificationBadge" style="display:none;position:absolute;top:-2px;right:-2px;' +
+        'background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
+        'display:flex;align-items:center;justify-content:center;border:2px solid #0F172A;line-height:1;">0</span>' +
+'</button>' +
             '<div class="mss-notification-dropdown" id="mssNotificationDropdown" style="display:none;position:absolute;top:46px;right:0;' +
                 'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);width:320px;z-index:1100;overflow:hidden;">' +
                 '<div style="padding:12px 16px;border-bottom:1px solid #F1F5F9;display:flex;justify-content:space-between;align-items:center;">' +

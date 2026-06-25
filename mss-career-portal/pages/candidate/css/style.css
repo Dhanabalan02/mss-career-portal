@@ -121,6 +121,16 @@ This files [Table of contents] are outlined below
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+:root {
+    --primary-color: #cc8cfc;
+    --white-color: #ffffff;
+    --primary-btn-color: linear-gradient(135deg, #cc8cfc, #7b2cbf); 
+    --soft-bg-color: #cc8cfc26;
+    --hero-banner-bg-color: linear-gradient(300deg, #cc8cfc, #7b2cbf);
+    --card-border: #DDD6FE;
+    --card-border-shadow: 0 8px 32px rgba(204, 140, 252, 0.12); 
+}
+
     .scrollbar-thin-1::-webkit-scrollbar {
       width: 0px;
       height: 8px;
@@ -140,11 +150,11 @@ This files [Table of contents] are outlined below
     html {
       scroll-behavior: smooth;
     }
-    
+
 /*===GENERAL===*/
 .site-text-primary {
   /* color: #1967d2; */
-  color: #0a014f;
+  color: var(--primary-color);
 }
 
 .site-text-secondry {
@@ -2069,7 +2079,7 @@ ol li {
   cursor: pointer;
   display: inline-table;
   /* background-color: #1967d2; */
-  background-color: #0a014f;
+  background-color: var(--primary-color);
   border: none;
   font-size: 16px;
   font-weight: 600;
@@ -2256,7 +2266,7 @@ ol li {
 /*---Owl dots button---*/
 .owl-carousel .owl-dots {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 15px;
 }
 .owl-carousel .owl-dots .owl-dot {
   display: inline-block;
@@ -2270,7 +2280,7 @@ ol li {
   transition: opacity 200ms ease;
 }
 .owl-carousel .owl-dots .owl-dot:hover span {
-  background: #000;
+  background: var(--white-color);
 }
 .owl-carousel .owl-dots .owl-dot.active {
   position: relative;
@@ -2430,7 +2440,7 @@ ol li {
   height: 12px;
   text-align: center;
   /* background-color: #1967d2; */
-  background-color: #0a014f;
+  background-color: var(--primary-color);
   cursor: pointer;
   border-radius: 50%;
   opacity: 1;
@@ -5074,7 +5084,7 @@ ol li {
   position: relative;
   display: inline-block;
   /* color: #1967d2; */
-  color: #0a014f   ;
+  color: var(--primary-color)   ;
   font-size: 18px;
   line-height: 40px;
   font-weight: 500;
@@ -5460,7 +5470,7 @@ ol li {
   position: absolute;
   bottom: 0px;
   left: 0px;
-  background-color: #1967d2;
+  background-color: var(--primary-color);
   width: 40px;
   height: 3px;
 }
@@ -5722,7 +5732,7 @@ ol li {
   overflow: hidden;
 }
 .widget_services ul li a {
-  color: #fff;
+  color: #fff !important;
   position: relative;
   padding: 0px 0px 5px 0px;
   display: block;
@@ -6950,7 +6960,7 @@ ol.comment-list li.comment .comment-respond .comment-form p {
   display: inline-block;
   position: relative;
   vertical-align: middle;
-  background-color: #1967d2;
+  background-color: var(--primary-color);
   animation: 1.15s infinite linear;
 }
 .wrapper .cssload-loader:before, .wrapper .cssload-loader:after {
@@ -7037,7 +7047,7 @@ ol.comment-list li.comment .comment-respond .comment-form p {
 }
 .description-list-2 li i {
   /* color: #1967d2; */
-  color: #0a014f;
+  color: var(--primary-color);
   line-height: 26px;
   position: absolute;
   left: 0px;
@@ -9005,7 +9015,7 @@ ol.comment-list li.comment .comment-respond .comment-form p {
   }
 }
 .twm-explore-content-outer-3 .twm-explore-content-3 .twm-upload-file .site-button {
-  background-color: #0a014f;
+  background-color: var(--primary-color);
   color: #fff;
 }
 .twm-explore-content-outer-3 .twm-explore-content-3 .twm-upload-file .site-button i {
@@ -11371,7 +11381,7 @@ ol.comment-list li.comment .comment-respond .comment-form p {
   top: 19px;
   font-size: 18px;
   /* color: #1967d2; */
-  color: #0a014f;
+  color: var(--primary-color);
 }
 
 .twm-s-info2 .twm-job-hilites2 {
@@ -11395,7 +11405,7 @@ ol.comment-list li.comment .comment-respond .comment-form p {
   top: 15px;
   font-size: 18px;
   /* color: #1967d2; */
-  color: #0a014f;
+  color: var(--primary-color);
 }
 .twm-s-info2 .twm-job-hilites2 li .twm-s-info-inner .twm-title {
   font-size: 14px;
@@ -13522,7 +13532,7 @@ strong {
 }
 .twm-featured-city .twm-media .twm-city-info .twm-city-jobs {
   /* color: #1967d2; */
-  color: #0a014f;
+  color: var(--primary-color);
 }
 .twm-featured-city .twm-media .twm-city-info .twm-title {
   margin-bottom: 0px;
@@ -17036,7 +17046,7 @@ strong {
   padding: 20px 0px 0px 0px;
 }
 .twm-featured-city2 .twm-city-info .twm-city-jobs {
-  color: #0a014f;
+  color: var(--primary-color);
 }
 .twm-featured-city2 .twm-city-info .twm-title {
   margin-bottom: 10px;
@@ -20108,7 +20118,7 @@ strong {
   content: "";
   left: calc(50% + 400px);
   top: 0px;
-  background-color: #002860;
+  background-color: var(--primary-color);
   position: absolute;
   z-index: -1;
 }

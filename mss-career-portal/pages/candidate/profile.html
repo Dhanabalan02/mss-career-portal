@@ -151,7 +151,7 @@
       height: 100px;
       border-radius: 50%;
       padding: 3px;
-      background: linear-gradient(135deg, var(--cp-accent) 0%, #7B9FF8 50%, #A78BFA 100%);
+      background: linear-gradient(135deg, var(--primary-color) 0%, #7B9FF8 50%, #A78BFA 100%);
       cursor: pointer;
       position: relative;
       transition: transform var(--cp-transition), box-shadow var(--cp-transition);
@@ -165,7 +165,7 @@
       width: 26px;
       height: 26px;
       border-radius: 50%;
-      background: var(--cp-accent);
+      background: var(--primary-color);
       border: 2.5px solid white;
       box-shadow: var(--cp-shadow-sm);
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3E%3Cpath d='M12.146 1.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1 0 .708l-9.5 9.5A.5.5 0 0 1 5 13.5H3a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 1 .146-.354l9.5-9.5z'/%3E%3C/svg%3E");
@@ -191,7 +191,7 @@
       justify-content: center;
       font-size: 36px;
       font-weight: 700;
-      color: var(--cp-accent);
+      color: var(--primary-color);
       font-family: 'DM Serif Display', serif;
     }
 
@@ -245,7 +245,7 @@
     }
 
     .cp-stat-row:hover {
-      background: var(--cp-accent-soft);
+      background: var(--soft-bg-color);
       border-color: var(--cp-accent-mid);
     }
 
@@ -345,19 +345,19 @@
       width: 32px;
       height: 32px;
       border-radius: var(--cp-radius-xs);
-      background: var(--cp-accent-soft);
+      background: var(--soft-bg-color);
       border: 1px solid var(--cp-accent-mid);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
       transition: background var(--cp-transition), transform var(--cp-transition);
-      color: var(--cp-accent);
+      color: var(--primary-color);
       font-size: 13px;
     }
 
     .cp-contact-item:hover .cp-contact-icon {
-      background: var(--cp-accent);
+      background: var(--primary-color);
       color: white;
       transform: scale(1.08);
     }
@@ -376,9 +376,9 @@
       gap: 10px;
       padding: 13px 16px;
       border-radius: var(--cp-radius-sm);
-      background: var(--cp-accent-soft);
+      background: var(--soft-bg-color);
       border: 1px solid var(--cp-accent-mid);
-      color: var(--cp-accent);
+      color: var(--primary-color);
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
@@ -386,7 +386,7 @@
     }
 
     .cp-sidebar-link:hover {
-      background: var(--cp-accent);
+      background: var(--primary-color);
       color: white;
       transform: translateY(-1px);
       box-shadow: 0 6px 16px var(--cp-accent-glow);
@@ -426,8 +426,9 @@
       /* height: calc(100% - 40px); */
       height: 100%;
       border-radius: 0 3px 3px 0;
-      /* background: linear-gradient(to bottom, var(--cp-accent), var(--cp-accent-mid)); */
-      background: linear-gradient(135deg, #0a014f, #14008a);
+      /* background: linear-gradient(to bottom, var(--primary-color), var(--cp-accent-mid)); */
+      /* background: linear-gradient(135deg, #0a014f, #14008a); */
+      background: var(--primary-color);
       opacity: 0;
       transition: opacity var(--cp-transition);
     }
@@ -500,7 +501,7 @@
     .cp-section input:focus,
     .cp-section textarea:focus,
     .cp-section select:focus {
-      border-color: var(--cp-accent);
+      border-color: var(--primary-color);
       box-shadow: 0 0 0 3.5px rgba(26, 86, 219, .12);
       background: var(--cp-surface);
     }
@@ -559,15 +560,14 @@
     }
 
     .cp-btn-primary {
-      background: var(--cp-accent);
+      background: var(--primary-btn-color);
       color: #fff;
       box-shadow: 0 2px 8px var(--cp-accent-glow);
     }
 
     .cp-btn-primary:hover {
-      background: #1344BF;
       box-shadow: 0 6px 18px var(--cp-accent-glow);
-      transform: translateY(-1px);
+      transform: translateY(-2px);
     }
 
     .cp-btn-outline {
@@ -577,9 +577,9 @@
     }
 
     .cp-btn-outline:hover {
-      border-color: var(--cp-accent);
-      color: var(--cp-accent);
-      background: var(--cp-accent-soft);
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+      background: var(--soft-bg-color);
     }
 
     .cp-btn-success {
@@ -618,8 +618,8 @@
       display: inline-flex;
       align-items: center;
       gap: 7px;
-      background: var(--cp-accent-soft);
-      color: var(--cp-accent);
+      background: var(--soft-bg-color);
+      color: var(--primary-color);
       border: 1px solid var(--cp-accent-mid);
       padding: 6px 13px;
       border-radius: var(--cp-radius-full);
@@ -629,7 +629,7 @@
     }
 
     .cp-chip:hover {
-      background: #DDE8FF;
+      background: rgba(204, 140, 252, 0.15);
       transform: translateY(-1px);
     }
 
@@ -712,8 +712,8 @@
     }
 
     .cp-resume-box:hover {
-      border-color: var(--cp-accent);
-      background: var(--cp-accent-soft);
+      border-color: var(--primary-color);
+      background: var(--soft-bg-color);
       transform: translateY(-2px);
     }
 
@@ -734,7 +734,7 @@
     }
 
     .cp-resume-box:hover .cp-resume-label i {
-      color: var(--cp-accent);
+      color: var(--primary-color);
       transform: translateY(-3px);
     }
 
@@ -776,12 +776,12 @@
       width: 36px;
       height: 36px;
       border-radius: var(--cp-radius-xs);
-      background: var(--cp-accent-soft);
+      background: var(--soft-bg-color);
       border: 1px solid var(--cp-accent-mid);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--cp-accent);
+      color: var(--primary-color);
       font-size: 16px;
     }
 
@@ -851,8 +851,8 @@
     }
 
     .cp-autocomplete-option:hover {
-      background: var(--cp-accent-soft);
-      color: var(--cp-accent);
+      background: var(--soft-bg-color);
+      color: var(--primary-color);
     }
 
     /* ── Save bar ── */
@@ -912,7 +912,8 @@
     .mss-inner-banner {
         position: relative;
         /* background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 55%, #1D4ED8 100%); */
-        background: linear-gradient(135deg, #0A1628 0%, #0F172A 45%, #0D1B3E 100%);
+        /* background: linear-gradient(135deg, #0A1628 0%, #0F172A 45%, #0D1B3E 100%); */
+        background: var(--hero-banner-bg-color);
         padding: 3rem 0;
         overflow: hidden;
         margin-top: 0;
@@ -1344,7 +1345,7 @@
 
         <!-- FOOTER START -->
         <footer class="footer-dark"
-            style="background-color: #1A202C !important; display: block !important; position: relative !important; z-index: 10;">
+            style="background: var(--hero-banner-bg-color); display: block !important; position: relative !important; z-index: 10;">
             <div class="container">
 
                 <div class="footer-top">
@@ -1356,7 +1357,7 @@
                                     <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.svg" alt=""
                                             style="max-height: 80px;"></a>
                                 </div>
-                                <p style="color: #A0AEC0;">Established in 1928, The Madras Seva Sadan stands as one of South India’s oldest and most trusted institutions, dedicated to transforming lives through education, women empowerment, child welfare, social development, arts and sports — guided by the timeless values of compassion, dignity and service.</p>
+                                <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South India’s oldest and most trusted institutions, dedicated to transforming lives through education, women empowerment, child welfare, social development, arts and sports — guided by the timeless values of compassion, dignity and service.</p>
                             </div>
                         </div>
 
@@ -1364,11 +1365,11 @@
                             <div class="widget widget_services ftr-list-center">
                                 <h4 class="widget-title pb-1" style="color: #fff;">Quick Links</h4>
                                 <ul>
-                                    <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Home</a></li>
-                                    <li><a href="https://themadrassevasadan.org/about" target="_blank" style="color: #A0AEC0;">About</a></li>
-                                    <li><a href="/mss-career-portal/job-grid" style="color: #A0AEC0;">Open Roles</a></li>
-                                    <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Search</a></li>
-                                    <li><a href="contact.html" style="color: #A0AEC0;">Contact</a></li>
+                                    <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Home</a></li>
+                                    <li><a href="https://themadrassevasadan.org/about" target="_blank" style="color: var(--white-color);">About</a></li>
+                                    <li><a href="/mss-career-portal/job-grid" style="color: var(--white-color);">Open Roles</a></li>
+                                    <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Search</a></li>
+                                    <li><a href="contact.html" style="color: var(--white-color);">Contact</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -1378,17 +1379,17 @@
                                 <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
                                 <ul class="ftr-list">
                                     <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
-                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                        <p style="color: #A0AEC0; margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
+                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                        <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
                                             600031</p>
                                     </li>
                                     <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
-                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: #A0AEC0; margin: 0;">info@themadrassevasadan.org</p>
+                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                        <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
                                     </li>
                                     <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
-                                            style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: #A0AEC0; margin: 0;">+91 44 2836 4141</p>
+                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                        <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
                                     </li>
                                 </ul>
                             </div>
@@ -1404,7 +1405,7 @@
                     <div class="footer-bottom-info d-flex justify-content-center align-items-center w-100"
                         style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-bottom: 20px;">
                         <div class="footer-copy-right text-center w-100">
-                            <span class="copyrights-text" style="color: #718096;">Copyright 2026 <strong>The Madras Seva
+                            <span class="copyrights-text" style="color: var(--white-color);">Copyright 2026 <strong>The Madras Seva
                                     Sadan</strong>. All Rights Reserved.</span>
                         </div>
                     </div>
@@ -1628,7 +1629,7 @@
       const size = kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
       
       const oldHtml = document.getElementById('resumeDisplay').innerHTML;
-      document.getElementById('resumeDisplay').innerHTML = `<div style="padding: 15px; color: var(--cp-accent);"><i class="fa-solid fa-spinner fa-spin"></i> Uploading resume...</div>`;
+      document.getElementById('resumeDisplay').innerHTML = `<div style="padding: 15px; color: var(--primary-color);"><i class="fa-solid fa-spinner fa-spin"></i> Uploading resume...</div>`;
       document.querySelector('.cp-resume-box').style.display = 'none';
 
       try {

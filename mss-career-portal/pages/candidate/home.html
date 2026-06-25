@@ -116,7 +116,7 @@
                 display: flex !important;
                 align-items: center !important;
                 padding: 10px !important;
-                color: #1E3A8A !important;
+                color: var(--primary-color) !important;
             }
         }
     </style>
@@ -133,7 +133,7 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: #0a014f;
+            background:var(--primary-color);
             opacity: 0;
             transition: opacity 0.2s ease;
             border-radius: 20px 20px 0 0;
@@ -142,6 +142,78 @@
         .mss-jc:hover::before {
             opacity: 1;
         }
+
+        
+        .mss-info-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 1.75rem;
+            border: 1px solid #E2E8F0;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mss-info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .mss-info-card:hover::before {
+            opacity: 1;
+        }
+
+        .mss-info-card:hover {
+            border-color: var(--card-border) !important;
+            box-shadow: var(--card-border-shadow) !important;
+            transform: translateY(-4px);
+        }
+
+        .mss-feature-icon-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--soft-bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-bottom: 1.25rem;
+        }
+
+        .mss-feature-icon-wrap i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .mss-feature-title {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .mss-feature-desc {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.85rem;
+            color: #64748B;
+            margin: 0;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+
 
         .hide {
             display: none !important;
@@ -153,6 +225,14 @@
             font-size: 18px;
             line-height: 40px;
             font-weight: 500;
+        }
+
+        .owl-carousel .owl-item img{
+            width: 418px !important;
+        }
+
+        .why-choose-title{
+            font-size: 1.5rem;
         }
     </style>
 </head>
@@ -346,15 +426,29 @@
                                             alt="Career at MSS" class="mss-hero-img"></div>
                                     <div class="item"><img src="images/units/shanti_sadan_unit.jpg" alt="Career at MSS"
                                             class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/orca.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
                                     <div class="item"><img src="images/units/smvrch.jpg" alt="Career at MSS"
                                             class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/sir_mutha.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/cricket.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/premvihar_unit.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
                                     <div class="item"><img src="images/units/la_ib.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/mss_tambaram.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/sir_and_lady_tambaram.jpg" alt="Career at MSS"
+                                            class="mss-hero-img"></div>
+                                    <div class="item"><img src="images/units/sir_mutha_tNagar.jpg" alt="Career at MSS"
                                             class="mss-hero-img"></div>
                                 </div>
                                 <!-- Floating card -->
                                 <div class="mss-float-card mss-float-card-tl">
                                     <div class="mss-float-icon"
-                                        style="background: linear-gradient(135deg, #0a014f, #14008a);">
+                                        style="background: var(--primary-btn-color);">
                                         <i class="feather-award" style="color:#fff;font-size:1rem;"></i>
                                     </div>
                                     <div>
@@ -383,7 +477,8 @@
                 /* ── MSS Hero Section ───────────────────────────── */
                 .mss-hero-section {
                     position: relative;
-                    background: linear-gradient(135deg, #0A1628 0%, #0F172A 45%, #0D1B3E 100%);
+                    /* background: linear-gradient(135deg, #0A1628 0%, #0F172A 45%, #0D1B3E 100%); */
+                    background:var(--hero-banner-bg-color);
                     overflow: hidden;
                     padding: 5rem 0 4rem;
                     min-height: 660px;
@@ -489,7 +584,7 @@
                 }
 
                 .mss-hero-headline-accent {
-                    background: linear-gradient(90deg, #3B82F6, #8B5CF6);
+                    background: var(--primary-color);
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
                     background-clip: text;
@@ -499,7 +594,7 @@
                 .mss-hero-sub {
                     font-family: 'Rubik', sans-serif;
                     font-size: 1rem;
-                    color: #94A3B8;
+                    color: var(--white-color);
                     line-height: 1.65;
                     margin: 0 0 2rem;
                     max-width: 540px;
@@ -544,7 +639,7 @@
                     font-size: 0.6rem;
                     font-weight: 800;
                     /* color: #3B82F6; */
-                    color: #0a014f;
+                    color:var(--primary-color);
                     letter-spacing: 0.9px;
                     text-transform: uppercase;
                     display: flex;
@@ -581,7 +676,7 @@
                 }
 
                 .mss-select:focus {
-                    color: #1E3A8A;
+                    color: #000000;
                 }
 
                 .mss-select-arrow {
@@ -612,7 +707,7 @@
                 }
 
                 .mss-input:focus {
-                    color: #1E3A8A;
+                    color: var(--primary-color);
                 }
 
                 .mss-divider {
@@ -626,8 +721,8 @@
                     flex-shrink: 0;
                     margin: 8px;
                     padding: 0 28px;
-                    /* background: linear-gradient(135deg, #1E3A8A, #3B82F6); */
-                    background: linear-gradient(135deg, #0a014f, #14008a);
+                    /* background: linear-gradient(135deg, var(--primary-color), #3B82F6); */
+                    background: var(--primary-btn-color);
                     border: none;
                     border-radius: 10px;
                     font-family: 'Rubik', sans-serif;
@@ -648,8 +743,8 @@
                 .mss-search-btn:hover {
                     transform: translateY(-2px);
                     box-shadow: 0 12px 28px rgba(59, 130, 246, 0.55);
-                    /* background: linear-gradient(135deg, #1E3A8A, #4F8EF7); */
-                    background: linear-gradient(135deg, #0a014f, #14008a);
+                    /* background: linear-gradient(135deg, var(--primary-color), #4F8EF7); */
+                    background: var(--primary-btn-color);
                 }
 
                 .mss-search-btn i {
@@ -719,7 +814,7 @@
                     font-family: 'Rubik', sans-serif;
                     font-size: 0.72rem;
                     font-weight: 500;
-                    color: #64748B;
+                    color: var(--white-color);
                     text-transform: uppercase;
                     letter-spacing: 0.6px;
                 }
@@ -847,7 +942,7 @@
                                     <div class="wt-small-separator site-text-primary">
                                         <div>Why Choose Us</div>
                                     </div>
-                                    <h2 class="wt-title">Find your favourite opportunities across our units.</h2>
+                                    <h2 class="wt-title why-choose-title">Be part of an institution with 99 years of legacy, while contributing to work that remains relevant and impactful in today's world.</h2>
                                 </div>
                                 <!-- TITLE END-->
                             </div>
@@ -1027,6 +1122,65 @@
                         </div>
                     </div>
                 </div>
+
+                
+
+                <!-- Culture & Values Section -->
+                <div class="container mt-5">
+                    <div class="row g-4 justify-content-center">
+                        <!-- Card 1 -->
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mss-info-card">
+                                <div class="mss-feature-icon-wrap">
+                                    <i class="feather-award"></i>
+                                </div>
+                                <h4 class="mss-feature-title">A legacy of trust</h4>
+                                <p class="mss-feature-desc">Our employees choose to stay and grow with us over decades. Long tenures reflect a culture of stability, mutual respect, and shared purpose.</p>
+                            </div>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mss-info-card">
+                                <div class="mss-feature-icon-wrap">
+                                    <i class="feather-grid"></i>
+                                </div>
+                                <h4 class="mss-feature-title">Diverse institutions</h4>
+                                <p class="mss-feature-desc">Few organisations offer the opportunity to work across such varied fields—education, women empowerment, child welfare, social service, arts and sports—all within a single ecosystem.</p>
+                            </div>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mss-info-card">
+                                <div class="mss-feature-icon-wrap">
+                                    <i class="feather-eye"></i>
+                                </div>
+                                <h4 class="mss-feature-title">See your difference</h4>
+                                <p class="mss-feature-desc">Every initiative you work on directly impacts lives. Your work here carries real purpose and visible outcomes.</p>
+                            </div>
+                        </div>
+                        <!-- Card 4 -->
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mss-info-card">
+                                <div class="mss-feature-icon-wrap">
+                                    <i class="feather-trending-up"></i>
+                                </div>
+                                <h4 class="mss-feature-title">Grow through responsibility</h4>
+                                <p class="mss-feature-desc">We offer real opportunities to take ownership, contribute meaningfully, and expand your role beyond defined boundaries. Growth here is driven by experience, initiative, and trust.</p>
+                            </div>
+                        </div>
+                        <!-- Card 5 -->
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="mss-info-card">
+                                <div class="mss-feature-icon-wrap">
+                                    <i class="feather-users"></i>
+                                </div>
+                                <h4 class="mss-feature-title">People - centric environment</h4>
+                                <p class="mss-feature-desc">We place strong emphasis on compassion, dignity and service with a smile—values that define not just what we do, but how we do it.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -1054,8 +1208,8 @@
                         Jobs and Opportunities </h2>
                 </div>
                 <a href="/mss-career-portal/job-grid"
-                    style="font-family:'Rubik',sans-serif; font-size:0.88rem; font-weight:600; color:#0a014f; text-decoration:none; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; padding:0.5rem 1.25rem; border:2px solid #DBEAFE; border-radius:50px;"
-                    onmouseover="this.style.background='#EFF6FF'" onmouseout="this.style.background='transparent'">
+                    style="font-family:'Rubik',sans-serif; font-size:0.88rem; font-weight:600; color:var(--primary-color); text-decoration:none; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; padding:0.5rem 1.25rem; border:2px solid var(--primary-color); border-radius:50px;"
+                    onmouseover="this.style.background='#f7edff'" onmouseout="this.style.background='transparent'">
                     View All Jobs <i class="feather-arrow-right" style="font-size:0.9rem;"></i>
                 </a>
             </div>
@@ -1068,7 +1222,7 @@
                     <div class="h-100"
                         style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;border:1px solid #E2E8F0;">
                         <div
-                            style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:#1E3A8A;letter-spacing:-1px;">
+                            style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:var(--primary-color);letter-spacing:-1px;">
                             600+</div>
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:0.78rem;color:#94A3B8;font-weight:500;margin-top:4px;">
@@ -1079,7 +1233,7 @@
                     <div class="h-100"
                         style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;border:1px solid #E2E8F0;">
                         <div
-                            style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:#1E3A8A;letter-spacing:-1px;">
+                            style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:var(--primary-color);letter-spacing:-1px;">
                             11</div>
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:0.78rem;color:#94A3B8;font-weight:500;margin-top:4px;">
@@ -1090,7 +1244,7 @@
                     <div class="h-100"
                         style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;border:1px solid #E2E8F0;">
                         <div
-                            style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:#1E3A8A;letter-spacing:-1px;">
+                            style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:var(--primary-color);letter-spacing:-1px;">
                             98</div>
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:0.78rem;color:#94A3B8;font-weight:500;margin-top:4px;">
@@ -1099,7 +1253,7 @@
                 </div>
                 <div class="col-6 col-md-3">
                     <div class="h-100"
-                        style="background: linear-gradient(135deg, #0a014f, #14008a); border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;"
+                        style="background: var(--primary-btn-color); border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;"
                         onclick="location.href='/mss-career-portal/job-grid'">
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:1.7rem;font-weight:700;color:#fff;margin-bottom:4px;">
@@ -1300,8 +1454,8 @@
                                 </div>
                                 <h2 class="wt-title">Hear from <span class="site-text-primary">The Madras Seva Sadan
                                         Family </span></h2>
-                                <p class="wt-discription"> - have 10 from different demographics </p>
-                                <p class="wt-discription"> - To be changed yearly before hiring </p>
+                                <p class="wt-discription"> Have 10 from different demographics </p>
+                                <p class="wt-discription"> To be changed yearly before hiring </p>
                             </div>
                             <!-- TITLE END-->
                         </div>
@@ -1439,7 +1593,7 @@
     <!-- GET JOBS SECTION END -->
     <!-- FOOTER START -->
     <footer class="footer-dark"
-        style="background-color: #1A202C !important; display: block !important; position: relative !important; z-index: 10;">
+        style="    background: linear-gradient(300deg, #cc8cfc, #7b2cbf) !important; display: block !important; position: relative !important; z-index: 10;">
         <div class="container">
 
             <div class="footer-top">
@@ -1451,7 +1605,7 @@
                                 <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.svg" alt=""
                                         style="max-height: 80px;"></a>
                             </div>
-                            <p style="color: #A0AEC0;">Established in 1928, The Madras Seva Sadan stands as one of South
+                            <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South
                                 India’s oldest and most trusted institutions, dedicated to transforming lives through
                                 education, women empowerment, child welfare, social development, arts and sports —
                                 guided by the timeless values of compassion, dignity and service. </p>
@@ -1477,17 +1631,17 @@
                             <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
                             <ul class="ftr-list">
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
-                                        style="color: #4f46e5; font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                    <p style="color: #A0AEC0; margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
                                         600031</p>
                                 </li>
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
-                                        style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: #A0AEC0; margin: 0;">info@themadrassevasadan.org</p>
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
                                 </li>
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
-                                        style="color: #4f46e5; font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: #A0AEC0; margin: 0;">+91 44 2836 4141</p>
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
                                 </li>
                             </ul>
                         </div>
@@ -1503,7 +1657,7 @@
                 <div class="footer-bottom-info d-flex justify-content-center align-items-center w-100"
                     style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-bottom: 20px;">
                     <div class="footer-copy-right text-center w-100">
-                        <span class="copyrights-text" style="color: #718096;">Copyright 2026 <strong>The Madras Seva
+                        <span class="copyrights-text" style="color: var(--white-color);">Copyright 2026 <strong>The Madras Seva
                                 Sadan</strong>. All Rights Reserved.</span>
                     </div>
                 </div>
@@ -1936,13 +2090,13 @@
                 var ctaHtml = isApplied ?
                     '<span style="font-family:\'Rubik\',sans-serif;font-size:0.82rem;font-weight:700;color:#10B981;padding:0.55rem 1.25rem;border-radius:50px;background:#ECFDF5;display:inline-flex;align-items:center;gap:6px;border:1px solid #A7F3D0;cursor:default;"><i class="bi bi-check-lg"></i> Applied</span>' :
                     '<a href="javascript:;" onclick="window.handleApplyClick(event, \'' + job.job_id + '\')" ' +
-                    'style="font-family:\'Rubik\',sans-serif;font-size:0.82rem;font-weight:700;color:#fff;padding:0.55rem 1.25rem;border-radius:50px;text-decoration:none;background: linear-gradient(135deg, #0a014f, #14008a); display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(59,130,246,0.3);">Apply Now <i class="feather-arrow-right" style="font-size:0.82rem;"></i></a>';
+                    'style="font-family:\'Rubik\',sans-serif;font-size:0.82rem;font-weight:700;color:#fff;padding:0.55rem 1.25rem;border-radius:50px;text-decoration:none;background: var(--primary-btn-color); display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(59,130,246,0.3);">Apply Now <i class="feather-arrow-right" style="font-size:0.82rem;"></i></a>';
 
                 // 2. Return the completed HTML string cleanly in ONE continuous expression
                 return '<div class="col-lg-6">' +
                     '<div class="mss-jc" onclick="location.href=\'' + detailUrl + '\'" ' +
                     'style="background:#fff;border-radius:20px;padding:1.75rem;border:1px solid #E2E8F0;cursor:pointer;transition:all 0.3s ease;height:100%;display:flex;flex-direction:column;" ' +
-                    'onmouseover="this.style.borderColor=\'#BFDBFE\';this.style.boxShadow=\'0 20px 40px -8px rgba(59,130,246,0.12)\';this.style.transform=\'translateY(-4px)\'" ' +
+                    'onmouseover="this.style.borderColor=\'var(--card-border)\';this.style.boxShadow=\'var(--card-border-shadow)\';this.style.transform=\'translateY(-4px)\'" ' +
                     'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">' +
                     '<div class="d-flex justify-content-between align-items-start mb-3">' +
                     '<div class="d-flex align-items-center gap-3">' +
