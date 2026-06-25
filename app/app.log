@@ -1,0 +1,5 @@
+[2026-06-25 13:15:02] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 13:15:02] INFO in database: Database engine created successfully.
+[2026-06-25 13:15:04] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 13:15:04] INFO in database: Database engine created successfully.
+[2026-06-25 13:15:07] INFO in main: FastAPI application has started successfully.

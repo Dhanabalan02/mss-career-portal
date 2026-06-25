@@ -2005,7 +2005,7 @@
     <!-- Jobs List API integration -->
     <script>
         (function () {
-            var JOBS_API_BASE = AUTH_API_BASE;
+            var JOBS_API_BASE = window.AUTH_API_BASE || '';
             var HOME_JOBS_LIMIT = 4;
 
             function escapeHtml(value) {
