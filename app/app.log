@@ -1101,3 +1101,8 @@ WHERE job_posts.job_status = %(job_status_1)s ORDER BY job_posts.updated_at DESC
 [parameters: {'job_status_1': 'publish'}]
 (Background on this error at: https://sqlalche.me/e/20/e3q8)
 >>>>>>> a093fef474e6a2b487bdffc4a9d82b959179465d
+[2026-06-25 14:45:10] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 14:45:10] INFO in database: Database engine created successfully.
+[2026-06-25 14:45:11] INFO in config: Constructing the database URL from environment variables.
+[2026-06-25 14:45:11] INFO in database: Database engine created successfully.
+[2026-06-25 14:45:11] INFO in main: FastAPI application has started successfully.

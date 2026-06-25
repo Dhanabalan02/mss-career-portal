@@ -1395,7 +1395,7 @@
                                             btn.innerHTML = 'Uploading... <i class="feather-loader fa-spin"></i>';
                                             btn.disabled = true;
                                             
-                                            var url = (typeof AUTH_API_BASE !== 'undefined' ? AUTH_API_BASE : '') + '/auth/candidate/upload-resume';
+                                            var url = (window.AUTH_API_BASE || '') + '/auth/candidate/upload-resume';
                                             
                                             fetch(url, {
                                                 method: 'POST',
@@ -2005,12 +2005,7 @@
 
     <!-- Jobs List API integration -->
     <script>
-<<<<<<< HEAD
-        (function () {
             var JOBS_API_BASE = window.AUTH_API_BASE || '';
-=======
-            var JOBS_API_BASE = AUTH_API_BASE;
->>>>>>> a093fef474e6a2b487bdffc4a9d82b959179465d
             var HOME_JOBS_LIMIT = 4;
 
             function escapeHtml(value) {
@@ -2185,7 +2180,7 @@ function fetchUnits() {
     var select = document.getElementById('srch-unit');
     if (!select) return;
 
-    fetch(AUTH_API_BASE + '/auth/units')
+    fetch((window.AUTH_API_BASE || '') + '/auth/units')
         .then(function (res) {
             if (!res.ok) throw new Error('Failed to fetch units');
             return res.json();
