@@ -368,6 +368,7 @@
                                             <span>Search</span>
                                         </button>
                                     </div>
+
                                     <script>
                                         function doHomeSearch() {
                                             var unit = document.getElementById('srch-unit') ? document.getElementById('srch-unit').value : '';
@@ -2004,8 +2005,12 @@
 
     <!-- Jobs List API integration -->
     <script>
+<<<<<<< HEAD
         (function () {
             var JOBS_API_BASE = window.AUTH_API_BASE || '';
+=======
+            var JOBS_API_BASE = AUTH_API_BASE;
+>>>>>>> a093fef474e6a2b487bdffc4a9d82b959179465d
             var HOME_JOBS_LIMIT = 4;
 
             function escapeHtml(value) {
@@ -2176,31 +2181,31 @@
             initJobs();
             window.addEventListener('candidate_login_success', initJobs);
             
-            function fetchUnits() {
-                var select = document.getElementById('srch-unit');
-                if (!select) return;
-                
-                fetch(AUTH_API_BASE + '/auth/units')
-                    .then(function(res) {
-                        if (!res.ok) throw new Error('Failed to fetch units');
-                        return res.json();
-                    })
-                    .then(function(units) {
-                        select.innerHTML = '<option value="">Any Unit</option>';
-                        units.forEach(function(unit) {
-                            var option = document.createElement('option');
-                            option.value = unit.unit_name;
-                            option.textContent = unit.unit_name;
-                            select.appendChild(option);
-                        });
-                    })
-                    .catch(function(err) {
-                        console.error('Error fetching units:', err);
-                    });
-            }
-            
-            fetchUnits();
-        })();
+function fetchUnits() {
+    var select = document.getElementById('srch-unit');
+    if (!select) return;
+
+    fetch(AUTH_API_BASE + '/auth/units')
+        .then(function (res) {
+            if (!res.ok) throw new Error('Failed to fetch units');
+            return res.json();
+        })
+        .then(function (units) {
+            select.innerHTML = '<option value="">Any Unit</option>';
+
+            units.forEach(function (unit) {
+                var option = document.createElement('option');
+                option.value = unit.unit_name;
+                option.textContent = unit.unit_name;
+                select.appendChild(option);
+            });
+        })
+        .catch(function (err) {
+            console.error('Error fetching units:', err);
+        });
+}
+
+fetchUnits();
 
     </script>
 
