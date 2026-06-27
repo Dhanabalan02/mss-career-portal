@@ -77,6 +77,7 @@ class IssueOfferPayload(BaseModel):
     offer_remarks: Optional[str] = None
     offer_template: Optional[str] = "standard"
     offer_letter_doc: Optional[str] = None
+    is_draft: Optional[bool] = False
 
 
 @router.post("/offers/{applicant_id}/issue")
@@ -91,41 +92,42 @@ def issue_offer_route(
         raise HTTPException(status_code=404, detail=result["error"])
         
     # Send Notifications
-    try:
-        from app.models import JobApplicant, JobPost, Users
-        from app.crud.notification_crud import notify_candidate, notify_hr_users
-        
-        app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
-        if app:
-            job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
-            candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
-            if job and candidate:
-                candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
-                
-                # 1. Notify Candidate
-                notify_candidate(
-                    db=db,
-                    candidate_id=candidate.user_id,
-                    title="Job Offer Issued",
-                    message=f"You have been issued a job offer for the position of '{job.job_title}' at {job.school_name}. Please review it on your dashboard.",
-                    notification_type="offer_issued",
-                    sender_user_id=admin_id,
-                    sender_type="schoolAdmin"
-                )
-                
-                # 2. Notify HR Users
-                notify_hr_users(
-                    db=db,
-                    title="Job Offer Issued",
-                    message=f"A job offer has been issued to candidate {candidate_name} for '{job.job_title}' at {job.school_name}.",
-                    notification_type="offer_issued",
-                    sender_user_id=admin_id,
-                    sender_type="schoolAdmin"
-                )
-    except Exception as e:
-        from app.core.logger import logger
-        logger.error(f"Error creating offer issued notifications: {e}")
-        
+    if not payload.is_draft:
+        try:
+            from app.models import JobApplicant, JobPost, Users
+            from app.crud.notification_crud import notify_candidate, notify_hr_users
+            
+            app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
+            if app:
+                job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
+                candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
+                if job and candidate:
+                    candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                    
+                    # 1. Notify Candidate
+                    notify_candidate(
+                        db=db,
+                        candidate_id=candidate.user_id,
+                        title="Job Offer Issued",
+                        message=f"You have been issued a job offer for the position of '{job.job_title}' at {job.school_name}. Please review it on your dashboard.",
+                        notification_type="offer_issued",
+                        sender_user_id=admin_id,
+                        sender_type="schoolAdmin"
+                    )
+                    
+                    # 2. Notify HR Users
+                    notify_hr_users(
+                        db=db,
+                        title="Job Offer Issued",
+                        message=f"A job offer has been issued to candidate {candidate_name} for '{job.job_title}' at {job.school_name}.",
+                        notification_type="offer_issued",
+                        sender_user_id=admin_id,
+                        sender_type="schoolAdmin"
+                    )
+        except Exception as e:
+            from app.core.logger import logger
+            logger.error(f"Error creating offer issued notifications: {e}")
+            
     return result
 
 

@@ -29,14 +29,12 @@ def get_admin_job_posts(db: Session, admin_id: int) -> List[JobPost]:
     return db.query(JobPost).filter(JobPost.job_posted_by == admin_id).all()
 
 
-def get_published_job_posts(db: Session) -> List[JobPost]:
+def get_published_job_posts(db: Session, school_name: Optional[str] = None) -> List[JobPost]:
     """Retrieves all published job posts, for the public candidate-facing site."""
-    return (
-        db.query(JobPost)
-        .filter(JobPost.job_status == JobStatus.PUBLISH)
-        .order_by(JobPost.updated_at.desc())
-        .all()
-    )
+    query = db.query(JobPost).filter(JobPost.job_status == JobStatus.PUBLISH)
+    if school_name:
+        query = query.filter(JobPost.school_name == school_name)
+    return query.order_by(JobPost.updated_at.desc()).all()
 
 
 def get_published_job_post_or_404(db: Session, job_id: int) -> JobPost:

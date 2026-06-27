@@ -655,6 +655,11 @@
       color: var(--teal);
     }
 
+    .badge-gray {
+      background: var(--bg2);
+      color: var(--text3);
+    }
+
     /* ─── FUNNEL CHART ──────────────────────────────────────────── */
     .funnel-row {
       display: flex;
@@ -1179,6 +1184,22 @@
       const map = { Applied: 'badge-teal', Screened: 'badge-blue', Interview: 'badge-amber', Offer: 'badge-purple', Onboarding: 'badge-green' };
       return `<span class="badge ${map[s] || 'badge-blue'}">${s}</span>`;
     }
+    function interviewStatusBadge(s) {
+      if (!s) return `<span class="badge badge-gray">—</span>`;
+      const sLower = s.toLowerCase();
+      const map = {
+        scheduled: 'badge-amber',
+        completed: 'badge-green',
+        pending: 'badge-gray',
+        selected: 'badge-green',
+        rejected: 'badge-red',
+        hold: 'badge-amber',
+        'on hold': 'badge-amber',
+        'next round': 'badge-purple',
+        'next_round': 'badge-purple'
+      };
+      return `<span class="badge ${map[sLower] || 'badge-blue'}">${s}</span>`;
+    }
 
     /* ── MODAL ───────────────────────────────────────────────────── */
     function showModal(html) {
@@ -1521,7 +1542,7 @@
                     <td class="td-muted">${c.job}</td>
                     <td>${c.exp}</td>
                     <td>${stageBadge(c.stage)}</td>
-                    <td class="td-muted">${c.interviewStatus}</td>
+                    <td>${interviewStatusBadge(c.interviewStatus)}</td>
                     <td><a class="action-link" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/candidate-profile?applicant_id=${c.job_applicant_id}'">Profile</a></td>`;
               tr.onclick = () => location.href = '/mss-career-portal/hr/candidate-profile?applicant_id=' + c.job_applicant_id;
               aBody.appendChild(tr);

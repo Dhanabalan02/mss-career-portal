@@ -1234,13 +1234,15 @@
     let vacancyGapChartInstance = null;
     let pipelineChartInstance = null;
 
-    function showToast(msg, type = 'success') {
-      if (window.showToast) {
-        window.showToast(msg, type);
+    const _portalShowToast = window.showToast || null;
+    const showToast = (msg, type = 'success') => {
+      if (_portalShowToast) {
+        _portalShowToast(msg, type);
       } else {
         console.log(msg);
       }
-    }
+    };
+    window.showToast = showToast;
 
     function renderMonthlyTrendChart(dataObj) {
       const container = document.getElementById('trendBarView');

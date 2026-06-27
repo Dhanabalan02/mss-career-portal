@@ -1162,13 +1162,15 @@
 
   <script>
     /* ── Toast ── */
-    function showToast(msg, type = 'success') {
-      if (window.showToast) {
-        window.showToast(msg, type);
+    const _portalShowToast = window.showToast || null;
+    const showToast = (msg, type = 'success') => {
+      if (_portalShowToast) {
+        _portalShowToast(msg, type);
       } else {
         console.log(msg);
       }
-    }
+    };
+    window.showToast = showToast;
 
     /* ── Current Date ── */
     (function () {
@@ -1393,7 +1395,8 @@
                 'on hold': 'orange',
                 'hold': 'orange',
                 'scheduled': 'orange',
-                'next round': 'orange',
+                'next round': 'purple',
+                'next_round': 'purple',
                 'rejected': 'red',
                 'cancelled': 'red',
                 'offer expired': 'red',
@@ -1401,7 +1404,13 @@
                 'rescheduled': 'purple',
                 'pending': 'gray'
               };
-              return map[(s || '').toLowerCase().trim()] || 'gray';
+              return map[(s || '').toLowerCase().replace(/_/g, ' ').trim()] || 'gray';
+            };
+            const formatStatusText = s => {
+              if (!s) return 'Pending';
+              const sLower = s.toLowerCase().replace(/_/g, ' ').trim();
+              if (sLower === 'hold') return 'On Hold';
+              return sLower.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
             };
             applicantsTbody.innerHTML = data.recent_applicants.map(a => `
               <tr onclick="window.location.href='/mss-career-portal/school/candidate-profile?id=${a.id}'">
@@ -1418,7 +1427,7 @@
                 <td class="td-muted">${a.applied_date}</td>
                 <td class="td-muted">${a.experience || '--'}</td>
                 <td><span class="badge ${getStageCls(a.stage)}">${a.stage}</span></td>
-                <td><span class="badge ${getStatusCls(a.status)}"><span class="badge-dot"></span>${a.status || 'Pending'}</span></td>
+                <td><span class="badge ${getStatusCls(a.status)}"><span class="badge-dot"></span>${formatStatusText(a.status)}</span></td>
               </tr>
             `).join('');
           } else {

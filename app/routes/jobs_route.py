@@ -70,7 +70,6 @@ def _get_admin_id_from_token(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token."
         )
 
-
 class PreScreeningQuestionRequest(BaseModel):
     question_text: str
     question_type: Optional[str] = None
@@ -194,9 +193,9 @@ def get_job_post_route(
 
 
 @router.get("/public")
-def get_public_job_posts_route(db: Session = Depends(get_db)):
+def get_public_job_posts_route(school_name: Optional[str] = None, db: Session = Depends(get_db)):
     """Retrieves all published job posts. No authentication required — used by the public candidate-facing site."""
-    job_posts = get_published_job_posts(db)
+    job_posts = get_published_job_posts(db, school_name=school_name)
     return [_serialize_job_post(job_post, db=db) for job_post in job_posts]
 
 

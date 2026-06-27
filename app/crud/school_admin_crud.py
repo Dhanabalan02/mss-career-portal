@@ -476,7 +476,8 @@ def issue_offer(db: Session, admin_id: int, applicant_id: int, payload: dict) ->
     ).first()
     if not app:
         return {"error": "Applicant not found"}
-    app.issue_offer = 1
+    is_draft = payload.get("is_draft", False)
+    app.issue_offer = 0 if is_draft else 1
     app.offered_salary = payload.get("offered_salary", app.offered_salary)
     if "joining_date" in payload:
         app.joining_date = payload["joining_date"]

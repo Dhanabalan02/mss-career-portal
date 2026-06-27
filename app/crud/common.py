@@ -115,8 +115,10 @@ def compute_offer_status(app) -> str:
         return 'accepted'
     if app.offer_acceptance_status == OfferAcceptanceStatus.EXPIRED:
         return 'expired'
-    if app.issue_offer:
+    if app.issue_offer == 1:
         return 'sent'
+    if app.offered_salary or app.joining_date:
+        return 'draft'
     if app.applicant_job_status == ApplicantJobStatus.SELECTED:
         return 'awaiting'
     return 'awaiting'
@@ -131,7 +133,7 @@ def check_and_close_job_if_filled(db, job_id: int):
         
     hired_count = db.query(JobApplicant).filter(
         JobApplicant.job_id == job_id,
-        JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED
+        JobApplicant.issue_appointment_order == 1
     ).count()
     
     if hired_count >= job.vacancy_count:

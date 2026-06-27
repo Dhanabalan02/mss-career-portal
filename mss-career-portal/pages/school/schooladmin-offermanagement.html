@@ -1421,7 +1421,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       empty.style.display = 'none';
       tbody.innerHTML = rows.map(c => {
         const s = STATUS_META[c.status];
-        const isAwaiting = c.status === 'awaiting';
+        const isEditable = c.status === 'awaiting' || c.status === 'draft';
         return `<tr data-id="${c.id}">
       <td>
         <div class="avatar-cell">
@@ -1435,13 +1435,13 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       <td>${c.role}</td>
       <td>${c.dept}</td>
       <td style="font-size:12.5px;">${c.school}</td>
-      <td><span class="badge ${s.cls}">${s.label}</span></td>
+      <td><span class="badge ${s ? s.cls : ''}">${s ? s.label : c.status}</span></td>
       <td style="color:var(--text3);font-size:12.5px;">${c.updated}</td>
       <td>
         <div class="action-btns">
-          ${isAwaiting ? `<button class="btn btn-issue btn-sm" onclick="openIssueModal(${c.id})">
+          ${isEditable ? `<button class="btn btn-issue btn-sm" onclick="openIssueModal(${c.id})">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            Issue Offer
+            ${c.status === 'draft' ? 'Edit Draft' : 'Issue Offer'}
           </button>` : `
           <div class="icon-btn" title="View Offer" onclick="viewOffer(${c.id})">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -1501,14 +1501,48 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         `<span class="af-chip">${ch.icon}${ch.text}</span>`
       ).join('');
 
-      // Reset fields
-      ['offSalary', 'offProbation', 'offJoining', 'offExpiry', 'offNotes'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          if (el._flatpickr) el._flatpickr.clear();
-          else el.value = '';
+      // Reset or autofill fields if draft/saved data exists
+      const od = currentCandidate.offerData || {};
+      
+      const salaryEl = document.getElementById('offSalary');
+      if (salaryEl) salaryEl.value = od.salary || '';
+
+      const probationEl = document.getElementById('offProbation');
+      if (probationEl) probationEl.value = od.probation || '';
+
+      const joiningEl = document.getElementById('offJoining');
+      if (joiningEl) {
+        if (joiningEl._flatpickr) {
+          if (od.joining) joiningEl._flatpickr.setDate(od.joining);
+          else joiningEl._flatpickr.clear();
+        } else {
+          joiningEl.value = od.joining || '';
         }
-      });
+      }
+
+      const expiryEl = document.getElementById('offExpiry');
+      if (expiryEl) {
+        if (expiryEl._flatpickr) {
+          if (od.expiry) expiryEl._flatpickr.setDate(od.expiry);
+          else expiryEl._flatpickr.clear();
+        } else {
+          expiryEl.value = od.expiry || '';
+        }
+      }
+
+      const notesEl = document.getElementById('offNotes');
+      if (notesEl) notesEl.value = od.notes || '';
+
+      if (od.template) {
+        selectedTemplate = od.template;
+        const templateCard = document.querySelector(`.template-card[data-tpl="${od.template}"]`);
+        if (templateCard) {
+          document.querySelectorAll('.template-card').forEach(el => el.classList.remove('selected'));
+          templateCard.classList.add('selected');
+        }
+      } else {
+        document.querySelectorAll('.template-card').forEach(el => el.classList.remove('selected'));
+      }
 
       // Set min date to today's local date to prevent past dates selection
       const today = new Date();
@@ -1637,7 +1671,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
           offer_expiry_date: d.expiry || null,
           offer_remarks: d.notes || null,
           offer_template: d.template || 'standard',
-          offer_letter_doc: generateOfferLetterHTML()
+          offer_letter_doc: generateOfferLetterHTML(),
+          is_draft: true
         };
         const res = await fetch(`${API_BASE}/school/offers/${currentCandidate.id}/issue`, {
           method: 'POST',
@@ -1667,7 +1702,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
           offer_expiry_date: d.expiry || null,
           offer_remarks: d.notes || null,
           offer_template: d.template || 'standard',
-          offer_letter_doc: generateOfferLetterHTML()
+          offer_letter_doc: generateOfferLetterHTML(),
+          is_draft: false
         };
         const res = await fetch(`${API_BASE}/school/offers/${currentCandidate.id}/issue`, {
           method: 'POST',

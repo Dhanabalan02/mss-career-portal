@@ -2021,9 +2021,21 @@
                 return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             }
 
+            function getSchoolLogo(schoolName) {
+                var school = String(schoolName || '').toLowerCase();
+                if (school.indexOf('lady andal') !== -1) {
+                    return 'images/mss/laib-logo.png';
+                }
+                if (school.indexOf('sir mutha') !== -1) {
+                    return 'images/mss/sir-mutha-logo.png';
+                }
+                return 'images/mss/mss-logo.svg';
+            }
+
             function buildJobCard(job) {
                 var title = escapeHtml(job.job_title || 'Untitled Role');
                 var unit = escapeHtml(job.school_name || job.department || 'The Madras Seva Sadan');
+                var logo = getSchoolLogo(job.school_name);
                 var jobType = escapeHtml(job.job_type || 'Full Time');
                 var description = escapeHtml(job.job_description || '').slice(0, 150);
                 var closing = formatDate(job.closing_date);
@@ -2101,7 +2113,7 @@
                     '<div class="d-flex justify-content-between align-items-start mb-3">' +
                     '<div class="d-flex align-items-center gap-3">' +
                     '<div style="width:48px;height:48px;border-radius:12px;background:#F1F5F9;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">' +
-                    '<img src="images/mss/mss-logo.svg" style="max-width:38px;max-height:38px;object-fit:contain;"></div>' +
+                    '<img src="' + logo + '" style="max-width:38px;max-height:38px;object-fit:contain;"></div>' +
                     '<div>' +
                     '<div style="font-family:\'Rubik\',sans-serif;font-size:0.75rem;font-weight:600;color:#64748B;">' + unit + '</div>' +
                     '</div></div></div>' +

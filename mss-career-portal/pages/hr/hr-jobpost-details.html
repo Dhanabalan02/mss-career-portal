@@ -1572,13 +1572,15 @@
         window.location.href = '/mss-career-portal/hr/jobpost-list';
       }
 
-      function showToast(msg, type = 'success') {
-        if (window.showToast) {
-          window.showToast(msg, type);
+      const _portalShowToast = window.showToast || null;
+      const showToast = (msg, type = 'success') => {
+        if (_portalShowToast) {
+          _portalShowToast(msg, type);
         } else {
           console.log(msg);
         }
-      }
+      };
+      window.showToast = showToast;
 
       function getJobId() {
         const params = new URLSearchParams(window.location.search);

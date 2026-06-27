@@ -1126,6 +1126,19 @@
       return map[stage] || 'badge-gray';
     }
 
+    function getInterviewStatusBadgeClass(status) {
+      if (!status) return 'badge-gray';
+      const sLower = status.toLowerCase();
+      if (sLower === 'scheduled') return 'badge-orange';
+      if (sLower === 'completed') return 'badge-green';
+      if (sLower === 'pending') return 'badge-gray';
+      if (sLower === 'selected') return 'badge-green';
+      if (sLower === 'rejected') return 'badge-red';
+      if (sLower === 'hold' || sLower === 'on hold') return 'badge-orange';
+      if (sLower === 'next round' || sLower === 'next_round') return 'badge-purple';
+      return 'badge-gray';
+    }
+
     function renderHeader() {
       document.getElementById('breadcrumb-name').textContent = candidateData.name;
       document.getElementById('profile-title').textContent = candidateData.name;
@@ -1175,10 +1188,15 @@
       // Quick stats
       const statsEl = document.getElementById('overview-quick-stats');
       const noticePeriod = (candidateData.experience && candidateData.experience.length > 0 && candidateData.experience[0].notice_period) ? candidateData.experience[0].notice_period : '—';
+      let statusHtml = '—';
+      if (candidateData.interviewStatus) {
+        statusHtml = `<span class="badge ${getInterviewStatusBadgeClass(candidateData.interviewStatus)}">${candidateData.interviewStatus}</span>`;
+      }
+
       statsEl.innerHTML = `
         <div class="info-row"><span class="info-label">Applied Date</span><span class="info-value">${candidateData.appliedDate}</span></div>
         <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(candidateData.stage)}">${candidateData.stage}</span></span></div>
-        <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${candidateData.interviewStatus}</span></div>
+        <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${statusHtml}</span></div>
         <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
       `;
 
@@ -1408,7 +1426,8 @@
       listEl.innerHTML = '';
 
       const nextBtn = document.getElementById('scheduleNextRoundBtn');
-      if (candidateData.stage === 'Screened') {
+      const hasNextRoundStatus = candidateData.interviewStatus && (candidateData.interviewStatus.toLowerCase() === 'next round' || candidateData.interviewStatus.toLowerCase() === 'next_round');
+      if (candidateData.stage === 'Screened' || hasNextRoundStatus) {
         nextBtn.style.display = 'inline-flex';
       } else {
         nextBtn.style.display = 'none';

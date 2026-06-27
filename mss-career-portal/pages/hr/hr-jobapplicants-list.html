@@ -561,6 +561,14 @@
       background: var(--amber);
     }
 
+    .status-next-round {
+      color: var(--purple-text);
+    }
+
+    .status-next-round .status-dot {
+      background: var(--purple-text);
+    }
+
     /* ── Action buttons ── */
     .action-btn {
       padding: 5px 12px;
@@ -1103,6 +1111,7 @@
       if (sLower === 'selected') return `<span class="interview-status status-selected"><span class="status-dot"></span>Selected</span>`;
       if (sLower === 'rejected') return `<span class="interview-status status-rejected"><span class="status-dot"></span>Rejected</span>`;
       if (sLower === 'hold' || sLower === 'on hold') return `<span class="interview-status status-hold"><span class="status-dot"></span>${s}</span>`;
+      if (sLower === 'next_round' || sLower === 'next round') return `<span class="interview-status status-next-round"><span class="status-dot"></span>Next Round</span>`;
       return `<span style="color:var(--text3);">${s}</span>`;
     }
 

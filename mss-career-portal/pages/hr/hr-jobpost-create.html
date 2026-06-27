@@ -1141,6 +1141,24 @@
       min-width: 160px;
       max-width: 280px;
     }
+
+    /* Inline form field validation styling */
+    .form-group.has-error input,
+    .form-group.has-error select,
+    .form-group.has-error textarea {
+      border-color: var(--red) !important;
+      background-color: var(--red-bg) !important;
+    }
+    .form-group .error-message {
+      color: var(--red);
+      font-size: 12px;
+      margin-top: 4px;
+      display: none;
+      font-weight: 500;
+    }
+    .form-group.has-error .error-message {
+      display: block;
+    }
   </style>
 </head>
 
@@ -1215,11 +1233,11 @@
           <div class="form-grid">
             <div class="form-group span2">
               <label>Job Title <span class="req">*</span></label>
-              <input type="text" id="jobTitle" placeholder="e.g. Senior Mathematics Teacher" oninput="this.value = this.value.replace(/[0-9]/g, ''); syncPreview()">
+              <input type="text" id="jobTitle" placeholder="e.g. Senior Mathematics Teacher" oninput="this.value = this.value.replace(/[0-9]/g, ''); syncPreview()" required>
             </div>
             <div class="form-group">
               <label>Department <span class="req">*</span></label>
-              <select id="dept" onchange="syncPreview()">
+              <select id="dept" onchange="syncPreview()" required>
                 <option value="">Select Department</option>
                 <option>Teaching Staff</option>
                 <option>Administration</option>
@@ -1232,7 +1250,7 @@
             </div>
             <div class="form-group">
               <label>Job Type <span class="req">*</span></label>
-              <select id="jobType" onchange="syncPreview()">
+              <select id="jobType" onchange="syncPreview()" required>
                 <option>Full-time</option>
                 <option>Part-time</option>
                 <option>Contract</option>
@@ -1241,32 +1259,32 @@
             </div>
             <div class="form-group">
               <label>Number of Vacancies <span class="req">*</span></label>
-              <input type="number" id="vacancies" placeholder="e.g. 3" min="1" value="1" oninput="syncPreview()">
+              <input type="number" id="vacancies" placeholder="e.g. 3" min="1" value="1" oninput="syncPreview()" required>
             </div>
             <div class="form-group">
-              <label>School / Unit</label>
-              <select id="school">
+              <label>School / Unit <span class="req">*</span></label>
+              <select id="school" required>
                 <option value="">Select School</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Experience Range (years)</label>
+              <label>Experience Range (years) <span class="req">*</span></label>
               <div class="range-row">
-                <input type="number" id="expMin" placeholder="Min" style="flex:1;" oninput="syncPreview()">
+                <input type="number" id="expMin" placeholder="Min" style="flex:1;" oninput="syncPreview()"  required>
                 <span class="range-sep">to</span>
-                <input type="number" id="expMax" placeholder="Max" style="flex:1;" oninput="syncPreview()">
+                <input type="number" id="expMax" placeholder="Max" style="flex:1;" oninput="syncPreview()"  required>
               </div>
             </div>
             <div class="form-group">
-              <label>Application Closing Date</label>
-              <input type="date" id="closeDate">
+              <label>Application Closing Date <span class="req">*</span></label>
+              <input type="date" id="closeDate" required>
             </div>
             <div class="form-group span2">
               <label>Job Description <span class="req">*</span></label>
               <div class="char-wrap">
                 <textarea id="jobDesc" rows="6"
                   placeholder="Describe the role, responsibilities, and what you're looking for in an ideal candidate…"
-                  oninput="countChars(this,'descCount')"></textarea>
+                  oninput="countChars(this,'descCount')" required></textarea>
                 <span class="char-count" id="descCount">0</span>
               </div>
               <div class="hint">A detailed description attracts more qualified candidates.</div>
@@ -1586,34 +1604,38 @@
     // Delegated handling via data-* attributes avoids the quoting problem
     // entirely and survives re-renders since it's bound once on document.
     document.addEventListener('click', e => {
-      const skillOpt = e.target.closest('#skillOptionsList .edu-option');
-      if (skillOpt) {
+      const eduOption = e.target.closest('.edu-option');
+      if (eduOption) {
         e.stopPropagation();
-        const skill = skillState.all.find(s => s.id === Number(skillOpt.dataset.skillId));
-        if (skill) toggleSkillOption(skill.id, skill.label);
-        return;
+        if (eduOption.closest('#skillOptionsList')) {
+          const skillId = Number(eduOption.dataset.skillId);
+          const skill = skillState.all.find(s => s.id === skillId);
+          if (skill) toggleSkillOption(skill.id, skill.label);
+          return;
+        }
+        if (eduOption.closest('#eduOptionsList')) {
+          const eduId = Number(eduOption.dataset.eduId);
+          const edu = eduState.all.find(s => s.id === eduId);
+          if (edu) toggleEduOption(edu.id, edu.label);
+          return;
+        }
       }
-      const skillRm = e.target.closest('#skillTags .rm');
-      if (skillRm) {
+
+      const tagRm = e.target.closest('.edu-tag .rm');
+      if (tagRm) {
         e.stopPropagation();
-        const id = Number(skillRm.closest('.edu-tag').dataset.skillId);
-        const skill = skillState.selected.find(s => s.id === id);
-        if (skill) toggleSkillOption(skill.id, skill.label);
-        return;
-      }
-      const eduOpt = e.target.closest('#eduOptionsList .edu-option');
-      if (eduOpt) {
-        e.stopPropagation();
-        const edu = eduState.all.find(s => s.id === Number(eduOpt.dataset.eduId));
-        if (edu) toggleEduOption(edu.id, edu.label);
-        return;
-      }
-      const eduRm = e.target.closest('#eduTags .rm');
-      if (eduRm) {
-        e.stopPropagation();
-        const id = Number(eduRm.closest('.edu-tag').dataset.eduId);
-        const edu = eduState.selected.find(s => s.id === id);
-        if (edu) toggleEduOption(edu.id, edu.label);
+        const tag = tagRm.closest('.edu-tag');
+        if (tag) {
+          if (tag.dataset.skillId) {
+            const skillId = Number(tag.dataset.skillId);
+            const skill = skillState.selected.find(s => s.id === skillId);
+            if (skill) toggleSkillOption(skill.id, skill.label);
+          } else if (tag.dataset.eduId) {
+            const eduId = Number(tag.dataset.eduId);
+            const edu = eduState.selected.find(s => s.id === eduId);
+            if (edu) toggleEduOption(edu.id, edu.label);
+          }
+        }
         return;
       }
     });
@@ -1770,12 +1792,142 @@
     document.addEventListener('input', saveDraftState);
     document.addEventListener('change', saveDraftState);
 
+    function showFieldError(fieldId, errorMsg) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      
+      const formGroup = field.closest('.form-group');
+      if (!formGroup) return;
+      
+      formGroup.classList.add('has-error');
+      
+      let errorEl = formGroup.querySelector('.error-message');
+      if (!errorEl) {
+        errorEl = document.createElement('div');
+        errorEl.className = 'error-message';
+        const hintEl = formGroup.querySelector('.hint');
+        if (hintEl) {
+          formGroup.insertBefore(errorEl, hintEl);
+        } else {
+          formGroup.appendChild(errorEl);
+        }
+      }
+      errorEl.textContent = errorMsg;
+      errorEl.style.display = 'block';
+    }
+
+    function clearFieldError(fieldId) {
+      const field = document.getElementById(fieldId);
+      if (!field) return;
+      
+      const formGroup = field.closest('.form-group');
+      if (!formGroup) return;
+      
+      formGroup.classList.remove('has-error');
+      const errorEl = formGroup.querySelector('.error-message');
+      if (errorEl) {
+        errorEl.style.display = 'none';
+      }
+    }
+
+    function clearAllFieldErrors() {
+      document.querySelectorAll('.form-group.has-error').forEach(fg => {
+        fg.classList.remove('has-error');
+        const err = fg.querySelector('.error-message');
+        if (err) err.style.display = 'none';
+      });
+    }
+
+    function validateStep1() {
+      clearAllFieldErrors();
+      let isValid = true;
+      let firstInvalidId = null;
+
+      const jobTitle = document.getElementById('jobTitle').value.trim();
+      const department = document.getElementById('dept').value;
+      const jobType = document.getElementById('jobType').value;
+      const vacancies = document.getElementById('vacancies').value;
+      const schoolName = document.getElementById('school').value;
+      const minExp = document.getElementById('expMin').value.trim();
+      const maxExp = document.getElementById('expMax').value.trim();
+      const closingDate = document.getElementById('closeDate').value;
+      const jobDescription = document.getElementById('jobDesc').value.trim();
+
+      const setError = (id, msg) => {
+        showFieldError(id, msg);
+        isValid = false;
+        if (!firstInvalidId) firstInvalidId = id;
+      };
+
+      if (!jobTitle) {
+        setError('jobTitle', 'Job Title is required');
+      }
+      if (!department) {
+        setError('dept', 'Department is required');
+      }
+      if (!jobType) {
+        setError('jobType', 'Job Type is required');
+      }
+      if (!vacancies || parseInt(vacancies) < 1) {
+        setError('vacancies', 'Number of Vacancies must be at least 1');
+      }
+      if (!schoolName) {
+        setError('school', 'School / Unit is required');
+      }
+      if (!minExp) {
+        setError('expMin', 'Minimum Experience is required');
+      }
+      if (!maxExp) {
+        setError('expMax', 'Maximum Experience is required');
+      }
+      if (minExp && maxExp && parseInt(minExp) > parseInt(maxExp)) {
+        setError('expMin', 'Minimum Experience cannot be greater than Maximum Experience');
+        setError('expMax', 'Maximum Experience cannot be less than Minimum Experience');
+      }
+      if (!closingDate) {
+        setError('closeDate', 'Application Closing Date is required');
+      }
+      if (!jobDescription) {
+        setError('jobDesc', 'Job Description is required');
+      }
+
+      if (!isValid && firstInvalidId) {
+        const field = document.getElementById(firstInvalidId);
+        if (field) field.focus();
+      }
+
+      return isValid;
+    }
+
+    function initValidationListeners() {
+      const fields = ['jobTitle', 'dept', 'jobType', 'vacancies', 'school', 'expMin', 'expMax', 'closeDate', 'jobDesc'];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const eventType = el.tagName === 'SELECT' ? 'change' : 'input';
+          el.addEventListener(eventType, () => {
+            clearFieldError(id);
+            if (id === 'expMin') clearFieldError('expMax');
+            if (id === 'expMax') clearFieldError('expMin');
+          });
+        }
+      });
+    }
+
     function goStep(n) {
       if (n > currentStep) return;
       nextStep(n);
     }
 
     function nextStep(n) {
+      if (n > currentStep) {
+        if (currentStep === 1) {
+          if (!validateStep1()) {
+            return;
+          }
+        }
+      }
+
       document.getElementById('step' + currentStep).classList.remove('active');
       document.getElementById('step' + currentStep).style.display = '';
       document.getElementById('step' + n).classList.add('active');
@@ -2016,30 +2168,28 @@
       overlay.remove();
     }
 
-    function showToast(msg, type = 'success') {
-      if (window.showToast) {
-        window.showToast(msg, type);
+    const _portalShowToast = window.showToast || null;
+    const showToast = (msg, type = 'success') => {
+      if (_portalShowToast) {
+        _portalShowToast(msg, type);
       } else {
         console.log(msg);
       }
-    }
+    };
+    window.showToast = showToast;
 
     function saveDraft() {
       submitJobPost('draft');
     }
 
     function publishNow() {
-      const jobTitle = document.getElementById('jobTitle').value.trim();
-      const department = document.getElementById('dept').value;
-      const jobType = document.getElementById('jobType').value;
-      const jobDescription = document.getElementById('jobDesc').value.trim();
-      const closingDate = document.getElementById('closeDate').value;
-
-      if (!jobTitle || !department || !jobType || !jobDescription || !closingDate) {
-        showToast('❌ Please fill all required fields before publishing.');
+      if (!validateStep1()) {
         goStep(1);
         return;
       }
+
+      const jobTitle = document.getElementById('jobTitle').value.trim();
+      const closingDate = document.getElementById('closeDate').value;
 
       const overlay = document.createElement('div');
       overlay.className = 'modal-overlay';
@@ -2150,30 +2300,14 @@
       const additionalRequirements = addReqsEl ? addReqsEl.value.trim() : null;
 
       // Validation
-      if (!jobTitle) {
-        showToast('❌ Job Title is required');
-        goStep(1);
-        return;
-      }
-      
       if (status === 'publish') {
-        if (!department) {
-          showToast('❌ Department is required');
+        if (!validateStep1()) {
           goStep(1);
           return;
         }
-        if (!jobType) {
-          showToast('❌ Job Type is required');
-          goStep(1);
-          return;
-        }
-        if (!jobDescription) {
-          showToast('❌ Job Description is required');
-          goStep(1);
-          return;
-        }
-        if (!closingDate) {
-          showToast('❌ Closing Date is required');
+      } else {
+        if (!jobTitle) {
+          showFieldError('jobTitle', 'Job Title is required');
           goStep(1);
           return;
         }
@@ -2221,10 +2355,8 @@
 
         if (res.ok) {
           clearDraftState();
-          showToast(status === 'publish' ? '🚀 Published successfully!' : '✓ Draft saved successfully!');
-          setTimeout(() => {
-            window.location.href = '/mss-career-portal/hr/jobpost-list';
-          }, 1500);
+          sessionStorage.setItem('toastMessage', status === 'publish' ? '🚀 Published successfully!' : '✓ Draft saved successfully!');
+          window.location.href = '/mss-career-portal/hr/jobpost-list';
         } else {
           const errorData = await res.json();
           const detail = errorData.detail || 'Failed to save job post';
@@ -2352,7 +2484,10 @@
       } catch {
         list.innerHTML = '<div class="edu-no-results">Failed to load skills.</div>';
       }
-      document.addEventListener('click', e => { if (!wrap.contains(e.target)) closeSkillDropdown(); });
+      document.addEventListener('click', e => {
+        if (!e.target.isConnected) return;
+        if (!wrap.contains(e.target)) closeSkillDropdown();
+      });
     }
 
     function openSkillDropdown() {
@@ -2464,6 +2599,7 @@
       }
 
       document.addEventListener('click', e => {
+        if (!e.target.isConnected) return;
         if (!wrap.contains(e.target)) closeEduDropdown();
       });
     }
@@ -2646,6 +2782,7 @@
     }
 
     async function initializePage() {
+      initValidationListeners();
       await Promise.all([
         initEduSelect(),
         initSkillSelect(),
