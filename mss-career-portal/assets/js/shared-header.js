@@ -528,6 +528,10 @@ function applyAuthUI() {
         container.appendChild(wrap.firstChild);
       }
     });
+
+    header.querySelectorAll('.mss-profile-link').forEach(function (link) {
+      link.style.display = '';
+    });
   });
 
   if (window.feather) window.feather.replace();
