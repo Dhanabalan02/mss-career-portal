@@ -1,5 +1,4 @@
-
-    :root {
+:root {
     --primary-color: #cc8cfc;
     --white-color: #ffffff;
     --primary-btn-color: linear-gradient(135deg, #cc8cfc, #7b2cbf); 
@@ -111,9 +110,21 @@
 
 #candidateLoginModal .mss-modal-field:focus-within,
 #candidateRegisterModal .mss-modal-field:focus-within {
-  border-color: #3B82F6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+  border-color: var(--primary-color);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.1) !important;
+  /* box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); */
   background: #fff;
+}
+
+.form-check-input:checked {
+   background-color: var(--primary-color); 
+   border-color: var(--primary-color);
+  }
+
+.form-check-input:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(157, 13, 253, 0.25);
 }
 
 #candidateLoginModal .mss-modal-field > i,
@@ -169,7 +180,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  color: #ff1f06;
+  /* color: #ff1f06; */
+  color: #3c3c3c;
   font-family: 'Rubik', sans-serif;
   font-size: 0.73rem;
   font-weight: 600;
@@ -342,4 +354,3 @@
   opacity: 1;
   transform: translateY(0);
 }
-

@@ -41,7 +41,6 @@ class CatchExceptionsMiddleware(BaseHTTPMiddleware):
             return JSONResponse(status_code=500, content={"detail": "Internal server error."})
 
 # Must be added before CORSMiddleware so it ends up nested inside it
-# (Starlette's add_middleware prepends, so call order is reversed from wrap order).
 app.add_middleware(CatchExceptionsMiddleware)
 
 # 2. Add CORSMiddleware to your FastAPI application
