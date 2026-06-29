@@ -1160,6 +1160,25 @@
       display: block;
     }
   </style>
+  <script>
+    function handleSchoolChange() {
+      const schoolSelect = document.getElementById('school');
+      const programmeGroup = document.getElementById('programmeGroup');
+      const programmeSelect = document.getElementById('programme');
+      
+      const val = schoolSelect && schoolSelect.value ? schoolSelect.value.toLowerCase().trim() : '';
+      if (val === 'lady andal school') {
+        if (programmeGroup) programmeGroup.style.display = 'block';
+        if (programmeSelect) programmeSelect.required = true;
+      } else {
+        if (programmeGroup) programmeGroup.style.display = 'none';
+        if (programmeSelect) {
+            programmeSelect.required = false;
+            programmeSelect.value = '';
+        }
+      }
+    }
+  </script>
 </head>
 
 <body>
@@ -1263,8 +1282,26 @@
             </div>
             <div class="form-group">
               <label>School / Unit <span class="req">*</span></label>
-              <select id="school" required>
+              <select id="school" required onchange="handleSchoolChange()">
                 <option value="">Select School</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Location <span class="req">*</span></label>
+              <select id="location" required>
+                <option value="">Select Location</option>
+                <option value="Chetpet">Chetpet</option>
+                <option value="Tambaram">Tambaram</option>
+                <option value="T.Nagar">T.Nagar</option>
+              </select>
+            </div>
+            <div class="form-group" id="programmeGroup" style="display:none;">
+              <label>Programme <span class="req">*</span></label>
+              <select id="programme">
+                <option value="">Select Programme</option>
+                <option>PYP</option>
+                <option>MYP</option>
+                <option>DP</option>
               </select>
             </div>
             <div class="form-group">
@@ -2289,6 +2326,8 @@
       const jobType = document.getElementById('jobType').value;
       const vacancies = parseInt(document.getElementById('vacancies').value) || 1;
       const schoolName = document.getElementById('school').value;
+      const locationVal = document.getElementById('location') ? document.getElementById('location').value.trim() : null;
+      const programmeVal = document.getElementById('programme') ? document.getElementById('programme').value : null;
 
       const minExp = document.getElementById('expMin').value.trim() || null;
       const maxExp = document.getElementById('expMax').value.trim() || null;
@@ -2324,6 +2363,8 @@
         job_type: jobType,
         vacancy_count: vacancies,
         school_name: schoolName || null,
+        location: locationVal || null,
+        programme: programmeVal || null,
         min_exp: minExp,
         max_exp: maxExp,
         closing_date: closingDate || null,
@@ -2704,6 +2745,9 @@
           setFieldVal('jobType', job.job_type);
           setFieldVal('vacancies', job.vacancy_count);
           setFieldVal('school', job.school_name);
+          if (typeof handleSchoolChange === 'function') handleSchoolChange();
+          if (job.location) setFieldVal('location', job.location);
+          if (job.programme) setFieldVal('programme', job.programme);
           setFieldVal('expMin', job.min_exp);
           setFieldVal('expMax', job.max_exp);
           

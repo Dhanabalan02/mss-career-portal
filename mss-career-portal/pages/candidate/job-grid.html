@@ -1655,23 +1655,11 @@
                     }
                     return 'images/mss/mss-logo.svg';
                 }
-
-                function getJobLocation(schoolName) {
-                    var school = String(schoolName || '').toLowerCase();
-                    if (school.indexOf('tambaram') !== -1 || school.indexOf('prem vihar') !== -1 || school.indexOf('secondary school') !== -1) {
-                        return 'Tambaram';
-                    }
-                    if (school.indexOf('t. nagar') !== -1 || school.indexOf('tnagar') !== -1) {
-                        return 'T. Nagar';
-                    }
-                    return 'Chetpet';
-                }
-
                 function buildJobCard(job) {
                     var title = escapeHtml(job.job_title || 'Untitled Role');
                     var school = escapeHtml(job.school_name || job.department || 'The Madras Seva Sadan');
                     var logo = getSchoolLogo(job.school_name);
-                    var location = getJobLocation(job.school_name);
+                    var location = job.location || 'Chennai';
                     var type = escapeHtml(job.job_type || 'Full Time');
                     var id = job.job_id;
 
@@ -1691,7 +1679,7 @@
                         '<i class="feather-home"></i> ' + school +
                         '</div>' +
                         '<div class="jg-card-meta">' +
-                        '<span><i class="feather-map-pin"></i> ' + location + ', Chennai</span>' +
+                        '<span><i class="feather-map-pin"></i> ' + location + '</span>' +
                         '<span><i class="feather-clock"></i> ' + type + '</span>' +
                         '</div>' +
                         '<div class="jg-card-footer">' +
@@ -1744,7 +1732,8 @@
                         var matchesKeyword = !kw || jobText.indexOf(kw) !== -1;
                         var matchesUnit = !unit || school.indexOf(unit) !== -1 || (school !== '' && unit.indexOf(school) !== -1);
                         var matchesCategory = !cat || department.indexOf(cat) !== -1 || (department !== '' && cat.indexOf(department) !== -1);
-                        var matchesLocation = !loc || getJobLocation(job.school_name).toLowerCase() === loc;
+                        var jobLocStr = String(job.location || '').toLowerCase();
+                        var matchesLocation = !loc || jobLocStr.indexOf(loc) !== -1;
 
                         return matchesKeyword && matchesUnit && matchesCategory && matchesLocation;
                     });

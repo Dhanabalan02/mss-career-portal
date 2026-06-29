@@ -2050,6 +2050,10 @@
                 if (job.vacancy_count) {
                     tags += '<span style="background:#F8FAFC;color:#475569;font-family:\'Rubik\',sans-serif;font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:50px;border:1px solid #E2E8F0;display:inline-flex;align-items:center;gap:5px;"><i class="feather-users" style="font-size:0.72rem;"></i> ' + escapeHtml(job.vacancy_count) + ' Opening(s)</span>';
                 }
+                var location = job.location;
+                if (location) {
+                    tags += '<span style="background:#F8FAFC;color:#475569;font-family:\'Rubik\',sans-serif;font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:50px;border:1px solid #E2E8F0;display:inline-flex;align-items:center;gap:5px;"><i class="feather-map-pin" style="font-size:0.72rem;"></i> ' + escapeHtml(location) + '</span>';
+                }
 
                 window.handleApplyClick = function (event, jobId) {
                     if (event) {

@@ -26,26 +26,35 @@ def ats_pipeline(
     admin_id: int = Depends(get_current_admin_id),
 ):
     from datetime import datetime
+
     candidates = get_ats_candidates(db, admin_id)
-    
+
     total_count = len(candidates)
     unique_jobs_count = len(set(c.get("job_id") for c in candidates if c.get("job_id")))
-    
+
     interviewing_count = sum(1 for c in candidates if c.get("stage") == "Interview")
-    interview_pct = round((interviewing_count / total_count * 100), 1) if total_count > 0 else 0
-    
-    offers_count = sum(1 for c in candidates if c.get("stage") in ["Offer", "Offer Accepted"])
+    interview_pct = (
+        round((interviewing_count / total_count * 100), 1) if total_count > 0 else 0
+    )
+
+    offers_count = sum(
+        1 for c in candidates if c.get("stage") in ["Offer", "Offer Accepted"]
+    )
     accepted_count = sum(1 for c in candidates if c.get("stage") == "Offer Accepted")
-    
+
     current_month = datetime.now().month
     current_year = datetime.now().year
     onboarding_this_month = 0
     for c in candidates:
         if c.get("stage") == "Onboarding":
             updated = c.get("updated_at")
-            if updated and updated.month == current_month and updated.year == current_year:
+            if (
+                updated
+                and updated.month == current_month
+                and updated.year == current_year
+            ):
                 onboarding_this_month += 1
-                
+
     # Remove updated_at from serialization just to keep response clean (optional, but good practice)
     for c in candidates:
         c.pop("updated_at", None)
@@ -59,8 +68,8 @@ def ats_pipeline(
             "total": f"Across {unique_jobs_count} position{'s' if unique_jobs_count != 1 else ''}",
             "interview": f"{interview_pct}% of pipeline",
             "offers": f"{accepted_count} accepted so far",
-            "onboarding": f"{onboarding_this_month} active this month"
-        }
+            "onboarding": f"{onboarding_this_month} active this month",
+        },
     }
 
     return {"candidates": candidates, "stats": stats}
@@ -124,6 +133,7 @@ def masset_stats(
     admin_id: int = Depends(get_current_admin_id),
 ):
     from app.crud.hr_crud import get_masset_stats
+
     stats = get_masset_stats(db, admin_id)
     return stats
 
@@ -142,6 +152,7 @@ def masset_sync(
     result = sync_masset(db, admin_id, applicant_id, payload.employee_id or "")
     return result
 
+
 @router.get("/pending-actions")
 def pending_actions(
     db: Session = Depends(get_db),
@@ -157,16 +168,17 @@ class MassetWebhookRequest(BaseModel):
 
 
 @router.post("/masset/webhook")
-def masset_webhook(
-    payload: MassetWebhookRequest,
-    db: Session = Depends(get_db)
-):
+def masset_webhook(payload: MassetWebhookRequest, db: Session = Depends(get_db)):
     """
-    Webhook endpoint for MASSET external HRMS to update candidate status 
+    Webhook endpoint for MASSET external HRMS to update candidate status
     based on masset_employee_id.
     """
     from app.crud.hr_crud import update_masset_status_from_webhook
-    return update_masset_status_from_webhook(db, payload.masset_employee_id, payload.status)
+
+    return update_masset_status_from_webhook(
+        db, payload.masset_employee_id, payload.status
+    )
+
 
 @router.get("/sidebar-counts")
 def sidebar_counts(
@@ -174,29 +186,42 @@ def sidebar_counts(
     admin_id: int = Depends(get_current_admin_id),
 ):
     from app.crud.hr_crud import get_sidebar_counts
+
     return get_sidebar_counts(db, admin_id)
 
 
 @router.get("/dashboard-page")
 def dashboard_page():
-    return serve_html_with_base("mss-career-portal/pages/hr/hr-dashboard.html", "/mss-career-portal/pages/hr/")
+    return serve_html_with_base(
+        "mss-career-portal/pages/hr/hr-dashboard.html", "/mss-career-portal/pages/hr/"
+    )
 
 
 @router.get("/ats-pipeline-page")
 def ats_pipeline_page():
-    return serve_html_with_base("mss-career-portal/pages/hr/hr-atspipeline.html", "/mss-career-portal/pages/hr/")
+    return serve_html_with_base(
+        "mss-career-portal/pages/hr/hr-atspipeline.html", "/mss-career-portal/pages/hr/"
+    )
 
 
 @router.get("/interviews-page")
 def interviews_page():
-    return serve_html_with_base("mss-career-portal/pages/hr/hr-interviewlist.html", "/mss-career-portal/pages/hr/")
+    return serve_html_with_base(
+        "mss-career-portal/pages/hr/hr-interviewlist.html",
+        "/mss-career-portal/pages/hr/",
+    )
 
 
 @router.get("/reports-page")
 def reports_page():
-    return serve_html_with_base("mss-career-portal/pages/hr/hr-reports.html", "/mss-career-portal/pages/hr/")
+    return serve_html_with_base(
+        "mss-career-portal/pages/hr/hr-reports.html", "/mss-career-portal/pages/hr/"
+    )
 
 
 @router.get("/masset-candidates-page")
 def masset_candidates_page():
-    return serve_html_with_base("mss-career-portal/pages/hr/masset-sync-dashboard.html", "/mss-career-portal/pages/hr/")
+    return serve_html_with_base(
+        "mss-career-portal/pages/hr/masset-sync-dashboard.html",
+        "/mss-career-portal/pages/hr/",
+    )

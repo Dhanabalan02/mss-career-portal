@@ -86,6 +86,8 @@ class JobPostCreateRequest(BaseModel):
     job_type: Optional[str] = None
     vacancy_count: Optional[int] = None
     school_name: Optional[str] = None
+    location: Optional[str] = None
+    programme: Optional[str] = None
     min_exp: Optional[str] = None
     max_exp: Optional[str] = None
     closing_date: Optional[date] = None
@@ -103,6 +105,8 @@ class JobPostUpdateRequest(BaseModel):
     job_type: Optional[str] = None
     vacancy_count: Optional[int] = None
     school_name: Optional[str] = None
+    location: Optional[str] = None
+    programme: Optional[str] = None
     min_exp: Optional[str] = None
     max_exp: Optional[str] = None
     closing_date: Optional[date] = None
@@ -153,6 +157,8 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "job_type": job_post.job_type,
         "vacancy_count": job_post.vacancy_count,
         "school_name": job_post.school_name,
+        "location": job_post.location,
+        "programme": job_post.programme,
         "min_exp": job_post.min_exp,
         "max_exp": job_post.max_exp,
         "closing_date": job_post.closing_date,
@@ -963,6 +969,8 @@ def create_job_post_route(
         job_type=form_data.job_type,
         vacancy_count=form_data.vacancy_count,
         school_name=form_data.school_name,
+        location=form_data.location,
+        programme=form_data.programme,
         min_exp=form_data.min_exp,
         max_exp=form_data.max_exp,
         closing_date=form_data.closing_date,
@@ -993,6 +1001,8 @@ def update_job_post_route(
         job_type=form_data.job_type,
         vacancy_count=form_data.vacancy_count,
         school_name=form_data.school_name,
+        location=form_data.location,
+        programme=form_data.programme,
         min_exp=form_data.min_exp,
         max_exp=form_data.max_exp,
         closing_date=form_data.closing_date,

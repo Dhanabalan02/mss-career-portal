@@ -33,6 +33,10 @@ class JobPost(Base):
     
     department: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     
+    location: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    
+    programme: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    
     vacancy_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     
     min_exp: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)

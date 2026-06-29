@@ -1976,3 +1976,713 @@ sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't co
 [2026-06-29 11:00:52] INFO in config: Constructing the database URL from environment variables.
 [2026-06-29 11:00:52] INFO in database: Database engine created successfully.
 [2026-06-29 11:00:54] INFO in main: FastAPI application has started successfully.
+[2026-06-29 15:06:14] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 15:06:14] INFO in database: Database engine created successfully.
+[2026-06-29 15:06:17] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 15:06:17] INFO in database: Database engine created successfully.
+[2026-06-29 15:06:21] INFO in main: FastAPI application has started successfully.
+[2026-06-29 15:06:29] ERROR in main: Unhandled error on GET /auth/units: (pymysql.err.OperationalError) (2013, 'Lost connection to MySQL server during query ([WinError 10054] An existing connection was forcibly closed by the remote host)')
+[SQL: SELECT units.id AS units_id, units.unit_name AS units_unit_name 
+FROM units]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 810, in _read_bytes
+    data = self._rfile.read(num_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\socket.py", line 720, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet_header = self._read_bytes(4)
+                    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 816, in _read_bytes
+    raise err.OperationalError(
+pymysql.err.OperationalError: (2013, 'Lost connection to MySQL server during query ([WinError 10054] An existing connection was forcibly closed by the remote host)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\auth_route.py", line 144, in get_units
+    units_list = db.query(Units).all()
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet_header = self._read_bytes(4)
+                    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 816, in _read_bytes
+    raise err.OperationalError(
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2013, 'Lost connection to MySQL server during query ([WinError 10054] An existing connection was forcibly closed by the remote host)')
+[SQL: SELECT units.id AS units_id, units.unit_name AS units_unit_name 
+FROM units]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-29 15:06:29] ERROR in main: Unhandled error on GET /jobs/public: (pymysql.err.OperationalError) (2013, 'Lost connection to MySQL server during query ([WinError 10054] An existing connection was forcibly closed by the remote host)')
+[SQL: SELECT job_posts.job_id AS job_posts_job_id, job_posts.job_posted_by AS job_posts_job_posted_by, job_posts.job_title AS job_posts_job_title, job_posts.job_type AS job_posts_job_type, job_posts.job_description AS job_posts_job_description, job_posts.school_name AS job_posts_school_name, job_posts.department AS job_posts_department, job_posts.vacancy_count AS job_posts_vacancy_count, job_posts.min_exp AS job_posts_min_exp, job_posts.max_exp AS job_posts_max_exp, job_posts.skills_required AS job_posts_skills_required, job_posts.education_qualification AS job_posts_education_qualification, job_posts.closing_date AS job_posts_closing_date, job_posts.additional_requirements AS job_posts_additional_requirements, job_posts.job_status AS job_posts_job_status, job_posts.views AS job_posts_views, job_posts.created_at AS job_posts_created_at, job_posts.updated_at AS job_posts_updated_at 
+FROM job_posts 
+WHERE job_posts.job_status = %(job_status_1)s ORDER BY job_posts.updated_at DESC]
+[parameters: {'job_status_1': 'publish'}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 810, in _read_bytes
+    data = self._rfile.read(num_bytes)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\socket.py", line 720, in readinto
+    return self._sock.recv_into(b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet_header = self._read_bytes(4)
+                    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 816, in _read_bytes
+    raise err.OperationalError(
+pymysql.err.OperationalError: (2013, 'Lost connection to MySQL server during query ([WinError 10054] An existing connection was forcibly closed by the remote host)')
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\jobs_route.py", line 198, in get_public_job_posts_route
+    job_posts = get_published_job_posts(db, school_name=school_name)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\jobs_crud.py", line 37, in get_published_job_posts
+    return query.order_by(JobPost.updated_at.desc()).all()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2711, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 159, in execute
+    result = self._query(query)
+             ^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\cursors.py", line 330, in _query
+    conn.query(q)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 582, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 847, in _read_query_result
+    result.read()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 1245, in read
+    first_packet = self.connection._read_packet()
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 772, in _read_packet
+    packet_header = self._read_bytes(4)
+                    ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 816, in _read_bytes
+    raise err.OperationalError(
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2013, 'Lost connection to MySQL server during query ([WinError 10054] An existing connection was forcibly closed by the remote host)')
+[SQL: SELECT job_posts.job_id AS job_posts_job_id, job_posts.job_posted_by AS job_posts_job_posted_by, job_posts.job_title AS job_posts_job_title, job_posts.job_type AS job_posts_job_type, job_posts.job_description AS job_posts_job_description, job_posts.school_name AS job_posts_school_name, job_posts.department AS job_posts_department, job_posts.vacancy_count AS job_posts_vacancy_count, job_posts.min_exp AS job_posts_min_exp, job_posts.max_exp AS job_posts_max_exp, job_posts.skills_required AS job_posts_skills_required, job_posts.education_qualification AS job_posts_education_qualification, job_posts.closing_date AS job_posts_closing_date, job_posts.additional_requirements AS job_posts_additional_requirements, job_posts.job_status AS job_posts_job_status, job_posts.views AS job_posts_views, job_posts.created_at AS job_posts_created_at, job_posts.updated_at AS job_posts_updated_at 
+FROM job_posts 
+WHERE job_posts.job_status = %(job_status_1)s ORDER BY job_posts.updated_at DESC]
+[parameters: {'job_status_1': 'publish'}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-29 15:06:42] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 682, in connect
+    sock = socket.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\socket.py", line 850, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 717, in checkout
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 715, in checkout
+    dbapi_connection = rec.get_connection()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 837, in get_connection
+    self.__connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 372, in __init__
+    self.connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 744, in connect
+    raise exc
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\auth_route.py", line 154, in user_login
+    return authenticate_user_roles(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3293, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2448, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 717, in checkout
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 715, in checkout
+    dbapi_connection = rec.get_connection()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 837, in get_connection
+    self.__connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 372, in __init__
+    self.connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 744, in connect
+    raise exc
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-29 15:06:45] ERROR in main: Unhandled error on POST /auth/user/login: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 682, in connect
+    sock = socket.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\socket.py", line 865, in create_connection
+    raise exceptions[0]
+  File "C:\Users\rames\AppData\Roaming\uv\python\cpython-3.12.12-windows-x86_64-none\Lib\socket.py", line 850, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [WinError 10061] No connection could be made because the target machine actively refused it
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 717, in checkout
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 715, in checkout
+    dbapi_connection = rec.get_connection()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 837, in get_connection
+    self.__connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 372, in __init__
+    self.connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 744, in connect
+    raise exc
+pymysql.err.OperationalError: (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\auth_route.py", line 154, in user_login
+    return authenticate_user_roles(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\auth_crud.py", line 24, in authenticate_user_roles
+    .first()
+     ^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2864, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2239, in _execute_internal
+    conn = self._connection_for_bind(bind)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2108, in _connection_for_bind
+    return trans._connection_for_bind(engine, execution_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 2, in _connection_for_bind
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1187, in _connection_for_bind
+    conn = bind.connect()
+           ^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3293, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2448, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 143, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 3317, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 1272, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 717, in checkout
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 715, in checkout
+    dbapi_connection = rec.get_connection()
+                       ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 837, in get_connection
+    self.__connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\pool\base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 372, in __init__
+    self.connect()
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\pymysql\connections.py", line 744, in connect
+    raise exc
+sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't connect to MySQL server on 'localhost' ([WinError 10061] No connection could be made because the target machine actively refused it)")
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+[2026-06-29 15:07:21] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 15:07:27] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 15:23:43] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-29 15:24:11] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 15:31:32] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 15:31:32] INFO in database: Database engine created successfully.
+[2026-06-29 15:31:33] INFO in main: FastAPI application has started successfully.
+[2026-06-29 15:31:34] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 15:31:34] INFO in database: Database engine created successfully.
+[2026-06-29 15:31:35] INFO in main: FastAPI application has started successfully.
+[2026-06-29 15:32:44] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 15:32:44] INFO in database: Database engine created successfully.
+[2026-06-29 15:32:45] INFO in main: FastAPI application has started successfully.
+[2026-06-29 15:46:09] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 15:51:34] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 16:05:55] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 16:05:55] INFO in database: Database engine created successfully.
+[2026-06-29 16:06:12] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 16:06:12] INFO in database: Database engine created successfully.
+[2026-06-29 16:06:12] INFO in main: FastAPI application has started successfully.
+[2026-06-29 16:07:07] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 16:07:07] INFO in database: Database engine created successfully.
+[2026-06-29 16:07:07] INFO in main: FastAPI application has started successfully.
+[2026-06-29 16:09:21] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 16:09:21] INFO in database: Database engine created successfully.
+[2026-06-29 16:09:21] INFO in main: FastAPI application has started successfully.
