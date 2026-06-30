@@ -520,6 +520,39 @@
       cursor: pointer;
     }
 
+    /* ── Validation ── */
+    .cp-field-error {
+      display: none;
+      font-size: 11px;
+      color: var(--cp-red);
+      margin-top: 5px;
+      font-weight: 500;
+      align-items: center;
+      gap: 4px;
+    }
+    .cp-field-error.visible {
+      display: flex;
+    }
+    .cp-section input.cp-invalid,
+    .cp-section select.cp-invalid,
+    .cp-section textarea.cp-invalid {
+      border-color: var(--cp-red) !important;
+      box-shadow: 0 0 0 3px rgba(220,38,38,.10) !important;
+    }
+    .cp-section input.cp-valid,
+    .cp-section select.cp-valid,
+    .cp-section textarea.cp-valid {
+      border-color: var(--cp-green) !important;
+    }
+    /* ── Dual experience dropdowns ── */
+    .cp-exp-row {
+      display: flex;
+      gap: 8px;
+    }
+    .cp-exp-row select {
+      flex: 1;
+    }
+
     /* Grids */
     .cp-grid-2 {
       display: grid;
@@ -975,7 +1008,7 @@
         font-size: 0.95rem;
         color: rgba(255,255,255,0.65);
         margin: 0;
-        max-width: 460px;
+        /* max-width: 460px; */
         line-height: 1.6;
     }
     .mss-breadcrumb-pill {
@@ -1173,24 +1206,29 @@
             </div>
             <div class="cp-grid-2">
               <div>
-                <label class="cp-field-label">Full Name</label>
-                <input type="text" id="pfName" placeholder="Full Name" />
+                <label class="cp-field-label">Full Name <span style="color:var(--cp-red)">*</span></label>
+                <input type="text" id="pfName" placeholder="Full Name" maxlength="80" />
+                <span class="cp-field-error" id="err-pfName"></span>
               </div>
               <div>
-                <label class="cp-field-label">Email</label>
+                <label class="cp-field-label">Email <span style="color:var(--cp-red)">*</span></label>
                 <input type="email" id="pfEmail" placeholder="Email address" />
+                <span class="cp-field-error" id="err-pfEmail"></span>
               </div>
               <div>
-                <label class="cp-field-label">Mobile</label>
-                <input type="tel" id="pfMobile" placeholder="10-digit number" />
+                <label class="cp-field-label">Mobile <span style="color:var(--cp-red)">*</span></label>
+                <input type="tel" id="pfMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric" />
+                <span class="cp-field-error" id="err-pfMobile"></span>
               </div>
               <div>
                 <label class="cp-field-label">Current Location</label>
-                <input type="text" id="pfLocation" placeholder="City, State" />
+                <input type="text" id="pfLocation" placeholder="City, State" maxlength="100" />
+                <span class="cp-field-error" id="err-pfLocation"></span>
               </div>
               <div>
                 <label class="cp-field-label">Date of Birth</label>
                 <input type="date" id="pfDob" max="2007-12-31" />
+                <span class="cp-field-error" id="err-pfDob"></span>
               </div>
               <div>
                 <label class="cp-field-label">Gender</label>
@@ -1237,19 +1275,45 @@
             <div class="cp-grid-2">
               <div>
                 <label class="cp-field-label">Current Designation</label>
-                <input type="text" id="pfDesig" placeholder="e.g. Software Developer" />
+                <input type="text" id="pfDesig" placeholder="e.g. Software Developer" maxlength="100" />
+                <span class="cp-field-error" id="err-pfDesig"></span>
               </div>
               <div>
                 <label class="cp-field-label">Current Company</label>
-                <input type="text" id="pfComp" placeholder="Current employer" />
+                <input type="text" id="pfComp" placeholder="Current employer" maxlength="100" />
+                <span class="cp-field-error" id="err-pfComp"></span>
               </div>
               <div>
                 <label class="cp-field-label">Total Experience</label>
-                <input type="text" id="pfExp" placeholder="e.g. 2 Years 3 Months" />
+                <div class="cp-exp-row">
+                  <select id="pfExpYears">
+                    <option value="">Years</option>
+                    <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                    <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                    <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                    <option value="12">12</option><option value="13">13</option><option value="14">14</option>
+                    <option value="15">15</option><option value="16">16</option><option value="17">17</option>
+                    <option value="18">18</option><option value="19">19</option><option value="20">20</option>
+                    <option value="21">21</option><option value="22">22</option><option value="23">23</option>
+                    <option value="24">24</option><option value="25">25</option><option value="26">26</option>
+                    <option value="27">27</option><option value="28">28</option><option value="29">29</option>
+                    <option value="30">30+</option>
+                  </select>
+                  <select id="pfExpMonths">
+                    <option value="">Months</option>
+                    <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                    <option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                    <option value="6">6</option><option value="7">7</option><option value="8">8</option>
+                    <option value="9">9</option><option value="10">10</option><option value="11">11</option>
+                  </select>
+                </div>
+                <span class="cp-field-error" id="err-pfExp"></span>
               </div>
               <div>
                 <label class="cp-field-label">Current Salary (LPA)</label>
-                <input type="text" id="pfSal" placeholder="e.g. 5.5" />
+                <input type="text" id="pfSal" placeholder="e.g. 5.5" maxlength="8" inputmode="decimal" />
+                <span class="cp-field-error" id="err-pfSal"></span>
               </div>
               <div>
                 <label class="cp-field-label">Notice Period</label>
@@ -1367,7 +1431,7 @@
                                 <ul>
                                     <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Home</a></li>
                                     <li><a href="https://themadrassevasadan.org/about" target="_blank" style="color: var(--white-color);">About</a></li>
-                                    <li><a href="/mss-career-portal/job-grid" style="color: var(--white-color);">Open Roles</a></li>
+                                    <li><a href="/mss-career-portal/open-roles" style="color: var(--white-color);">Open Roles</a></li>
                                     <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Search</a></li>
                                     <li><a href="contact.html" style="color: var(--white-color);">Contact</a></li>
                                 </ul>
@@ -1380,16 +1444,15 @@
                                 <ul class="ftr-list">
                                     <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
                                             style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
-                                            600031</p>
+                                        <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
                                     </li>
                                     <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
                                             style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
+                                        <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
                                     </li>
                                     <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
                                             style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
+                                        <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
                                     </li>
                                 </ul>
                             </div>
@@ -1439,7 +1502,7 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=4"></script>
+    <script src="../../assets/js/shared-header.js?v=5"></script>
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
   <script>
@@ -1669,39 +1732,203 @@
       }
     });
 
+    /* ── Validation helpers ── */
+    function cpShowError(id, msg) {
+      const el = document.getElementById('err-' + id);
+      const inp = document.getElementById(id);
+      if (el) { el.textContent = msg ? '⚠ ' + msg : ''; el.className = msg ? 'cp-field-error visible' : 'cp-field-error'; }
+      if (inp) { inp.classList.toggle('cp-invalid', !!msg); inp.classList.toggle('cp-valid', !msg && inp.value.trim() !== ''); }
+    }
+
+    function cpClearError(id) { cpShowError(id, ''); }
+
+    function cpValidateName(blur) {
+      const val = document.getElementById('pfName')?.value.trim();
+      if (!val) { if (blur) cpShowError('pfName', 'Full name is required.'); return false; }
+      if (val.length < 2) { cpShowError('pfName', 'Name must be at least 2 characters.'); return false; }
+      cpClearError('pfName'); return true;
+    }
+
+    function cpValidateEmail(blur) {
+      const val = document.getElementById('pfEmail')?.value.trim();
+      if (!val) { if (blur) cpShowError('pfEmail', 'Email is required.'); return false; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) { cpShowError('pfEmail', 'Enter a valid email address.'); return false; }
+      cpClearError('pfEmail'); return true;
+    }
+
+    function cpValidateMobile(blur) {
+      const val = document.getElementById('pfMobile')?.value.trim();
+      if (!val) { if (blur) cpShowError('pfMobile', 'Mobile number is required.'); return false; }
+      if (!/^\d{10}$/.test(val)) { cpShowError('pfMobile', 'Enter a valid 10-digit mobile number.'); return false; }
+      cpClearError('pfMobile'); return true;
+    }
+
+    function cpValidateLocation(blur) {
+      const val = document.getElementById('pfLocation')?.value.trim();
+      if (val && val.length < 2) { cpShowError('pfLocation', 'Enter a valid location.'); return false; }
+      cpClearError('pfLocation'); return true;
+    }
+
+    function cpValidateDob(blur) {
+      const val = document.getElementById('pfDob')?.value;
+      if (!val) { cpClearError('pfDob'); return true; }
+      const dob = new Date(val);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const md = today.getMonth() - dob.getMonth();
+      if (md < 0 || (md === 0 && today.getDate() < dob.getDate())) age--;
+      if (age < 15) { cpShowError('pfDob', 'Date of birth appears invalid (age must be at least 15).'); return false; }
+      if (age > 80) { cpShowError('pfDob', 'Please enter a valid date of birth.'); return false; }
+      cpClearError('pfDob');
+      cpValidateExpVsDob();
+      return true;
+    }
+
+    function cpValidateExpVsDob() {
+      const dobVal = document.getElementById('pfDob')?.value;
+      const expY = document.getElementById('pfExpYears')?.value;
+      const expM = document.getElementById('pfExpMonths')?.value;
+      if (!dobVal || expY === '' || expY === undefined) return true;
+
+      const dob = new Date(dobVal);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const md = today.getMonth() - dob.getMonth();
+      if (md < 0 || (md === 0 && today.getDate() < dob.getDate())) age--;
+
+      const minWorkAge = 15;
+      const maxExpMonths = Math.max(0, (age - minWorkAge) * 12);
+      const totalExpMonths = (parseInt(expY) || 0) * 12 + (parseInt(expM) || 0);
+
+      if (totalExpMonths > maxExpMonths) {
+        const maxYrs = Math.floor(maxExpMonths / 12);
+        cpShowError('pfExp', `Experience exceeds your date of birth (max ~${maxYrs} yrs).`);
+        return false;
+      }
+      cpClearError('pfExp');
+      return true;
+    }
+
+    function cpValidateExp(blur) {
+      const expY = document.getElementById('pfExpYears')?.value;
+      const expM = document.getElementById('pfExpMonths')?.value;
+      if (expY === '' && expM === '') { cpClearError('pfExp'); return true; }
+      
+      const dobValid = cpValidateExpVsDob();
+      if (!dobValid) return false;
+      
+      // Validate against listed work experiences
+      let totalWorkMonths = 0;
+      document.querySelectorAll('#cpExperienceList .cp-item-card').forEach(card => {
+        const inputs = card.querySelectorAll('input');
+        if (inputs.length >= 4) {
+          const startDate = inputs[2].value;
+          const endDate = inputs[3].value;
+          if (startDate) {
+            const start = new Date(startDate);
+            const end = endDate ? new Date(endDate) : new Date();
+            let months = (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth());
+            if (months > 0) totalWorkMonths += months;
+          }
+        }
+      });
+      
+      const totalExpMonths = (parseInt(expY) || 0) * 12 + (parseInt(expM) || 0);
+      if (totalWorkMonths > totalExpMonths) {
+        cpShowError('pfExp', 'Sum of work experiences exceeds total experience specified.');
+        return false;
+      }
+      
+      return true;
+    }
+
+    function cpValidateSal(blur) {
+      const val = document.getElementById('pfSal')?.value.trim();
+      if (!val) { cpClearError('pfSal'); return true; }
+      const n = parseFloat(val);
+      if (isNaN(n) || n < 0) { cpShowError('pfSal', 'Enter a valid salary (e.g. 5.5).'); return false; }
+      if (n > 1000) { cpShowError('pfSal', 'Salary seems unusually high. Please verify (LPA).'); return false; }
+      cpClearError('pfSal'); return true;
+    }
+
+    function cpValidateDesig(blur) {
+      const val = document.getElementById('pfDesig')?.value.trim();
+      if (val && val.length < 2) { cpShowError('pfDesig', 'Enter a valid designation.'); return false; }
+      cpClearError('pfDesig'); return true;
+    }
+
+    function cpValidateComp(blur) {
+      const val = document.getElementById('pfComp')?.value.trim();
+      if (val && val.length < 2) { cpShowError('pfComp', 'Enter a valid company name.'); return false; }
+      cpClearError('pfComp'); return true;
+    }
+
+    function cpValidateAll() {
+      const results = [
+        cpValidateName(true),
+        cpValidateEmail(true),
+        cpValidateMobile(true),
+        cpValidateLocation(true),
+        cpValidateDob(true),
+        cpValidateExp(true),
+        cpValidateSal(true),
+        cpValidateDesig(true),
+        cpValidateComp(true)
+      ];
+      return results.every(Boolean);
+    }
+
+    /* ── Character restrictions ── */
+    function cpRestrictInput(id, regex) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('input', () => {
+        const pos = el.selectionStart;
+        const cleaned = el.value.replace(regex, '');
+        if (cleaned !== el.value) {
+          el.value = cleaned;
+          el.setSelectionRange(pos - 1, pos - 1);
+        }
+      });
+    }
+
     /* ── Update sidebar live ── */
     function cpUpdateSidebar() {
       const name = document.getElementById('pfName')?.value.trim();
       const email = document.getElementById('pfEmail')?.value.trim();
       const mobile = document.getElementById('pfMobile')?.value.trim();
       const loc = document.getElementById('pfLocation')?.value.trim();
-      const exp = document.getElementById('pfExp')?.value.trim();
       const sal = document.getElementById('pfSal')?.value.trim();
       const notice = document.getElementById('pfNotice')?.value;
       const desig = document.getElementById('pfDesig')?.value.trim();
+      const expY = document.getElementById('pfExpYears')?.value;
+      const expM = document.getElementById('pfExpMonths')?.value;
 
-      if (name) { 
-        document.getElementById('cpSidebarName').textContent = name; 
+      if (name) {
+        document.getElementById('cpSidebarName').textContent = name;
         const inner = document.getElementById('cpAvatarInner');
-        if (!inner.querySelector('img')) {
-          inner.textContent = name[0].toUpperCase(); 
-        }
+        if (!inner.querySelector('img')) inner.textContent = name[0].toUpperCase();
       }
       if (desig) document.getElementById('cpSidebarRole').textContent = desig;
       if (email) document.getElementById('cpContactEmail').textContent = email;
       if (mobile) document.getElementById('cpContactPhone').textContent = mobile;
       if (loc) document.getElementById('cpContactLocation').textContent = loc;
-      if (exp) document.getElementById('cpStatExp').textContent = exp;
-      if (sal) document.getElementById('cpStatSal').textContent = sal ? '₹' + sal + ' LPA' : '—';
+      if (expY !== '' && expY !== undefined) {
+        const y = parseInt(expY) || 0;
+        const m = parseInt(expM) || 0;
+        document.getElementById('cpStatExp').textContent = `${y}y ${m}m`;
+      }
+      if (sal) document.getElementById('cpStatSal').textContent = '₹' + sal + ' LPA';
       if (notice) document.getElementById('cpStatNotice').textContent = notice;
     }
 
     /* ── Completion meter ── */
     function cpCalcCompletion() {
-      const fields = ['pfName', 'pfEmail', 'pfMobile', 'pfLocation', 'pfAbout', 'pfDesig', 'pfExp', 'pfSal'];
+      const fields = ['pfName', 'pfEmail', 'pfMobile', 'pfLocation', 'pfAbout', 'pfDesig', 'pfSal'];
       const filled = fields.filter(id => document.getElementById(id)?.value.trim()).length;
-      const bonus = (cpSkills.length > 0 ? 1 : 0) + (document.getElementById('cpEducationList').children.length > 0 ? 1 : 0);
-      const pct = Math.round(((filled + bonus) / (fields.length + 2)) * 100);
+      const expFilled = document.getElementById('pfExpYears')?.value !== '' ? 1 : 0;
+      const bonus = expFilled + (cpSkills.length > 0 ? 1 : 0) + (document.getElementById('cpEducationList').children.length > 0 ? 1 : 0);
+      const pct = Math.round(((filled + bonus) / (fields.length + 3)) * 100);
       document.getElementById('cpCompletePct').textContent = pct + '%';
       document.getElementById('cpProgressBar').style.width = pct + '%';
     }
@@ -1793,7 +2020,18 @@
       if (document.getElementById('pfAbout')) document.getElementById('pfAbout').value = meta.about || '';
       if (document.getElementById('pfDesig')) document.getElementById('pfDesig').value = meta.designation || '';
       if (document.getElementById('pfComp')) document.getElementById('pfComp').value = meta.company || '';
-      if (document.getElementById('pfExp')) document.getElementById('pfExp').value = meta.experience || '';
+      if (meta.experience) {
+        const expStr = String(meta.experience);
+        const yMatch = expStr.match(/(\d+)\s*[Yy]ear/);
+        const mMatch = expStr.match(/(\d+)\s*[Mm]onth/);
+        const yNum = yMatch ? Math.min(parseInt(yMatch[1]), 30) : 0;
+        const mNum = mMatch ? Math.min(parseInt(mMatch[1]), 11) : 0;
+        if (document.getElementById('pfExpYears')) document.getElementById('pfExpYears').value = String(yNum);
+        if (document.getElementById('pfExpMonths')) document.getElementById('pfExpMonths').value = String(mNum);
+      } else {
+        if (document.getElementById('pfExpYears')) document.getElementById('pfExpYears').value = '';
+        if (document.getElementById('pfExpMonths')) document.getElementById('pfExpMonths').value = '';
+      }
       if (document.getElementById('pfSal')) document.getElementById('pfSal').value = meta.salary || '';
       if (document.getElementById('pfExpSal')) document.getElementById('pfExpSal').value = meta.expected_salary || '';
       
@@ -1908,9 +2146,30 @@
       loadSkillsData();
       loadCandidateProfile();
  
+      /* Character restrictions */
+      cpRestrictInput('pfName',     /[^a-zA-Z\s'\-\.]/g);
+      cpRestrictInput('pfMobile',   /[^\d]/g);
+      cpRestrictInput('pfLocation', /[^a-zA-Z\s,\-\.]/g);
+      cpRestrictInput('pfDesig',    /[^a-zA-Z\s\-\/\.\,\(\)]/g);
+      cpRestrictInput('pfComp',     /[^a-zA-Z\s\-&\.\,\d\(\)]/g);
+      cpRestrictInput('pfSal',      /[^\d\.]/g);
+
+      /* Blur validation */
+      document.getElementById('pfName')?.addEventListener('blur',     () => cpValidateName(true));
+      document.getElementById('pfEmail')?.addEventListener('blur',    () => cpValidateEmail(true));
+      document.getElementById('pfMobile')?.addEventListener('blur',   () => cpValidateMobile(true));
+      document.getElementById('pfLocation')?.addEventListener('blur', () => cpValidateLocation(true));
+      document.getElementById('pfDob')?.addEventListener('blur',      () => cpValidateDob(true));
+      document.getElementById('pfDob')?.addEventListener('change',    () => cpValidateDob(true));
+      document.getElementById('pfSal')?.addEventListener('blur',      () => cpValidateSal(true));
+      document.getElementById('pfDesig')?.addEventListener('blur',    () => cpValidateDesig(true));
+      document.getElementById('pfComp')?.addEventListener('blur',     () => cpValidateComp(true));
+      document.getElementById('pfExpYears')?.addEventListener('change', () => { cpValidateExp(true); cpUpdateSidebar(); cpCalcCompletion(); });
+      document.getElementById('pfExpMonths')?.addEventListener('change', () => { cpValidateExp(true); cpUpdateSidebar(); cpCalcCompletion(); });
+
       /* Live sidebar updates */
-      ['pfName', 'pfEmail', 'pfMobile', 'pfLocation', 'pfExp', 'pfSal', 'pfDesig', 'pfNotice'].forEach(id => {
-        document.getElementById(id)?.addEventListener('input', () => { cpUpdateSidebar(); cpCalcCompletion(); });
+      ['pfName', 'pfEmail', 'pfMobile', 'pfLocation', 'pfSal', 'pfDesig', 'pfNotice'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input',  () => { cpUpdateSidebar(); cpCalcCompletion(); });
         document.getElementById(id)?.addEventListener('change', () => { cpUpdateSidebar(); cpCalcCompletion(); });
       });
  
@@ -1949,6 +2208,11 @@
 
       /* Save */
       document.getElementById('saveProfileBtn').addEventListener('click', async () => {
+        if (!cpValidateAll()) {
+          const firstErr = document.querySelector('.cp-field-error.visible');
+          if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
         const token = localStorage.getItem('access_token');
         if (!token) return;
         
@@ -2039,7 +2303,14 @@
             about: document.getElementById('pfAbout') ? document.getElementById('pfAbout').value.trim() : null,
             designation: document.getElementById('pfDesig') ? document.getElementById('pfDesig').value.trim() : null,
             company: document.getElementById('pfComp') ? document.getElementById('pfComp').value.trim() : null,
-            experience: document.getElementById('pfExp') ? document.getElementById('pfExp').value.trim() : null,
+            experience: (() => {
+              const y = document.getElementById('pfExpYears')?.value;
+              const m = document.getElementById('pfExpMonths')?.value;
+              if (y === '' || y === undefined) return null;
+              const yN = parseInt(y) || 0;
+              const mN = parseInt(m) || 0;
+              return `${yN} ${yN === 1 ? 'Year' : 'Years'} ${mN} ${mN === 1 ? 'Month' : 'Months'}`;
+            })(),
             salary: document.getElementById('pfSal') ? document.getElementById('pfSal').value.trim() : null,
             expected_salary: document.getElementById('pfExpSal') ? document.getElementById('pfExpSal').value.trim() : null,
             notice_period: document.getElementById('pfNotice') ? document.getElementById('pfNotice').value : null,

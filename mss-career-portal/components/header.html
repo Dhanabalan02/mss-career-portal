@@ -328,7 +328,7 @@
           class="mss-dark-link"
           >About</a
         >
-        <a href="/mss-career-portal/job-grid" class="mss-dark-link">
+        <a href="/mss-career-portal/open-roles" class="mss-dark-link">
           <span class="mss-live-dot"></span> Open Roles
         </a>
         <!-- <a href="javascript:;" class="mss-dark-link">Links</a> -->
@@ -468,7 +468,7 @@
           class="mss-mob-link"
           >About</a
         >
-        <a href="/mss-career-portal/job-grid" class="mss-mob-link"
+        <a href="/mss-career-portal/open-roles" class="mss-mob-link"
           >Open Roles</a
         >
         <a href="/mss-career-portal/home" class="mss-mob-link">Search</a>
@@ -663,6 +663,7 @@
             Sign In to Portal
           </h4>
           <p
+            id="loginSubText"
             style="
               font-family: &quot;Rubik&quot;, sans-serif;
               color: #94a3b8;
@@ -672,7 +673,7 @@
           >
             Access your candidate dashboard
           </p>
-          <div class="d-flex gap-2 mb-4">
+          <div class="d-flex gap-2 mb-4" id="loginSocialBtns">
             <a
               href="http://localhost:8000/auth/google/login"
               class="mss-social-btn"
@@ -728,7 +729,7 @@
             </a>
           </div>
           <div class="mss-modal-sep">or continue with email</div>
-          <form>
+          <form id="candidateLoginForm">
             <div class="mb-3">
               <label class="mss-label">Email Address</label>
               <div class="mss-modal-field">
@@ -743,6 +744,7 @@
                 <label class="mss-label mb-0">Password</label>
                 <a
                   href="javascript:;"
+                  onclick="showForgotPassword()"
                   style="
                     font-family: &quot;Rubik&quot;, sans-serif;
                     font-size: 0.78rem;
@@ -808,6 +810,86 @@
               >
             </p>
           </form>
+
+          <!-- FORGOT PASSWORD BLOCK -->
+          <div id="forgotPasswordContainer" style="display: none;">
+            <div class="d-flex align-items-center mb-4">
+              <a href="javascript:;" onclick="hideForgotPassword()" class="text-muted text-decoration-none me-2">
+                <i class="feather-arrow-left"></i>
+              </a>
+              <h5 class="mb-0" style="font-family: 'Rubik', sans-serif; font-weight: 700; color: #0f172a;">Reset Password</h5>
+            </div>
+            
+            <!-- STATE 1: Enter Mobile -->
+            <div id="fpState1">
+              <p style="font-family: 'Rubik', sans-serif; color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Enter your mobile and verify for update the password
+              </p>
+              <div class="mb-4">
+                <label class="mss-label">Mobile Number</label>
+                <div class="mss-modal-field">
+                  <i class="feather-phone"></i>
+                  <input type="tel" id="fpMobile" placeholder="90000 00000" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                </div>
+                <div id="fpMobileError" class="text-danger mt-1" style="font-size: 0.8rem; display: none;"></div>
+              </div>
+              <button type="button" class="mss-submit w-100 mb-3" id="fpSendOtpBtn" onclick="fpSendOtp()" style="background: linear-gradient(135deg, #cc8cfc, #7b2cbf); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);">
+                Send OTP
+              </button>
+            </div>
+
+            <!-- STATE 2: Verify OTP -->
+            <div id="fpState2" style="display: none;">
+              <p style="font-family: 'Rubik', sans-serif; color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Enter the OTP sent to your mobile.
+              </p>
+              <div class="mb-3">
+                <label class="mss-label">OTP</label>
+                <div class="mss-modal-field">
+                  <i class="feather-key"></i>
+                  <input type="text" id="fpOtp" placeholder="123456" />
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <span id="fpTimer" style="font-family: 'Rubik', sans-serif; font-size: 0.85rem; color: #ef4444; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                  <i class="feather-clock" style="font-size: 0.85rem;"></i>
+                  OTP expires in <span id="fpTimerCount">01:30</span>
+                </span>
+                <a href="javascript:;" id="fpResendBtn" onclick="fpSendOtp(true)" style="display: none; font-family: 'Rubik', sans-serif; font-size: 0.85rem; color: var(--primary-color); font-weight: 600; text-decoration: none;">Resend OTP</a>
+              </div>
+              <button type="button" class="mss-submit w-100 mb-3" id="fpVerifyOtpBtn" onclick="fpVerifyOtp()" style="background: linear-gradient(135deg, #cc8cfc, #7b2cbf); box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);">
+                Verify OTP
+              </button>
+            </div>
+
+            <!-- STATE 3: Update Password -->
+            <div id="fpState3" style="display: none;">
+              <p style="font-family: 'Rubik', sans-serif; color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                Create a new strong password for your account.
+              </p>
+              <div class="mb-3">
+                <label class="mss-label">New Password</label>
+                <div class="mss-modal-field">
+                  <i class="feather-lock"></i>
+                  <input type="password" id="fpNewPwd" />
+                  <span onclick="togglePwd('fpNewPwd', this)"><i class="feather-eye"></i></span>
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="mss-label">Confirm Password</label>
+                <div class="mss-modal-field">
+                  <i class="feather-lock"></i>
+                  <input type="password" id="fpConfirmPwd" />
+                  <span onclick="togglePwd('fpConfirmPwd', this)"><i class="feather-eye"></i></span>
+                </div>
+              </div>
+              <button type="button" class="mss-submit w-100 mb-3" id="fpUpdateBtn" onclick="fpUpdatePassword()" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);">
+                Update Password
+              </button>
+            </div>
+
+          </div>
+
         </div>
       </div>
     </div>
@@ -1334,5 +1416,206 @@
       );
     }
   });
+
+  // --- FORGOT PASSWORD LOGIC ---
+  window.fpTimerInterval = null;
+  
+  window.showForgotPassword = function() {
+    document.getElementById("candidateLoginForm").style.display = "none";
+    document.getElementById("forgotPasswordContainer").style.display = "block";
+    document.querySelector("#candidateLoginModal .mss-modal-sep").style.display = "none";
+    
+    let socialBtns = document.getElementById("loginSocialBtns");
+    if(socialBtns) {
+      socialBtns.classList.remove("d-flex");
+      socialBtns.classList.add("d-none");
+    }
+    
+    document.querySelector("#candidateLoginModal h4").style.display = "none";
+    document.querySelector("#candidateLoginModal > div > div > div:nth-child(2) > p:nth-child(3)").style.display = "none";
+    
+    // Reset to State 1
+    document.getElementById("fpState1").style.display = "block";
+    document.getElementById("fpState2").style.display = "none";
+    document.getElementById("fpState3").style.display = "none";
+    document.getElementById("fpMobileError").style.display = "none";
+    document.getElementById("fpMobile").value = "";
+    document.getElementById("fpOtp").value = "";
+    document.getElementById("fpNewPwd").value = "";
+    document.getElementById("fpConfirmPwd").value = "";
+  }
+  
+  window.hideForgotPassword = function() {
+    document.getElementById("candidateLoginForm").style.display = "block";
+    document.getElementById("forgotPasswordContainer").style.display = "none";
+    document.querySelector("#candidateLoginModal .mss-modal-sep").style.display = "flex";
+    
+    let socialBtns = document.getElementById("loginSocialBtns");
+    if(socialBtns) {
+      socialBtns.classList.remove("d-none");
+      socialBtns.classList.add("d-flex");
+    }
+    
+    document.querySelector("#candidateLoginModal h4").style.display = "block";
+    document.querySelector("#candidateLoginModal > div > div > div:nth-child(2) > p:nth-child(3)").style.display = "block";
+    
+    if (window.fpTimerInterval) clearInterval(window.fpTimerInterval);
+  }
+
+  window.startFpTimer = function() {
+    let timeLeft = 90; // 1:30 mins
+    const timerDisplay = document.getElementById("fpTimer");
+    const resendBtn = document.getElementById("fpResendBtn");
+    
+    timerDisplay.style.display = "inline";
+    resendBtn.style.display = "none";
+    
+    if (window.fpTimerInterval) clearInterval(window.fpTimerInterval);
+    
+    window.fpTimerInterval = setInterval(() => {
+      timeLeft--;
+      let m = Math.floor(timeLeft / 60);
+      let s = timeLeft % 60;
+      timerDisplay.innerText = `0${m}:${s < 10 ? '0' : ''}${s}`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(window.fpTimerInterval);
+        timerDisplay.style.display = "none";
+        resendBtn.style.display = "inline";
+      }
+    }, 1000);
+  }
+
+  window.fpSendOtp = async function(isResend = false) {
+    document.getElementById("fpMobileError").style.display = "none";
+    const mobile = document.getElementById("fpMobile").value.trim();
+    if (!mobile) {
+      if(window.showMssToast) window.showMssToast("Please enter your mobile number", "error");
+      else alert("Please enter your mobile number");
+      return;
+    }
+    
+    const btnId = isResend ? "fpResendBtn" : "fpSendOtpBtn";
+    const btn = document.getElementById(btnId);
+    const originalText = btn.innerText;
+    btn.innerText = "Sending...";
+    if(btn.tagName === 'BUTTON') btn.disabled = true;
+    else btn.style.pointerEvents = "none";
+    
+    try {
+      const res = await fetch("http://localhost:8000/auth/forgot-password/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        if(window.showMssToast) window.showMssToast("OTP sent successfully!");
+        document.getElementById("fpState1").style.display = "none";
+        document.getElementById("fpState2").style.display = "block";
+        window.startFpTimer();
+      } else {
+        if (res.status === 404) {
+          const errDiv = document.getElementById("fpMobileError");
+          errDiv.innerText = data.detail || "Mobile number not found.";
+          errDiv.style.display = "block";
+        } else {
+          if(window.showMssToast) window.showMssToast(data.detail || "Failed to send OTP", "error");
+          else alert(data.detail || "Failed to send OTP");
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      if(window.showMssToast) window.showMssToast("An error occurred.", "error");
+    } finally {
+      btn.innerText = originalText;
+      if(btn.tagName === 'BUTTON') btn.disabled = false;
+      else btn.style.pointerEvents = "auto";
+    }
+  }
+
+  window.fpVerifyOtp = async function() {
+    const mobile = document.getElementById("fpMobile").value.trim();
+    const otp = document.getElementById("fpOtp").value.trim();
+    if (!otp) {
+      if(window.showMssToast) window.showMssToast("Please enter the OTP", "error");
+      return;
+    }
+    
+    const btn = document.getElementById("fpVerifyOtpBtn");
+    btn.innerText = "Verifying...";
+    btn.disabled = true;
+    
+    try {
+      const res = await fetch("http://localhost:8000/auth/forgot-password/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile, otp: parseInt(otp) })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        if(window.showMssToast) window.showMssToast("OTP Verified!");
+        if (window.fpTimerInterval) clearInterval(window.fpTimerInterval);
+        document.getElementById("fpState2").style.display = "none";
+        document.getElementById("fpState3").style.display = "block";
+      } else {
+        if(window.showMssToast) window.showMssToast(data.detail || "Invalid OTP", "error");
+      }
+    } catch (e) {
+      console.error(e);
+      if(window.showMssToast) window.showMssToast("An error occurred.", "error");
+    } finally {
+      btn.innerText = "Verify OTP";
+      btn.disabled = false;
+    }
+  }
+
+  window.fpUpdatePassword = async function() {
+    const mobile = document.getElementById("fpMobile").value.trim();
+    const otp = document.getElementById("fpOtp").value.trim();
+    const pwd1 = document.getElementById("fpNewPwd").value;
+    const pwd2 = document.getElementById("fpConfirmPwd").value;
+    
+    if (!pwd1 || !pwd2) {
+      if(window.showMssToast) window.showMssToast("Please fill both password fields", "error");
+      return;
+    }
+    if (pwd1 !== pwd2) {
+      if(window.showMssToast) window.showMssToast("Passwords do not match", "error");
+      return;
+    }
+    if (pwd1.length < 8) {
+      if(window.showMssToast) window.showMssToast("Password must be at least 8 characters", "error");
+      return;
+    }
+    
+    const btn = document.getElementById("fpUpdateBtn");
+    btn.innerText = "Updating...";
+    btn.disabled = true;
+    
+    try {
+      const res = await fetch("http://localhost:8000/auth/forgot-password/update-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mobile, otp: parseInt(otp), new_password: pwd1 })
+      });
+      const data = await res.json();
+      
+      if (res.ok) {
+        if(window.showMssToast) window.showMssToast("Password updated successfully! You can now login.");
+        window.hideForgotPassword();
+      } else {
+        if(window.showMssToast) window.showMssToast(data.detail || "Failed to update password", "error");
+      }
+    } catch (e) {
+      console.error(e);
+      if(window.showMssToast) window.showMssToast("An error occurred.", "error");
+    } finally {
+      btn.innerText = "Update Password";
+      btn.disabled = false;
+    }
+  }
 </script>
 <!-- HEADER END -->

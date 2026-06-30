@@ -64,6 +64,7 @@ def compute_exp_str(experiences, meta_exp: Optional[str] = None) -> str:
 
 _STAGE_ENUM_TO_LABEL = {
     "applied": "Applied",
+    "prescreen_reject": "Prescreen Rejected",
     "screened": "Screened",
     "interview": "Interview",
     "offer": "Offer",
@@ -88,13 +89,17 @@ def compute_stage(app, has_interview: bool) -> str:
         
     # If the candidate is rejected, they are Rejected.
     job_status_val = app.applicant_job_status.value if hasattr(app.applicant_job_status, 'value') else str(app.applicant_job_status)
+    if app.applicant_stage is not None:
+        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage)
+        stage_val_norm = stage_val.lower().strip().replace(" ", "_").replace("-", "_")
+        if stage_val_norm == "prescreen_reject":
+            return "Prescreen Rejected"
+    
     if job_status_val == "rejected":
         return 'Rejected'
 
     # 2. Prefer the explicit ATS stage column when present and not overridden by definitive statuses
     if app.applicant_stage is not None:
-        stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage)
-        stage_val_norm = stage_val.lower().strip().replace(" ", "_").replace("-", "_")
         return _STAGE_ENUM_TO_LABEL.get(stage_val_norm, 'Applied')
 
     # 3. Fallback: derive stage from legacy fields

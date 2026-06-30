@@ -270,6 +270,8 @@ function buildAvatarHtml(initial) {
     'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);min-width:160px;overflow:hidden;z-index:1100;">' +
     '<a href="/mss-career-portal/profile" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;font-size:0.85rem;' +
     'color:#0F172A;text-decoration:none;">My Profile</a>' +
+    '<a href="/mss-career-portal/applied-jobs" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;font-size:0.85rem;' +
+    'color:#0F172A;text-decoration:none;">Applied Jobs</a>' +
     '<a href="javascript:;" onclick="mssLogout()" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;' +
     'font-size:0.85rem;color:#DC2626;text-decoration:none;border-top:1px solid #F1F5F9;">Logout</a>' +
     '</div>' +
@@ -347,8 +349,8 @@ function buildNotificationBellHtml() {
     'this.style.background=\'rgba(255,255,255,0.15)\'">' +
     '<i class="feather-bell" style="font-size:1.1rem;"></i>' +
     '<span class="mss-notification-badge" id="mssNotificationBadge" style="display:none;position:absolute;top:-2px;right:-2px;' +
-        'background:#EF4444;color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
-        'display:flex;align-items:center;justify-content:center;border:2px solid #0F172A;line-height:1;">0</span>' +
+        'background:var(--primary-btn-color);color:#fff;border-radius:50%;width:16px;height:16px;font-size:0.68rem;font-weight:700;' +
+        'display:flex;align-items:center;justify-content:center;line-height:1;">0</span>' +
 '</button>' +
     '<div class="mss-notification-dropdown" id="mssNotificationDropdown" style="display:none;position:absolute;top:46px;right:0;' +
     'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);width:320px;z-index:1100;overflow:hidden;">' +
@@ -507,7 +509,7 @@ window.mssLogout = function () {
   localStorage.removeItem('user_name');
   localStorage.removeItem('user_email');
   localStorage.removeItem('user_id');
-  window.location.reload();
+  window.location.href = '/mss-career-portal/home';
 };
 
 function applyAuthUI() {
@@ -644,11 +646,12 @@ async function loginUser() {
     alert("Login Successful");
     window.dispatchEvent(new CustomEvent('candidate_login_success'));
 
-    // var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
-    // if (pendingJobId) {
-    //     sessionStorage.removeItem('pending_apply_job_id');
-    //     window.location.href = 'apply.html?id=' + encodeURIComponent(pendingJobId);
-    // }
+    var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
+    if (pendingJobId) {
+        sessionStorage.removeItem('pending_apply_job_id');
+        localStorage.setItem('candidate_current_job_id', pendingJobId);
+        window.location.href = '/mss-career-portal/apply';
+    }
 
   } catch (error) {
     console.error(error);
@@ -721,7 +724,8 @@ async function registerCandidate(form) {
     var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
     if (pendingJobId) {
       sessionStorage.removeItem('pending_apply_job_id');
-      window.location.href = '/mss-career-portal/apply?id=' + encodeURIComponent(pendingJobId);
+      localStorage.setItem('candidate_current_job_id', pendingJobId);
+      window.location.href = '/mss-career-portal/apply';
     }
 
   } catch (error) {
@@ -729,6 +733,197 @@ async function registerCandidate(form) {
     alert("Unable to connect to server");
   }
 }
+
+// --- Forgot Password Logic ---
+window.fpTimerInterval = null;
+
+window.showForgotPassword = function () {
+  document.getElementById('candidateLoginForm').style.display = 'none';
+  document.getElementById('forgotPasswordContainer').style.display = 'block';
+  var sep = document.querySelector('#candidateLoginModal .mss-modal-sep');
+  var social = document.getElementById('loginSocialBtns');
+  var heading = document.querySelector('#candidateLoginModal h4');
+  var subtext = document.getElementById('loginSubText');
+  if (sep) sep.style.display = 'none';
+  if (social) {
+    social.classList.remove('d-flex');
+    social.classList.add('d-none');
+  }
+  if (heading) heading.style.display = 'none';
+  if (subtext) subtext.style.display = 'none';
+  document.getElementById('fpState1').style.display = 'block';
+  document.getElementById('fpState2').style.display = 'none';
+  document.getElementById('fpState3').style.display = 'none';
+  var mobileErr = document.getElementById('fpMobileError');
+  if (mobileErr) mobileErr.style.display = 'none';
+  document.getElementById('fpMobile').value = '';
+  document.getElementById('fpOtp').value = '';
+  document.getElementById('fpNewPwd').value = '';
+  document.getElementById('fpConfirmPwd').value = '';
+};
+
+window.hideForgotPassword = function () {
+  document.getElementById('candidateLoginForm').style.display = 'block';
+  document.getElementById('forgotPasswordContainer').style.display = 'none';
+  var sep = document.querySelector('#candidateLoginModal .mss-modal-sep');
+  var social = document.getElementById('loginSocialBtns');
+  var heading = document.querySelector('#candidateLoginModal h4');
+  var subtext = document.getElementById('loginSubText');
+  if (sep) sep.style.display = 'flex';
+  if (social) {
+    social.classList.remove('d-none');
+    social.classList.add('d-flex');
+  }
+  if (heading) heading.style.display = 'block';
+  if (subtext) subtext.style.display = 'block';
+  if (window.fpTimerInterval) clearInterval(window.fpTimerInterval);
+};
+
+window.startFpTimer = function () {
+  var timeLeft = 90;
+  var timerWrap = document.getElementById('fpTimer');
+  var timerCount = document.getElementById('fpTimerCount');
+  var resendBtn = document.getElementById('fpResendBtn');
+  timerWrap.style.display = 'flex';
+  resendBtn.style.display = 'none';
+  if (window.fpTimerInterval) clearInterval(window.fpTimerInterval);
+  window.fpTimerInterval = setInterval(function () {
+    timeLeft--;
+    var m = Math.floor(timeLeft / 60);
+    var s = timeLeft % 60;
+    timerCount.innerText = '0' + m + ':' + (s < 10 ? '0' : '') + s;
+    if (timeLeft <= 0) {
+      clearInterval(window.fpTimerInterval);
+      timerWrap.style.display = 'none';
+      resendBtn.style.display = 'inline';
+    }
+  }, 1000);
+};
+
+window.fpSendOtp = async function (isResend) {
+  var mobile = document.getElementById('fpMobile').value.trim();
+  if (!mobile) {
+    if (window.showMssToast) window.showMssToast('Please enter your mobile number', 'error');
+    else alert('Please enter your mobile number');
+    return;
+  }
+  var mobileErr = document.getElementById('fpMobileError');
+  if (mobileErr) mobileErr.style.display = 'none';
+  
+  var btnId = isResend ? 'fpResendBtn' : 'fpSendOtpBtn';
+  var btn = document.getElementById(btnId);
+  var originalText = btn.innerText;
+  btn.innerText = 'Sending...';
+  if (btn.tagName === 'BUTTON') btn.disabled = true;
+  else btn.style.pointerEvents = 'none';
+  try {
+    var res = await fetch(AUTH_API_BASE + '/auth/forgot-password/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile: mobile })
+    });
+    var data = await res.json();
+    if (res.ok) {
+      if (window.showMssToast) window.showMssToast('OTP sent successfully!');
+      document.getElementById('fpState1').style.display = 'none';
+      document.getElementById('fpState2').style.display = 'block';
+      window.startFpTimer();
+    } else {
+      if (res.status === 404) {
+        if (mobileErr) {
+          mobileErr.innerText = data.detail || 'Mobile number not found.';
+          mobileErr.style.display = 'block';
+        }
+      } else {
+        if (window.showMssToast) window.showMssToast(data.detail || 'Failed to send OTP', 'error');
+        else alert(data.detail || 'Failed to send OTP');
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    if (window.showMssToast) window.showMssToast('An error occurred.', 'error');
+  } finally {
+    btn.innerText = originalText;
+    if (btn.tagName === 'BUTTON') btn.disabled = false;
+    else btn.style.pointerEvents = 'auto';
+  }
+};
+
+window.fpVerifyOtp = async function () {
+  var mobile = document.getElementById('fpMobile').value.trim();
+  var otp = document.getElementById('fpOtp').value.trim();
+  if (!otp) {
+    if (window.showMssToast) window.showMssToast('Please enter the OTP', 'error');
+    return;
+  }
+  var btn = document.getElementById('fpVerifyOtpBtn');
+  btn.innerText = 'Verifying...';
+  btn.disabled = true;
+  try {
+    var res = await fetch(AUTH_API_BASE + '/auth/forgot-password/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile: mobile, otp: parseInt(otp) })
+    });
+    var data = await res.json();
+    if (res.ok) {
+      if (window.showMssToast) window.showMssToast('OTP Verified!');
+      if (window.fpTimerInterval) clearInterval(window.fpTimerInterval);
+      document.getElementById('fpState2').style.display = 'none';
+      document.getElementById('fpState3').style.display = 'block';
+    } else {
+      if (window.showMssToast) window.showMssToast(data.detail || 'Invalid OTP', 'error');
+    }
+  } catch (e) {
+    console.error(e);
+    if (window.showMssToast) window.showMssToast('An error occurred.', 'error');
+  } finally {
+    btn.innerText = 'Verify OTP';
+    btn.disabled = false;
+  }
+};
+
+window.fpUpdatePassword = async function () {
+  var mobile = document.getElementById('fpMobile').value.trim();
+  var otp = document.getElementById('fpOtp').value.trim();
+  var pwd1 = document.getElementById('fpNewPwd').value;
+  var pwd2 = document.getElementById('fpConfirmPwd').value;
+  if (!pwd1 || !pwd2) {
+    if (window.showMssToast) window.showMssToast('Please fill both password fields', 'error');
+    return;
+  }
+  if (pwd1 !== pwd2) {
+    if (window.showMssToast) window.showMssToast('Passwords do not match', 'error');
+    return;
+  }
+  if (pwd1.length < 8) {
+    if (window.showMssToast) window.showMssToast('Password must be at least 8 characters', 'error');
+    return;
+  }
+  var btn = document.getElementById('fpUpdateBtn');
+  btn.innerText = 'Updating...';
+  btn.disabled = true;
+  try {
+    var res = await fetch(AUTH_API_BASE + '/auth/forgot-password/update-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mobile: mobile, otp: parseInt(otp), new_password: pwd1 })
+    });
+    var data = await res.json();
+    if (res.ok) {
+      if (window.showMssToast) window.showMssToast('Password updated successfully! You can now login.');
+      window.hideForgotPassword();
+    } else {
+      if (window.showMssToast) window.showMssToast(data.detail || 'Failed to update password', 'error');
+    }
+  } catch (e) {
+    console.error(e);
+    if (window.showMssToast) window.showMssToast('An error occurred.', 'error');
+  } finally {
+    btn.innerText = 'Update Password';
+    btn.disabled = false;
+  }
+};
 
 // --- Flatpickr Integration ---
 (function () {

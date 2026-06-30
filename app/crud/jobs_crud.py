@@ -93,10 +93,6 @@ def get_published_job_post_or_404(db: Session, job_id: int) -> JobPost:
         except ValueError:
             job_post.views = 0
 
-    job_post.views += 1
-
-    db.commit()
-
     db.refresh(job_post)
 
     return job_post

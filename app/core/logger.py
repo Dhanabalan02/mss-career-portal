@@ -8,12 +8,12 @@ LOG_FILE_PATH = APP_DIR / "app.log"
 
 def setup_logger():
     """Configures application-wide logging to console and a file in the app folder."""
-    logger = logging.getLogger("fastapi_app")
-    
-    if logger.hasHandlers():
-        return logger
+    root = logging.getLogger()
 
-    logger.setLevel(logging.INFO)
+    if root.handlers:
+        return logging.getLogger("fastapi_app")
+
+    root.setLevel(logging.INFO)
 
     formatter = logging.Formatter(
         "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
@@ -22,12 +22,12 @@ def setup_logger():
 
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
-    logger.addHandler(console_handler)
+    root.addHandler(console_handler)
 
     file_handler = logging.FileHandler(LOG_FILE_PATH, encoding="utf-8")
     file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    root.addHandler(file_handler)
 
-    return logger
+    return logging.getLogger("fastapi_app")
 
 logger = setup_logger()

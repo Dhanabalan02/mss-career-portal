@@ -59,27 +59,6 @@
         --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      [data-theme="dark"],
-      body.dark-theme {
-        --bg: #0d0d0d;
-        --surface: #0d0d0d;
-        --surface-2: #111111;
-        --border: rgba(255, 255, 255, 0.1);
-        --border-strong: rgba(255, 255, 255, 0.16);
-        --text: #f0efe8;
-        --text-2: #b4b2a9;
-        --text-3: #666560;
-        --primary-light: #26215c;
-        --success-light: #173404;
-        --warning-light: #412402;
-        --danger-light: #501313;
-        --purple-light: #26215c;
-        --teal-light: #04342c;
-        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-        --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-      }
-
       *,
       *::before,
       *::after {
@@ -607,6 +586,10 @@
         background: var(--warning);
       }
 
+      .col-dot-rejected {
+        background: var(--danger);
+      }
+
       .column-title {
         font-size: 13px;
         font-weight: 600;
@@ -648,6 +631,11 @@
       .b-onboarded {
         background: var(--warning-light);
         color: var(--warning);
+      }
+
+      .b-rejected {
+        background: var(--danger-light);
+        color: var(--danger);
       }
 
       .card-list {
@@ -2244,7 +2232,7 @@
     <script>
       /* ── Data ── */
       const STAGES = [
-        "Applied",
+        "Prescreen Rejected",
         "Screened",
         "Interview",
         "Offer",
@@ -2253,11 +2241,11 @@
       ];
 
       const STAGE_META = {
-        Applied: {
-          dot: "applied",
-          badge: "b-applied",
-          border: "#2563eb",
-          av: ["#dbeafe", "#1d4ed8"],
+        "Prescreen Rejected": {
+          dot: "rejected",
+          badge: "b-rejected",
+          border: "#e11d48",
+          av: ["#ffe4e6", "#be123c"],
         },
         Screened: {
           dot: "screened",
@@ -2297,7 +2285,7 @@
       let candidates = [];
 
       const TIMELINES = {
-        Applied: [
+        prescreenReject: [
           { t: "Application Received", d: "2 days ago", s: "done" },
           { t: "Initial Review", d: "In progress", s: "current" },
           { t: "Phone Screen", d: "Upcoming", s: "pending" },
@@ -2307,6 +2295,7 @@
           { t: "Resume Screened", d: "4 days ago", s: "done" },
           { t: "Phone Screen", d: "Scheduled", s: "current" },
           { t: "Interview", d: "Pending", s: "pending" },
+          { t: "Screened", d: "2 days ago", s: "done" },
         ],
         Interview: [
           { t: "Application Received", d: "8 days ago", s: "done" },
@@ -2316,7 +2305,6 @@
           { t: "Final Decision", d: "Pending", s: "pending" },
         ],
         Offer: [
-          { t: "Applied & Screened", d: "12 days ago", s: "done" },
           { t: "Interviews Cleared", d: "5 days ago", s: "done" },
           { t: "Offer Sent", d: "2 days ago", s: "done" },
           { t: "Awaiting Acceptance", d: "Pending", s: "current" },
@@ -2440,7 +2428,8 @@
       function updateStats(data) {
         const grid = document.getElementById("statsGrid");
         const total = data.length;
-        const applied = data.filter((c) => c.stage === "Applied").length;
+        const prescreenReject = data.filter((c) => c.stage === "Prescreen Rejected").length;
+        const screened = data.filter((c) => c.stage === "Screened").length;
         const interview = data.filter((c) => c.stage === "Interview").length;
         const offers = data.filter(
           (c) => c.stage === "Offer" || c.stage === "Offer Accepted",
@@ -2460,11 +2449,17 @@
       <div class="stat-label">Total Candidates</div>
       <div class="stat-delta">${deltaTotal}</div>
     </div>
-    <div class="stat-card sc-applied" onclick="scrollToStage('Applied')">
-      <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-file-text" aria-hidden="true"></i></div>
-      <div class="stat-value">${applied}</div>
-      <div class="stat-label">Applied</div>
-      <div class="stat-delta">New applications</div>
+    <div class="stat-card sc-rejected" onclick="scrollToStage('Prescreen Rejected')">
+      <div class="stat-icon" style="background:var(--danger-light);color:var(--danger)"><i class="ti ti-x" aria-hidden="true"></i></div>
+      <div class="stat-value">${prescreenReject}</div>
+      <div class="stat-label">Prescreen Rejected</div>
+      <div class="stat-delta">Ineligible</div>
+    </div>
+    <div class="stat-card sc-screened" onclick="scrollToStage('Screened')">
+      <div class="stat-icon" style="background:var(--success-light);color:var(--success)"><i class="ti ti-shield-check" aria-hidden="true"></i></div>
+      <div class="stat-value">${screened}</div>
+      <div class="stat-label">Screened</div>
+      <div class="stat-delta">Qualified</div>
     </div>
     <div class="stat-card sc-interview" onclick="scrollToStage('Interview')">
       <div class="stat-icon" style="background:var(--orange-light);color:var(--orange)"><i class="ti ti-microphone-2" aria-hidden="true"></i></div>
@@ -2666,6 +2661,7 @@
 
       function isStageMoveAllowed(currentStage, targetStage) {
         if (currentStage === targetStage) return true;
+        if (currentStage === "Prescreen Rejected" || targetStage === "Prescreen Rejected") return false;
         if (
           currentStage === "Screened" &&
           (targetStage === "Offer" ||
@@ -2675,13 +2671,12 @@
           return false;
         if (
           currentStage === "Interview" &&
-          (targetStage === "Applied" || targetStage === "Screened")
+          (targetStage === "Screened")
         )
           return false;
         if (
           currentStage === "Offer" &&
-          (targetStage === "Applied" ||
-            targetStage === "Screened" ||
+          (targetStage === "Screened" ||
             targetStage === "Offer Accepted" ||
             targetStage === "Onboarded")
         )
@@ -3000,7 +2995,7 @@
         if (
           c &&
           c.stage === "Interview" &&
-          (stage === "Applied" || stage === "Screened")
+          (stage === "PreScreen-Reject" || stage === "Screened")
         ) {
           e.dataTransfer.dropEffect = "none";
           document

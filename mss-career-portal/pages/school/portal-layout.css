@@ -38,20 +38,6 @@
   --portal-font: Inter, "DM Sans", system-ui, sans-serif;
 }
 
-/* ── DARK MODE ───────────────────────────────────────────── */
-body.dark-theme {
-  --portal-bg: #0F172A;
-  --portal-surface: #1E293B;
-  --portal-surface2: #243047;
-  --portal-text: #F1F5F9;
-  --portal-muted: #94A3B8;
-  --portal-muted2: #64748B;
-  --portal-border: #334155;
-  --portal-shadow: 0 1px 3px rgba(0, 0, 0, .3);
-  --portal-shadow-md: 0 4px 24px rgba(0, 0, 0, .4);
-  --portal-shadow-lg: 0 8px 40px rgba(0, 0, 0, .5);
-}
-
 /* ── BODY OFFSET ─────────────────────────────────────────── */
 body {
   padding-top: var(--portal-header-height) !important;
@@ -207,19 +193,6 @@ body>.sidebar:not(#portalSidebar) {
   background: currentColor !important;
 }
 
-/* Theme toggle icon switching */
-.portal-theme-toggle .portal-moon-icon,
-body.dark-theme .portal-theme-toggle .portal-sun-icon {
-  display: none !important;
-}
-
-.portal-theme-toggle .portal-sun-icon {
-  display: inline !important;
-}
-
-body.dark-theme .portal-theme-toggle .portal-moon-icon {
-  display: inline !important;
-}
 
 /* Notification badge */
 .portal-badge {
@@ -273,11 +246,6 @@ body.dark-theme .portal-theme-toggle .portal-moon-icon {
   color: #DC2626 !important;
   border-color: #FCA5A5 !important;
   background: #FEF2F2 !important;
-}
-
-body.dark-theme .portal-logout:hover {
-  background: rgba(239, 68, 68, .15) !important;
-  border-color: rgba(239, 68, 68, .4) !important;
 }
 
 /* ═══════════════════════════════════════════

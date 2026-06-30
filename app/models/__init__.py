@@ -15,6 +15,7 @@ from app.models.userlogin_model import LoginStatus
 from app.models.admin_model import Admins
 from app.models.user_roles_model import UserRoles
 from app.models.unit_model import Units
+from app.models.job_view_log_model import JobViewLog
 
 __all__ = [
     "Base",
@@ -40,5 +41,6 @@ __all__ = [
     "Admins",
     "LoginStatus",
     "UserRoles",
-    "Units"
+    "Units",
+    "JobViewLog"
 ]

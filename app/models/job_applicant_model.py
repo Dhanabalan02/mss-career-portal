@@ -28,7 +28,7 @@ class OfferAcceptanceStatus(str, PyEnum):
 
 
 class ApplicantStage(str, PyEnum):
-    APPLIED = "applied"
+    PRESCREEN_REJECT = "prescreen-reject"
     SCREENED = "screened"
     INTERVIEW = "interview"
     OFFER = "offer"

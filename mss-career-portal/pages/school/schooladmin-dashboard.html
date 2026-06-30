@@ -64,30 +64,6 @@
       --text3: #888780;
     }
 
-    [data-theme="dark"],
-    body.dark-theme {
-      --bg: #0d0d0d;
-      --card: #0d0d0d;
-      --border: rgba(255, 255, 255, 0.10);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --text: #f0efe8;
-      --text-secondary: #b4b2a9;
-      --text-muted: #666560;
-      --input-bg: #0d0d0d;
-      --surface: #0d0d0d;
-      --surface-2: #111111;
-      --bg1: #0d0d0d;
-      --text3: #666560;
-      --primary-light: #26215C;
-      --success-light: #173404;
-      --warning-light: #412402;
-      --danger-light: #501313;
-      --purple-light: #26215C;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
-    }
-
     *,
     *::before,
     *::after {
@@ -1465,21 +1441,6 @@
 
     document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePopup(); });
 
-    /* ── Theme Bridge ── */
-    function applyTheme(dark) {
-      document.body.setAttribute('data-theme', dark ? 'dark' : 'light');
-    }
-
-    if (typeof window.__portalTheme !== 'undefined') {
-      applyTheme(window.__portalTheme === 'dark');
-      window.addEventListener('portal-theme-change', e => applyTheme(e.detail === 'dark'));
-    } else if (document.documentElement.getAttribute('data-theme')) {
-      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark');
-    } else if (document.body.parentElement.classList.contains('dark')) {
-      applyTheme(true);
-    } else {
-      applyTheme(false);
-    }
   </script>
 </body>
 

@@ -65,6 +65,14 @@
             width: 64px;
             margin-bottom: 20px;
         }
+
+        #jdApplyBtn {
+            transition: transform 0.22s ease, box-shadow 0.22s ease !important;
+        }
+        #jdApplyBtn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 12px 28px rgba(153, 59, 246, 0.55) !important;
+        }
     </style>
     <style>
         /* Universal Mobile Header Responsiveness Fix */
@@ -166,7 +174,7 @@
                                 <i class="feather-home" style="font-size:0.75rem;"></i> Home
                             </a>
                             <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
-                            <a href="/mss-career-portal/job-grid" class="mss-bc-item">Open Roles</a>
+                            <a href="/mss-career-portal/open-roles" class="mss-bc-item">Open Roles</a>
                             <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
                             <span class="mss-bc-item mss-bc-active">Job Detail</span>
                         </nav>
@@ -241,7 +249,7 @@
                     font-size: 0.95rem;
                     color: rgba(255,255,255,0.65);
                     margin: 0;
-                    max-width: 460px;
+                    /* max-width: 460px; */
                     line-height: 1.6;
                 }
                 .mss-breadcrumb-pill {
@@ -359,14 +367,134 @@
                                     <li><i class="feather-check"></i> Loading…</li>
                                 </ul>
 
-                                <h4 class="twm-s-title">Share Job<i class="feather-share-2" style="margin-left:8px; vertical-align:middle;"></i></h4>
-                                <div class="twm-social-tags">
-                                    <a href="javascript:void(0)" class="fb-clr">Facebook</a>
-                                    <a href="javascript:void(0)" class="tw-clr">Twitter</a>
-                                    <a href="javascript:void(0)" class="link-clr">Linkedin</a>
-                                    <a href="javascript:void(0)" class="whats-clr">Whatsapp</a>
-                                    <a href="javascript:void(0)" class="pinte-clr">Pinterest</a>
+                                <!-- Share Job -->
+                                <style>
+                                    .mss-share-wrap { position: relative; display: inline-block; margin-top: 8px; }
+                                    .mss-share-btn {
+                                        display: inline-flex; align-items: center; gap: 7px;
+                                        padding: 9px 20px;
+                                        background: var(--soft-bg-color, #EBF2FF);
+                                        border: 1.5px solid var(--primary-color);
+                                        border-radius: 50px;
+                                        color: var(--primary-color);
+                                        font-family: 'Rubik', sans-serif;
+                                        font-size: 0.85rem;
+                                        font-weight: 700;
+                                        cursor: pointer;
+                                        transition: background 0.18s, box-shadow 0.18s;
+                                        user-select: none;
+                                    }
+                                    .mss-share-btn:hover {
+                                        background: var(--primary-color);
+                                        color: #fff;
+                                        box-shadow: 0 4px 14px rgba(26,86,219,.22);
+                                    }
+                                    .mss-share-btn:hover i { color: #fff; }
+                                    .mss-share-btn i { font-size: 0.95rem; transition: color 0.18s; }
+                                    .mss-share-dropdown {
+                                        display: none;
+                                        position: absolute;
+                                        bottom: calc(100% + 10px);
+                                        left: 0;
+                                        background: #fff;
+                                        border: 1.5px solid #EFF2F7;
+                                        border-radius: 14px;
+                                        box-shadow: 0 8px 28px rgba(13,17,60,.13), 0 2px 6px rgba(13,17,60,.06);
+                                        padding: 10px;
+                                        min-width: 180px;
+                                        z-index: 200;
+                                        animation: shareFadeIn 0.18s ease;
+                                    }
+                                    .mss-share-dropdown.open { display: block; }
+                                    @keyframes shareFadeIn {
+                                        from { opacity: 0; transform: translateY(6px); }
+                                        to   { opacity: 1; transform: translateY(0); }
+                                    }
+                                    .mss-share-option {
+                                        display: flex; align-items: center; gap: 11px;
+                                        padding: 9px 13px;
+                                        border-radius: 9px;
+                                        font-family: 'Rubik', sans-serif;
+                                        font-size: 0.85rem;
+                                        font-weight: 600;
+                                        color: #334155;
+                                        text-decoration: none;
+                                        cursor: pointer;
+                                        transition: background 0.15s, color 0.15s;
+                                        border: none; background: none; width: 100%; text-align: left;
+                                    }
+                                    .mss-share-option:hover { background: #F8FAFC; color: var(--primary-color); text-decoration: none; }
+                                    .mss-share-option-icon {
+                                        width: 30px; height: 30px; border-radius: 8px;
+                                        display: flex; align-items: center; justify-content: center;
+                                        font-size: 0.95rem; flex-shrink: 0;
+                                    }
+                                    .mss-share-divider { height: 1px; background: #F1F5F9; margin: 5px 0; }
+                                </style>
+
+                                <div class="mss-share-wrap" id="mssShareWrap">
+                                    <button class="mss-share-btn" id="mssShareBtn" onclick="toggleShareMenu(event)" aria-expanded="false">
+                                        <i class="feather-share-2"></i> Share Job
+                                    </button>
+                                    <div class="mss-share-dropdown" id="mssShareDropdown" role="menu">
+                                        <a class="mss-share-option" onclick="shareJob('facebook'); closeShareMenu();" role="menuitem">
+                                            <span class="mss-share-option-icon" style="background:#E7F0FD; color:#1877F2;"><i class="fab fa-facebook-f"></i></span>
+                                            Facebook
+                                        </a>
+                                        <a class="mss-share-option" onclick="shareJob('twitter'); closeShareMenu();" role="menuitem">
+                                            <span class="mss-share-option-icon" style="background:#E8F5FD; color:#1DA1F2;"><i class="fab fa-twitter"></i></span>
+                                            Twitter / X
+                                        </a>
+                                        <a class="mss-share-option" onclick="shareJob('linkedin'); closeShareMenu();" role="menuitem">
+                                            <span class="mss-share-option-icon" style="background:#E8F0F9; color:#0A66C2;"><i class="fab fa-linkedin-in"></i></span>
+                                            LinkedIn
+                                        </a>
+                                        <a class="mss-share-option" onclick="shareJob('whatsapp'); closeShareMenu();" role="menuitem">
+                                            <span class="mss-share-option-icon" style="background:#E8F8EE; color:#25D366;"><i class="fab fa-whatsapp"></i></span>
+                                            WhatsApp
+                                        </a>
+                                        <div class="mss-share-divider"></div>
+                                        <a class="mss-share-option" onclick="copyJobLink(); closeShareMenu();" role="menuitem">
+                                            <span class="mss-share-option-icon" style="background:#F1F5F9; color:#475569;"><i class="feather-link"></i></span>
+                                            Copy Link
+                                        </a>
+                                    </div>
                                 </div>
+
+                                <script>
+                                    function toggleShareMenu(e) {
+                                        e.stopPropagation();
+                                        var dd = document.getElementById('mssShareDropdown');
+                                        var btn = document.getElementById('mssShareBtn');
+                                        var isOpen = dd.classList.contains('open');
+                                        dd.classList.toggle('open', !isOpen);
+                                        btn.setAttribute('aria-expanded', String(!isOpen));
+                                    }
+                                    function closeShareMenu() {
+                                        var dd = document.getElementById('mssShareDropdown');
+                                        var btn = document.getElementById('mssShareBtn');
+                                        if (dd) dd.classList.remove('open');
+                                        if (btn) btn.setAttribute('aria-expanded', 'false');
+                                    }
+                                    function copyJobLink() {
+                                        var jobId = new URLSearchParams(window.location.search).get('id');
+                                        var link = window.location.origin + '/mss-career-portal/job-detail?id=' + encodeURIComponent(jobId || '');
+                                        navigator.clipboard.writeText(link).then(function() {
+                                            var btn = document.getElementById('mssShareBtn');
+                                            var orig = btn.innerHTML;
+                                            btn.innerHTML = '<i class="feather-check"></i> Link Copied!';
+                                            setTimeout(function() { btn.innerHTML = orig; }, 2000);
+                                        }).catch(function() {});
+                                    }
+                                    document.addEventListener('click', function(e) {
+                                        if (!document.getElementById('mssShareWrap')?.contains(e.target)) {
+                                            closeShareMenu();
+                                        }
+                                    });
+                                    document.addEventListener('keydown', function(e) {
+                                        if (e.key === 'Escape') closeShareMenu();
+                                    });
+                                </script>
 
                                 <!-- <h4 class="twm-s-title">Location</h4>
                                 <div class="twm-m-map mb-5">
@@ -396,22 +524,14 @@
                                     <div class="twm-s-info2-wrap mb-5">
                                         <div class="twm-s-info2">
                                             <h4 class="section-head-small mb-4">Job Information</h4>
-                                            <ul class="twm-job-hilites">
-                                                <!-- <li>
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                    <span class="twm-title">Date Posted</span>
-                                                </li> -->
+                                            <ul class="twm-job-hilites2" style="margin-top: -10px;">
                                                 <li>
-                                                    <i class="fas fa-eye"></i>
-                                                    <span class="twm-title" id="jdSideViews">0 Views</span>
+                                                    <div class="twm-s-info-inner">
+                                                        <i class="fas fa-eye"></i>
+                                                        <span class="twm-title">Views</span>
+                                                        <div class="twm-s-info-discription" id="jdSideViews">0</div>
+                                                    </div>
                                                 </li>
-                                                <!-- <li>
-                                                    <i class="fas fa-file-signature"></i>
-                                                    <span class="twm-title">6 Applicants</span>
-                                                </li> -->
-                                            </ul>
-                                            <ul class="twm-job-hilites2">
-
                                                 <li>
                                                     <div class="twm-s-info-inner">
                                                         <i class="fas fa-user-tie"></i>
@@ -485,7 +605,7 @@
                                 <ul>
                                     <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Home</a></li>
                                     <li><a href="https://themadrassevasadan.org/about" target="_blank" style="color: var(--white-color);">About</a></li>
-                                    <li><a href="/mss-career-portal/job-grid" style="color: var(--white-color);">Open Roles</a></li>
+                                    <li><a href="/mss-career-portal/open-roles" style="color: var(--white-color);">Open Roles</a></li>
                                     <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Search</a></li>
                                     <li><a href="contact.html" style="color: var(--white-color);">Contact</a></li>
                                 </ul>
@@ -495,21 +615,20 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="widget widget_info">
                                 <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
-                                <ul class="ftr-list">
-                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
-                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
-                                            600031</p>
-                                    </li>
-                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
-                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
-                                    </li>
-                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
-                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
-                                    </li>
-                                </ul>
+                            <ul class="ftr-list">
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
+                                </li>
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
+                                </li>
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
+                                </li>
+                            </ul>
                             </div>
                         </div>
 
@@ -952,7 +1071,7 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=4"></script>
+    <script src="../../assets/js/shared-header.js?v=5"></script>
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
     <!-- Job Detail API integration -->
@@ -982,7 +1101,8 @@
                 })
                 .then(function (result) {
                     if (result && result.logged_in) {
-                        window.location.href = '/mss-career-portal/apply?id=' + encodeURIComponent(jobId);
+                        localStorage.setItem('candidate_current_job_id', jobId);
+                        window.location.href = '/mss-career-portal/apply';
                     } else {
                         promptLogin(jobId);
                     }
@@ -1063,16 +1183,8 @@
                         })
                         .then(function(result) {
                             if (result && result.applied) {
-                                applyBtn.innerHTML = '<i class="bi bi-check-lg"></i> Applied';
-                                applyBtn.style.background = '#ECFDF5';
-                                applyBtn.style.color = '#10B981';
-                                applyBtn.style.borderColor = '#A7F3D0';
-                                applyBtn.style.cursor = 'default';
-                                applyBtn.onclick = function (event) {
-                                    event.preventDefault();
-                                    event.stopPropagation();
-                                };
-                                
+                                applyBtn.style.display = 'none';
+
                                 // Render Offer if it exists
                                 if (result.offer) {
                                     document.getElementById('offerBlock').style.display = 'block';
@@ -1157,7 +1269,7 @@
                 if (sideQualification) sideQualification.textContent = job.education_qualification || '—';
 
                 var sideViews = document.getElementById('jdSideViews');
-                if (sideViews) sideViews.textContent = (job.views || 0) + ' Views';
+                if (sideViews) sideViews.textContent = (job.views || 0);
 
                 // Dynamically update school logo
                 var logoEl = document.querySelector('.twm-mid-content .twm-media img');
@@ -1218,21 +1330,73 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
-                var jobId = new URLSearchParams(window.location.search).get('id');
+                var urlId = new URLSearchParams(window.location.search).get('id');
+                var jobId = urlId || localStorage.getItem('candidate_current_job_id');
+                
+                if (urlId) {
+                    localStorage.setItem('candidate_current_job_id', urlId);
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+
+                window.shareJob = function(platform) {
+                    if (!jobId) return;
+                    var shareUrl = window.location.origin + '/mss-career-portal/job-detail?id=' + encodeURIComponent(jobId);
+                    var text = 'Check out this job opening at The Madras Seva Sadan!';
+                    var url = '';
+                    if (platform === 'facebook') {
+                        url = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl);
+                    } else if (platform === 'twitter') {
+                        url = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(text);
+                    } else if (platform === 'linkedin') {
+                        url = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl);
+                    } else if (platform === 'whatsapp') {
+                        url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text + ' ' + shareUrl);
+                    }
+                    if (url) window.open(url, '_blank', 'width=600,height=400');
+                };
                 if (!jobId) {
                     renderError();
                     return;
                 }
-                fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId))
+                var token = localStorage.getItem('access_token');
+                
+                var fetchDetails = fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId))
                     .then(function (response) {
                         if (!response.ok) throw new Error('Job not found: ' + response.status);
                         return response.json();
+                    });
+                    
+                if (token) {
+                    fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId) + '/view', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
                     })
-                    .then(renderJob)
-                    .catch(function (error) {
+                    .then(r => r.json())
+                    .then(viewData => {
+                        fetchDetails.then(job => {
+                            if (viewData && viewData.view_counted && viewData.views) {
+                                job.views = viewData.views;
+                            }
+                            renderJob(job);
+                        }).catch(function (error) {
+                            console.error('Job detail fetch failed:', error);
+                            renderError();
+                        });
+                    })
+                    .catch(err => {
+                        fetchDetails.then(renderJob).catch(function (error) {
+                            console.error('Job detail fetch failed:', error);
+                            renderError();
+                        });
+                    });
+                } else {
+                    fetchDetails.then(renderJob).catch(function (error) {
                         console.error('Job detail fetch failed:', error);
                         renderError();
                     });
+                }
             });
         })();
     </script>

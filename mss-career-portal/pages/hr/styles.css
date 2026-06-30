@@ -35,24 +35,6 @@
   --transition: .2s ease;
 }
 
-[data-theme="dark"],
-body.dark-theme {
-  --primary-light: #26215C;
-  --accent-light: #412402;
-  --green-light: #173404;
-  --red-light: #501313;
-  --yellow-light: #412402;
-  --text-dark: #f0efe8;
-  --text-mid: #b4b2a9;
-  --text-muted: #666560;
-  --border: rgba(255, 255, 255, 0.10);
-  --surface: #111111;
-  --white: #0d0d0d;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-}
-
 html {
   scroll-behavior: smooth;
 }

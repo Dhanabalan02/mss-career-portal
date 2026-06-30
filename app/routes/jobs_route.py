@@ -33,6 +33,7 @@ from app.models import (
     CandidateMetadata,
     CandidateScreeningAnswer,
     ApplicantJobStatus,
+    ApplicantStage,
     InterviewStatus,
     InterviewRemark,
 )
@@ -210,6 +211,59 @@ def get_public_job_post_by_id_route(job_id: int, db: Session = Depends(get_db)):
     """Retrieves a single published job post by its ID. No authentication required."""
     job_post = get_published_job_post_or_404(db, job_id=job_id)
     return _serialize_job_post(job_post, db=db)
+
+
+def _get_candidate_id_from_token_opt(authorization: Optional[str] = Header(default=None)) -> Optional[int]:
+    """Extracts and validates candidate user_id from JWT token. Returns None if invalid or missing."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    token = authorization.split(" ", 1)[1]
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        user_id = int(payload.get("sub", 0))
+        role = payload.get("role")
+        if not user_id or role != "candidate":
+            return None
+        return user_id
+    except:
+        return None
+
+
+@router.post("/public/{job_id}/view")
+def increment_job_view_route(
+    job_id: int, 
+    db: Session = Depends(get_db), 
+    user_id: Optional[int] = Depends(_get_candidate_id_from_token_opt)
+):
+    """Increments the view count for a published job. Only counts once per logged-in user."""
+    job_post = get_published_job_post_or_404(db, job_id=job_id)
+    
+    # If not logged in, we do not increment to keep it strict to "logged in user once view".
+    # (Or we could increment once per IP, but per requirement we only track for logged-in users)
+    if not user_id:
+        return {"view_counted": False, "reason": "Not logged in"}
+        
+    from app.models.job_view_log_model import JobViewLog
+    
+    # Check if they already viewed it
+    existing_log = db.query(JobViewLog).filter(
+        JobViewLog.job_id == job_id,
+        JobViewLog.user_id == user_id
+    ).first()
+    
+    if existing_log:
+        return {"view_counted": False, "reason": "Already viewed"}
+        
+    # Add new view log
+    new_log = JobViewLog(job_id=job_id, user_id=user_id)
+    db.add(new_log)
+    
+    if not job_post.views:
+        job_post.views = 0
+    job_post.views += 1
+    
+    db.commit()
+    return {"view_counted": True, "views": job_post.views}
 
 
 class ApplicantStatusUpdateRequest(BaseModel):
@@ -834,9 +888,7 @@ def update_applicant_status_route(
     try:
         from app.models import Users
         from app.crud.notification_crud import (
-            notify_candidate,
-            notify_school_admin,
-            notify_hr_users,
+            notify_candidate
         )
 
         job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
@@ -856,26 +908,6 @@ def update_applicant_status_route(
                 sender_type="hr" if is_hr else "schoolAdmin",
             )
 
-            # 2. Notify School Admin
-            notify_school_admin(
-                db=db,
-                admin_id=job.job_posted_by,
-                title="Application Status Update",
-                message=f"Application status for candidate {candidate_name} has been updated to {status_lower}.",
-                notification_type="status_update",
-                sender_user_id=admin_id,
-                sender_type="hr" if is_hr else "schoolAdmin",
-            )
-
-            # 3. Notify HR Users
-            notify_hr_users(
-                db=db,
-                title="Application Status Update",
-                message=f"Application status for candidate {candidate_name} has been updated to {status_lower} for '{job.job_title}'.",
-                notification_type="status_update",
-                sender_user_id=admin_id,
-                sender_type="hr" if is_hr else "schoolAdmin",
-            )
     except Exception as e:
         from app.core.logger import logger
 
@@ -1194,7 +1226,9 @@ def get_dashboard_stats(
         )
     interviewed_subq = interviewed_subq_q.distinct().subquery()
 
-    applied_count = total_applicants
+    prescreen_reject_count = base_q.filter(
+        JobApplicant.applicant_stage == ApplicantStage.PRESCREEN_REJECT
+    ).count()
     interview_count = base_q.filter(
         JobApplicant.job_applicant_id.in_(interviewed_subq)
     ).count()
@@ -1204,6 +1238,7 @@ def get_dashboard_stats(
                 [ApplicantJobStatus.SELECTED, ApplicantJobStatus.HOLD]
             ),
             JobApplicant.job_applicant_id.in_(interviewed_subq),
+            JobApplicant.applicant_stage == ApplicantStage.SCREENED
         )
     ).count()
     offer_count = base_q.filter(JobApplicant.issue_offer == 1).count()
@@ -1211,6 +1246,9 @@ def get_dashboard_stats(
         JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED
     ).count()
     onboarding_count = onboarded_candidates
+    rejected_count = base_q.filter(
+        JobApplicant.applicant_job_status == ApplicantJobStatus.REJECTED
+    ).count()
 
     return {
         "active_jobs": active_jobs,
@@ -1219,7 +1257,7 @@ def get_dashboard_stats(
         "masset_sync_pending": masset_sync_pending,
         "onboarded_candidates": onboarded_candidates,
         "funnel": [
-            {"stage": "Applied", "count": applied_count, "color": "#378ADD"},
+            {"stage": "Prescreen Reject", "count": prescreen_reject_count, "color": "#E24B4A"},
             {"stage": "Screened", "count": screened_count, "color": "#534AB7"},
             {"stage": "Interview", "count": interview_count, "color": "#EF9F27"},
             {"stage": "Offer", "count": offer_count, "color": "#D85A30"},
@@ -1229,6 +1267,7 @@ def get_dashboard_stats(
                 "color": "#1D9E75",
             },
             {"stage": "Onboarding", "count": onboarding_count, "color": "#0891b2"},
+            {"stage": "Rejected", "count": rejected_count, "color": "#A32D2D"},
         ],
     }
 

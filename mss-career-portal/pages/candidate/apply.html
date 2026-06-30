@@ -150,6 +150,19 @@
         display: none;
     }
 
+
+    .cp-field-error {
+        color: #ef4444;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: none;
+        font-weight: 500;
+        animation: slideDown 0.3s ease;
+    }
+    .cp-field-error.visible {
+        display: block;
+    }
+
     .form-section.active {
         display: block;
         animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
@@ -411,7 +424,7 @@
                                 <i class="feather-home" style="font-size:0.75rem;"></i> Home
                             </a>
                             <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
-                            <a href="/mss-career-portal/job-grid" class="mss-bc-item">Open Roles</a>
+                            <a href="/mss-career-portal/open-roles" class="mss-bc-item">Open Roles</a>
                             <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
                             <span class="mss-bc-item mss-bc-active">Apply</span>
                         </nav>
@@ -503,7 +516,7 @@
                     font-size: 0.95rem;
                     color: rgba(255, 255, 255, 0.65);
                     margin: 0;
-                    max-width: 460px;
+                    /* max-width: 460px; */
                     line-height: 1.6;
                 }
 
@@ -596,7 +609,7 @@
                                 </div>
                             </div>
 
-                            <form id="apply-form" action="/mss-career-portal/dashboard">
+                            <form id="apply-form" action="/mss-career-portal/dashboard" novalidate>
                                 <!-- STEP 1 -->
                                 <div class="form-section active" id="section-1">
                                     <h3 class="fw-bold font-Rubik text-dark border-bottom pb-3 mb-4">Personal
@@ -605,21 +618,21 @@
                                         <div class="col-md-6"><label
                                                 class="form-label fw-bold small text-muted text-uppercase mb-2">First
                                                 Name</label><input type="text" class="form-control py-3"
-                                                id="input-fname" required></div>
+                                                id="input-fname" required><span class="cp-field-error" id="err-fname"></span></div>
                                         <div class="col-md-6"><label
                                                 class="form-label fw-bold small text-muted text-uppercase mb-2">Last
                                                 Name</label><input type="text" class="form-control py-3"
-                                                id="input-lname" required></div>
+                                                id="input-lname" required><span class="cp-field-error" id="err-lname"></span></div>
                                     </div>
                                     <div class="row g-4 mb-4">
                                         <div class="col-md-6"><label
                                                 class="form-label fw-bold small text-muted text-uppercase mb-2">Email
-                                                Address</label><input type="email" class="form-control py-3"
-                                                id="input-email" required></div>
+                                                Address</label><input type="text" class="form-control py-3"
+                                                id="input-email" autocomplete="email"><span class="cp-field-error" id="err-email"></span></div>
                                         <div class="col-md-6"><label
                                                 class="form-label fw-bold small text-muted text-uppercase mb-2">Phone
                                                 Number</label><input type="tel" class="form-control py-3"
-                                                id="input-phone" required></div>
+                                                id="input-phone" required maxlength="10" minlength="10" pattern="\d{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'');"><span class="cp-field-error" id="err-phone"></span></div>
                                     </div>
                                     <div class="mb-5"><label
                                             class="form-label fw-bold small text-muted text-uppercase mb-2">LinkedIn
@@ -747,7 +760,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-center mt-2 gap-3">
-                                    <a href="/mss-career-portal/job-grid"
+                                    <a href="/mss-career-portal/open-roles"
                                         class="btn btn-light rounded-pill px-4 py-3 fw-bold border shadow-sm"><i
                                             class="feather-briefcase me-2" style="color: var(--primary-color);"></i> Explore More
                                         Jobs </a>
@@ -790,7 +803,7 @@
                                     <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Home</a></li>
                                     <li><a href="https://themadrassevasadan.org/about" target="_blank"
                                             style="color: var(--white-color);">About</a></li>
-                                    <li><a href="/mss-career-portal/job-grid" style="color: var(--white-color);">Open Roles</a></li>
+                                    <li><a href="/mss-career-portal/open-roles" style="color: var(--white-color);">Open Roles</a></li>
                                     <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Search</a></li>
                                     <li><a href="contact.html" style="color: var(--white-color);">Contact</a></li>
                                 </ul>
@@ -800,21 +813,20 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="widget widget_info">
                                 <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
-                                <ul class="ftr-list">
-                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
-                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
-                                            600031</p>
-                                    </li>
-                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
-                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
-                                    </li>
-                                    <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
-                                            style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                        <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
-                                    </li>
-                                </ul>
+                            <ul class="ftr-list">
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
+                                </li>
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
+                                </li>
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
+                                </li>
+                            </ul>
                             </div>
                         </div>
 
@@ -861,7 +873,7 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=4"></script>
+    <script src="../../assets/js/shared-header.js?v=5"></script>
     <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
 
@@ -885,10 +897,10 @@
 
         $(document).ready(function () {
             const urlParams = new URLSearchParams(window.location.search);
-            jobId = urlParams.get('id');
+            jobId = urlParams.get('id') || localStorage.getItem('candidate_current_job_id');
             if (!jobId) {
                 showToast('No job selected. Redirecting to job list.', 'error');
-                window.location.href = '/mss-career-portal/job-grid';
+                window.location.href = '/mss-career-portal/open-roles';
                 return;
             }
 
@@ -938,12 +950,12 @@
 
                 $(loginModal).off('hidden.bs.modal').on('hidden.bs.modal', function () {
                     if (!localStorage.getItem('access_token')) {
-                        window.location.href = '/mss-career-portal/job-grid';
+                        window.location.href = '/mss-career-portal/open-roles';
                     }
                 });
             } else {
                 showToast('Please log in to apply for this job.', 'error');
-                window.location.href = '/mss-career-portal/job-grid';
+                window.location.href = '/mss-career-portal/open-roles';
             }
         }
 
@@ -992,7 +1004,7 @@
                 .catch(err => {
                     console.error('Error fetching job details:', err);
                     showToast('Failed to load job details. Redirecting to job grid.', 'error');
-                    window.location.href = '/mss-career-portal/job-grid';
+                    window.location.href = '/mss-career-portal/open-roles';
                 });
         }
 
@@ -1061,20 +1073,41 @@
                     `;
                 }
 
-                questionHtml += `</div>`;
+                questionHtml += `<span class="cp-field-error" id="err-q_${q.question_id}"></span></div>`;
                 container.append(questionHtml);
             });
         }
 
+        
+        function cpShowError(id, msg) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = msg ? '⚠ ' + msg : '';
+                el.className = msg ? 'cp-field-error visible' : 'cp-field-error';
+            }
+        }
+        function cpClearError(id) { cpShowError(id, ''); }
+
         function validateStep1() {
-            const fields = ['#input-fname', '#input-lname', '#input-email', '#input-phone'];
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const phoneRegex = /^\d{10}$/;
+            const checks = [
+                {id: '#input-fname', errId: 'err-fname', msg: 'First Name is required.',      ok: f => f.value.trim() !== ''},
+                {id: '#input-lname', errId: 'err-lname', msg: 'Last Name is required.',       ok: f => f.value.trim() !== ''},
+                {id: '#input-email', errId: 'err-email', msg: 'A valid email is required.',   ok: f => emailRegex.test(f.value.trim())},
+                {id: '#input-phone', errId: 'err-phone', msg: 'A valid 10-digit phone number is required.', ok: f => phoneRegex.test(f.value.trim())}
+            ];
             let valid = true;
-            fields.forEach(selector => {
-                const field = $(selector)[0];
+            checks.forEach(f => {
+                const field = $(f.id)[0];
                 if (field) {
-                    $(field).trigger('blur');
-                    if (!field.checkValidity() || $(field).hasClass('is-invalid')) {
+                    if (!f.ok(field)) {
+                        $(field).addClass('is-invalid');
+                        cpShowError(f.errId, f.msg);
                         valid = false;
+                    } else {
+                        $(field).removeClass('is-invalid');
+                        cpClearError(f.errId);
                     }
                 }
             });
@@ -1084,25 +1117,25 @@
         function validateStep2() {
             let valid = true;
             jobQuestions.forEach(q => {
+                const errId = `err-q_${q.question_id}`;
                 if (q.question_type === 'boolean' || q.question_type === 'yes_no' || q.question_type === 'mcq') {
                     const radios = $(`input[name="q_${q.question_id}"]`);
                     const checked = radios.filter(':checked');
                     if (checked.length === 0) {
-                        if (radios.length > 0) {
-                            radios[0].setCustomValidity('Please answer this question.');
-                            radios[0].reportValidity();
-                        }
+                        cpShowError(errId, 'Please answer this question.');
                         valid = false;
                     } else {
-                        if (radios.length > 0) {
-                            radios[0].setCustomValidity('');
-                        }
+                        cpClearError(errId);
                     }
                 } else {
                     const textInput = $(`#q_${q.question_id}_text`)[0];
-                    if (textInput && !textInput.checkValidity()) {
-                        textInput.reportValidity();
+                    if (textInput && (!textInput.checkValidity() || !textInput.value.trim())) {
+                        $(textInput).addClass('is-invalid');
+                        cpShowError(errId, 'Please provide an answer.');
                         valid = false;
+                    } else if (textInput) {
+                        $(textInput).removeClass('is-invalid');
+                        cpClearError(errId);
                     }
                 }
             });
@@ -1159,6 +1192,11 @@
         });
 
         function nextStep(step) {
+            if (step === 1) {
+                $('#logged-in-alert').removeClass('d-none');
+            } else {
+                $('#logged-in-alert').addClass('d-none');
+            }
             const currentActiveStep = parseInt($('.step.active').attr('data-step'));
             if (step > currentActiveStep) {
                 if (currentActiveStep === 1 && !validateStep1()) return;

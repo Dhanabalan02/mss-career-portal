@@ -48,27 +48,6 @@
       --text3: #9ca3af;
     }
 
-    [data-theme="dark"],
-    body.dark-theme {
-      --bg: #0d0d0d;
-      --card: #0d0d0d;
-      --border: rgba(255, 255, 255, 0.10);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --text: #f0efe8;
-      --text-secondary: #b4b2a9;
-      --text-muted: #666560;
-      --input-bg: #0d0d0d;
-      --surface: #0d0d0d;
-      --primary-light: #26215C;
-      --success-light: #173404;
-      --warning-light: #412402;
-      --purple-light: #26215C;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-      --bg1: #0d0d0d;
-      --text3: #666560;
-    }
-
     *,
     *::before,
     *::after {
@@ -161,10 +140,6 @@
       color: var(--text-secondary);
     }
 
-    body.dark-theme .btn-outline {
-      background: var(--card);
-    }
-
     .btn-outline:hover {
       border-color: var(--primary);
       color: var(--primary);
@@ -209,10 +184,6 @@
       flex-wrap: wrap;
     }
 
-    body.dark-theme .filter-bar {
-      background: var(--card);
-    }
-
     .filter-label {
       font-size: 12px;
       font-weight: 600;
@@ -236,11 +207,6 @@
       cursor: pointer;
       appearance: none;
       -webkit-appearance: none;
-    }
-
-    body.dark-theme .filter-bar input,
-    body.dark-theme .filter-bar select {
-      background-color: var(--input-bg);
     }
 
     .filter-bar input:focus,
@@ -491,10 +457,6 @@
       transition: box-shadow .2s;
     }
 
-    body.dark-theme .card {
-      background: var(--card);
-    }
-
     .card:hover {
       box-shadow: var(--shadow-md);
     }
@@ -521,10 +483,6 @@
       background: #f3f4f8;
       color: var(--text-muted);
       border: 1px solid var(--border);
-    }
-
-    body.dark-theme .card-badge {
-      background: var(--surface);
     }
 
     /* ── Monthly Trend Stats ── */
@@ -701,10 +659,6 @@
       border: 1px solid var(--border);
     }
 
-    body.dark-theme .bar-track {
-      background: var(--surface);
-    }
-
     .bar-fill {
       height: 100%;
       border-radius: 99px;
@@ -754,10 +708,6 @@
       text-align: center;
     }
 
-    body.dark-theme .budget-box {
-      background: var(--surface);
-    }
-
     .budget-val {
       font-size: 22px;
       font-weight: 800;
@@ -788,10 +738,6 @@
       border: 1px solid var(--border);
     }
 
-    body.dark-theme .budget-bar {
-      background: var(--surface);
-    }
-
     .budget-bar-fill {
       height: 100%;
       background: linear-gradient(90deg, var(--warning), #fbbf24);
@@ -810,10 +756,6 @@
       margin-bottom: 20px;
     }
 
-    body.dark-theme .insights-card {
-      background: var(--card);
-    }
-
     .insights-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -829,10 +771,6 @@
       gap: 12px;
       align-items: flex-start;
       transition: border-color .18s, transform .18s;
-    }
-
-    body.dark-theme .insight-item {
-      background: var(--surface);
     }
 
     .insight-item:hover {
@@ -1891,9 +1829,6 @@
       el.addEventListener('change', loadReports);
     });
 
-    if (localStorage.getItem('portalTheme') === 'dark') {
-      document.body.classList.add('dark-theme');
-    }
   </script>
 
 </body>

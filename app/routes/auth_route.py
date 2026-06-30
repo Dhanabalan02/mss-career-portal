@@ -387,3 +387,106 @@ def oauth_callback_page():
         "mss-career-portal/pages/candidate/oauth-callback.html",
         "/mss-career-portal/pages/candidate/",
     )
+
+
+import random
+import logging
+from app.core.otp_service import OtpService, normalize_whatsapp_number
+from app.crud.auth_crud import get_user_by_mobile, store_otp, verify_otp, update_user_password
+
+otp_logger = logging.getLogger("otp_debug")
+
+
+class SendOtpRequest(BaseModel):
+    mobile: str
+
+
+class VerifyOtpRequest(BaseModel):
+    mobile: str
+    otp: int
+
+
+class UpdatePasswordRequest(BaseModel):
+    mobile: str
+    otp: int
+    new_password: str
+
+
+@router.post("/forgot-password/send-otp")
+def send_otp(request_data: SendOtpRequest, db: Session = Depends(get_db)):
+    mobile = request_data.mobile
+    otp_logger.info("STEP 1 | raw mobile received: %r", mobile)
+
+    normalized = normalize_whatsapp_number(mobile)
+    otp_logger.info("STEP 2 | normalized mobile: %r", normalized)
+
+    user = get_user_by_mobile(db, mobile)
+    otp_logger.info("STEP 3 | DB lookup result: user_id=%s found=%s", getattr(user, "user_id", None), user is not None)
+    if not user:
+        raise HTTPException(status_code=404, detail="User with this mobile number not found.")
+
+    otp_code = random.randint(100000, 999999)
+    otp_logger.info("STEP 4 | OTP generated: %s", otp_code)
+
+    store_otp(db, user.user_id, otp_code, "password update")
+    otp_logger.info("STEP 5 | OTP stored in DB for user_id=%s", user.user_id)
+
+    otp_service = OtpService()
+    api_key = otp_service.api_key or ""
+    otp_logger.info("STEP 6 | API key loaded: present=%s length=%d prefix=%s", bool(api_key), len(api_key), api_key[:12] + "..." if len(api_key) > 12 else "(too short)")
+
+    otp_logger.info("STEP 7 | Calling WhatsApp API: url=%s to=%s", otp_service.api_url, normalized)
+    result = otp_service.send_otp_message(mobile, str(otp_code))
+
+    otp_logger.info("STEP 8 | API response: success=%s http_code=%s body=%s", result.get("success"), result.get("http_code"), result.get("response"))
+
+    if not result.get("success"):
+        raise HTTPException(
+            status_code=502,
+            detail=f"Failed to send OTP via WhatsApp (status {result.get('http_code')}): {result.get('response')}",
+        )
+
+    otp_logger.info("STEP 9 | OTP sent successfully to %s", normalized)
+    return {"message": "OTP sent successfully."}
+
+
+@router.post("/forgot-password/verify-otp")
+def verify_otp_endpoint(request_data: VerifyOtpRequest, db: Session = Depends(get_db)):
+    user = get_user_by_mobile(db, request_data.mobile)
+    if not user:
+        raise HTTPException(status_code=404, detail="User with this mobile number not found.")
+        
+    is_valid = verify_otp(db, user.user_id, request_data.otp, "password update")
+    if not is_valid:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP.")
+        
+    return {"message": "OTP verified successfully."}
+
+
+@router.post("/forgot-password/update-password")
+def update_password(request_data: UpdatePasswordRequest, db: Session = Depends(get_db)):
+    user = get_user_by_mobile(db, request_data.mobile)
+    if not user:
+        raise HTTPException(status_code=404, detail="User with this mobile number not found.")
+        
+    # The OTP was already marked as verified during the /verify-otp step. 
+    # Check if there is a verified OTP within the last 5 minutes.
+    from app.models.otp_logs_model import OTPLog
+    from datetime import datetime, timezone, timedelta
+    time_threshold = datetime.now(timezone.utc) - timedelta(minutes=5)
+    recent_verified = db.query(OTPLog).filter(
+        OTPLog.user_id == user.user_id,
+        OTPLog.otp == request_data.otp,
+        OTPLog.purpose == "password update",
+        OTPLog.is_verified == 1,
+        OTPLog.created_at >= time_threshold
+    ).first()
+    
+    if not recent_verified:
+        raise HTTPException(status_code=400, detail="Session expired or invalid OTP. Please try again.")
+            
+    success = update_user_password(db, user.user_id, request_data.new_password)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to update password.")
+        
+    return {"message": "Password updated successfully."}

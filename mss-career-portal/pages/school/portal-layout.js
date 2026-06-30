@@ -175,16 +175,6 @@
     document.head.appendChild(link);
   }
 
-  /* ── Theme ────────────────────────────────────────────────── */
-  function applyStoredTheme() {
-    if (localStorage.getItem('portalTheme') === 'dark') document.body.classList.add('dark-theme');
-  }
-
-  window.toggleDarkTheme = function () {
-    const dark = document.body.classList.toggle('dark-theme');
-    localStorage.setItem('portalTheme', dark ? 'dark' : 'light');
-  };
-
   /* ── Header ───────────────────────────────────────────────── */
   function buildHeader() {
     if (qs('.portal-topbar')) return;
@@ -206,11 +196,6 @@
           </button>
       </div>
       <div class="portal-topbar__actions">
-        <button class="portal-icon-btn portal-theme-toggle" type="button"
-                aria-label="Toggle theme" data-theme-toggle>
-          <span class="portal-sun-icon" aria-hidden="true">${portalIcon('sun')}</span>
-          <span class="portal-moon-icon" aria-hidden="true">${portalIcon('moon')}</span>
-        </button>
         <button class="portal-icon-btn portal-bell" type="button"
                 aria-label="Notifications" aria-controls="portalNotifications"
                 aria-expanded="false" data-notification-toggle>
@@ -562,7 +547,6 @@
   /* ── Event wiring ─────────────────────────────────────────── */
   function bindEvents() {
     document.addEventListener('click', e => {
-      if (e.target.closest('[data-theme-toggle]')) { toggleDarkTheme(); return; }
 
       if (e.target.closest('[data-notification-toggle]')) {
         e.stopPropagation();
@@ -788,7 +772,6 @@
   document.addEventListener('DOMContentLoaded', () => {
     ensurePortalStylesheet();
     ensureTablerIcons();
-    applyStoredTheme();
     buildHeader();
     buildSidebar();
     buildNotificationsPanel();

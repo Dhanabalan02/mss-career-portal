@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- META -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="" />
+    <meta name="author" content="" />
+    <meta name="robots" content="" />    
+    <meta name="description" content="" />
+    
+    <!-- FAVICONS ICON -->
+    <link rel="icon" href="images/mss/mss-logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/mss/mss-logo.png" />
+    
+    <!-- PAGE TITLE HERE -->
+    <title>Applied Jobs - TMSS Career Portal</title>
+    
+    <!-- MOBILE SPECIFIC -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"><!-- BOOTSTRAP STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css"><!-- FONTAWESOME STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/feather.css"><!-- FEATHER ICON SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/owl.carousel.min.css"><!-- OWL CAROUSEL STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/magnific-popup.min.css"><!-- MAGNIFIC POPUP STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/lc_lightbox.css"><!-- Lc light box popup -->     
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-select.min.css"><!-- BOOTSTRAP SLECT BOX STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/dataTables.bootstrap5.min.css"><!-- DATA table STYLE SHEET  -->
+    <link rel="stylesheet" type="text/css" href="css/select.bootstrap5.min.css"><!-- DASHBOARD select bootstrap  STYLE SHEET  -->     
+    <link rel="stylesheet" type="text/css" href="css/dropzone.css"><!-- DROPZONE STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/scrollbar.css"><!-- CUSTOM SCROLL BAR STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/datepicker.css"><!-- DATEPICKER STYLE SHEET -->
+    <link rel="stylesheet" type="text/css" href="css/flaticon.css"> <!-- Flaticon -->
+    <link rel="stylesheet" type="text/css" href="css/swiper-bundle.min.css"><!-- Swiper Slider -->
+    <link rel="stylesheet" type="text/css" href="css/style.css"><!-- MAIN STYLE SHEET -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" type="text/css" href="../../assets/css/shared-header.css">
+    
+    <!-- THEME COLOR CHANGE STYLE SHEET -->
+    <link rel="stylesheet" class="skin" type="text/css" href="css/skins-type/skin-6.css">
+    <style>
+        .mss-inner-banner {
+            position: relative;
+            background: var(--hero-banner-bg-color);
+            padding: 3rem 0;
+            overflow: hidden;
+            margin-top: 0;
+        }
+
+        .mss-inner-banner-bg {
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        }
+
+        .mss-inner-title {
+            font-family: 'Rubik', sans-serif;
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 0.5rem;
+            letter-spacing: -0.3px;
+        }
+
+        .mss-inner-sub {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 0;
+            /* max-width: 460px; */
+        }
+
+        .jg-wrap {
+            background: #F8FAFC;
+            padding: 2.5rem 0 4rem;
+            min-height: 60vh;
+        }
+
+        .jg-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.75rem;
+            align-items: start;
+        }
+
+        /* ── Toolbar ── */
+        .jg-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .jg-result-count {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.88rem;
+            color: #64748B;
+        }
+        .jg-result-count strong { color: #0F172A; font-weight: 700; }
+
+        /* ── Cards Grid ── */
+        .jg-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+        @media (max-width: 767px) { .jg-grid { grid-template-columns: 1fr; } }
+
+        /* ── Single Card ── */
+        .jg-card {
+            display: flex;
+            flex-direction: column;
+            background: #fff;
+            border: 1.5px solid #EFF2F7;
+            border-radius: 16px;
+            padding: 1.4rem;
+            text-decoration: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .jg-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--primary-color, #1A56DB);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .jg-card:hover {
+            border-color: var(--card-border, #BFDBFE);
+            box-shadow: 0 8px 28px rgba(26,86,219,.12), 0 2px 6px rgba(26,86,219,.06);
+            transform: translateY(-3px);
+            text-decoration: none;
+        }
+        .jg-card:hover::before { opacity: 1; }
+
+        .jg-card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .jg-card-logo {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            border: 1.5px solid #EFF2F7;
+            display: flex; align-items: center; justify-content: center;
+            padding: 6px;
+            background: #fff;
+            flex-shrink: 0;
+        }
+        .jg-card-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+        .jg-card-badges { display: flex; flex-wrap: wrap; gap: 5px; justify-content: flex-end; }
+
+        .jg-badge {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 700;
+            border-radius: 50px;
+            padding: 3px 10px;
+            letter-spacing: 0.3px;
+        }
+        .jg-badge-blue   { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+        .jg-badge-violet { background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE; }
+        .jg-badge-teal   { background: #F0FDFA; color: #0D9488; border: 1px solid #99F6E4; }
+        .jg-badge-amber  { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+        .jg-badge-green  { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+        .jg-badge-red    { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
+        .jg-badge-new    { background: linear-gradient(135deg,#10B981,#059669); color:#fff; border:none; }
+
+        .jg-card-title {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 0 0 0.4rem;
+            line-height: 1.3;
+            transition: color 0.15s;
+        }
+        .jg-card:hover .jg-card-title { color: var(--primary-color, #1A56DB); }
+
+        .jg-card-school {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #000;
+            text-transform: uppercase;
+            display: flex; align-items: center; gap: 5px;
+            margin-bottom: 0.75rem;
+        }
+        .jg-card-school i { font-size: 0.75rem; }
+
+        .jg-card-meta { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; }
+        .jg-card-meta span {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.78rem;
+            color: #94A3B8;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .jg-card-meta i { font-size: 0.75rem; }
+
+        .jg-card-footer {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 0.85rem;
+            border-top: 1px solid #F1F5F9;
+        }
+        .jg-card-salary {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.82rem; font-weight: 600; color: #475569;
+        }
+        .jg-card-cta {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.8rem; font-weight: 700;
+            color: var(--primary-color, #1A56DB);
+            display: flex; align-items: center; gap: 4px;
+            transition: gap 0.15s ease;
+        }
+        .jg-card:hover .jg-card-cta { gap: 7px; }
+        .jg-card-cta i { font-size: 0.78rem; }
+
+        /* Status Sidebar as an overlay drawer */
+        .status-sidebar {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 450px;
+            max-width: 100vw;
+            height: 100vh;
+            background: #fff;
+            z-index: 1050;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            overflow-y: auto;
+            padding: 30px;
+            border-left: 1px solid #E2E8F0;
+        }
+        
+        .status-sidebar.open {
+            right: 0;
+        }
+        
+        /* Backdrop */
+        .sidebar-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.4);
+            z-index: 1040;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sidebar-backdrop.show {
+            display: block;
+            opacity: 1;
+        }
+
+
+        
+    </style>
+</head>
+
+<body class="scrollbar-thin-1">
+    
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
+    <div class="page-wraper">
+
+        <div id="shared-header"></div>
+        <div class="page-content">
+            
+            <div class="mss-inner-banner">
+                <div class="mss-inner-banner-bg"></div>
+                <div class="container-fluid px-3 px-lg-5" style="position:relative;z-index:2;">
+                    <div class="mss-inner-banner-left">
+                        <h1 class="mss-inner-title">Your Applied Jobs</h1>
+                        <p class="mss-inner-sub">Track the status of your applications.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jg-wrap">
+                <div class="container-fluid px-3 px-lg-5">
+                    
+                    <div class="jg-toolbar" style="margin-bottom: 20px;">
+                        <div class="jg-result-count" id="jg-count">Loading your applications...</div>
+                    </div>
+                    
+                    <div class="jg-layout" id="mainLayout">
+                        <main class="jg-main">
+                            <div class="jg-grid" id="jg-cards">
+                                <!-- Cards will be injected here -->
+                            </div>
+                        </main>
+                        
+                        <!-- Status Sidebar -->
+                        <aside class="status-sidebar" id="statusSidebar">
+                            <div style="display:flex; justify-content:flex-start; align-items:center; margin-bottom: 20px; gap: 15px;">
+                                <button class="btn btn-sm btn-light" onclick="closeSidebar()" style="border-radius: 50%; width: 36px; height: 36px; display:flex; justify-content:center; align-items:center; border: 1px solid #E2E8F0; background: #fff;"><i class="feather-arrow-left"></i></button>
+                                <h4 style="margin:0; font-weight:700;">Application Status</h4>
+                            </div>
+                            <div id="sidebar-job-info" style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #E2E8F0;">
+                                <h5 id="sb-job-title" style="font-weight: 700; color: #0F172A; margin-bottom: 8px;">Job Title</h5>
+                                <div style="font-size: 0.85rem; color: #64748B;"><i class="feather-home"></i> <span id="sb-job-school">School Name</span></div>
+                            </div>
+                            <div id="trackStatusTimeline" style="background: #F8FAFC; border-radius: 12px; padding: 20px; border: 1px solid #E2E8F0; min-height: 250px;">
+                                <!-- Timeline will be injected here -->
+                            </div>
+                            <div id="offerBlock" style="display:none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 24px; margin-top: 20px; text-align:center;">
+                                <h4 style="color: #166534; font-weight: 700; margin-bottom: 16px;">Job Offer</h4>
+                                <div id="offerLetterContent" style="text-align: left; font-size: 0.9rem; color: #166534; margin-bottom: 24px; padding: 16px; background: #fff; border-radius: 8px; border: 1px solid #bbf7d0; max-height: 200px; overflow-y: auto;">
+                                </div>
+                                <div id="offerActionBlock" style="display: flex; gap: 12px; justify-content: center;">
+                                    <button id="acceptOfferBtn" class="btn" style="background: #10B981; color: #fff; border-radius: 8px; font-weight: 600; padding: 10px 24px;">Accept Offer</button>
+                                    <button id="rejectOfferBtn" class="btn" style="background: #EF4444; color: #fff; border-radius: 8px; font-weight: 600; padding: 10px 24px;">Decline</button>
+                                </div>
+                                <span id="offerStatusBadge" style="display:none; padding: 6px 16px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;"></span>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+        <footer class="footer-dark"
+        style="    background: linear-gradient(300deg, #cc8cfc, #7b2cbf) !important; display: block !important; position: relative !important; z-index: 10;">
+        <div class="container-fluid px-3 px-lg-5">
+
+            <div class="footer-top">
+                <div class="row">
+
+                    <div class="col-lg-4 col-md-12">
+                        <div class="widget widget_about">
+                            <div class="logo-footer clearfix">
+                                <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
+                                        style="max-height: 80px;"></a>
+                            </div>
+                            <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South
+                                India’s oldest and most trusted institutions, dedicated to transforming lives through
+                                education, women empowerment, child welfare, social development, arts and sports —
+                                guided by the timeless values of compassion, dignity and service. </p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="widget widget_services ftr-list-center">
+                            <h4 class="widget-title pb-1" style="color: #fff;">Quick Links</h4>
+                            <ul>
+                                <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Home</a></li>
+                                <li><a href="https://themadrassevasadan.org/about" target="_blank"
+                                        style="color: #A0AEC0;">About</a></li>
+                                <li><a href="/mss-career-portal/open-roles" style="color: #A0AEC0;">Open Roles</a></li>
+                                <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Search</a></li>
+                                <li><a href="contact.html" style="color: #A0AEC0;">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="widget widget_info">
+                            <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
+                            <ul class="ftr-list">
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
+                                </li>
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
+                                </li>
+                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
+                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
+                                    <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <div class="container-fluid px-3 px-lg-5">
+                <div class="footer-bottom-info d-flex justify-content-center align-items-center w-100"
+                    style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-bottom: 20px;">
+                    <div class="footer-copy-right text-center w-100">
+                        <span class="copyrights-text" style="color: var(--white-color);">Copyright 2026 <strong>The Madras Seva
+                                Sadan</strong>. All Rights Reserved.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+    
+    <!-- JAVASCRIPT FILES -->
+    <script src="js/jquery-3.6.0.min.js"></script><!-- JQUERY.MIN JS -->
+    <script src="js/popper.min.js"></script><!-- POPPER.MIN JS -->
+    <script src="js/bootstrap.min.js"></script><!-- BOOTSTRAP.MIN JS -->
+    <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
+    <script src="../../assets/js/shared-header.js?v=5"></script>
+
+    <script>
+        (function () {
+            var JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : '';
+            var allJobs = [];
+
+            function escapeHtml(value) {
+                return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                });
+            }
+
+            function getSchoolLogo(schoolName) {
+                var school = String(schoolName || '').toLowerCase();
+                if (school.indexOf('lady andal') !== -1) return 'images/mss/laib-logo.png';
+                if (school.indexOf('sir mutha') !== -1) return 'images/mss/sir-mutha-logo.png';
+                if (school.indexOf('tambaram') !== -1) return 'images/mss/TMSS-Tambaram-logo.png';
+                if (school.indexOf('chetpet') !== -1) return 'images/mss/TMSS-Chetpet-logo.png';
+                return 'images/mss/mss-logo.png'; 
+            }
+
+            window.closeSidebar = function() {
+                document.getElementById('statusSidebar').classList.remove('open');
+                var backdrop = document.getElementById('sidebarBackdrop');
+                if (backdrop) {
+                    backdrop.classList.remove('show');
+                    setTimeout(() => { backdrop.style.display = 'none'; }, 300);
+                }
+            };
+
+            window.openTrackSidebar = function(jobId) {
+                document.getElementById('statusSidebar').classList.add('open');
+                var backdrop = document.getElementById('sidebarBackdrop');
+                if (backdrop) {
+                    backdrop.style.display = 'block';
+                    setTimeout(() => { backdrop.classList.add('show'); }, 10);
+                }
+                
+                var myApp = allJobs.find(a => String(a.job_id) === String(jobId));
+                if (myApp) {
+                    document.getElementById('sb-job-title').textContent = myApp.job_title || 'Untitled Role';
+                    document.getElementById('sb-job-school').textContent = myApp.school_name || myApp.department || 'The Madras Seva Sadan';
+                    
+                    var timelineEl = document.getElementById('trackStatusTimeline');
+                    
+                    var stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+                    var stageFeatherIcons = ['feather-file-text', 'feather-users', 'feather-briefcase', 'feather-thumbs-up', 'feather-check-circle'];
+                    var currentStage = myApp.stage || 'Applied';
+                    var isRejected = false;
+                    
+                    if (currentStage.toLowerCase() === 'prescreen-reject' || currentStage.toLowerCase() === 'rejected') {
+                        isRejected = true;
+                        currentStage = 'Screened';
+                    }
+                    if (currentStage.toLowerCase() === 'applied') {
+                        currentStage = 'Screened'; // Visual baseline is waiting at Screened
+                    }
+                    
+                    var currentIndex = stages.findIndex(s => s.toLowerCase() === currentStage.toLowerCase());
+                    if (currentIndex === -1) currentIndex = 0;
+                    
+                    var timelineHtml = '<div style="display:flex; flex-direction:column; gap:20px; position:relative; padding-left: 10px;">';
+                    timelineHtml += '<div style="position:absolute; top:16px; bottom:16px; left:23px; width:2px; background:#CBD5E1; z-index:1;"></div>';
+                    
+                    stages.forEach((s, idx) => {
+                        var isCompleted = idx < currentIndex || (!isRejected && idx === currentIndex);
+                        var isCurrent = idx === currentIndex && !isRejected;
+                        var isFail = idx === currentIndex && isRejected;
+                        
+                        var color = isCompleted ? '#10B981' : (isFail ? '#EF4444' : '#CBD5E1');
+                        var bg = isCompleted ? '#10B981' : (isFail ? '#FEF2F2' : '#F8FAFC');
+                        var iconCls = stageFeatherIcons[idx];
+                        var iconColor = isCompleted ? '#fff' : (isFail ? '#EF4444' : '#94A3B8');
+                        var icon = '<i class="' + iconCls + '" style="color:' + iconColor + '; font-size:14px;"></i>';
+                        if (isFail && idx === currentIndex) {
+                            icon = '<i class="feather-x" style="color:#EF4444; font-size:16px;"></i>';
+                        }
+                        
+                        timelineHtml += '<div style="display:flex; align-items:center; gap:16px; z-index:2; position:relative;">';
+                        timelineHtml += '<div style="width:28px; height:28px; border-radius:50%; background:' + bg + '; border:2px solid ' + color + '; display:flex; justify-content:center; align-items:center; flex-shrink:0;">' + icon + '</div>';
+                        timelineHtml += '<span style="font-size:0.9rem; font-weight:' + (isCurrent || isFail ? '700' : '500') + '; color:' + (isCurrent ? '#0F172A' : (isFail ? '#B91C1C' : '#64748B')) + ';">' + s + '</span>';
+                        timelineHtml += '</div>';
+                    });
+                    
+                    timelineHtml += '</div>';
+                    
+                    if (isRejected) {
+                        timelineHtml += '<div style="margin-top: 30px; padding: 12px; background: #FEF2F2; color: #B91C1C; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.85rem;">Unfortunately, your application was not selected to move forward at this time.</div>';
+                    }
+                    
+                    timelineEl.innerHTML = timelineHtml;
+                    
+                    var offerBlock = document.getElementById('offerBlock');
+                    if (myApp.issue_offer === 1) {
+                        var token = localStorage.getItem('access_token');
+                        fetch(JOBS_API_BASE + '/apply/check-applied/' + encodeURIComponent(jobId), {
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        }).then(r => r.json()).then(result => {
+                            if (result && result.offer) {
+                                offerBlock.style.display = 'block';
+                                
+                                var offerHtml = result.offer.offer_letter_doc;
+                                if (!offerHtml) {
+                                    offerHtml = '<strong>Salary:</strong> ' + (result.offer.offered_salary ? result.offer.offered_salary + ' LPA' : 'TBD') + '<br>' +
+                                                '<strong>Joining Date:</strong> ' + (result.offer.joining_date || 'TBD') + '<br>' +
+                                                '<strong>Valid Until:</strong> ' + (result.offer.offer_expiry_date || 'TBD') + '<br>';
+                                }
+                                document.getElementById('offerLetterContent').innerHTML = offerHtml;
+                                
+                                var status = result.offer.offer_acceptance_status;
+                                var actionBlock = document.getElementById('offerActionBlock');
+                                var badge = document.getElementById('offerStatusBadge');
+                                
+                                if (status === 'accepted') {
+                                    if (actionBlock) actionBlock.style.display = 'none';
+                                    if (badge) {
+                                        badge.style.display = 'inline-block';
+                                        badge.style.background = '#dcfce7';
+                                        badge.style.color = '#15803d';
+                                        badge.textContent = 'Offer Accepted';
+                                    }
+                                } else if (status === 'rejected' || status === 'expired') {
+                                    if (actionBlock) actionBlock.style.display = 'none';
+                                    if (badge) {
+                                        badge.style.display = 'inline-block';
+                                        badge.style.background = '#fee2e2';
+                                        badge.style.color = '#b91c1c';
+                                        badge.textContent = 'Offer ' + (status.charAt(0).toUpperCase() + status.slice(1));
+                                    }
+                                } else {
+                                    actionBlock.style.display = 'flex';
+                                    badge.style.display = 'none';
+                                    document.getElementById('acceptOfferBtn').onclick = function() { respondToOffer(jobId, 'accepted'); };
+                                    document.getElementById('rejectOfferBtn').onclick = function() { respondToOffer(jobId, 'rejected'); };
+                                }
+                            }
+                        });
+                    } else {
+                        offerBlock.style.display = 'none';
+                    }
+                }
+            };
+
+            window.respondToOffer = function(jobId, status) {
+                var token = localStorage.getItem('access_token');
+                if (!token) return;
+                fetch(JOBS_API_BASE + '/apply/offer/' + encodeURIComponent(jobId) + '/respond', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ status: status })
+                })
+                .then(r => r.json())
+                .then(res => {
+                    if (window.showMssToast) {
+                        window.showMssToast("Offer " + status + " successfully!");
+                    } else {
+                        alert("Offer " + status + " successfully!");
+                    }
+                    loadJobs(); 
+                    openTrackSidebar(jobId);
+                })
+                .catch(err => console.error('Error responding to offer:', err));
+            };
+
+            function getStageBadgeClass(stage) {
+                var s = String(stage || '').toLowerCase();
+                if (s === 'applied')                return 'jg-badge-blue';
+                if (s === 'screened')               return 'jg-badge-amber';
+                if (s === 'interview')              return 'jg-badge-violet';
+                if (s === 'offer')                  return 'jg-badge-teal';
+                if (s === 'offer accepted')         return 'jg-badge-new';
+                if (s === 'onboarded')              return 'jg-badge-green';
+                if (s.indexOf('reject') !== -1)     return 'jg-badge-red';
+                if (s.indexOf('prescreen') !== -1)  return 'jg-badge-red';
+                return 'jg-badge-blue';
+            }
+
+            function buildJobCard(job) {
+                var title    = escapeHtml(job.job_title || 'Untitled Role');
+                var school   = escapeHtml(job.school_name || job.department || 'The Madras Seva Sadan');
+                var logo     = getSchoolLogo(job.school_name);
+                var location = escapeHtml(job.location || 'Chennai');
+                var rawStage = job.stage || 'Applied';
+                var stageLabel = escapeHtml(rawStage);
+                var badgeCls   = getStageBadgeClass(rawStage);
+                var id = job.job_id;
+
+                return '<div class="jg-card" onclick="openTrackSidebar(\'' + escapeHtml(String(id)) + '\')">' +
+                    '<div class="jg-card-top">' +
+                        '<div class="jg-card-logo"><img src="' + logo + '" alt="Logo"></div>' +
+                        '<div class="jg-card-badges">' +
+                            '<span class="jg-badge ' + badgeCls + '">' + stageLabel + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<h3 class="jg-card-title">' + title + '</h3>' +
+                    '<div class="jg-card-school"><i class="feather-home"></i> ' + school + '</div>' +
+                    '<div class="jg-card-meta">' +
+                        '<span><i class="feather-map-pin"></i> ' + location + '</span>' +
+                    '</div>' +
+                    '<div class="jg-card-footer">' +
+                        '<span class="jg-card-salary"></span>' +
+                        '<span class="jg-card-cta">Track Status <i class="feather-arrow-right"></i></span>' +
+                    '</div>' +
+                '</div>';
+            }
+
+            function loadJobs() {
+                var token = localStorage.getItem('access_token');
+                if (!token) {
+                    document.getElementById('jg-cards').innerHTML = '<div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">Please log in to view your applied jobs.</div>';
+                    return;
+                }
+                fetch(JOBS_API_BASE + '/apply/my-applications', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                })
+                .then(function(res) {
+                    if (!res.ok) throw new Error('Failed to load apps');
+                    return res.json();
+                })
+                .then(function(apps) {
+                    allJobs = apps || [];
+                    var cardsContainer = document.getElementById('jg-cards');
+                    if (allJobs.length === 0) {
+                        cardsContainer.innerHTML = '<div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">You have not applied to any jobs yet.</div>';
+                    } else {
+                        cardsContainer.innerHTML = allJobs.map(buildJobCard).join('');
+                    }
+                    var countEl = document.getElementById('jg-count');
+                    if (countEl) countEl.innerHTML = 'Showing <strong>' + allJobs.length + '</strong> applied jobs';
+                })
+                .catch(function(err) {
+                    console.error(err);
+                    document.getElementById('jg-cards').innerHTML = '<div class="col-12 text-center text-muted py-5" style="grid-column: 1 / -1;">Unable to load your applications.</div>';
+                });
+            }
+
+            window.addEventListener('candidate_login_success', loadJobs);
+            loadJobs();
+        })();
+    </script>
+</body>
+</html>

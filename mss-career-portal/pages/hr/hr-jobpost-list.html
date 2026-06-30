@@ -69,23 +69,6 @@
       --font-body: 'DM Sans', system-ui, sans-serif;
     }
 
-    [data-theme="dark"],
-    body.dark-theme {
-      --bg1: #0d0d0d;
-      --bg2: #111111;
-      --bg3: #181818;
-      --text1: #f0efe8;
-      --text2: #b4b2a9;
-      --text3: #666560;
-      --border: rgba(255, 255, 255, 0.10);
-      --border2: rgba(255, 255, 255, 0.16);
-      --green-light: #173404;
-      --amber-light: #412402;
-      --red-light: #501313;
-      --purple-light: #26215C;
-      --teal-light: #04342C;
-    }
-
     /* ─── PORTAL SIDEBAR ───────────────────────────────────────── */
     .portal-sidebar {
       position: fixed;
@@ -282,14 +265,6 @@
     }
 
     .portal-sun-icon {
-      display: none;
-    }
-
-    body.dark-theme .portal-sun-icon {
-      display: inline;
-    }
-
-    body.dark-theme .portal-moon-icon {
       display: none;
     }
 
@@ -1305,7 +1280,7 @@
       <td>
         <div class="td-flex">
           <span class="status-dot" style="background:${meta.dot};"></span>
-          <span class="td-job-title" style="cursor:pointer;" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.id}'">${j.title}</span>
+          <span class="td-job-title" style="cursor:pointer;" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.id}');location.href='/mss-career-portal/hr/jobpost-details'">${j.title}</span>
         </div>
       </td>
       <td class="td-muted">${j.dept}</td>
@@ -1317,8 +1292,8 @@
       <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
       <td>
         <div class="table-actions">
-          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.id}'">View</button>
-          ${j.status === 'Draft'
+          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.id}');location.href='/mss-career-portal/hr/jobpost-details'">View</button>
+          ${j.status === 'Draft' || j.status === 'Active'
             ? `<button class="act-btn"
           onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-create?id=${j.id}'">
           Edit

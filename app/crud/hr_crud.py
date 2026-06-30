@@ -51,7 +51,7 @@ def _format_date(d) -> str:
 def build_dynamic_timeline(app, stage: str) -> list:
     applied_days = f"{_days_ago(app.created_at)} days ago" if app.created_at else "Recently"
     
-    stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding']
+    stages = ['PreScreen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding']
     try:
         current_idx = stages.index(stage)
     except ValueError:
@@ -170,13 +170,6 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
 
 
 _STAGE_TO_FIELDS = {
-    'Applied': {
-        'applicant_stage': ApplicantStage.APPLIED,
-        'applicant_job_status': None,
-        'issue_offer': 0,
-        'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
-        'sync_masset': 0,
-    },
     'Screened': {
         'applicant_stage': ApplicantStage.SCREENED,
         'applicant_job_status': None,

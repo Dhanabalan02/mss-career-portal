@@ -21,7 +21,7 @@ def create_job_application(
         cover_letter=cover_letter,
         applicant_job_status=None,
         offer_acceptance_status=OfferAcceptanceStatus.PENDING,
-        applicant_stage=ApplicantStage.APPLIED,
+        applicant_stage=None,
         mss_app_no="TEMP"
     )
     db.add(db_applicant)
@@ -46,17 +46,16 @@ def create_job_application(
                     correct_count += 1
                     
             score = (correct_count / total_qs) * 100
-            if score >= 60:
+            if score == 100:
                 final_status = CandidateStatus.SCREENED
                 db_applicant.applicant_stage = ApplicantStage.SCREENED
-            elif score >= 10:
-                final_status = CandidateStatus.APPLIED
-                db_applicant.applicant_stage = ApplicantStage.APPLIED
             else:
-                final_status = CandidateStatus.INELIGIBLE
+                final_status = CandidateStatus.REJECTED
+                db_applicant.applicant_stage = ApplicantStage.PRESCREEN_REJECT
                 db_applicant.applicant_job_status = ApplicantJobStatus.REJECTED
         else:
-            final_status = CandidateStatus.APPLIED
+            final_status = CandidateStatus.SCREENED
+            db_applicant.applicant_stage = ApplicantStage.SCREENED
 
         for ans in screening_answers:
             q_id = ans.get("question_id")

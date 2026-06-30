@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 class CandidateStatus(str, PyEnum):
     REJECTED = "rejected"
     INTERVIEW_PROGRESS = "interview_progress"
-    APPLIED = "applied"
     INELIGIBLE = "ineligible"
     SCREENED = "screened"
 

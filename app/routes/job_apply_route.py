@@ -59,8 +59,15 @@ def _serialize_application(app):
         "resume_doc": app.resume_doc,
         "cover_letter": app.cover_letter,
         "applicant_job_status": app.applicant_job_status,
-        "offer_acceptance_status": app.offer_acceptance_status,
-        "created_at": app.created_at
+        "offer_acceptance_status": getattr(app.offer_acceptance_status, 'value', app.offer_acceptance_status) if app.offer_acceptance_status else None,
+        "created_at": app.created_at,
+        "job_title": app.job.job_title if hasattr(app, 'job') and app.job else None,
+        "school_name": app.job.school_name if hasattr(app, 'job') and app.job else None,
+        "department": app.job.department if hasattr(app, 'job') and app.job else None,
+        "location": app.job.location if hasattr(app, 'job') and app.job else None,
+        "job_type": app.job.job_type if hasattr(app, 'job') and app.job else None,
+        "stage": getattr(app.applicant_stage, 'value', app.applicant_stage) if getattr(app, 'applicant_stage', None) else "Applied",
+        "issue_offer": app.issue_offer if hasattr(app, 'issue_offer') else 0
     }
 
 
@@ -156,34 +163,7 @@ def apply_for_job_route(
         
         if job and candidate:
             candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
-            
-            # 1. Notify Candidate
-            notify_candidate(
-                db=db,
-                candidate_id=user_id,
-                title="Application Submitted",
-                message=f"Your application for '{job.job_title}' at {job.school_name} has been submitted successfully (App No: {application.mss_app_no}).",
-                notification_type="application_submitted"
-            )
-            
-            # 2. Notify Job Poster (School Admin or HR)
-            poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
-            if poster:
-                poster_role = poster.user_roles.role_name if poster.user_roles else ""
-                recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team"] else "schoolAdmin"
-                if recipient_type == "schoolAdmin":
-                    create_notification(
-                        db=db,
-                        recipient_user_id=poster.admin_id,
-                        recipient_type=recipient_type,
-                        title="New Job Application",
-                        message=f"New application received from {candidate_name} for '{job.job_title}'.",
-                        notification_type="new_application",
-                        sender_user_id=user_id,
-                        sender_type="candidate"
-                    )
-            
-            # 3. Notify HR Users
+            #Notify HR Users
             notify_hr_users(
                 db=db,
                 title="New Job Application",
@@ -205,6 +185,15 @@ def get_my_applications_route(
 ):
     """Retrieves all applications for the logged-in candidate."""
     applications = get_candidate_applications(db, user_id=user_id)
+    
+    from app.models.job_post_model import JobPost
+    job_ids = [app.job_id for app in applications]
+    jobs = db.query(JobPost).filter(JobPost.job_id.in_(job_ids)).all() if job_ids else []
+    job_map = {job.job_id: job for job in jobs}
+    
+    for app in applications:
+        setattr(app, 'job', job_map.get(app.job_id))
+        
     return [_serialize_application(app) for app in applications]
 
 
@@ -266,16 +255,7 @@ def respond_to_offer_route(
             candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
             status_cap = payload.status.capitalize()
             
-            # 1. Notify Candidate
-            notify_candidate(
-                db=db,
-                candidate_id=user_id,
-                title=f"Offer {status_cap}",
-                message=f"You have successfully {payload.status} the offer for '{job.job_title}'.",
-                notification_type=f"offer_{payload.status.lower()}"
-            )
-            
-            # 2. Notify Job Poster (School Admin or HR)
+            # 1. Notify Job Poster (School Admin or HR)
             poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
             if poster:
                 poster_role = poster.user_roles.role_name if poster.user_roles else ""
@@ -292,7 +272,7 @@ def respond_to_offer_route(
                         sender_type="candidate"
                     )
                 
-            # 3. Notify HR Users
+            # 2. Notify HR Users
             notify_hr_users(
                 db=db,
                 title=f"Offer {status_cap}",

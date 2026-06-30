@@ -51,7 +51,14 @@
                 document.querySelector('h3').textContent = 'Sign-in failed';
                 document.querySelector('p').textContent = 'No token received. Please try again.';
                 document.querySelector('.spinner').style.display = 'none';
-                setTimeout(function () { window.location.href = '/mss-career-portal/home'; }, 3000);
+                setTimeout(function () {             var pendingApplyJobId = sessionStorage.getItem('pending_apply_job_id');
+            if (pendingApplyJobId) {
+                localStorage.setItem('candidate_current_job_id', pendingApplyJobId);
+                sessionStorage.removeItem('pending_apply_job_id');
+                window.location.href = '/mss-career-portal/apply';
+            } else {
+                window.location.href = '/mss-career-portal/home';
+            } }, 3000);
                 return;
             }
 
@@ -61,7 +68,14 @@
             localStorage.setItem('user_id', userId || '');
             localStorage.setItem('user_email', email || '');
 
-            window.location.href = '/mss-career-portal/home';
+                        var pendingApplyJobId = sessionStorage.getItem('pending_apply_job_id');
+            if (pendingApplyJobId) {
+                localStorage.setItem('candidate_current_job_id', pendingApplyJobId);
+                sessionStorage.removeItem('pending_apply_job_id');
+                window.location.href = '/mss-career-portal/apply';
+            } else {
+                window.location.href = '/mss-career-portal/home';
+            }
         })();
     </script>
 </body>

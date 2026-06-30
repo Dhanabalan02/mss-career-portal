@@ -50,32 +50,6 @@
       --radius-lg: 14px;
     }
 
-    /* Dark mode — triggered by portal-layout.js via body.dark-theme */
-    [data-theme="dark"],
-    body.dark-theme {
-      --bg: #0d0d0d;
-      --bg2: #111111;
-      --bg3: #181818;
-      --surface: #0d0d0d;
-      --border: rgba(255, 255, 255, 0.10);
-      --border2: rgba(255, 255, 255, 0.16);
-      --text1: #f0efe8;
-      --text2: #b4b2a9;
-      --text3: #666560;
-      --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-      --purple-bg: #26215C;
-      --purple-text: #CECBF6;
-      --green-bg: #173404;
-      --green-text: #C0DD97;
-      --amber-bg: #412402;
-      --amber-text: #FAC775;
-      --red-bg: #501313;
-      --red-text: #F7C1C1;
-      --teal-bg: #04342C;
-      --teal-text: #9FE1CB;
-    }
-
     /* ════════════════════════════════════════
    RESET & BASE
 ════════════════════════════════════════ */
@@ -456,48 +430,6 @@
       color: var(--red-text);
     }
 
-    [data-theme="dark"] .badge-applied,
-    body.dark-theme .badge-applied {
-      background: #26215C;
-      color: #CECBF6;
-    }
-
-    [data-theme="dark"] .badge-screened,
-    body.dark-theme .badge-screened {
-      background: #042C53;
-      color: #85B7EB;
-    }
-
-    [data-theme="dark"] .badge-interview,
-    body.dark-theme .badge-interview {
-      background: #412402;
-      color: #FAC775;
-    }
-
-    [data-theme="dark"] .badge-offer,
-    body.dark-theme .badge-offer {
-      background: #26215C;
-      color: #CECBF6;
-    }
-
-    [data-theme="dark"] .badge-accepted,
-    body.dark-theme .badge-accepted {
-      background: #173404;
-      color: #C0DD97;
-    }
-
-    [data-theme="dark"] .badge-onboarding,
-    body.dark-theme .badge-onboarding {
-      background: #04342C;
-      color: #9FE1CB;
-    }
-
-    [data-theme="dark"] .badge-rejected,
-    body.dark-theme .badge-rejected {
-      background: #501313;
-      color: #F7C1C1;
-    }
-
     /* ── Interview status ── */
     .interview-status {
       display: flex;
@@ -601,27 +533,6 @@
       background: var(--red-bg);
       color: var(--red-text);
       border-color: #F7C1C1;
-    }
-
-    [data-theme="dark"] .action-btn.blue,
-    body.dark-theme .action-btn.blue {
-      background: #042C53;
-      color: #85B7EB;
-      border-color: #0C447C;
-    }
-
-    [data-theme="dark"] .action-btn.green,
-    body.dark-theme .action-btn.green {
-      background: #173404;
-      color: #C0DD97;
-      border-color: #3B6D11;
-    }
-
-    [data-theme="dark"] .action-btn.red,
-    body.dark-theme .action-btn.red {
-      background: #501313;
-      color: #F7C1C1;
-      border-color: #791F1F;
     }
 
     .checkbox {
@@ -906,7 +817,7 @@
         </select>
         <select class="filter-select" id="fStage" onchange="filterApplicants()">
           <option value="">All Stages</option>
-          <option>Applied</option>
+          <option>Prescreen Rejected</option>
           <option>Screened</option>
           <option>Interview</option>
           <option>Offer</option>
@@ -1060,7 +971,7 @@
 
     /* ── Build stage chips dynamically ── */
     const STAGE_CONFIG = [
-      { name: 'Applied', color: '#534AB7', bg: '#EEEDFE' },
+      { name: 'PreScreen Reject', color: '#534AB7', bg: '#EEEDFE' },
       { name: 'Screened', color: '#185FA5', bg: '#E6F1FB' },
       { name: 'Interview', color: '#BA7517', bg: '#FAEEDA' },
       { name: 'Offer', color: '#534AB7', bg: '#EEEDFE' },
@@ -1094,7 +1005,7 @@
     /* ── Helpers ── */
     function stageBadge(stage) {
       const map = {
-        'Applied': 'badge-applied', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
+        'Prescreen Rejected': 'badge-rejected', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
         'Offer': 'badge-offer', 'Offer Accepted': 'badge-accepted',
         'Onboarding': 'badge-onboarding', 'Rejected': 'badge-rejected',
         'Awaiting Offer': 'badge-offer'
@@ -1145,7 +1056,7 @@
           showActions = false;
         }
         
-        const allowedStages = ['Applied', 'Interview', 'Screened'];
+        const allowedStages = ['PreScreen-Reject', 'Interview', 'Screened'];
         const canAction = showActions && allowedStages.includes(c.stage);
         
         const tr = document.createElement('tr');

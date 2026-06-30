@@ -258,7 +258,7 @@
                         font-size: 0.95rem;
                         color: rgba(255, 255, 255, 0.65);
                         margin: 0;
-                        max-width: 460px;
+                        /* max-width: 460px; */
                         line-height: 1.6;
                     }
 
@@ -352,22 +352,22 @@
                                         <div class="jg-select-wrap">
                                             <select id="f-cat" class="jg-select" onchange="applyFilters()">
                                                 <option value="">All Categories</option>
-                                                <option>Teaching</option>
-                                                <option>Admin</option>
-                                                <option>Marketing</option>
-                                                <option>Accounts</option>
-                                                <option>CSR</option>
-                                                <option>ISO</option>
-                                                <option>HR</option>
-                                                <option>Complaince</option>
-                                                <option>IT</option>
-                                                <option>Facility</option>
-                                                <option>Security & Maintenance</option>
-                                                <option>Stores</option>
-                                                <option>Technical</option>
-                                                <option>Art</option>
-                                                <option>Music</option>
-                                            </select>
+                                                    <option>Accounts</option>
+                                                    <option>Admin</option>
+                                                    <option>Art</option>
+                                                    <option>CSR</option>
+                                                    <option>Complaince</option>
+                                                    <option>Facility</option>
+                                                    <option>HR</option>
+                                                    <option>ISO</option>
+                                                    <option>IT</option>
+                                                    <option>Marketing</option>
+                                                    <option>Music</option>
+                                                    <option>Security & Maintenance</option>
+                                                    <option>Stores</option>
+                                                    <option>Teaching</option>
+                                                    <option>Technical</option>
+                                                </select>
                                             <i class="feather-chevron-down jg-select-icon"></i>
                                         </div>
                                     </div>
@@ -384,14 +384,14 @@
                                         </div>
                                     </div>
 
-                                    <!-- Location -->
+                                    <!-- Campus -->
                                     <div class="jg-filter-block">
                                         <div class="jg-filter-label">
-                                            <i class="feather-map-pin"></i> Location
+                                            <i class="feather-map-pin"></i> Campus
                                         </div>
                                         <div class="jg-select-wrap">
                                             <select id="f-location" class="jg-select" onchange="applyFilters()">
-                                                <option value="">All Locations</option>
+                                                <option value="">All Campuses</option>
                                                 <option>Chetpet</option>
                                                 <option>T. Nagar</option>
                                                 <option>Tambaram</option>
@@ -705,7 +705,7 @@
                     }
 
                     .jg-clear-btn:hover {
-                        color: #EF4444;
+                        color: var(--primary-color);
                     }
 
                     /* Filter blocks */
@@ -1130,16 +1130,17 @@
 
                     .jg-page-btn:hover:not([disabled]),
                     .jg-page-num:hover {
-                        border-color: #3B82F6;
-                        color: #3B82F6;
+
+                        border-color: var(--primary-color);
+                        background-color: rgba(204, 140, 252, 0.15);
                         background: #EFF6FF;
                     }
 
                     .jg-page-num.active {
                         /* background: linear-gradient(135deg,#3B82F6,#6366F1); */
-                        background: linear-gradient(135deg, var(--primary-color), #14008a);
+                        background: var(--primary-btn-color);
                         box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-                        border-color: transparent;
+                        /* border-color: transparent; */
                         color: #fff;
                     }
 
@@ -1216,7 +1217,7 @@
                                         <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Home</a></li>
                                         <li><a href="https://themadrassevasadan.org/about" target="_blank"
                                                 style="color: var(--white-color);">About</a></li>
-                                        <li><a href="/mss-career-portal/job-grid" style="color: var(--white-color);">Open Roles</a></li>
+                                        <li><a href="/mss-career-portal/open-roles" style="color: var(--white-color);">Open Roles</a></li>
                                         <li><a href="/mss-career-portal/home" style="color: var(--white-color);">Search</a></li>
                                         <li><a href="contact.html" style="color: var(--white-color);">Contact</a></li>
                                     </ul>
@@ -1229,18 +1230,15 @@
                                     <ul class="ftr-list">
                                         <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
                                                 style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                            <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet,
-                                                <br>Chennai -
-                                                600031
-                                            </p>
+                                            <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
                                         </li>
                                         <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
                                                 style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                            <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
+                                            <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
                                         </li>
                                         <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
                                                 style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                            <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
+                                            <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
                                         </li>
                                     </ul>
                                 </div>
@@ -1595,7 +1593,7 @@
         <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
         <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
         <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-        <script src="../../assets/js/shared-header.js?v=4"></script>
+        <script src="../../assets/js/shared-header.js?v=5"></script>
         <script src="js/switcher.js"></script><!-- SHORTCODE FUCTIONS  -->
 
 <script>
@@ -1928,7 +1926,7 @@
                         .then(function(units) {
                             var currentVal = select.value;
                             select.innerHTML = '<option value="">All Units</option>';
-                            units.forEach(function(unit) {
+                            units.sort((a,b) => (a.unit_name||"").localeCompare(b.unit_name||"")).forEach(function(unit) {
                                 var option = document.createElement('option');
                                 option.value = unit.unit_name;
                                 option.textContent = unit.unit_name;

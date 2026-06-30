@@ -20,7 +20,6 @@
   <style>
     /* ═══════════════════════════════════════════
    MASSET Dashboard — Design Tokens
-   Light / Dark via [data-theme="dark"] on <html>
 ═══════════════════════════════════════════ */
     :root {
       /* Brand */
@@ -72,39 +71,6 @@
       --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
       --bg1: #ffffff;
       --transition: .2s cubic-bezier(.4, 0, .2, 1);
-    }
-
-    /* Dark theme overrides */
-    [data-theme="dark"],
-    body.dark-theme {
-      --bg: #0d0d0d;
-      --surface: #0d0d0d;
-      --surface-2: #111111;
-      --border: rgba(255, 255, 255, 0.10);
-      --border-strong: rgba(255, 255, 255, 0.16);
-
-      --text: #f0efe8;
-      --text-2: #b4b2a9;
-      --text-3: #666560;
-
-      --s-pending-bg: #1e3a5f;
-      --s-pending-tx: #93c5fd;
-      --s-syncing-bg: #0c3344;
-      --s-syncing-tx: #67e8f9;
-      --s-ao-bg: #412402;
-      --s-ao-tx: #FAC775;
-      --s-onboarding-bg: #26215C;
-      --s-onboarding-tx: #CECBF6;
-      --s-onboarded-bg: #173404;
-      --s-onboarded-tx: #C0DD97;
-      --s-failed-bg: #501313;
-      --s-failed-tx: #F7C1C1;
-
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-      --accent-glow: rgba(37, 99, 235, .25);
-      --bg1: #0d0d0d;
     }
 
     *,
@@ -1169,16 +1135,6 @@
       }
     }
 
-    /* ── Dark theme table zebra ── */
-    [data-theme="dark"] tbody tr:hover {
-      background: rgba(255, 255, 255, .03);
-    }
-
-    [data-theme="dark"] .widget,
-    [data-theme="dark"] .table-card,
-    [data-theme="dark"] .filter-bar {
-      border-color: var(--border);
-    }
   </style>
 </head>
 
@@ -1613,11 +1569,6 @@
       }
     };
     window.showToast = showToast;
-
-    /* ── Dark theme watcher ── */
-    // Responds to portal-layout.js toggling data-theme on <html>
-    const observer = new MutationObserver(() => { /* CSS variables handle the rest */ });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     /* ── Row animation ── */
     const style = document.createElement('style');

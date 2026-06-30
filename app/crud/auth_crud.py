@@ -563,3 +563,60 @@ def update_candidate_profile_image_db(db: Session, user_id: int, image_path: str
     user.image_path = image_path
     db.commit()
     return {"message": "Profile image uploaded successfully", "image_path": image_path}
+
+
+def get_user_by_mobile(db: Session, mobile: str):
+    # Normalise to last 10 digits so we match regardless of stored format
+    digits = "".join(filter(str.isdigit, mobile))[-10:]
+    return (
+        db.query(Users)
+        .filter(
+            Users.mobile.in_([digits, f"+91{digits}"]),
+            Users.user_status == 1,
+        )
+        .first()
+    )
+
+
+def store_otp(db: Session, user_id: int, otp: int, purpose: str = "password update"):
+    from app.models.otp_logs_model import OTPLog
+    # Invalidate previous unverified OTPs for this user and purpose
+    db.query(OTPLog).filter(
+        OTPLog.user_id == user_id, 
+        OTPLog.purpose == purpose, 
+        OTPLog.is_verified == 0
+    ).update({"is_verified": -1})
+    
+    otp_log = OTPLog(user_id=user_id, otp=otp, is_verified=0, purpose=purpose)
+    db.add(otp_log)
+    db.commit()
+
+
+def verify_otp(db: Session, user_id: int, otp: int, purpose: str = "password update") -> bool:
+    from app.models.otp_logs_model import OTPLog
+    
+    # Validity is 90 seconds
+    time_threshold = datetime.now(timezone.utc) - timedelta(seconds=90)
+    
+    otp_log = db.query(OTPLog).filter(
+        OTPLog.user_id == user_id,
+        OTPLog.otp == otp,
+        OTPLog.purpose == purpose,
+        OTPLog.is_verified == 0,
+        OTPLog.created_at >= time_threshold
+    ).order_by(OTPLog.created_at.desc()).first()
+    
+    if otp_log:
+        otp_log.is_verified = 1
+        db.commit()
+        return True
+    return False
+
+
+def update_user_password(db: Session, user_id: int, new_password: str) -> bool:
+    user = db.query(Users).filter(Users.user_id == user_id, Users.user_status == 1).first()
+    if user:
+        user.password = get_password_hash(new_password)
+        db.commit()
+        return True
+    return False

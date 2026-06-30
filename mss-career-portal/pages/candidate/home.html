@@ -320,21 +320,21 @@
                                             <div class="mss-field-inner">
                                                 <select id="srch-cat" class="mss-select">
                                                     <option value="">All Categories</option>
-                                                    <option>Teaching</option>
-                                                    <option>Admin</option>
-                                                    <option>Marketing</option>
                                                     <option>Accounts</option>
+                                                    <option>Admin</option>
+                                                    <option>Art</option>
                                                     <option>CSR</option>
-                                                    <option>ISO</option>
-                                                    <option>HR</option>
                                                     <option>Complaince</option>
-                                                    <option>IT</option>
                                                     <option>Facility</option>
+                                                    <option>HR</option>
+                                                    <option>ISO</option>
+                                                    <option>IT</option>
+                                                    <option>Marketing</option>
+                                                    <option>Music</option>
                                                     <option>Security & Maintenance</option>
                                                     <option>Stores</option>
+                                                    <option>Teaching</option>
                                                     <option>Technical</option>
-                                                    <option>Art</option>
-                                                    <option>Music</option>
                                                 </select>
                                                 <i class="feather-chevron-down mss-select-arrow"></i>
                                             </div>
@@ -383,7 +383,7 @@
                                             if (loc) params.append('location', loc);
 
                                             var qs = params.toString();
-                                            var base = '/mss-career-portal/job-grid';
+                                            var base = '/mss-career-portal/open-roles';
                                             window.location.href = base + (qs ? '?' + qs : '');
                                         }
                                     </script>
@@ -741,7 +741,7 @@
                     display: flex;
                     align-items: center;
                     gap: 8px;
-                    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+                    box-shadow: 0 6px 20px rgb(157 59 246 / 40%);
                     transition: all 0.22s ease;
                     white-space: nowrap;
                     min-width: 130px;
@@ -750,7 +750,7 @@
 
                 .mss-search-btn:hover {
                     transform: translateY(-2px);
-                    box-shadow: 0 12px 28px rgba(59, 130, 246, 0.55);
+                    box-shadow: 0 12px 28px rgba(153, 59, 246, 0.55);
                     /* background: linear-gradient(135deg, var(--primary-color), #4F8EF7); */
                     background: var(--primary-btn-color);
                 }
@@ -962,7 +962,7 @@
                                 <!-- TITLE END-->
                             </div>
                             <!-- <div class="col-xl-7 col-lg-7 col-md-12 wt-separator-two-part-right text-right">
-                                <a href="/mss-career-portal/job-grid" class=" site-button">View All Units</a>
+                                <a href="/mss-career-portal/open-roles" class=" site-button">View All Units</a>
                             </div> -->
                         </div>
                     </div>
@@ -981,12 +981,12 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title" id="themss_secondary"><a
-                                            href="/mss-career-portal/job-grid?unit=MSS+Chetpet">The
+                                            href="/mss-career-portal/open-roles?unit=MSS+Chetpet">The
                                             Madras Seva
                                             Sadan Higher Secondary
                                             School for Girls</a></h4>
                                     <div class="twm-city-jobs"><a
-                                            href="/mss-career-portal/job-grid?unit=MSS+Chetpet"
+                                            href="/mss-career-portal/open-roles?unit=MSS+Chetpet"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -999,9 +999,9 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=Shanthi+Sadan">Shanthi Sadan - Old
+                                            href="/mss-career-portal/open-roles?unit=Shanthi+Sadan">Shanthi Sadan - Old
                                             Age Home</a></h4>
-                                    <div class="twm-city-jobs"><a href="/mss-career-portal/job-grid?unit=Shanthi+Sadan"
+                                    <div class="twm-city-jobs"><a href="/mss-career-portal/open-roles?unit=Shanthi+Sadan"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1013,10 +1013,10 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=ORCA+Swimming">ORCA Swimming
+                                            href="/mss-career-portal/open-roles?unit=ORCA+Swimming">ORCA Swimming
                                             Pool</a></h4>
                                     <div class="twm-city-jobs"><a
-                                            href="/mss-career-portal/job-grid?unit=ORCA+Swimming"
+                                            href="/mss-career-portal/open-roles?unit=ORCA+Swimming"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1028,10 +1028,10 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=SMVRCH">Sir Mutha
+                                            href="/mss-career-portal/open-roles?unit=SMVRCH">Sir Mutha
                                             Venkatasubba Rao Concert Hall</a></h4>
                                     <div class="twm-city-jobs"><a
-                                            href="/mss-career-portal/job-grid?unit=SMVRCH"
+                                            href="/mss-career-portal/open-roles?unit=SMVRCH"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1043,10 +1043,10 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=Sir+Mutha+School+(CBSE)">Sir Mutha School
+                                            href="/mss-career-portal/open-roles?unit=Sir+Mutha+School+(CBSE)">Sir Mutha School
                                             (CBSE)</a></h4>
                                     <div class="twm-city-jobs"><a
-                                            href="/mss-career-portal/job-grid?unit=Sir+Mutha+School+(CBSE)"
+                                            href="/mss-career-portal/open-roles?unit=Sir+Mutha+School+(CBSE)"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1058,10 +1058,10 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=Garuda+Cricket+Academy">Garuda
+                                            href="/mss-career-portal/open-roles?unit=Garuda+Cricket+Academy">Garuda
                                             Cricket Academy</a></h4>
                                     <div class="twm-city-jobs"><a
-                                            href="/mss-career-portal/job-grid?unit=Garuda+Cricket+Academy"
+                                            href="/mss-career-portal/open-roles?unit=Garuda+Cricket+Academy"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1072,9 +1072,9 @@
                                 <div class="twm-media" style="background-image:url(images/units/premvihar_unit.jpg);">
                                 </div>
                                 <div class="twm-city-info">
-                                    <h4 class="twm-title"><a href="/mss-career-portal/job-grid?unit=Prem+Vihar">Prem
+                                    <h4 class="twm-title"><a href="/mss-career-portal/open-roles?unit=Prem+Vihar">Prem
                                             Vihar - Social Work Centre</a></h4>
-                                    <div class="twm-city-jobs"><a href="/mss-career-portal/job-grid?unit=Prem+Vihar"
+                                    <div class="twm-city-jobs"><a href="/mss-career-portal/open-roles?unit=Prem+Vihar"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1086,10 +1086,10 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=Lady+Andal+School">Lady Andal
+                                            href="/mss-career-portal/open-roles?unit=Lady+Andal+School">Lady Andal
                                             School</a></h4>
                                     <div class="twm-city-jobs"><a
-                                            href="/mss-career-portal/job-grid?unit=Lady+Andal+School"
+                                            href="/mss-career-portal/open-roles?unit=Lady+Andal+School"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1100,9 +1100,9 @@
                                 <div class="twm-media" style="background-image:url(images/units/mss_tambaram.jpg);">
                                 </div>
                                 <div class="twm-city-info">
-                                    <h4 class="twm-title"><a href="/mss-career-portal/job-grid?unit=MSS+Tambaram">The
+                                    <h4 class="twm-title"><a href="/mss-career-portal/open-roles?unit=MSS+Tambaram">The
                                             Madras Seva Sadan Higher Secondary School</a></h4>
-                                    <div class="twm-city-jobs"><a href="/mss-career-portal/job-grid?unit=MSS+Tambaram"
+                                    <div class="twm-city-jobs"><a href="/mss-career-portal/open-roles?unit=MSS+Tambaram"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1114,9 +1114,9 @@
                                     style="background-image:url(images/units/sir_and_lady_tambaram.jpg);">
                                 </div>
                                 <div class="twm-city-info">
-                                    <h4 class="twm-title"><a href="/mss-career-portal/job-grid?unit=Sir+%26+LADY+M+Tambaram">Sir &
+                                    <h4 class="twm-title"><a href="/mss-career-portal/open-roles?unit=Sir+%26+LADY+M+Tambaram">Sir &
                                             Lady M. Venkatasubba Rao Matriculation Higher Secondary School</a></h4>
-                                    <div class="twm-city-jobs"><a href="/mss-career-portal/job-grid?unit=Sir+%26+LADY+M+Tambaram"
+                                    <div class="twm-city-jobs"><a href="/mss-career-portal/open-roles?unit=Sir+%26+LADY+M+Tambaram"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1128,9 +1128,9 @@
                                 </div>
                                 <div class="twm-city-info">
                                     <h4 class="twm-title"><a
-                                            href="/mss-career-portal/job-grid?unit=LAOS+-+OS">Ladyandal Open
+                                            href="/mss-career-portal/open-roles?unit=LAOS+-+OS">Ladyandal Open
                                             School</a></h4>
-                                    <div class="twm-city-jobs"><a href="/mss-career-portal/job-grid?unit=LAOS+-+OS"
+                                    <div class="twm-city-jobs"><a href="/mss-career-portal/open-roles?unit=LAOS+-+OS"
                                             style="color:inherit; text-decoration:none;">Openings</a></div>
                                 </div>
                             </div>
@@ -1222,7 +1222,7 @@
                         style="font-family:'Rubik',sans-serif; font-size:2rem; font-weight:800; color:#0F172A; letter-spacing:-0.5px; margin:0;">
                         Jobs and Opportunities </h2>
                 </div>
-                <a href="/mss-career-portal/job-grid"
+                <a href="/mss-career-portal/open-roles"
                     style="font-family:'Rubik',sans-serif; font-size:0.88rem; font-weight:600; color:var(--primary-color); text-decoration:none; display:inline-flex; align-items:center; gap:6px; white-space:nowrap; padding:0.5rem 1.25rem; border:2px solid var(--primary-color); border-radius:50px;"
                     onmouseover="this.style.background='#f7edff'" onmouseout="this.style.background='transparent'">
                     View All Jobs <i class="feather-arrow-right" style="font-size:0.9rem;"></i>
@@ -1269,7 +1269,7 @@
                 <div class="col-6 col-md-3">
                     <div class="h-100"
                         style="background: var(--primary-btn-color); border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;"
-                        onclick="location.href='/mss-career-portal/job-grid'">
+                        onclick="location.href='/mss-career-portal/open-roles'">
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:1.7rem;font-weight:700;color:#fff;margin-bottom:4px;">
                             Browse All Jobs</div>
@@ -1344,113 +1344,258 @@
     <!-- GET JOBS SECTION SECTION END -->
 
     <!-- FOR EMPLOYEE START -->
-    <div class="section-full p-t120 p-b120 twm-for-employee-9-area site-bg-white">
-        <div class="container-fluid px-3 px-lg-5">
-            <div class="section-content">
-                <div class="twm-for-employee-9">
-                    <div class="row">
+    <style>
+        .mss-resume-cta {
+            position: relative;
+            background: #fff;
+            padding: 5rem 0;
+            overflow: hidden;
+            border-top: 1px solid #EFF2F7;
+            border-bottom: 1px solid #EFF2F7;
+        }
+        .mss-resume-cta-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--soft-bg-color, #EBF2FF);
+            border: 1px solid var(--cp-accent-mid, #BFDBFE);
+            border-radius: 50px;
+            padding: 5px 14px;
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.1rem;
+            letter-spacing: 0.3px;
+        }
+        .mss-resume-cta-title {
+            font-family: 'Rubik', sans-serif;
+            /* font-size: clamp(1.8rem, 3vw, 2.6rem); */
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0F172A;
+            margin: 0 0 1rem;
+            letter-spacing: -0.4px;
+            line-height: 1.2;
+        }
+        .mss-resume-cta-sub {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1rem;
+            color: #64748B;
+            max-width: 540px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+        .mss-resume-feature-card {
+            background: #fff;
+            border: 1.5px solid #EFF2F7;
+            border-radius: 16px;
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
+        }
+        .mss-resume-feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.22s ease;
+            border-radius: 16px 16px 0 0;
+        }
+        .mss-resume-feature-card:hover {
+            border-color: var(--card-border, #BFDBFE);
+            box-shadow: 0 8px 28px rgba(26,86,219,.10), 0 2px 6px rgba(26,86,219,.05);
+            transform: translateY(-4px);
+        }
+        .mss-resume-feature-card:hover::before { opacity: 1; }
+        .mss-resume-feature-icon {
+            width: 52px; height: 52px;
+            border-radius: 14px;
+            background: var(--soft-bg-color, #EBF2FF);
+            border: 1px solid var(--cp-accent-mid, #BFDBFE);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.1rem;
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            transition: background 0.22s ease, transform 0.22s ease;
+        }
+        .mss-resume-feature-card:hover .mss-resume-feature-icon {
+            background: var(--primary-color);
+            color: #fff;
+            transform: scale(1.08);
+        }
+        .mss-resume-feature-card h5 {
+            font-family: 'Rubik', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 0 0 0.5rem;
+        }
+        .mss-resume-feature-card p {
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.83rem;
+            color: #64748B;
+            margin: 0;
+            line-height: 1.65;
+        }
+        .mss-resume-cta-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 3rem;
+        }
+        .mss-resume-upload-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 0.85rem 2.2rem;
+            background: var(--primary-btn-color);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgb(157 59 246 / 40%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .mss-resume-upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(153, 59, 246, 0.55);
+        }
+        .mss-resume-browse-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 0.85rem 2.2rem;
+            background: var(--primary-btn-color);
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Rubik', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgb(157 59 246 / 40%);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .mss-resume-browse-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(153, 59, 246, 0.55);
+            color: #fff;
+            text-decoration: none;
+        }
+    </style>
 
-                        <div class="col-lg-5 col-md-12">
-                            <div class="twm-explore-9-media-wrap">
-                                <div class="twm-media">
-                                    <img src="images/gir-large-2.png" alt="">
-                                    <div class="rectangle1-wrap">
-                                        <div class="rectangle1 rotate-center"></div>
-                                    </div>
-                                    <div class="rectangle2-wrap">
-                                        <div class="rectangle2"></div>
-                                    </div>
+    <div class="mss-resume-cta">
+        <div class="container-fluid px-3 px-lg-5" style="position:relative;z-index:1;">
 
-                                </div>
-                            </div>
-                        </div>
+            <!-- Heading block -->
+            <div class="text-center">
+                <div class="mss-resume-cta-badge">
+                    <i class="feather-file-text" style="font-size:0.8rem;"></i> Quick Apply
+                </div>
+                <h2 class="mss-resume-cta-title">Upload Your Resume &amp; Get Discovered</h2>
+                <p class="mss-resume-cta-sub">Skip the lengthy forms — upload your resume once and apply to any open role across all 11 MSS units instantly.</p>
+            </div>
 
-                        <div class="col-lg-7 col-md-12">
-                            <div class="twm-explore-content-outer-3">
-
-                                <div class="twm-explore-content-3">
-                                    <div class="twm-title-small">Explore New Life</div>
-                                    <div class="twm-title-large">
-                                        <h2>Build your personal account profile</h2>
-                                        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry
-                                            the standard dummy text ever since the when an printer took. lorem Ipsum is
-                                            simply dummy text.
-                                        </p>
-                                    </div>
-                                    <div class="twm-upload-file">
-                                        <input type="file" id="homeResumeUploadInput" accept=".pdf" style="display:none;" onchange="uploadHomeResume(this)">
-                                        <button type="button" class="site-button" id="btnHomeResume" onclick="handleHomeResumeUploadClick()">
-                                            Upload Your Resume <i class="feather-upload"></i>
-                                        </button>
-                                    </div>
-                                    <script>
-                                        function handleHomeResumeUploadClick() {
-                                            var token = localStorage.getItem('access_token');
-                                            if (!token) {
-                                                var registerModal = document.getElementById('candidateRegisterModal');
-                                                if (registerModal && typeof bootstrap !== 'undefined') {
-                                                    bootstrap.Modal.getOrCreateInstance(registerModal).show();
-                                                }
-                                            } else {
-                                                document.getElementById('homeResumeUploadInput').click();
-                                            }
-                                        }
-
-                                        function uploadHomeResume(input) {
-                                            var token = localStorage.getItem('access_token');
-                                            if (!token || !input.files || input.files.length === 0) return;
-                                            
-                                            var file = input.files[0];
-                                            var formData = new FormData();
-                                            formData.append('file', file);
-                                            
-                                            var btn = document.getElementById('btnHomeResume');
-                                            var originalHtml = btn.innerHTML;
-                                            btn.innerHTML = 'Uploading... <i class="feather-loader fa-spin"></i>';
-                                            btn.disabled = true;
-                                            
-                                            var url = (window.AUTH_API_BASE || '') + '/auth/candidate/upload-resume';
-                                            
-                                            fetch(url, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Authorization': 'Bearer ' + token
-                                                },
-                                                body: formData
-                                            })
-                                            .then(function(response) {
-                                                if (!response.ok) throw new Error('Upload failed');
-                                                return response.json();
-                                            })
-                                            .then(function(data) {
-                                                btn.innerHTML = 'Uploaded Successfully <i class="feather-check"></i>';
-                                                setTimeout(function() {
-                                                    btn.innerHTML = originalHtml;
-                                                    btn.disabled = false;
-                                                }, 3000);
-                                            })
-                                            .catch(function(err) {
-                                                console.error('Resume upload error:', err);
-                                                alert('Failed to upload resume. Please try again.');
-                                                btn.innerHTML = originalHtml;
-                                                btn.disabled = false;
-                                            });
-                                            
-                                            input.value = ''; // Reset input
-                                        }
-                                    </script>
-
-                                </div>
-
-                            </div>
-                        </div>
-
+            <!-- Feature cards -->
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="mss-resume-feature-card">
+                        <div class="mss-resume-feature-icon"><i class="feather-upload-cloud"></i></div>
+                        <h5>Upload Once</h5>
+                        <p>Upload your PDF resume once and it is saved securely to your profile for all future applications.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="mss-resume-feature-card">
+                        <div class="mss-resume-feature-icon"><i class="feather-zap"></i></div>
+                        <h5>Apply Instantly</h5>
+                        <p>Apply to any open role across all units in one click — no re-uploading or repetitive form filling.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12">
+                    <div class="mss-resume-feature-card">
+                        <div class="mss-resume-feature-icon"><i class="feather-bell"></i></div>
+                        <h5>Track Your Status</h5>
+                        <p>Stay informed at every stage of the hiring process — from screening through to onboarding.</p>
                     </div>
                 </div>
             </div>
 
+            <!-- CTA actions -->
+            <div class="mss-resume-cta-actions">
+                <input type="file" id="homeResumeUploadInput" accept=".pdf" style="display:none;" onchange="uploadHomeResume(this)">
+                <button type="button" class="mss-resume-upload-btn" id="btnHomeResume" onclick="handleHomeResumeUploadClick()">
+                    <i class="feather-upload"></i> Upload Your Resume
+                </button>
+                <a href="/mss-career-portal/open-roles" class="mss-resume-browse-btn">
+                    Browse Open Roles <i class="feather-arrow-right" style="font-size:0.85rem;"></i>
+                </a>
+            </div>
+
         </div>
     </div>
+
+    <script>
+        function handleHomeResumeUploadClick() {
+            var token = localStorage.getItem('access_token');
+            if (!token) {
+                var registerModal = document.getElementById('candidateRegisterModal');
+                if (registerModal && typeof bootstrap !== 'undefined') {
+                    bootstrap.Modal.getOrCreateInstance(registerModal).show();
+                }
+            } else {
+                document.getElementById('homeResumeUploadInput').click();
+            }
+        }
+
+        function uploadHomeResume(input) {
+            var token = localStorage.getItem('access_token');
+            if (!token || !input.files || input.files.length === 0) return;
+
+            var file = input.files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+
+            var btn = document.getElementById('btnHomeResume');
+            var originalHtml = btn.innerHTML;
+            btn.innerHTML = 'Uploading... <i class="feather-loader fa-spin"></i>';
+            btn.disabled = true;
+
+            var url = (window.AUTH_API_BASE || '') + '/auth/candidate/upload-resume';
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: formData
+            })
+            .then(function(response) {
+                if (!response.ok) throw new Error('Upload failed');
+                return response.json();
+            })
+            .then(function(data) {
+                btn.innerHTML = 'Uploaded Successfully <i class="feather-check"></i>';
+                setTimeout(function() {
+                    btn.innerHTML = originalHtml;
+                    btn.disabled = false;
+                }, 3000);
+            })
+            .catch(function(err) {
+                console.error('Resume upload error:', err);
+                alert('Failed to upload resume. Please try again.');
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+
+            input.value = '';
+        }
+    </script>
     <!-- FOR EMPLOYEE END -->
 
 
@@ -1632,7 +1777,7 @@
                                 <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Home</a></li>
                                 <li><a href="https://themadrassevasadan.org/about" target="_blank"
                                         style="color: #A0AEC0;">About</a></li>
-                                <li><a href="/mss-career-portal/job-grid" style="color: #A0AEC0;">Open Roles</a></li>
+                                <li><a href="/mss-career-portal/open-roles" style="color: #A0AEC0;">Open Roles</a></li>
                                 <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Search</a></li>
                                 <li><a href="contact.html" style="color: #A0AEC0;">Contact</a></li>
                             </ul>
@@ -1645,16 +1790,15 @@
                             <ul class="ftr-list">
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
                                         style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                    <p style="color: var(--white-color); margin: 0;">7, Harrington Road, Chetpet, <br>Chennai -
-                                        600031</p>
+                                    <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
                                 </li>
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
                                         style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: var(--white-color); margin: 0;">info@themadrassevasadan.org</p>
+                                    <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
                                 </li>
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
                                         style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: var(--white-color); margin: 0;">+91 44 2836 4141</p>
+                                    <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
                                 </li>
                             </ul>
                         </div>
@@ -1994,7 +2138,7 @@
     <script src="js/bootstrap-slider.min.js"></script><!-- Price range slider -->
     <script src="js/swiper-bundle.min.js"></script><!-- Swiper JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
-    <script src="../../assets/js/shared-header.js?v=4"></script>
+    <script src="../../assets/js/shared-header.js?v=5"></script>
     <script>
         $(document).ready(function () {
             $('.mss-hero-carousel').owlCarousel({
@@ -2145,7 +2289,7 @@
 
                 // 2. Return the completed HTML string cleanly in ONE continuous expression
                 return '<div class="col-lg-6">' +
-                    '<div class="mss-jc" onclick="location.href=\'' + detailUrl + '\'" ' +
+                    '<div class="mss-jc" onclick="localStorage.setItem(\'candidate_current_job_id\', \'' + job.job_id + '\'); location.href=\'/mss-career-portal/pages/candidate/job-detail.html\'" ' +
                     'style="background:#fff;border-radius:20px;padding:1.75rem;border:1px solid #E2E8F0;cursor:pointer;transition:all 0.3s ease;height:100%;display:flex;flex-direction:column;" ' +
                     'onmouseover="this.style.borderColor=\'var(--card-border)\';this.style.boxShadow=\'var(--card-border-shadow)\';this.style.transform=\'translateY(-4px)\'" ' +
                     'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">' +
@@ -2174,10 +2318,13 @@
                 var heroCount = document.getElementById('heroJobCount');
                 if (heroCount) heroCount.textContent = jobs.length;
 
+                var badge = document.querySelector('.mss-hero-badge');
                 if (!jobs.length) {
+                    if (badge) badge.style.display = 'none';
                     row.innerHTML = '<div class="col-12 text-center text-muted py-4">No open roles right now. Please check back soon.</div>';
                     return;
                 }
+                if (badge) badge.style.display = 'inline-flex';
 
                 row.innerHTML = jobs.slice(0, HOME_JOBS_LIMIT).map(buildJobCard).join('');
             }
@@ -2238,7 +2385,7 @@ function fetchUnits() {
         .then(function (units) {
             select.innerHTML = '<option value="">Any Unit</option>';
 
-            units.forEach(function (unit) {
+            units.sort((a,b) => (a.unit_name||"").localeCompare(b.unit_name||"")).forEach(function (unit) {
                 var option = document.createElement('option');
                 option.value = unit.unit_name;
                 option.textContent = unit.unit_name;
