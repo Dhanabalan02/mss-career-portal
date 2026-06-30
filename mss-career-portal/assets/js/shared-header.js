@@ -262,11 +262,11 @@ function getInitial(name, email) {
 function buildAvatarHtml(initial) {
   return '' +
     '<div class="mss-profile-wrap" style="position:relative;">' +
-    '<button type="button" class="mss-profile-btn" onclick="toggleMssProfileMenu(event)" ' +
+    '<button type="button" class="mss-profile-btn" onclick="toggleMssProfileMenu(event, this)" ' +
     'style="width:36px;height:36px;border-radius:50%;background: var(--primary-btn-color);' +
     'color:#fff;border:none;font-family:\'Rubik\',sans-serif;font-weight:700;font-size:0.95rem;' +
     'cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + initial + '</button>' +
-    '<div class="mss-profile-menu" id="mssProfileMenu" style="display:none;position:absolute;top:46px;right:0;' +
+    '<div class="mss-profile-menu" style="display:none;position:absolute;top:46px;right:0;' +
     'background:#fff;border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,0.18);min-width:160px;overflow:hidden;z-index:1100;">' +
     '<a href="/mss-career-portal/profile" style="display:block;padding:10px 16px;font-family:\'Rubik\',sans-serif;font-size:0.85rem;' +
     'color:#0F172A;text-decoration:none;">My Profile</a>' +
@@ -276,12 +276,26 @@ function buildAvatarHtml(initial) {
     '</div>';
 }
 
-window.toggleMssProfileMenu = function (e) {
+window.toggleMssProfileMenu = function (e, btn) {
   if (e) e.stopPropagation();
-  var menu = document.getElementById('mssProfileMenu');
+  var menu = btn ? btn.nextElementSibling : null;
   if (!menu) return;
+
+  // Close all other menus first
+  document.querySelectorAll('.mss-profile-menu').forEach(function(m) {
+    if (m !== menu) m.style.display = 'none';
+  });
+
   menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
 };
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.mss-profile-wrap')) {
+    document.querySelectorAll('.mss-profile-menu').forEach(function(m) {
+      m.style.display = 'none';
+    });
+  }
+});
 
 window.showMssToast = function (message, type) {
   var toastType = type || 'success';
@@ -516,16 +530,39 @@ function applyAuthUI() {
       loginLink.style.display = 'none';
       if (applyLink) applyLink.style.display = 'none';
 
-      if (!container.querySelector('.mss-notification-wrap')) {
-        var bellWrap = document.createElement('div');
-        bellWrap.innerHTML = buildNotificationBellHtml();
-        container.appendChild(bellWrap.firstChild);
-      }
+      var isMobile = !!loginLink.closest('#mssNavMobile');
 
-      if (!container.querySelector('.mss-profile-wrap')) {
-        var wrap = document.createElement('div');
-        wrap.innerHTML = avatarHtml;
-        container.appendChild(wrap.firstChild);
+      if (!isMobile) {
+        // Desktop: notification bell + avatar circle
+        if (!container.querySelector('.mss-notification-wrap')) {
+          var bellWrap = document.createElement('div');
+          bellWrap.innerHTML = buildNotificationBellHtml();
+          container.appendChild(bellWrap.firstChild);
+        }
+
+        if (!container.querySelector('.mss-profile-wrap')) {
+          var wrap = document.createElement('div');
+          wrap.innerHTML = avatarHtml;
+          container.appendChild(wrap.firstChild);
+        }
+      } else {
+        // Mobile menu: show a compact user info bar instead of desktop icons
+        if (!container.querySelector('.mss-mobile-auth-bar')) {
+          var userName = localStorage.getItem('user_name') || '';
+          var userEmail = localStorage.getItem('user_email') || '';
+          var barInitial = getInitial(userName, userEmail);
+          var authBarEl = document.createElement('div');
+          authBarEl.className = 'mss-mobile-auth-bar';
+          authBarEl.style.cssText = 'display:flex;align-items:center;gap:12px;flex:1;width:100%;';
+          authBarEl.innerHTML =
+            '<div style="width:36px;height:36px;border-radius:50%;background:var(--primary-btn-color,#7b2cbf);color:#fff;display:flex;align-items:center;justify-content:center;font-family:\'Rubik\',sans-serif;font-weight:700;font-size:1rem;flex-shrink:0;">' + barInitial + '</div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div style="font-family:\'Rubik\',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (userName || userEmail) + '</div>' +
+              '<a href="/mss-career-portal/profile" style="font-family:\'Rubik\',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.65);text-decoration:none;">View Profile →</a>' +
+            '</div>' +
+            '<button onclick="mssLogout()" style="font-family:\'Rubik\',sans-serif;font-size:0.78rem;font-weight:600;color:#fff;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 12px;cursor:pointer;flex-shrink:0;">Logout</button>';
+          container.appendChild(authBarEl);
+        }
       }
     });
 

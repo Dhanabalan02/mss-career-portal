@@ -2878,3 +2878,13 @@ LookupError: 'NEXT ROUND' is not among the defined enum values. Enum name: appli
 [2026-06-30 12:45:25] INFO in config: Constructing the database URL from environment variables.
 [2026-06-30 12:45:25] INFO in database: Database engine created successfully.
 [2026-06-30 12:45:25] INFO in main: FastAPI application has started successfully.
+[2026-06-30 13:02:54] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 13:02:54] INFO in database: Database engine created successfully.
+[2026-06-30 13:02:55] INFO in main: FastAPI application has started successfully.
+[2026-06-30 13:03:05] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1
+[2026-06-30 13:05:56] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 13:05:56] INFO in database: Database engine created successfully.
+[2026-06-30 13:05:56] INFO in main: FastAPI application has started successfully.
+[2026-06-30 14:13:30] INFO in auth_crud: Admin ID 4 logged out from IP: 127.0.0.1
+[2026-06-30 14:13:48] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-30 14:37:34] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1

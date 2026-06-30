@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Profile – TMSS Career Portal</title>
-  <link rel="icon" href="images/mss/mss-logo.svg" type="image/svg+xml">
+  <link rel="icon" href="images/mss/mss-logo.png" type="image/svg+xml">
 
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -1354,7 +1354,7 @@
                         <div class="col-lg-4 col-md-12">
                             <div class="widget widget_about">
                                 <div class="logo-footer clearfix">
-                                    <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.svg" alt=""
+                                    <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
                                             style="max-height: 80px;"></a>
                                 </div>
                                 <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South India’s oldest and most trusted institutions, dedicated to transforming lives through education, women empowerment, child welfare, social development, arts and sports — guided by the timeless values of compassion, dignity and service.</p>
@@ -1752,9 +1752,44 @@
       
       // 2. Metadata details
       const meta = data.metadata || {};
-      if (document.getElementById('pfDob')) document.getElementById('pfDob').value = meta.date_of_birth || '';
+      const pfDobEl = document.getElementById('pfDob');
+      if (pfDobEl && meta.date_of_birth) {
+        let parsedDate = new Date(meta.date_of_birth);
+        // Fallback for DD-MM-YYYY format
+        if (isNaN(parsedDate.getTime()) && typeof meta.date_of_birth === 'string') {
+          const parts = meta.date_of_birth.split('-');
+          if (parts.length === 3 && parts[0].length === 2 && parts[2].length === 4) {
+            parsedDate = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+          }
+        }
+        if (!isNaN(parsedDate.getTime())) {
+          const yyyy = parsedDate.getFullYear();
+          const mm = String(parsedDate.getMonth() + 1).padStart(2, '0');
+          const dd = String(parsedDate.getDate()).padStart(2, '0');
+          const dateStr = `${yyyy}-${mm}-${dd}`;
+          if (pfDobEl._flatpickr) {
+            pfDobEl._flatpickr.setDate(dateStr, false);
+          } else {
+            pfDobEl.value = dateStr;
+          }
+        } else {
+          if (pfDobEl._flatpickr) pfDobEl._flatpickr.clear();
+          else pfDobEl.value = '';
+        }
+      } else if (pfDobEl) {
+        if (pfDobEl._flatpickr) pfDobEl._flatpickr.clear();
+        else pfDobEl.value = '';
+      }
       if (document.getElementById('pfBloodGroup') && meta.blood_group) document.getElementById('pfBloodGroup').value = meta.blood_group;
-      if (document.getElementById('pfMaritalStatus') && meta.marital_status) document.getElementById('pfMaritalStatus').value = meta.marital_status;
+      if (document.getElementById('pfMaritalStatus') && meta.marital_status) {
+        const select = document.getElementById('pfMaritalStatus');
+        const val = String(meta.marital_status).toLowerCase().trim();
+        Array.from(select.options).forEach(opt => {
+          if ((opt.value && opt.value.toLowerCase() === val) || opt.text.toLowerCase() === val) {
+            select.value = opt.value || opt.text;
+          }
+        });
+      }
       if (document.getElementById('pfAbout')) document.getElementById('pfAbout').value = meta.about || '';
       if (document.getElementById('pfDesig')) document.getElementById('pfDesig').value = meta.designation || '';
       if (document.getElementById('pfComp')) document.getElementById('pfComp').value = meta.company || '';

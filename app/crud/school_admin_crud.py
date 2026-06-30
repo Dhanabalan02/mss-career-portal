@@ -149,9 +149,11 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         name = f"{user.first_name} {user.last_name}".strip()
         iv_date = iv.scheduled_date
         today = date.today()
+        from datetime import timedelta
+        tomorrow = today + timedelta(days=1)
         if iv_date == today:
             label = f"Today {_format_time(iv.start_time)}"
-        elif iv_date == today.replace(day=today.day + 1) if today.day < 28 else today:
+        elif iv_date == tomorrow:
             label = f"Tomorrow {_format_time(iv.start_time)}"
         else:
             label = f"{_format_date(iv_date)} {_format_time(iv.start_time)}"
