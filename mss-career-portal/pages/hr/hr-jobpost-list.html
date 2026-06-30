@@ -1057,18 +1057,21 @@
         </select>
         <select class="filter-select" id="fDept" onchange="filterJobs()">
           <option value="">All Categories</option>
-          <option>Teaching Staff</option>
-          <option>Administration</option>
-          <option>Physical Education</option>
-          <option>Arts &amp; Music</option>
-          <option>Sports Coaching</option>
-          <option>Support Staff</option>
-        </select>
-        <select class="filter-select" id="fType" onchange="filterJobs()">
-          <option value="">All Types</option>
-          <option>Full-time</option>
-          <option>Contract</option>
-          <option>Part-time</option>
+          <option>Teaching</option>
+          <option>Admin</option>
+          <option>Marketing</option>
+          <option>Accounts</option>
+          <option>CSR</option>
+          <option>ISO</option>
+          <option>HR</option>
+          <option>Complaince</option>
+          <option>IT</option>
+          <option>Facility</option>
+          <option>Security & Maintenance</option>
+          <option>Stores</option>
+          <option>Technical</option>
+          <option>Art</option>
+          <option>Music</option>
         </select>
       </div>
 
@@ -1114,9 +1117,9 @@
                 <th>Department</th>
                 <th>Unit</th>
                 <th style="text-align:center;">Vacancies</th>
-                <th>Type</th>
                 <th>Status</th>
                 <th>Published</th>
+                <th>Closing Date</th>
                 <th style="text-align:center;">Applicants</th>
                 <th>Actions</th>
               </tr>
@@ -1194,6 +1197,18 @@
               }
             }
 
+            let formattedClosing = 'N/A';
+            if (j.closing_date) {
+              const cd = new Date(j.closing_date);
+              if (!isNaN(cd)) {
+                const day = cd.getDate();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const month = months[cd.getMonth()];
+                const year = cd.getFullYear();
+                formattedClosing = `${day} ${month} ${year}`;
+              }
+            }
+
             // Map backend status to frontend Active / Draft / Closed
             let mappedStatus = 'Draft';
             if (j.job_status === 'publish') {
@@ -1206,7 +1221,7 @@
               id: j.job_id,
               title: j.job_title || 'Untitled Job',
               dept: j.department || 'N/A',
-              type: j.job_type || 'Full-time',
+              closing: formattedClosing,
               vacancies: j.vacancy_count || 1,
               status: mappedStatus,
               date: formattedDate,
@@ -1214,6 +1229,21 @@
               location: j.school_name || 'Lady Andal School',
               is_clone: j.is_clone
             };
+          });
+
+          // Clone grouping logic
+          const countMap = {};
+          JOBS.forEach(j => {
+             const key = (j.title || '').trim().toLowerCase() + '|' + (j.location || '').trim().toLowerCase();
+             countMap[key] = (countMap[key] || 0) + 1;
+          });
+          JOBS.forEach(j => {
+             const key = (j.title || '').trim().toLowerCase() + '|' + (j.location || '').trim().toLowerCase();
+             if (j.is_clone && countMap[key] > 1) {
+                j.is_clone_ui = true;
+             } else {
+                j.is_clone_ui = false;
+             }
           });
 
           // Update stats grid
@@ -1281,9 +1311,9 @@
       <td class="td-muted">${j.dept}</td>
       <td class="td-muted">${j.location}</td>
       <td style="text-align:center;font-weight:700;">${j.vacancies}</td>
-      <td class="td-muted">${j.type}</td>
       <td><span class="badge ${meta.badge}"><span class="badge-dot"></span>${j.status}</span></td>
-      <td class="td-muted">${j.date}</td>
+      <td class="td-muted" style="white-space: nowrap;">${j.date}</td>
+      <td class="td-muted" style="white-space: nowrap;">${j.closing}</td>
       <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
       <td>
         <div class="table-actions">
@@ -1297,7 +1327,7 @@
           }
           <button class="act-btn" onclick="event.stopPropagation();duplicateJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Clone">Clone</button>
           ${j.status === 'Active' ? `<button class="act-btn act-btn-red" onclick="event.stopPropagation();closeJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')">Close</button>` : ''}
-          ${j.is_clone ? '<span class="cloned-star" style="color:#EF9F27;font-weight:bold;font-size:18px;margin-left:6px;cursor:help;display:inline-block;vertical-align:middle;" title="Cloned Job">*</span>' : ''}
+          ${j.is_clone_ui ? '<span class="cloned-star" style="color:#EF9F27;font-weight:bold;font-size:18px;margin-left:6px;cursor:help;display:inline-block;vertical-align:middle;" title="Cloned Job">*</span>' : ''}
         </div>
       </td>`;
 
@@ -1325,15 +1355,11 @@
       const fLocEl = document.getElementById('fLoc');
       const lt = fLocEl ? fLocEl.value : '';
 
-      const fTypeEl = document.getElementById('fType');
-      const tt = fTypeEl ? fTypeEl.value : '';
-
       const filtered = JOBS.filter(j =>
         (!q || j.title.toLowerCase().includes(q) || j.dept.toLowerCase().includes(q) || (j.location && j.location.toLowerCase().includes(q))) &&
         (!st || j.status === st) &&
         (!dt || j.dept === dt) &&
-        (!lt || (j.location && j.location === lt)) &&
-        (!tt || j.type === tt)
+        (!lt || (j.location && j.location === lt))
       );
       renderJobs(filtered);
     }
@@ -1349,7 +1375,7 @@
 
     function clearFilters() {
       document.getElementById('searchInput').value = '';
-      ['fStatus', 'fDept', 'fLoc', 'fType'].forEach(id => {
+      ['fStatus', 'fDept', 'fLoc'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
@@ -1444,8 +1470,8 @@
     }
 
     function exportJobs() {
-      const rows = [['Title', 'Department', 'Location', 'Type', 'Vacancies', 'Status', 'Published', 'Applicants']];
-      JOBS.forEach(j => rows.push([j.title, j.dept, j.location || '', j.type, j.vacancies, j.status, j.date, j.applicants]));
+      const rows = [['Title', 'Department', 'Location', 'Vacancies', 'Status', 'Published', 'Closing Date', 'Applicants']];
+      JOBS.forEach(j => rows.push([j.title, j.dept, j.location || '', j.vacancies, j.status, j.date, j.closing, j.applicants]));
       const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
       const a = document.createElement('a');
       a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);

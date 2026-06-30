@@ -504,11 +504,22 @@ def get_applicant_detail_route(
     for exp_rec in exp_records:
         start_dt = exp_rec.start_date
         if isinstance(start_dt, str):
-            start_dt = datetime.strptime(start_dt.split()[0], "%Y-%m-%d").date()
+            if start_dt.strip().lower() == "unknown":
+                start_dt = None
+            else:
+                try:
+                    start_dt = datetime.strptime(start_dt.split()[0], "%Y-%m-%d").date()
+                except ValueError:
+                    start_dt = None
 
-        end_dt = exp_rec.end_date or date.today()
-        if isinstance(end_dt, str):
-            end_dt = datetime.strptime(end_dt.split()[0], "%Y-%m-%d").date()
+        end_dt = exp_rec.end_date
+        if not end_dt or (isinstance(end_dt, str) and end_dt.strip().lower() == "unknown"):
+            end_dt = date.today()
+        elif isinstance(end_dt, str):
+            try:
+                end_dt = datetime.strptime(end_dt.split()[0], "%Y-%m-%d").date()
+            except ValueError:
+                end_dt = date.today()
 
         if start_dt and end_dt:
             total_days += (end_dt - start_dt).days

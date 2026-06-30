@@ -12,8 +12,8 @@
     <meta name="description" content="" />
 
     <!-- FAVICONS ICON -->
-    <link rel="icon" href="images/mss/mss-logo.svg" type="image/x-icon" />
-    <link rel="shortcut icon" type="image/x-icon" href="images/mss/mss-logo.svg" />
+    <link rel="icon" href="images/mss/mss-logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/mss/mss-logo.png" />
 
     <!-- PAGE TITLE HERE -->
     <!-- <title>The Madras Sevasadan Career Portal</title> -->
@@ -278,7 +278,7 @@
                             <!-- Badge -->
                             <div class="mss-hero-badge">
                                 <span class="mss-hero-badge-dot"></span>
-                                <span>Now Actively Hiring · June 2026</span>
+                                <span id="activelyHiringText">Now Actively Hiring · June 2026</span>
                             </div>
 
                             <!-- Headline -->
@@ -327,12 +327,21 @@
                                             <div class="mss-field-inner">
                                                 <select id="srch-cat" class="mss-select">
                                                     <option value="">All Categories</option>
-                                                    <option>Teaching Staff</option>
-                                                    <option>Administration</option>
-                                                    <option>Physical Education</option>
-                                                    <option>Arts &amp; Music</option>
-                                                    <option>Sports Coaching</option>
-                                                    <option>Support Staff</option>
+                                                    <option>Teaching</option>
+                                                    <option>Admin</option>
+                                                    <option>Marketing</option>
+                                                    <option>Accounts</option>
+                                                    <option>CSR</option>
+                                                    <option>ISO</option>
+                                                    <option>HR</option>
+                                                    <option>Complaince</option>
+                                                    <option>IT</option>
+                                                    <option>Facility</option>
+                                                    <option>Security & Maintenance</option>
+                                                    <option>Stores</option>
+                                                    <option>Technical</option>
+                                                    <option>Art</option>
+                                                    <option>Music</option>
                                                 </select>
                                                 <i class="feather-chevron-down mss-select-arrow"></i>
                                             </div>
@@ -659,7 +668,8 @@
                 }
 
                 .mss-select {
-                    width: 100%;
+                    width: calc(100% + 12px);
+                    margin-left: -12px;
                     border: none;
                     background: transparent;
                     font-family: 'Rubik', sans-serif;
@@ -669,11 +679,15 @@
                     outline: none;
                     appearance: none;
                     cursor: pointer;
-                    padding: 0;
-                    padding-right: 18px;
+                    padding: 0 18px 0 12px;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
+                }
+
+                .mss-select option {
+                    background: #ffffff;
+                    padding: 8px 12px;
                 }
 
                 .mss-select:focus {
@@ -897,6 +911,13 @@
                     font-size: 0.68rem;
                     color: #94A3B8;
                     margin-top: 1px;
+                }
+
+                .twm-title a{
+                    text-transform: uppercase;
+                    font-family: Libre Baskerville;
+                    font-weight: 700;
+                    font-size: 14px;
                 }
 
                 /* Mobile: stack search vertically */
@@ -1603,7 +1624,7 @@
                     <div class="col-lg-4 col-md-12">
                         <div class="widget widget_about">
                             <div class="logo-footer clearfix">
-                                <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.svg" alt=""
+                                <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
                                         style="max-height: 80px;"></a>
                             </div>
                             <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South
@@ -2022,14 +2043,37 @@
             }
 
             function getSchoolLogo(schoolName) {
+                // 1. Safe-convert input to lowercase
                 var school = String(schoolName || '').toLowerCase();
-                if (school.indexOf('lady andal') !== -1) {
+
+                // 2. Check each school condition (all search strings must be lowercase!)
+                if (school.indexOf('lady andal school') !== -1) {
                     return 'images/mss/laib-logo.png';
                 }
-                if (school.indexOf('sir mutha') !== -1) {
+                if (school.indexOf('sir mutha school') !== -1) {
                     return 'images/mss/sir-mutha-logo.png';
                 }
-                return 'images/mss/mss-logo.svg';
+                if (school.indexOf('the madras seva sadan higher secondary school, tambaram') !== -1) {
+                    return 'images/mss/TMSS-Tambaram-logo.png';
+                }
+                if (school.indexOf('the madras seva sadan higher secondary school, chetpet') !== -1) {
+                    return 'images/mss/TMSS-Chetpet-logo.png';
+                }
+                if (school.indexOf('sir & lady m. venkatasubba rao school, tambaram') !== -1) {
+                    return 'images/mss/Sir&ladyM-logo.png';
+                }
+                if (school.indexOf('lady andal open school - nios') !== -1 || school.indexOf('lady andal open school - os') !== -1) {
+                    return 'images/mss/laos-logo.png';
+                }
+                if (school.indexOf('prem vihar') !== -1) {
+                    return 'images/mss/prem-vihar.png';
+                }
+                if (school.indexOf('sir mutha venkatasubba rao concert hall') !== -1) {
+                    return 'images/mss/smvrch.png';
+                }
+
+                // 3. DEFAULT FALLBACK: If none of the above matched, return the default logo
+                return 'images/mss/mss-logo.png'; 
             }
 
             function buildJobCard(job) {
@@ -2119,8 +2163,7 @@
                     '<div style="width:48px;height:48px;border-radius:12px;background:#F1F5F9;border:1px solid #E2E8F0;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;">' +
                     '<img src="' + logo + '" style="max-width:38px;max-height:38px;object-fit:contain;"></div>' +
                     '<div>' +
-                    '<div style="font-family:\'Rubik\',sans-serif;font-size:0.75rem;font-weight:600;color:#64748B;">' + unit + '</div>' +
-                    '</div></div></div>' +
+                    '<div style="font-family:\'Rubik\',sans-serif;font-size:0.75rem;color:#000000; text-transform:uppercase; font-weight:600;">' + unit + '</div>' +                    '</div></div></div>' +
                     '<h4 style="font-family:\'Rubik\',sans-serif;font-size:1.1rem;font-weight:700;color:#0F172A;margin:0 0 0.5rem 0;">' + title + '</h4>' +
                     '<p style="font-family:\'Rubik\',sans-serif;font-size:0.85rem;color:#64748B;margin:0 0 1.25rem 0;line-height:1.6;flex-grow:1;">' + (description || 'Explore this opportunity at The Madras Seva Sadan.') + '</p>' +
                     '<div class="d-flex flex-wrap gap-2 mb-4">' + tags + '</div>' +
@@ -2217,6 +2260,16 @@ function fetchUnits() {
 }
 
 fetchUnits();
+
+document.addEventListener('DOMContentLoaded', function() {
+    var hiringText = document.getElementById('activelyHiringText');
+    if (hiringText) {
+        var now = new Date();
+        var month = now.toLocaleString('default', { month: 'long' });
+        var year = now.getFullYear();
+        hiringText.innerText = 'Now Actively Hiring · ' + month + ' ' + year;
+    }
+});
 
     </script>
 

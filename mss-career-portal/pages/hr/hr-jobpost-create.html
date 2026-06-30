@@ -1167,15 +1167,35 @@
       const programmeSelect = document.getElementById('programme');
       
       const val = schoolSelect && schoolSelect.value ? schoolSelect.value.toLowerCase().trim() : '';
-      if (val === 'lady andal school') {
-        if (programmeGroup) programmeGroup.style.display = 'block';
-        if (programmeSelect) programmeSelect.required = true;
-      } else {
+      
+      if (!val) {
         if (programmeGroup) programmeGroup.style.display = 'none';
         if (programmeSelect) {
             programmeSelect.required = false;
-            programmeSelect.value = '';
+            programmeSelect.innerHTML = '<option value="">Select Programme</option>';
         }
+        return;
+      }
+
+      if (programmeGroup) programmeGroup.style.display = 'block';
+      if (programmeSelect) programmeSelect.required = true;
+
+      if (val.includes('lady andal school')) {
+        programmeSelect.innerHTML = `
+          <option value="">Select Programme</option>
+          <option value="EYP">EYP</option>
+          <option value="PYP">PYP</option>
+          <option value="MYP">MYP</option>
+          <option value="DP">DP</option>
+        `;
+      } else {
+        programmeSelect.innerHTML = `
+          <option value="">Select Programme</option>
+          <option value="Pre-Primary">Pre-Primary</option>
+          <option value="Primary">Primary</option>
+          <option value="Secondary">Secondary</option>
+          <option value="Higher Secondary/Senior">Higher Secondary/Senior</option>
+        `;
       }
     }
   </script>
@@ -1255,16 +1275,23 @@
               <input type="text" id="jobTitle" placeholder="e.g. Senior Mathematics Teacher" oninput="this.value = this.value.replace(/[0-9]/g, ''); syncPreview()" required>
             </div>
             <div class="form-group">
-              <label>Department <span class="req">*</span></label>
+              <label>Job Categories <span class="req">*</span></label>
               <select id="dept" onchange="syncPreview()" required>
-                <option value="">Select Department</option>
-                <option>Teaching Staff</option>
-                <option>Administration</option>
-                <option>Physical Education</option>
-                <option>Arts &amp; Music</option>
-                <option>Sports Coaching</option>
-                <option>Support Staff</option>
-                <option>Management</option>
+                <option>Teaching</option>
+                <option>Admin</option>
+                <option>Marketing</option>
+                <option>Accounts</option>
+                <option>CSR</option>
+                <option>ISO</option>
+                <option>HR</option>
+                <option>Complaince</option>
+                <option>IT</option>
+                <option>Facility</option>
+                <option>Security & Maintenance</option>
+                <option>Stores</option>
+                <option>Technical</option>
+                <option>Art</option>
+                <option>Music</option>
               </select>
             </div>
             <div class="form-group">
@@ -1296,9 +1323,10 @@
               </select>
             </div>
             <div class="form-group" id="programmeGroup" style="display:none;">
-              <label>Programme <span class="req">*</span></label>
+              <label>Grade <span class="req">*</span></label>
               <select id="programme">
                 <option value="">Select Programme</option>
+                <option>EYP</option>
                 <option>PYP</option>
                 <option>MYP</option>
                 <option>DP</option>

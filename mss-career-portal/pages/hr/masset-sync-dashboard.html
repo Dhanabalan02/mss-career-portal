@@ -1263,10 +1263,7 @@
         </div>
         <div class="filter-divider"></div>
         <select class="filter-select" id="schoolFilter" onchange="applyFilters()">
-          <option value="">All Schools</option>
-          <option>ABC Public School</option>
-          <option>XYZ International School</option>
-          <option>Global Academy</option>
+          <option value="">All Units</option>
         </select>
         <select class="filter-select" id="statusFilter" onchange="applyFilters()">
           <option value="">All Statuses</option>
@@ -1638,8 +1635,6 @@
           // Always use the real data (even if empty) to override mock data
           candidates = Array.isArray(data.candidates) ? data.candidates : [];
           const schools = [...new Set(candidates.map(c => c.school).filter(Boolean))];
-          const sel = document.getElementById('schoolFilter');
-          if (sel) sel.innerHTML = '<option value="">All Schools</option>' + schools.map(s => `<option>${s}</option>`).join('');
 
           // Dynamically update the top stat cards
           // Stat cards will retain their test data as requested
@@ -1697,8 +1692,25 @@
       } catch (e) { console.error('Failed to load masset stats', e); }
     }
 
+    async function loadUnits() {
+      try {
+        const res = await fetch(`${API_BASE}/auth/units`);
+        if (res.ok) {
+          const units = await res.json();
+          const schoolFilter = document.getElementById('schoolFilter');
+          units.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.unit_name;
+            opt.textContent = u.unit_name;
+            schoolFilter.appendChild(opt);
+          });
+        }
+      } catch (e) { console.error('Failed to load units', e); }
+    }
+
     loadMasset();
     loadMassetStats();
+    loadUnits();
   </script>
 </body>
 

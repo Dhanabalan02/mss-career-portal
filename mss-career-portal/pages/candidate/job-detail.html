@@ -11,8 +11,8 @@
     <meta name="description" content="" />
 
     <!-- FAVICONS ICON -->
-    <link rel="icon" href="images/mss/mss-logo.svg" type="image/x-icon" />
-    <link rel="shortcut icon" type="image/x-icon" href="images/mss/mss-logo.svg" />
+    <link rel="icon" href="images/mss/mss-logo.png" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/mss/mss-logo.png" />
 
     <!-- PAGE TITLE HERE -->
     <title>The Madras Sevasadan Career Portal - Job Details</title>
@@ -307,7 +307,7 @@
                                             <div class="twm-mid-content">
 
                                                 <div class="twm-media">
-                                                    <img src="images/mss/mss-logo.svg" alt="#">
+                                                    <img src="images/mss/mss-logo.png" alt="#">
                                                 </div>
 
                                                 <h4 class="twm-job-title" id="jdTitle">Loading…
@@ -472,7 +472,7 @@
                         <div class="col-lg-4 col-md-12">
                             <div class="widget widget_about">
                                 <div class="logo-footer clearfix">
-                                    <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.svg" alt=""
+                                    <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
                                             style="max-height: 80px;"></a>
                                 </div>
                                 <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South India’s oldest and most trusted institutions, dedicated to transforming lives through education, women empowerment, child welfare, social development, arts and sports — guided by the timeless values of compassion, dignity and service.</p>
@@ -1163,12 +1163,25 @@
                 var logoEl = document.querySelector('.twm-mid-content .twm-media img');
                 if (logoEl && job.school_name) {
                     var school = job.school_name.toLowerCase();
-                    if (school.indexOf('lady andal') !== -1) {
+
+                    if (school.indexOf('lady andal school') !== -1) {
                         logoEl.src = 'images/mss/laib-logo.png';
-                    } else if (school.indexOf('sir mutha') !== -1) {
+                    } else if (school.indexOf('sir mutha school') !== -1) {
                         logoEl.src = 'images/mss/sir-mutha-logo.png';
+                    } else if (school.indexOf('the madras seva sadan higher secondary school, tambaram') !== -1) {
+                        logoEl.src = 'images/mss/TMSS-Tambaram-logo.png';
+                    } else if (school.indexOf('the madras seva sadan higher secondary school, chetpet') !== -1) {
+                        logoEl.src = 'images/mss/TMSS-Chetpet-logo.png';
+                    } else if (school.indexOf('sir & lady m. venkatasubba rao school, tambaram') !== -1) {
+                        logoEl.src = 'images/mss/Sir&ladyM-logo.png';
+                    } else if (school.indexOf('lady andal open school - nios') !== -1 || school.indexOf('lady andal open school - os') !== -1) {
+                        logoEl.src = 'images/mss/laos-logo.png';
+                    } else if (school.indexOf('prem vihar') !== -1) {
+                        logoEl.src = 'images/mss/prem-vihar.png';
+                    } else if (school.indexOf('sir mutha venkatasubba rao concert hall') !== -1) {
+                        logoEl.src = 'images/mss/smvrch.png';
                     } else {
-                        logoEl.src = 'images/mss/mss-logo.svg';
+                        logoEl.src = 'images/mss/mss-logo.png';
                     }
                 }
             }

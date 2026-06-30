@@ -2686,3 +2686,195 @@ sqlalchemy.exc.OperationalError: (pymysql.err.OperationalError) (2003, "Can't co
 [2026-06-29 16:09:21] INFO in config: Constructing the database URL from environment variables.
 [2026-06-29 16:09:21] INFO in database: Database engine created successfully.
 [2026-06-29 16:09:21] INFO in main: FastAPI application has started successfully.
+[2026-06-29 17:14:27] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 17:14:27] INFO in database: Database engine created successfully.
+[2026-06-29 17:14:29] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 17:14:29] INFO in database: Database engine created successfully.
+[2026-06-29 17:14:29] INFO in main: FastAPI application has started successfully.
+[2026-06-29 17:43:50] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 17:43:51] INFO in database: Database engine created successfully.
+[2026-06-29 17:43:52] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 17:43:52] INFO in database: Database engine created successfully.
+[2026-06-29 17:43:52] INFO in main: FastAPI application has started successfully.
+[2026-06-29 17:47:20] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 17:49:05] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 17:49:38] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 17:49:54] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 17:54:36] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 17:55:24] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 17:56:07] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 17:57:19] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 17:57:24] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 17:58:12] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 17:58:51] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 17:59:45] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-29 18:02:55] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 18:04:03] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 18:05:47] INFO in jobs_crud: Job post created by admin 3
+[2026-06-29 18:25:19] WARNING in auth_crud: Unauthorized login attempt for email: rameshkannan0724@gmail.com from IP: 127.0.0.1
+[2026-06-29 18:25:45] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-29 18:26:07] INFO in job_apply_crud: Job application created: applicant_id=17, mss_app_no=MSS-APP-17, job_id=32, user_id=9
+[2026-06-29 18:26:42] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 19:18:56] INFO in job_interview_crud: Interview scheduled: id=14 for applicant=17
+[2026-06-29 19:29:51] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 19:31:27] INFO in job_interview_crud: Interview remarks created: job_interview_id=14
+[2026-06-29 19:46:58] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 19:46:58] INFO in database: Database engine created successfully.
+[2026-06-29 19:46:59] INFO in main: FastAPI application has started successfully.
+[2026-06-29 19:47:00] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 19:47:00] INFO in database: Database engine created successfully.
+[2026-06-29 19:47:00] INFO in main: FastAPI application has started successfully.
+[2026-06-29 19:47:11] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 19:47:11] INFO in database: Database engine created successfully.
+[2026-06-29 19:47:11] INFO in main: FastAPI application has started successfully.
+[2026-06-29 19:53:27] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 19:53:27] INFO in database: Database engine created successfully.
+[2026-06-29 19:53:27] INFO in main: FastAPI application has started successfully.
+[2026-06-29 20:01:19] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 20:01:34] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1
+[2026-06-29 20:01:59] INFO in auth_crud: Admin ID 4 logged out from IP: 127.0.0.1
+[2026-06-29 20:02:09] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 20:04:37] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 20:04:37] INFO in database: Database engine created successfully.
+[2026-06-29 20:04:37] INFO in main: FastAPI application has started successfully.
+[2026-06-29 20:05:51] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 20:05:51] INFO in database: Database engine created successfully.
+[2026-06-29 20:05:51] INFO in main: FastAPI application has started successfully.
+[2026-06-29 20:06:11] INFO in job_interview_crud: Interview remarks updated: job_interview_id=14
+[2026-06-29 20:06:40] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 20:06:55] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1
+[2026-06-29 20:09:46] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 20:11:10] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 20:11:10] INFO in database: Database engine created successfully.
+[2026-06-29 20:11:13] INFO in main: FastAPI application has started successfully.
+[2026-06-29 20:12:41] ERROR in main: Unhandled error on PATCH /hr/ats-pipeline/17/stage: 'NEXT ROUND' is not among the defined enum values. Enum name: applicantstatus. Possible values: SELECTED, REJECTED, HOLD, NEXT_ROUND
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py", line 1709, in _object_value_for_elem
+    return self._object_lookup[elem]  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'NEXT ROUND'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Tasks\mss-career-portal\app\main.py", line 38, in dispatch
+    return await call_next(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\routes\hr_route.py", line 90, in update_ats_stage
+    return update_candidate_stage(db, admin_id, applicant_id, payload.stage, payload.remarks)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\app\crud\hr_crud.py", line 277, in update_candidate_stage
+    .first()
+     ^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2766, in first
+    return self.limit(1)._iter().first()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 1816, in first
+    return self._only_one_row(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 769, in _only_one_row
+    row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
+                                          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 1703, in _fetchone_impl
+    return self._real_result._fetchone_impl(hard_close=hard_close)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 2299, in _fetchone_impl
+    row = next(self.iterator, _NO_ROW)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 220, in chunks
+    fetch = cursor._raw_all_rows()
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 553, in _raw_all_rows
+    return [make_row(row) for row in rows]
+            ^^^^^^^^^^^^^
+  File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+  File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py", line 1829, in process
+    value = self._object_value_for_elem(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\dialects\mysql\enumerated.py", line 110, in _object_value_for_elem
+    return super()._object_value_for_elem(elem)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Tasks\mss-career-portal\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py", line 1711, in _object_value_for_elem
+    raise LookupError(
+LookupError: 'NEXT ROUND' is not among the defined enum values. Enum name: applicantstatus. Possible values: SELECTED, REJECTED, HOLD, NEXT_ROUND
+[2026-06-29 20:13:26] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-29 20:13:41] INFO in auth_crud: Successful login for school_admin email: admin@ladyandal.org from IP: 127.0.0.1
+[2026-06-29 20:14:04] INFO in auth_crud: Admin ID 4 logged out from IP: 127.0.0.1
+[2026-06-29 20:15:06] INFO in auth_crud: Successful login for candidate email: ramesramesh0724@gmail.com from IP: 127.0.0.1
+[2026-06-29 20:16:21] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 20:16:21] INFO in database: Database engine created successfully.
+[2026-06-29 20:16:28] INFO in config: Constructing the database URL from environment variables.
+[2026-06-29 20:16:28] INFO in database: Database engine created successfully.
+[2026-06-29 20:16:29] INFO in main: FastAPI application has started successfully.
+[2026-06-29 20:16:32] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-29 20:36:13] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-30 09:11:42] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 09:11:42] INFO in database: Database engine created successfully.
+[2026-06-30 09:11:48] INFO in main: FastAPI application has started successfully.
+[2026-06-30 09:12:12] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-30 09:12:51] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-30 09:13:04] INFO in auth_crud: Successful login for candidate email: tharun123@gmail.com from IP: 127.0.0.1
+[2026-06-30 09:13:48] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 09:13:48] INFO in database: Database engine created successfully.
+[2026-06-30 09:13:49] INFO in main: FastAPI application has started successfully.
+[2026-06-30 09:14:12] INFO in job_apply_crud: Job application created: applicant_id=18, mss_app_no=MSS-APP-18, job_id=35, user_id=10
+[2026-06-30 09:14:39] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-30 09:47:47] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-30 10:09:23] INFO in job_interview_crud: Interview scheduled: id=15 for applicant=18
+[2026-06-30 10:26:43] INFO in auth_crud: Admin ID 3 logged out from IP: 127.0.0.1
+[2026-06-30 12:30:33] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 12:30:33] INFO in database: Database engine created successfully.
+[2026-06-30 12:30:33] INFO in main: FastAPI application has started successfully.
+[2026-06-30 12:30:48] INFO in auth_crud: Successful login for hr_head email: hrhead.themadrassevasadan.org from IP: 127.0.0.1
+[2026-06-30 12:40:32] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 12:40:32] INFO in database: Database engine created successfully.
+[2026-06-30 12:40:32] INFO in main: FastAPI application has started successfully.
+[2026-06-30 12:45:25] INFO in config: Constructing the database URL from environment variables.
+[2026-06-30 12:45:25] INFO in database: Database engine created successfully.
+[2026-06-30 12:45:25] INFO in main: FastAPI application has started successfully.

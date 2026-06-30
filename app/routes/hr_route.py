@@ -77,6 +77,7 @@ def ats_pipeline(
 
 class StageUpdateRequest(BaseModel):
     stage: str
+    remarks: Optional[str] = None
 
 
 @router.patch("/ats-pipeline/{applicant_id}/stage")
@@ -86,7 +87,7 @@ def update_ats_stage(
     db: Session = Depends(get_db),
     admin_id: int = Depends(get_current_admin_id),
 ):
-    return update_candidate_stage(db, admin_id, applicant_id, payload.stage)
+    return update_candidate_stage(db, admin_id, applicant_id, payload.stage, payload.remarks)
 
 
 @router.get("/interviews")

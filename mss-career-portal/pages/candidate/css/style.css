@@ -120,6 +120,7 @@ This files [Table of contents] are outlined below
 */
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400..700;1,400..700&display=swap');
 
 :root {
     --primary-color: #cc8cfc;
@@ -5749,7 +5750,8 @@ ol li {
 button.scroltop {
   height: 40px;
   width: 40px;
-  background: #1d1b18;
+  background: var(--primary-btn-color);
+  border-radius: 8px;
   border: none;
   position: fixed;
   right: 15px;

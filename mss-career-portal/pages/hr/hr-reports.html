@@ -982,18 +982,21 @@
         </select>
         <select id="categoryFilter">
           <option value="">All Categories</option>
-          <option>Teaching Staff</option>
-          <option>Administration</option>
-          <option>Physical Education</option>
-          <option>Arts &amp; Music</option>
-          <option>Sports Coaching</option>
-          <option>Support Staff</option>
-        </select>
-        <select id="jobTypeFilter">
-          <option value="">All Job Types</option>
-          <option>Full Time</option>
-          <option>Part Time</option>
-          <option>Contract</option>
+          <option>Teaching</option>
+          <option>Admin</option>
+          <option>Marketing</option>
+          <option>Accounts</option>
+          <option>CSR</option>
+          <option>ISO</option>
+          <option>HR</option>
+          <option>Complaince</option>
+          <option>IT</option>
+          <option>Facility</option>
+          <option>Security & Maintenance</option>
+          <option>Stores</option>
+          <option>Technical</option>
+          <option>Art</option>
+          <option>Music</option>
         </select>
       </div>
 
@@ -1046,17 +1049,6 @@
           <div class="kpi-number" id="kpi-rate">—</div>
           <div class="kpi-label">Fulfillment Rate</div>
           <div class="kpi-delta" id="kpi-rate-delta">Loading…</div>
-        </div>
-        <div class="kpi-card cyan" onclick="showToast('Drill-down: Hiring Budget')">
-          <div class="kpi-icon">
-            <svg viewBox="0 0 24 24">
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
-          </div>
-          <div class="kpi-number">₹48L</div>
-          <div class="kpi-label">Hiring Budget</div>
-          <div class="kpi-delta">₹7L remaining</div>
         </div>
       </div>
 
@@ -1136,31 +1128,6 @@
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <div class="card-title">Budget vs Hiring</div>
-            <span class="card-badge">FY 2026</span>
-          </div>
-          <div class="budget-stats">
-            <div class="budget-box">
-              <div class="budget-val">₹48L</div>
-              <div class="budget-lbl">Allocated</div>
-            </div>
-            <div class="budget-box">
-              <div class="budget-val">₹41L</div>
-              <div class="budget-lbl">Utilized</div>
-            </div>
-            <div class="budget-box">
-              <div class="budget-val">₹7L</div>
-              <div class="budget-lbl">Remaining</div>
-            </div>
-          </div>
-          <div class="budget-bar-label"><span>Budget utilization</span><span>85%</span></div>
-          <div class="budget-bar">
-            <div class="budget-bar-fill"></div>
-          </div>
-        </div>
-
         <div class="card">
           <div class="card-header">
             <div class="card-title">Vacancy Gap Analysis</div>
@@ -1464,6 +1431,18 @@
 
       // Generate current date for filename and report header
       const todayStr = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+      
+      const sDate = document.getElementById('filterStartDate').value;
+      const eDate = document.getElementById('filterEndDate').value;
+      
+      let periodStr = `Generated On: ${todayStr}`;
+      if (sDate && eDate) {
+        periodStr = `Period: ${sDate} to ${eDate} | Generated On: ${todayStr}`;
+      } else if (sDate) {
+        periodStr = `Period: From ${sDate} | Generated On: ${todayStr}`;
+      } else if (eDate) {
+        periodStr = `Period: Until ${eDate} | Generated On: ${todayStr}`;
+      }
 
       // Build Styles
       let xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -1589,7 +1568,7 @@
     <Cell ss:Index="2" ss:MergeAcross="10" ss:StyleID="Title"><Data ss:Type="String">RECRUITMENT REPORT</Data></Cell>
    </Row>
    <Row ss:Height="18">
-    <Cell ss:Index="2" ss:MergeAcross="10" ss:StyleID="SubTitle"><Data ss:Type="String">Generated On: ${todayStr}</Data></Cell>
+    <Cell ss:Index="2" ss:MergeAcross="10" ss:StyleID="SubTitle"><Data ss:Type="String">${periodStr}</Data></Cell>
    </Row>
    <Row ss:Height="15"/>
 
@@ -1835,12 +1814,10 @@
         const endVal = document.getElementById('endDate').value;
         const schoolVal = document.getElementById('unitFilter').value;
         const deptVal = document.getElementById('categoryFilter').value;
-        const typeVal = document.getElementById('jobTypeFilter').value;
         if (startVal) params.append('start_date', startVal);
         if (endVal) params.append('end_date', endVal);
         if (schoolVal) params.append('school_name', schoolVal);
         if (deptVal) params.append('department', deptVal);
-        if (typeVal) params.append('job_type', typeVal);
 
         const res = await fetch(`${API_BASE}/hr/reports?${params}`, {
           headers: { Authorization: `Bearer ${_token()}` }
@@ -1873,25 +1850,6 @@
         if (d.monthly_trend) renderMonthlyTrendChart(d.monthly_trend);
         if (d.school_comparison) updateUnitComparisonCard(d.school_comparison);
         if (d.vacancy_gap) renderVacancyGapChart(d.vacancy_gap);
-
-        // Budget card
-        if (d.budget) {
-          const budgetCard = Array.from(document.querySelectorAll('.card')).find(
-            c => c.querySelector('.card-title')?.textContent === 'Budget vs Hiring'
-          );
-          if (budgetCard) {
-            const vals = budgetCard.querySelectorAll('.budget-val');
-            if (vals.length === 3) {
-              vals[0].textContent = d.budget.allocated;
-              vals[1].textContent = d.budget.utilized;
-              vals[2].textContent = d.budget.remaining;
-            }
-            const pctLabel = budgetCard.querySelector('.budget-bar-label span:last-child');
-            if (pctLabel) pctLabel.textContent = d.budget.percentage + '%';
-            const barFill = budgetCard.querySelector('.budget-bar-fill');
-            if (barFill) barFill.style.width = d.budget.percentage + '%';
-          }
-        }
 
         // Insights
         updateInsights(d);

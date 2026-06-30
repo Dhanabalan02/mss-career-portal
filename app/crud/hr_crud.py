@@ -194,7 +194,7 @@ _STAGE_TO_FIELDS = {
     'Offer': {
         'applicant_stage': ApplicantStage.OFFER,
         'applicant_job_status': ApplicantJobStatus.SELECTED,
-        'issue_offer': 1,
+        'issue_offer': 0,
         'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
         'sync_masset': 0,
     },
@@ -215,7 +215,7 @@ _STAGE_TO_FIELDS = {
 }
 
 
-def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage: str):
+def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage: str, remarks: Optional[str] = None):
     from fastapi import HTTPException
     fields = _STAGE_TO_FIELDS.get(stage)
     if fields is None:
@@ -235,7 +235,6 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
     if not _is_hr_role(db, admin_id) and job.job_posted_by != admin_id:
         raise HTTPException(status_code=403, detail="Access denied")
 
-    # Check if candidate is moving from Offer/Offer Accepted to Interview
     if (app_record.applicant_stage in (ApplicantStage.OFFER, ApplicantStage.OFFER_ACCEPTED)) and stage == "Interview":
         # Find the latest interview schedule for this applicant
         latest_interview = (
@@ -245,6 +244,9 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
             .first()
         )
         if latest_interview:
+            from app.models.interview_schedule_model import InterviewStatus
+            latest_interview.status = InterviewStatus.SCHEDULED
+            
             # Find the corresponding remark
             from app.models.interview_remarks_model import InterviewRemark, ApplicantStatus
             remark = (
@@ -254,6 +256,38 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
             )
             if remark and remark.applicant_status == ApplicantStatus.SELECTED:
                 remark.applicant_status = ApplicantStatus.NEXT_ROUND
+
+    # Check if candidate is moving to Offer
+    if stage == "Offer" and remarks is not None:
+        latest_interview = (
+            db.query(JobInterviewSchedule)
+            .filter(JobInterviewSchedule.job_applicant_id == applicant_id)
+            .order_by(JobInterviewSchedule.job_interview_id.desc())
+            .first()
+        )
+        if latest_interview:
+            from app.models.interview_remarks_model import InterviewRemark, ApplicantStatus
+            from app.models.interview_schedule_model import InterviewStatus
+            
+            latest_interview.status = InterviewStatus.COMPLETED
+            
+            remark = (
+                db.query(InterviewRemark)
+                .filter(InterviewRemark.job_interview_id == latest_interview.job_interview_id)
+                .first()
+            )
+            if remark:
+                remark.remarks = remarks
+                remark.applicant_status = ApplicantStatus.SELECTED
+                remark.updated_by = admin_id
+            else:
+                new_remark = InterviewRemark(
+                    job_interview_id=latest_interview.job_interview_id,
+                    remarks=remarks,
+                    applicant_status=ApplicantStatus.SELECTED,
+                    created_by=admin_id
+                )
+                db.add(new_remark)
 
     for attr, value in fields.items():
         setattr(app_record, attr, value)

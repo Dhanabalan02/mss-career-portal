@@ -1,1777 +1,2376 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ATS Pipeline - TMSS Career Portal</title>
-  <link rel="icon" href="images/mss-logo.svg" type="image/svg+xml">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
-  <link rel="stylesheet" href="../../assets/css/portal-layout.css">
-
-  <style>
-    :root {
-      --primary: #2563eb;
-      --primary-light: #dbeafe;
-      --primary-dark: #1d4ed8;
-      --success: #16a34a;
-      --success-light: #dcfce7;
-      --warning: #d97706;
-      --warning-light: #fef3c7;
-      --danger: #dc2626;
-      --danger-light: #fee2e2;
-      --purple: #7c3aed;
-      --purple-light: #ede9fe;
-      --teal: #0d9488;
-      --teal-light: #ccfbf1;
-      --orange: #c2410c;
-      --orange-light: #ffedd5;
-
-      --bg: #f0f2f7;
-      --surface: #ffffff;
-      --surface-2: #f8f9fc;
-      --border: #e4e7ef;
-      --border-strong: #c9cede;
-      --text: #0f1623;
-      --text-2: #4b5568;
-      --text-3: #8492a6;
-      --radius: 12px;
-      --radius-sm: 8px;
-      --radius-xs: 6px;
-      --shadow-sm: 0 1px 3px rgba(15, 22, 35, .07), 0 1px 2px rgba(15, 22, 35, .04);
-      --shadow-md: 0 4px 16px rgba(15, 22, 35, .10), 0 2px 6px rgba(15, 22, 35, .06);
-      --shadow-lg: 0 12px 40px rgba(15, 22, 35, .14), 0 4px 12px rgba(15, 22, 35, .08);
-      --font: 'DM Sans', sans-serif;
-      --mono: 'DM Mono', monospace;
-      --transition: .2s cubic-bezier(.4, 0, .2, 1);
-    }
-
-    [data-theme="dark"],
-    body.dark-theme {
-      --bg: #0d0d0d;
-      --surface: #0d0d0d;
-      --surface-2: #111111;
-      --border: rgba(255, 255, 255, 0.10);
-      --border-strong: rgba(255, 255, 255, 0.16);
-      --text: #f0efe8;
-      --text-2: #b4b2a9;
-      --text-3: #666560;
-      --primary-light: #26215C;
-      --success-light: #173404;
-      --warning-light: #412402;
-      --danger-light: #501313;
-      --purple-light: #26215C;
-      --teal-light: #04342C;
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-    }
-
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    /* ── Layout ── */
-    .layout {
-      display: flex;
-      min-height: 100vh;
-      height: auto;
-      overflow: visible;
-    }
-
-    html,
-    body {
-      min-height: 100vh;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-
-    .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-
-    .brand-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--primary);
-      border-radius: var(--radius-xs);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 16px;
-    }
-
-    .brand-name {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text);
-      letter-spacing: -.3px;
-    }
-
-    .nav-section-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-3);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      padding: 10px 10px 6px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 10px;
-      border-radius: var(--radius-xs);
-      color: var(--text-2);
-      text-decoration: none;
-      font-size: 13.5px;
-      font-weight: 400;
-      transition: var(--transition);
-      cursor: pointer;
-      margin-bottom: 2px;
-    }
-
-    .nav-item i {
-      font-size: 17px;
-    }
-
-    .nav-item:hover {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .nav-item.active {
-      background: var(--primary-light);
-      color: var(--primary);
-      font-weight: 500;
-    }
-
-    .nav-item.active i {
-      color: var(--primary);
-    }
-
-    .user-card {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .user-card:hover {
-      background: var(--bg);
-    }
-
-    .user-av {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #7c3aed, #2563eb);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-
-    .user-name {
-      font-size: 12.5px;
-      font-weight: 500;
-    }
-
-    .user-role {
-      font-size: 11px;
-      color: var(--text-3);
-    }
-
-    /* ── Main ── */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: auto;
-      min-height: 0;
-    }
-
-    /* ── Topbar ── */
-    .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 73px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-shrink: 0;
-    }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .page-title {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -.3px;
-    }
-
-    .page-sub {
-      font-size: 12px;
-      color: var(--text-3);
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .search-wrap {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .search-wrap i {
-      position: absolute;
-      left: 11px;
-      color: var(--text-3);
-      font-size: 16px;
-      pointer-events: none;
-    }
-
-    .search-input {
-      padding: 8px 14px 8px 34px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      font-family: var(--font);
-      font-size: 13px;
-      color: var(--text);
-      width: 220px;
-      transition: var(--transition);
-    }
-
-    .search-input:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .1);
-      width: 260px;
-    }
-
-    .search-input::placeholder {
-      color: var(--text-3);
-    }
-
-    .filter-select {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      font-family: var(--font);
-      font-size: 13px;
-      color: var(--text);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .filter-select:focus {
-      outline: none;
-      border-color: var(--primary);
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 16px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-primary:active {
-      transform: scale(.98);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--text-2);
-      border: 1px solid var(--border);
-    }
-
-    .btn-ghost:hover {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .btn-sm {
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text-2);
-      transition: var(--transition);
-    }
-
-    .icon-btn:hover {
-      background: #fff;
-      color: var(--text);
-      border-color: var(--border-strong);
-    }
-
-    .icon-btn i {
-      font-size: 17px;
-    }
-
-    /* ── Stat Cards ── */
-    .stats-grid-wrap {
-      padding: 22px 24px 0;
-      flex-shrink: 0;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border-radius: var(--radius);
-      padding: 16px 18px;
-      cursor: pointer;
-      border: 1px solid var(--border);
-      border-top: 3px solid transparent;
-      box-shadow: var(--shadow-sm);
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-
-    .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .stat-card.active-filter {
-      box-shadow: var(--shadow-md);
-      border-color: var(--border-strong);
-    }
-
-    .stat-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      margin-bottom: 12px;
-    }
-
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -.5px;
-      line-height: 1;
-      margin-bottom: 5px;
-      font-family: var(--mono);
-    }
-
-    .stat-label {
-      font-size: 12.5px;
-      color: var(--text-2);
-      font-weight: 400;
-    }
-
-    .stat-delta {
-      font-size: 11px;
-      color: var(--text-3);
-      margin-top: 4px;
-    }
-
-    .sc-total {
-      border-top-color: var(--primary);
-    }
-
-    .sc-applied {
-      border-top-color: var(--primary);
-    }
-
-    .sc-interview {
-      border-top-color: #ea580c;
-    }
-
-    .sc-offer {
-      border-top-color: var(--purple);
-    }
-
-    .sc-onboarded {
-      border-top-color: var(--warning);
-    }
-
-    .sc-match {
-      border-top-color: var(--teal);
-    }
-
-    .column.highlighted {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .15);
-      transition: border-color .3s, box-shadow .3s;
-    }
-
-    /* ── Kanban ── */
-    .kanban-area {
-      flex: 1;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-    }
-
-    .kanban-scroll {
-      flex: 1;
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: 20px 24px;
-      min-height: 0;
-    }
-
-    @media (max-width: 900px) {
-      .kanban-scroll {
-        padding: 16px 14px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        touch-action: pan-x;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ATS Pipeline - TMSS Career Portal</title>
+    <link rel="icon" href="images/mss-logo.svg" type="image/svg+xml" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
+    />
+
+    <link rel="stylesheet" href="../../assets/css/portal-layout.css" />
+
+    <style>
+      :root {
+        --primary: #2563eb;
+        --primary-light: #dbeafe;
+        --primary-dark: #1d4ed8;
+        --success: #16a34a;
+        --success-light: #dcfce7;
+        --warning: #d97706;
+        --warning-light: #fef3c7;
+        --danger: #dc2626;
+        --danger-light: #fee2e2;
+        --purple: #7c3aed;
+        --purple-light: #ede9fe;
+        --teal: #0d9488;
+        --teal-light: #ccfbf1;
+        --orange: #c2410c;
+        --orange-light: #ffedd5;
+
+        --bg: #f0f2f7;
+        --surface: #ffffff;
+        --surface-2: #f8f9fc;
+        --border: #e4e7ef;
+        --border-strong: #c9cede;
+        --text: #0f1623;
+        --text-2: #4b5568;
+        --text-3: #8492a6;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --radius-xs: 6px;
+        --shadow-sm:
+          0 1px 3px rgba(15, 22, 35, 0.07), 0 1px 2px rgba(15, 22, 35, 0.04);
+        --shadow-md:
+          0 4px 16px rgba(15, 22, 35, 0.1), 0 2px 6px rgba(15, 22, 35, 0.06);
+        --shadow-lg:
+          0 12px 40px rgba(15, 22, 35, 0.14), 0 4px 12px rgba(15, 22, 35, 0.08);
+        --font: "DM Sans", sans-serif;
+        --mono: "DM Mono", monospace;
+        --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .kanban-container {
-        gap: 14px;
+      [data-theme="dark"],
+      body.dark-theme {
+        --bg: #0d0d0d;
+        --surface: #0d0d0d;
+        --surface-2: #111111;
+        --border: rgba(255, 255, 255, 0.1);
+        --border-strong: rgba(255, 255, 255, 0.16);
+        --text: #f0efe8;
+        --text-2: #b4b2a9;
+        --text-3: #666560;
+        --primary-light: #26215c;
+        --success-light: #173404;
+        --warning-light: #412402;
+        --danger-light: #501313;
+        --purple-light: #26215c;
+        --teal-light: #04342c;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+        --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
       }
 
-      .column {
-        width: calc(100vw - 28px);
-        min-width: calc(100vw - 28px);
-        scroll-snap-align: start;
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .card-list {
-        max-height: calc(100vh - 360px);
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      /* ── Layout ── */
+      .layout {
+        display: flex;
+        min-height: 100vh;
+        height: auto;
+        overflow: visible;
+      }
+
+      html,
+      body {
+        min-height: 100vh;
+        overflow-x: hidden;
         overflow-y: auto;
-        touch-action: pan-y;
       }
 
-      .column-header {
-        padding: 12px 12px 10px;
-      }
-    }
-
-    .kanban-container {
-      display: flex;
-      gap: 16px;
-      height: 100%;
-      min-height: 0;
-    }
-
-    .column {
-      width: 290px;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      background: var(--surface-2);
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      overflow: hidden;
-      transition: border-color var(--transition), box-shadow var(--transition);
-    }
-
-    .column.drag-over {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .12);
-    }
-
-    .column-header {
-      padding: 14px 14px 12px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-      background: var(--surface);
-    }
-
-    .col-title-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .col-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
-    .col-dot-applied {
-      background: var(--primary);
-    }
-
-    .col-dot-screened {
-      background: var(--success);
-    }
-
-    .col-dot-interview {
-      background: #ea580c;
-    }
-
-    .col-dot-offer {
-      background: var(--purple);
-    }
-
-    .col-dot-accepted {
-      background: var(--teal);
-    }
-
-    .col-dot-onboarded {
-      background: var(--warning);
-    }
-
-    .column-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .badge {
-      padding: 2px 9px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 600;
-      font-family: var(--mono);
-    }
-
-    .b-applied {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    .b-screened {
-      background: var(--success-light);
-      color: var(--success);
-    }
-
-    .b-interview {
-      background: var(--orange-light);
-      color: var(--orange);
-    }
-
-    .b-offer {
-      background: var(--purple-light);
-      color: var(--purple);
-    }
-
-    .b-accepted {
-      background: var(--teal-light);
-      color: var(--teal);
-    }
-
-    .b-onboarded {
-      background: var(--warning-light);
-      color: var(--warning);
-    }
-
-    .card-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
-    }
-
-    .card-list::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    .card-list::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
-    }
-
-    /* ── Candidate Card ── */
-    .candidate-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid transparent;
-      border-radius: var(--radius-sm);
-      padding: 13px;
-      cursor: grab;
-      transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition);
-      position: relative;
-      animation: cardIn .25s ease forwards;
-    }
-
-    @keyframes cardIn {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
+      .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
       }
 
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .candidate-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .candidate-card:active {
-      cursor: grabbing;
-    }
-
-    .candidate-card.dragging {
-      opacity: .35;
-      cursor: grabbing;
-    }
-
-    .candidate-card.drop-ghost {
-      border: 2px dashed var(--primary);
-      background: rgba(37, 99, 235, .04);
-      height: 70px;
-    }
-
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-      flex-shrink: 0;
-    }
-
-    .card-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .cand-name {
-      font-size: 13.5px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .cand-pos {
-      font-size: 11.5px;
-      color: var(--text-2);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card-menu-btn {
-      width: 22px;
-      height: 22px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      color: var(--text-3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 4px;
-      transition: var(--transition);
-    }
-
-    .card-menu-btn:hover {
-      background: var(--bg);
-      color: var(--text);
-    }
-
-    .card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-bottom: 9px;
-    }
-
-    .tag {
-      font-size: 11px;
-      padding: 2px 7px;
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text-3);
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .tag i {
-      font-size: 11px;
-    }
-
-    .card-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid var(--border);
-      padding-top: 9px;
-    }
-
-    .days-ago {
-      font-size: 11px;
-      color: var(--text-3);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .days-ago i {
-      font-size: 12px;
-    }
-
-    .match-badge {
-      font-size: 11px;
-      font-weight: 600;
-      font-family: var(--mono);
-      padding: 2px 8px;
-      border-radius: 20px;
-    }
-
-    .match-high {
-      background: var(--success-light);
-      color: var(--success);
-    }
-
-    .match-mid {
-      background: var(--warning-light);
-      color: var(--warning);
-    }
-
-    .match-low {
-      background: var(--danger-light);
-      color: var(--danger);
-    }
-
-    .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 30px 16px;
-      color: var(--text-3);
-      text-align: center;
-    }
-
-    .empty-state i {
-      font-size: 28px;
-      opacity: .35;
-    }
-
-    .empty-state span {
-      font-size: 12px;
-    }
-
-    /* ── Drawer ── */
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 22, 35, .4);
-      backdrop-filter: blur(2px);
-      z-index: 100;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .3s;
-    }
-
-    .overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .drawer {
-      position: fixed;
-      top: 0;
-      right: -480px;
-      width: 460px;
-      height: 100%;
-      background: var(--surface);
-      box-shadow: var(--shadow-lg);
-      z-index: 101;
-      display: flex;
-      flex-direction: column;
-      transition: right .35s cubic-bezier(.4, 0, .2, 1);
-    }
-
-    .drawer.active {
-      right: 0;
-    }
-
-    .drawer-header {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-shrink: 0;
-      position: sticky;
-      top: 0;
-      background: var(--surface);
-      z-index: 2;
-    }
-
-    .drawer-header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .drawer-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .drawer-name {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .drawer-pos {
-      font-size: 12px;
-      color: var(--text-2);
-      margin-top: 2px;
-    }
-
-    .drawer-close {
-      width: 32px;
-      height: 32px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xs);
-      background: var(--bg);
-      cursor: pointer;
-      color: var(--text-2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition);
-      font-size: 16px;
-    }
-
-    .drawer-close:hover {
-      background: var(--danger-light);
-      color: var(--danger);
-      border-color: var(--danger);
-    }
-
-    .drawer-tabs {
-      display: flex;
-      padding: 0 20px;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-      background: var(--surface);
-      gap: 2px;
-    }
-
-    .dtab {
-      padding: 11px 14px;
-      font-size: 13px;
-      font-weight: 400;
-      color: var(--text-3);
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .dtab i {
-      font-size: 15px;
-    }
-
-    .dtab:hover {
-      color: var(--text);
-    }
-
-    .dtab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
-      font-weight: 500;
-    }
-
-    .drawer-body {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      scrollbar-width: thin;
-    }
-
-    .tab-panel {
-      display: none;
-    }
-
-    .tab-panel.active {
-      display: block;
-      animation: fadeIn .2s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(4px);
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--primary);
+        border-radius: var(--radius-xs);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 16px;
       }
 
-      to {
-        opacity: 1;
-        transform: none;
-      }
-    }
-
-    .section {
-      margin-bottom: 22px;
-    }
-
-    .section-title {
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--text-3);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .info-table tr td {
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-      vertical-align: top;
-    }
-
-    .info-table tr:last-child td {
-      border: none;
-    }
-
-    .info-table .lbl {
-      font-size: 12px;
-      color: var(--text-3);
-      width: 90px;
-      padding-right: 12px;
-    }
-
-    .info-table .val {
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .info-table .val.link {
-      color: var(--primary);
-      text-decoration: none;
-    }
-
-    .info-table .val.link:hover {
-      text-decoration: underline;
-    }
-
-    .skills-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .skill-chip {
-      padding: 4px 11px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      background: var(--primary-light);
-      color: var(--primary);
-      border: 1px solid #bfdbfe;
-    }
-
-    /* Timeline */
-    .timeline {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .tl-item {
-      display: flex;
-      gap: 14px;
-      padding-bottom: 18px;
-      position: relative;
-    }
-
-    .tl-item::before {
-      content: '';
-      position: absolute;
-      left: 7px;
-      top: 22px;
-      bottom: 0;
-      width: 1.5px;
-      background: var(--border);
-    }
-
-    .tl-item:last-child::before {
-      display: none;
-    }
-
-    .tl-dot {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      border: 2px solid;
-      flex-shrink: 0;
-      margin-top: 3px;
-    }
-
-    .tl-dot.done {
-      background: var(--success);
-      border-color: var(--success);
-    }
-
-    .tl-dot.current {
-      background: var(--primary);
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .2);
-    }
-
-    .tl-dot.pending {
-      background: var(--surface);
-      border-color: var(--border-strong);
-    }
-
-    .tl-text {
-      flex: 1;
-    }
-
-    .tl-title {
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .tl-date {
-      font-size: 11.5px;
-      color: var(--text-3);
-      margin-top: 2px;
-    }
-
-    .tl-badge {
-      font-size: 10.5px;
-      padding: 1px 7px;
-      border-radius: 10px;
-      margin-top: 4px;
-      display: inline-block;
-    }
-
-    .tl-badge.ok {
-      background: var(--success-light);
-      color: var(--success);
-    }
-
-    .tl-badge.act {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
-    /* Actions tab */
-    .stage-move-section {
-      margin-bottom: 20px;
-    }
-
-    .stage-label {
-      font-size: 12px;
-      color: var(--text-3);
-      margin-bottom: 8px;
-    }
-
-    .stage-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .stage-pill {
-      padding: 6px 13px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--text-2);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .stage-pill:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .stage-pill.active {
-      background: var(--primary);
-      color: #fff;
-      border-color: var(--primary);
-    }
-
-    .action-grid {
-      display: grid;
-      gap: 8px;
-    }
-
-    .action-btn {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 11px 14px;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
-      text-align: left;
-    }
-
-    .action-btn i {
-      font-size: 17px;
-    }
-
-    .action-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .action-btn:active {
-      transform: scale(.98);
-    }
-
-    .ab-interview {
-      background: var(--primary);
-      color: #fff;
-    }
-
-    .ab-offer {
-      background: var(--purple);
-      color: #fff;
-    }
-
-    .ab-hold {
-      background: var(--warning-light);
-      color: var(--warning);
-      border: 1px solid #fcd34d;
-    }
-
-    .ab-reject {
-      background: var(--danger-light);
-      color: var(--danger);
-      border: 1px solid #fca5a5;
-    }
-
-    .notes-area {
-      width: 100%;
-      min-height: 90px;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: var(--font);
-      font-size: 13px;
-      color: var(--text);
-      background: var(--bg);
-      resize: vertical;
-      transition: var(--transition);
-    }
-
-    .notes-area:focus {
-      outline: none;
-      border-color: var(--primary);
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, .08);
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(16px);
-      background: var(--text);
-      color: #fff;
-      padding: 10px 18px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 500;
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .25s, transform .25s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: var(--shadow-lg);
-      white-space: nowrap;
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast i {
-      font-size: 16px;
-    }
-
-    .toast.success i {
-      color: #4ade80;
-    }
-
-    .toast.warning i {
-      color: #fbbf24;
-    }
-
-    .toast.danger i {
-      color: #f87171;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 900px) {
-      .drawer {
-        width: 100%;
-        right: -100%;
-      }
-    }
-
-    @media (max-width: 900px) {
-      .kanban-scroll {
-        padding: 16px 14px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        touch-action: pan-x;
+      .brand-name {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: -0.3px;
       }
 
-      .kanban-container {
-        gap: 14px;
-        width: max-content;
+      .nav-section-label {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--text-3);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 10px 10px 6px;
       }
 
-      .column {
-        width: calc(100vw - 28px);
-        min-width: calc(100vw - 28px);
-        scroll-snap-align: start;
-        min-height: 240px;
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 10px;
+        border-radius: var(--radius-xs);
+        color: var(--text-2);
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 400;
+        transition: var(--transition);
+        cursor: pointer;
+        margin-bottom: 2px;
       }
 
-      .card-list {
-        max-height: calc(100vh - 340px);
-        overflow-y: auto;
-        touch-action: pan-y;
+      .nav-item i {
+        font-size: 17px;
       }
 
-      .column-header {
-        padding: 12px 12px 10px;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .kanban-scroll {
-        padding: 14px 12px;
+      .nav-item:hover {
+        background: var(--bg);
+        color: var(--text);
       }
 
-      .column {
-        width: calc(100vw - 24px);
-        min-width: calc(100vw - 24px);
+      .nav-item.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        font-weight: 500;
       }
 
-      .card-list {
-        max-height: calc(100vh - 320px);
+      .nav-item.active i {
+        color: var(--primary);
       }
 
-      .candidate-card {
-        touch-action: pan-y;
+      .user-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: var(--transition);
       }
 
-      .drag-clone {
-        position: fixed;
-        width: calc(100vw - 56px);
-        max-width: 360px;
-        pointer-events: none;
-        opacity: .98;
-        border-radius: 12px;
-        box-shadow: 0 18px 46px rgba(15, 22, 35, .18);
-        transform: translate(-50%, -50%) scale(1.02);
-        user-select: none;
+      .user-card:hover {
+        background: var(--bg);
       }
-    }
 
-    @media (max-width: 600px) {
+      .user-av {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #7c3aed, #2563eb);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      .user-name {
+        font-size: 12.5px;
+        font-weight: 500;
+      }
+
+      .user-role {
+        font-size: 11px;
+        color: var(--text-3);
+      }
+
+      /* ── Main ── */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+        min-height: 0;
+      }
+
+      /* ── Topbar ── */
       .topbar {
-        padding: 0 14px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        padding: 0 24px;
+        height: 73px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-shrink: 0;
+      }
+
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .page-title {
+        font-size: 17px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+      }
+
+      .page-sub {
+        font-size: 12px;
+        color: var(--text-3);
+      }
+
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .search-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .search-wrap i {
+        position: absolute;
+        left: 11px;
+        color: var(--text-3);
+        font-size: 16px;
+        pointer-events: none;
       }
 
       .search-input {
-        width: 140px;
+        padding: 8px 14px 8px 34px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg);
+        font-family: var(--font);
+        font-size: 13px;
+        color: var(--text);
+        width: 220px;
+        transition: var(--transition);
       }
 
       .search-input:focus {
-        width: 160px;
+        outline: none;
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      }
+
+      .search-input::placeholder {
+        color: var(--text-3);
+      }
+
+      .filter-select {
+        padding: 8px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg);
+        font-family: var(--font);
+        font-size: 13px;
+        color: var(--text);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .filter-select:focus {
+        outline: none;
+        border-color: var(--primary);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-2);
+        border: 1px solid var(--border);
+      }
+
+      .btn-ghost:hover {
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text-2);
+        transition: var(--transition);
+      }
+
+      .icon-btn:hover {
+        background: #fff;
+        color: var(--text);
+        border-color: var(--border-strong);
+      }
+
+      .icon-btn i {
+        font-size: 17px;
+      }
+
+      /* ── Stat Cards ── */
+      .stats-grid-wrap {
+        padding: 22px 24px 0;
+        flex-shrink: 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+      }
+
+      .stat-card {
+        background: var(--surface);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        border-top: 3px solid transparent;
+        box-shadow: var(--shadow-sm);
+        transition:
+          transform var(--transition),
+          box-shadow var(--transition);
+      }
+
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .stat-card.active-filter {
+        box-shadow: var(--shadow-md);
+        border-color: var(--border-strong);
+      }
+
+      .stat-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
+
+      .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        line-height: 1;
+        margin-bottom: 5px;
+        font-family: var(--mono);
+      }
+
+      .stat-label {
+        font-size: 12.5px;
+        color: var(--text-2);
+        font-weight: 400;
+      }
+
+      .stat-delta {
+        font-size: 11px;
+        color: var(--text-3);
+        margin-top: 4px;
+      }
+
+      .sc-total {
+        border-top-color: var(--primary);
+      }
+
+      .sc-applied {
+        border-top-color: var(--primary);
+      }
+
+      .sc-interview {
+        border-top-color: #ea580c;
+      }
+
+      .sc-offer {
+        border-top-color: var(--purple);
+      }
+
+      .sc-onboarded {
+        border-top-color: var(--warning);
+      }
+
+      .sc-match {
+        border-top-color: var(--teal);
+      }
+
+      .column.highlighted {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+
+      /* ── Kanban ── */
+      .kanban-area {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
       }
 
       .kanban-scroll {
-        padding: 14px;
+        flex: 1;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 20px 24px;
+        min-height: 0;
       }
-    }
 
-    /* ── Modals ── */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .45);
-      justify-content: center;
-      align-items: center;
-      z-index: 3000;
-      padding: 20px;
-      backdrop-filter: blur(2px);
-    }
-    .modal.open {
-      display: flex;
-    }
-    .modal-content {
-      background: var(--surface);
-      width: 100%;
-      max-width: 540px;
-      padding: 28px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-lg);
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 22px;
-    }
-    .modal-title {
-      font-size: 17px;
-      font-weight: 600;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-    .modal-close {
-      width: 30px;
-      height: 30px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--surface-2);
-      color: var(--text-3);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .15s;
-    }
-    .modal-close:hover {
-      background: #fee2e2;
-      color: #dc2626;
-      border-color: transparent;
-    }
-    .form-group {
-      margin-bottom: 14px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-2);
-    }
-    .form-group input, .form-group textarea {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-family: var(--font);
-      font-size: 13px;
-      color: var(--text);
-      background: var(--bg);
-      transition: all .2s;
-    }
-    .form-group input:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
-      background: var(--surface);
-    }
-    .recommend-toggle {
-      display: flex;
-      gap: 10px;
-      margin-top: 5px;
-    }
-    .rec-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 16px;
-      border: 1px solid var(--border);
-      background-color: var(--surface);
-      color: var(--text);
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      font-size: 13px;
-    }
-    .rec-btn:hover { background-color: var(--surface-2); }
-    #statusSelected.active { background-color: #d1e7dd; border-color: #a3cfbb; color: #0f5132; }
-    #statusNextround.active { background-color: #cff4fc; border-color: #9eeaf9; color: #055160; }
-    #statusRejected.active { background-color: #f8d7da; border-color: #f1aeb5; color: #842029; }
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 24px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border);
-    }
-  </style>
-</head>
+      @media (max-width: 900px) {
+        .kanban-scroll {
+          padding: 16px 14px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-x;
+        }
 
-<body>
+        .kanban-container {
+          gap: 14px;
+        }
 
-  <div class="layout">
-    <!-- ── Main Content ── -->
-    <main class="main">
+        .column {
+          width: calc(100vw - 28px);
+          min-width: calc(100vw - 28px);
+          scroll-snap-align: start;
+        }
 
-      <!-- Topbar -->
-      <div class="topbar">
-        <div class="topbar-left">
+        .card-list {
+          max-height: calc(100vh - 360px);
+          overflow-y: auto;
+          touch-action: pan-y;
+        }
+
+        .column-header {
+          padding: 12px 12px 10px;
+        }
+      }
+
+      .kanban-container {
+        display: flex;
+        gap: 16px;
+        height: 100%;
+        min-height: 0;
+      }
+
+      .column {
+        width: 290px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--surface-2);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+        transition:
+          border-color var(--transition),
+          box-shadow var(--transition);
+      }
+
+      .column.drag-over {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+
+      .column-header {
+        padding: 14px 14px 12px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+        background: var(--surface);
+      }
+
+      .col-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .col-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      .col-dot-applied {
+        background: var(--primary);
+      }
+
+      .col-dot-screened {
+        background: var(--success);
+      }
+
+      .col-dot-interview {
+        background: #ea580c;
+      }
+
+      .col-dot-offer {
+        background: var(--purple);
+      }
+
+      .col-dot-accepted {
+        background: var(--teal);
+      }
+
+      .col-dot-onboarded {
+        background: var(--warning);
+      }
+
+      .column-title {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .badge {
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        font-family: var(--mono);
+      }
+
+      .b-applied {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      .b-screened {
+        background: var(--success-light);
+        color: var(--success);
+      }
+
+      .b-interview {
+        background: var(--orange-light);
+        color: var(--orange);
+      }
+
+      .b-offer {
+        background: var(--purple-light);
+        color: var(--purple);
+      }
+
+      .b-accepted {
+        background: var(--teal-light);
+        color: var(--teal);
+      }
+
+      .b-onboarded {
+        background: var(--warning-light);
+        color: var(--warning);
+      }
+
+      .card-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border) transparent;
+      }
+
+      .card-list::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      .card-list::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      /* ── Candidate Card ── */
+      .candidate-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid transparent;
+        border-radius: var(--radius-sm);
+        padding: 13px;
+        cursor: grab;
+        transition:
+          transform var(--transition),
+          box-shadow var(--transition),
+          opacity var(--transition);
+        position: relative;
+        animation: cardIn 0.25s ease forwards;
+      }
+
+      @keyframes cardIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .candidate-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .candidate-card:active {
+        cursor: grabbing;
+      }
+
+      .candidate-card.dragging {
+        opacity: 0.35;
+        cursor: grabbing;
+      }
+
+      .candidate-card.drop-ghost {
+        border: 2px dashed var(--primary);
+        background: rgba(37, 99, 235, 0.04);
+        height: 70px;
+      }
+
+      .card-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      .card-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .cand-name {
+        font-size: 13.5px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .cand-pos {
+        font-size: 11.5px;
+        color: var(--text-2);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-menu-btn {
+        width: 22px;
+        height: 22px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--text-3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: var(--transition);
+      }
+
+      .card-menu-btn:hover {
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-bottom: 9px;
+      }
+
+      .tag {
+        font-size: 11px;
+        padding: 2px 7px;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        color: var(--text-3);
+        display: flex;
+        align-items: center;
+        gap: 3px;
+      }
+
+      .tag i {
+        font-size: 11px;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid var(--border);
+        padding-top: 9px;
+      }
+
+      .days-ago {
+        font-size: 11px;
+        color: var(--text-3);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .days-ago i {
+        font-size: 12px;
+      }
+
+      .match-badge {
+        font-size: 11px;
+        font-weight: 600;
+        font-family: var(--mono);
+        padding: 2px 8px;
+        border-radius: 20px;
+      }
+
+      .match-high {
+        background: var(--success-light);
+        color: var(--success);
+      }
+
+      .match-mid {
+        background: var(--warning-light);
+        color: var(--warning);
+      }
+
+      .match-low {
+        background: var(--danger-light);
+        color: var(--danger);
+      }
+
+      .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 30px 16px;
+        color: var(--text-3);
+        text-align: center;
+      }
+
+      .empty-state i {
+        font-size: 28px;
+        opacity: 0.35;
+      }
+
+      .empty-state span {
+        font-size: 12px;
+      }
+
+      /* ── Drawer ── */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 22, 35, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 100;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+
+      .overlay.active {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .drawer {
+        position: fixed;
+        top: 0;
+        right: -480px;
+        width: 460px;
+        height: 100%;
+        background: var(--surface);
+        box-shadow: var(--shadow-lg);
+        z-index: 101;
+        display: flex;
+        flex-direction: column;
+        transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+        z-index: 9999;
+      }
+
+      .drawer.active {
+        right: 0;
+      }
+
+      .drawer-header {
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        background: var(--surface);
+        z-index: 2;
+      }
+
+      .drawer-header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .drawer-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .drawer-name {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .drawer-pos {
+        font-size: 12px;
+        color: var(--text-2);
+        margin-top: 2px;
+      }
+
+      .drawer-close {
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xs);
+        background: var(--bg);
+        cursor: pointer;
+        color: var(--text-2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        font-size: 16px;
+      }
+
+      .drawer-close:hover {
+        background: var(--danger-light);
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+
+      .drawer-tabs {
+        display: flex;
+        padding: 0 20px;
+        border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+        background: var(--surface);
+        gap: 2px;
+      }
+
+      .dtab {
+        padding: 11px 14px;
+        font-size: 13px;
+        font-weight: 400;
+        color: var(--text-3);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dtab i {
+        font-size: 15px;
+      }
+
+      .dtab:hover {
+        color: var(--text);
+      }
+
+      .dtab.active {
+        color: var(--primary);
+        border-bottom-color: var(--primary);
+        font-weight: 500;
+      }
+
+      .drawer-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        scrollbar-width: thin;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+        animation: fadeIn 0.2s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .section {
+        margin-bottom: 22px;
+      }
+
+      .section-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-3);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .section-title::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+
+      .info-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .info-table tr td {
+        padding: 7px 0;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      .info-table tr:last-child td {
+        border: none;
+      }
+
+      .info-table .lbl {
+        font-size: 12px;
+        color: var(--text-3);
+        width: 90px;
+        padding-right: 12px;
+      }
+
+      .info-table .val {
+        font-size: 13px;
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      .info-table .val.link {
+        color: var(--primary);
+        text-decoration: none;
+      }
+
+      .info-table .val.link:hover {
+        text-decoration: underline;
+      }
+
+      .skills-wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .skill-chip {
+        padding: 4px 11px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        background: var(--primary-light);
+        color: var(--primary);
+        border: 1px solid #bfdbfe;
+      }
+
+      /* Timeline */
+      .timeline {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .tl-item {
+        display: flex;
+        gap: 14px;
+        padding-bottom: 18px;
+        position: relative;
+      }
+
+      .tl-item::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 22px;
+        bottom: 0;
+        width: 1.5px;
+        background: var(--border);
+      }
+
+      .tl-item:last-child::before {
+        display: none;
+      }
+
+      .tl-dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 2px solid;
+        flex-shrink: 0;
+        margin-top: 3px;
+      }
+
+      .tl-dot.done {
+        background: var(--success);
+        border-color: var(--success);
+      }
+
+      .tl-dot.current {
+        background: var(--primary);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+      }
+
+      .tl-dot.pending {
+        background: var(--surface);
+        border-color: var(--border-strong);
+      }
+
+      .tl-text {
+        flex: 1;
+      }
+
+      .tl-title {
+        font-size: 13px;
+        font-weight: 500;
+      }
+
+      .tl-date {
+        font-size: 11.5px;
+        color: var(--text-3);
+        margin-top: 2px;
+      }
+
+      .tl-badge {
+        font-size: 10.5px;
+        padding: 1px 7px;
+        border-radius: 10px;
+        margin-top: 4px;
+        display: inline-block;
+      }
+
+      .tl-badge.ok {
+        background: var(--success-light);
+        color: var(--success);
+      }
+
+      .tl-badge.act {
+        background: var(--primary-light);
+        color: var(--primary);
+      }
+
+      /* Actions tab */
+      .stage-move-section {
+        margin-bottom: 20px;
+      }
+
+      .stage-label {
+        font-size: 12px;
+        color: var(--text-3);
+        margin-bottom: 8px;
+      }
+
+      .stage-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .stage-pill {
+        padding: 6px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 500;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text-2);
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .stage-pill:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--primary-light);
+      }
+
+      .stage-pill.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+      }
+
+      .action-grid {
+        display: grid;
+        gap: 8px;
+      }
+
+      .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 14px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        text-align: left;
+      }
+
+      .action-btn i {
+        font-size: 17px;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .action-btn:active {
+        transform: scale(0.98);
+      }
+
+      .ab-interview {
+        background: var(--primary);
+        color: #fff;
+      }
+
+      .ab-offer {
+        background: var(--purple);
+        color: #fff;
+      }
+
+      .ab-hold {
+        background: var(--warning-light);
+        color: var(--warning);
+        border: 1px solid #fcd34d;
+      }
+
+      .ab-reject {
+        background: var(--danger-light);
+        color: var(--danger);
+        border: 1px solid #fca5a5;
+      }
+
+      .notes-area {
+        width: 100%;
+        min-height: 90px;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 13px;
+        color: var(--text);
+        background: var(--bg);
+        resize: vertical;
+        transition: var(--transition);
+      }
+
+      .notes-area:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(16px);
+        background: var(--text);
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+        font-weight: 500;
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.25s,
+          transform 0.25s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: var(--shadow-lg);
+        white-space: nowrap;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      .toast i {
+        font-size: 16px;
+      }
+
+      .toast.success i {
+        color: #4ade80;
+      }
+
+      .toast.warning i {
+        color: #fbbf24;
+      }
+
+      .toast.danger i {
+        color: #f87171;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .drawer {
+          width: 100%;
+          right: -100%;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .kanban-scroll {
+          padding: 16px 14px;
+          overflow-x: auto;
+          overflow-y: hidden;
+          scroll-snap-type: x mandatory;
+          -webkit-overflow-scrolling: touch;
+          touch-action: pan-x;
+        }
+
+        .kanban-container {
+          gap: 14px;
+          width: max-content;
+        }
+
+        .column {
+          width: calc(100vw - 28px);
+          min-width: calc(100vw - 28px);
+          scroll-snap-align: start;
+          min-height: 240px;
+        }
+
+        .card-list {
+          max-height: calc(100vh - 340px);
+          overflow-y: auto;
+          touch-action: pan-y;
+        }
+
+        .column-header {
+          padding: 12px 12px 10px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .kanban-scroll {
+          padding: 14px 12px;
+        }
+
+        .column {
+          width: calc(100vw - 24px);
+          min-width: calc(100vw - 24px);
+        }
+
+        .card-list {
+          max-height: calc(100vh - 320px);
+        }
+
+        .candidate-card {
+          touch-action: pan-y;
+        }
+
+        .drag-clone {
+          position: fixed;
+          width: calc(100vw - 56px);
+          max-width: 360px;
+          pointer-events: none;
+          opacity: 0.98;
+          border-radius: 12px;
+          box-shadow: 0 18px 46px rgba(15, 22, 35, 0.18);
+          transform: translate(-50%, -50%) scale(1.02);
+          user-select: none;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .topbar {
+          padding: 0 14px;
+        }
+
+        .search-input {
+          width: 140px;
+        }
+
+        .search-input:focus {
+          width: 160px;
+        }
+
+        .kanban-scroll {
+          padding: 14px;
+        }
+      }
+
+      /* ── Modals ── */
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        justify-content: center;
+        align-items: center;
+        z-index: 3000;
+        padding: 20px;
+        backdrop-filter: blur(2px);
+      }
+      .modal.open {
+        display: flex;
+      }
+      .modal-content {
+        background: var(--surface);
+        width: 100%;
+        max-width: 540px;
+        padding: 28px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-lg);
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+      }
+      .modal-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .modal-close {
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+        color: var(--text-3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+      }
+      .modal-close:hover {
+        background: #fee2e2;
+        color: #dc2626;
+        border-color: transparent;
+      }
+      .form-group {
+        margin-bottom: 14px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: var(--text-2);
+      }
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-family: var(--font);
+        font-size: 13px;
+        color: var(--text);
+        background: var(--bg);
+        transition: all 0.2s;
+      }
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        background: var(--surface);
+      }
+      .recommend-toggle {
+        display: flex;
+        gap: 10px;
+        margin-top: 5px;
+      }
+      .rec-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border: 1px solid var(--border);
+        background-color: var(--surface);
+        color: var(--text);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        font-size: 13px;
+      }
+      .rec-btn:hover {
+        background-color: var(--surface-2);
+      }
+      #statusSelected.active {
+        background-color: #d1e7dd;
+        border-color: #a3cfbb;
+        color: #0f5132;
+      }
+      #statusNextround.active {
+        background-color: #cff4fc;
+        border-color: #9eeaf9;
+        color: #055160;
+      }
+      #statusRejected.active {
+        background-color: #f8d7da;
+        border-color: #f1aeb5;
+        color: #842029;
+      }
+      .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 24px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="layout">
+      <!-- ── Main Content ── -->
+      <main class="main">
+        <!-- Topbar -->
+        <div class="topbar">
+          <div class="topbar-left">
+            <div>
+              <div class="page-title">ATS Pipeline</div>
+              <div class="page-sub">Recruitment Tracker</div>
+            </div>
+          </div>
+          <div class="topbar-right">
+            <div class="search-wrap">
+              <i class="ti ti-search" aria-hidden="true"></i>
+              <input
+                class="search-input"
+                type="text"
+                id="searchInput"
+                placeholder="Search candidate…"
+                oninput="filterCards()"
+              />
+            </div>
+            <select
+              class="filter-select"
+              id="jobFilter"
+              onchange="filterCards()"
+            >
+              <option value="">All Jobs</option>
+            </select>
+            <select
+              class="filter-select"
+              id="schoolFilter"
+              onchange="filterCards()"
+            >
+              <option value="">All Units</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="stats-grid-wrap">
+          <div class="stats-grid" id="statsGrid"></div>
+        </div>
+
+        <!-- Kanban -->
+        <div class="kanban-area">
+          <div class="kanban-scroll" ondragover="onKanbanDragOver(event)">
+            <div class="kanban-container" id="kanban"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+
+    <!-- Drawer -->
+    <div
+      class="drawer"
+      id="drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Candidate Profile"
+    >
+      <div class="drawer-header">
+        <div class="drawer-header-left">
+          <div class="drawer-avatar" id="dAvatar"></div>
           <div>
-            <div class="page-title">ATS Pipeline</div>
-            <div class="page-sub">Recruitment Tracker</div>
+            <div class="drawer-name" id="dName"></div>
+            <div class="drawer-pos" id="dPos"></div>
           </div>
         </div>
-        <div class="topbar-right">
-          <div class="search-wrap">
-            <i class="ti ti-search" aria-hidden="true"></i>
-            <input class="search-input" type="text" id="searchInput" placeholder="Search candidate…"
-              oninput="filterCards()">
+        <button
+          class="drawer-close"
+          onclick="closeDrawer()"
+          aria-label="Close drawer"
+        >
+          <i class="ti ti-x" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="drawer-tabs">
+        <div class="dtab active" onclick="switchTab('overview')">
+          <i class="ti ti-user" aria-hidden="true"></i> Overview
+        </div>
+        <div class="dtab" onclick="switchTab('timeline')">
+          <i class="ti ti-timeline" aria-hidden="true"></i> Timeline
+        </div>
+        <div class="dtab" onclick="switchTab('actions')">
+          <i class="ti ti-bolt" aria-hidden="true"></i> Actions
+        </div>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Overview tab -->
+        <div class="tab-panel active" id="tab-overview">
+          <div class="section">
+            <div class="section-title">Personal Info</div>
+            <table class="info-table" id="infoTable"></table>
           </div>
-          <select class="filter-select" id="jobFilter" onchange="filterCards()">
-            <option value="">All Jobs</option>
-          </select>
-          <select class="filter-select" id="schoolFilter" onchange="filterCards()">
-            <option value="">All Units</option>
-          </select>
+          <div class="section">
+            <div class="section-title">Skills</div>
+            <div class="skills-wrap" id="skillsWrap"></div>
+          </div>
+        </div>
+
+        <!-- Timeline tab -->
+        <div class="tab-panel" id="tab-timeline">
+          <div class="section">
+            <div class="section-title">Activity</div>
+            <div class="timeline" id="timelineEl"></div>
+          </div>
+        </div>
+
+        <!-- Actions tab -->
+        <div class="tab-panel" id="tab-actions">
+          <div class="section stage-move-section" id="secMoveStage">
+            <div class="section-title">Move to Stage</div>
+            <div class="stage-pills" id="stagePills"></div>
+          </div>
+
+          <div class="section" id="secQuickActions">
+            <div class="section-title">Quick Actions</div>
+            <div class="action-grid">
+              <button
+                class="action-btn ab-feedback"
+                id="btnActionFeedback"
+                onclick="doFeedbackAction()"
+                style="display: none; background: var(--teal); color: #fff"
+              >
+                <i class="ti ti-message-circle" aria-hidden="true"></i> Submit
+                Feedback
+              </button>
+              <button
+                class="action-btn ab-hold"
+                id="btnActionHold"
+                onclick="doAction('hold')"
+              >
+                <i class="ti ti-player-pause" aria-hidden="true"></i> Put On
+                Hold
+              </button>
+              <button
+                class="action-btn ab-reject"
+                id="btnActionReject"
+                onclick="doAction('reject')"
+              >
+                <i class="ti ti-user-x" aria-hidden="true"></i> Reject Candidate
+              </button>
+              <button
+                class="action-btn ab-sync-masset"
+                id="btnActionSyncMasset"
+                onclick="syncToMasset()"
+                style="display: none; background: var(--purple); color: #fff"
+              >
+                <i class="ti ti-refresh" aria-hidden="true"></i> Sync to MASSET
+              </button>
+            </div>
+          </div>
+
+          <div class="section" id="secNotes">
+            <div class="section-title">Notes</div>
+            <textarea
+              class="notes-area"
+              id="notesArea"
+              placeholder="Add notes about this candidate…"
+            ></textarea>
+            <button
+              class="btn btn-primary btn-sm"
+              style="margin-top: 8px"
+              onclick="saveNotes()"
+            >
+              <i class="ti ti-device-floppy" aria-hidden="true"></i> Save Notes
+            </button>
+          </div>
         </div>
       </div>
+    </div>
 
-      <!-- Stat Cards -->
-      <div class="stats-grid-wrap">
-        <div class="stats-grid" id="statsGrid"></div>
-      </div>
-
-      <!-- Kanban -->
-      <div class="kanban-area">
-        <div class="kanban-scroll" ondragover="onKanbanDragOver(event)">
-          <div class="kanban-container" id="kanban"></div>
+    <!-- Feedback Modal -->
+    <div class="modal" id="feedbackModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="ti ti-message-circle"></i> Interview Feedback
+          </div>
+          <button class="modal-close" onclick="closeModal('feedbackModal')">
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
+        <input type="hidden" id="feedbackJobInterviewId" />
+        <div class="form-group">
+          <label>Candidate</label>
+          <input
+            type="text"
+            id="feedbackCandidate"
+            readonly
+            style="background: var(--surface-2); cursor: default"
+          />
+        </div>
+        <div class="form-group">
+          <label>Interview Round</label>
+          <input
+            type="text"
+            id="feedbackRound"
+            placeholder="e.g., Technical Round 1, HR Interview"
+          />
+        </div>
+        <div class="form-group">
+          <label>Interview Remarks / Feedback</label>
+          <textarea
+            id="feedbackRemarks"
+            placeholder="Enter detailed interview notes..."
+            style="min-height: 120px; resize: vertical"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label>Interview Outcome / Status</label>
+          <div class="recommend-toggle">
+            <button
+              type="button"
+              class="rec-btn"
+              id="statusSelected"
+              onclick="setStatus('SELECTED')"
+            >
+              <i class="ti ti-circle-check"></i> Selected
+            </button>
+            <button
+              type="button"
+              class="rec-btn"
+              id="statusNextround"
+              onclick="setStatus('NEXT_ROUND')"
+            >
+              <i class="ti ti-arrow-right-circle"></i> Next Round
+            </button>
+            <button
+              type="button"
+              class="rec-btn"
+              id="statusRejected"
+              onclick="setStatus('REJECTED')"
+            >
+              <i class="ti ti-circle-x"></i> Reject
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost" onclick="closeModal('feedbackModal')">
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="saveFeedback()">
+            Submit Feedback
+          </button>
         </div>
       </div>
+    </div>
 
-    </main>
-  </div>
+    <!-- Toast -->
+    <div class="modal" id="selectCandidateModal">
+      <div
+        class="modal-content"
+        style="
+          max-width: 420px;
+          border-radius: 20px;
+          padding: 0;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          border: none;
+        "
+      >
+        <!-- Decorative Header Background -->
+        <div
+          style="
+            background: linear-gradient(
+              135deg,
+              var(--primary-light),
+              var(--primary)
+            );
+            height: 8px;
+            width: 100%;
+          "
+        ></div>
 
-  <!-- Overlay -->
-  <div class="overlay" id="overlay" onclick="closeDrawer()"></div>
+        <button
+          class="modal-close"
+          onclick="closeSelectCandidateModal()"
+          style="
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--surface-2);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-2);
+          "
+        >
+          <i class="ti ti-x"></i>
+        </button>
 
-  <!-- Drawer -->
-  <div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Candidate Profile">
-    <div class="drawer-header">
-      <div class="drawer-header-left">
-        <div class="drawer-avatar" id="dAvatar"></div>
+        <div style="padding: 32px 32px 16px; text-align: center">
+          <div
+            style="
+              width: 64px;
+              height: 64px;
+              border-radius: 50%;
+              background: #e0e7ff;
+              color: var(--primary);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              font-size: 32px;
+              box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
+            "
+          >
+            <i class="ti ti-award"></i>
+          </div>
+          <h3 style="margin: 0 0 8px; font-size: 20px; color: var(--text)">
+            Select Candidate
+          </h3>
+          <p
+            style="
+              margin: 0;
+              color: var(--text-2);
+              font-size: 15px;
+              line-height: 1.5;
+            "
+          >
+            Are you sure you want to move this candidate to the Offer stage?
+          </p>
+        </div>
+
+        <div style="padding: 0 32px 24px">
+          <div class="form-group" style="margin-bottom: 0; text-align: left">
+            <label
+              style="
+                font-size: 13px;
+                font-weight: 600;
+                color: var(--text-2);
+                margin-bottom: 8px;
+                display: block;
+              "
+              >Interview Feedback</label
+            >
+            <textarea
+              id="selectCandidateRemarks"
+              placeholder="Leave remarks or interview feedback here..."
+              style="
+                min-height: 90px;
+                resize: none;
+                width: 100%;
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 12px;
+                font-family: inherit;
+                font-size: 14px;
+                background: var(--surface-1);
+                transition: all 0.3s ease;
+                box-sizing: border-box;
+                outline: none;
+                color: var(--text);
+              "
+              onfocus="
+                this.style.borderColor = 'var(--primary)';
+                this.style.boxShadow = '0 0 0 3px rgba(79,70,229,0.1)';
+              "
+              onblur="
+                this.style.borderColor = 'var(--border)';
+                this.style.boxShadow = 'none';
+              "
+            ></textarea>
+          </div>
+        </div>
+
+        <div style="padding: 20px 32px 32px; display: flex; gap: 12px">
+          <button
+            class="btn btn-outline"
+            style="
+              flex: 1;
+              border-radius: 10px;
+              padding: 12px;
+              font-weight: 600;
+              border: 1px solid var(--border);
+            "
+            onclick="closeSelectCandidateModal()"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary"
+            style="
+              flex: 1;
+              border-radius: 10px;
+              padding: 12px;
+              font-weight: 600;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+              border: none;
+            "
+            onclick="confirmSelectCandidate()"
+          >
+            Select <i class="ti ti-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirm Schedule Modal -->
+    <div class="modal" id="confirmScheduleModal">
+      <div
+        class="modal-content"
+        style="
+          max-width: 420px;
+          border-radius: 20px;
+          padding: 0;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          border: none;
+        "
+      >
+        <div
+          style="
+            background: linear-gradient(
+              135deg,
+              var(--warning-light),
+              var(--warning)
+            );
+            height: 8px;
+            width: 100%;
+          "
+        ></div>
+        <button
+          class="modal-close"
+          onclick="closeConfirmScheduleModal()"
+          style="
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--surface-2);
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: var(--text-2);
+          "
+        >
+          <i class="ti ti-x"></i>
+        </button>
+        <div style="padding: 32px 32px 16px; text-align: left">
+          <div
+            style="
+              width: 64px;
+              height: 64px;
+              border-radius: 50%;
+              background: #fef3c7;
+              color: var(--warning);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 20px;
+              font-size: 32px;
+              box-shadow: 0 0 20px rgba(217, 119, 6, 0.2);
+            "
+          >
+            <i class="ti ti-calendar-question"></i>
+          </div>
+          <h3 style="margin: 0 0 8px; font-size: 20px; color: var(--text)">
+            Schedule Interview?
+          </h3>
+          <p
+            style="
+              margin: 0;
+              color: var(--text-2);
+              font-size: 15px;
+              line-height: 1.5;
+              text-align: left;
+            "
+          >
+            Are you confirm the interview schedule for the candidate?
+          </p>
+        </div>
+        <div style="padding: 20px 32px 32px; display: flex; gap: 12px">
+          <button
+            class="btn btn-outline"
+            style="
+              flex: 1;
+              border-radius: 10px;
+              padding: 12px;
+              font-weight: 600;
+              border: 1px solid var(--border);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+            "
+            onclick="confirmScheduleNo()"
+          >
+            No
+          </button>
+          <button
+            class="btn btn-primary"
+            style="
+              flex: 1;
+              border-radius: 10px;
+              padding: 12px;
+              font-weight: 600;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 8px;
+              box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+              border: none;
+              background: var(--warning);
+            "
+            onclick="confirmScheduleYes()"
+          >
+            Yes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schedule Interview Modal -->
+    <style>
+      #scheduleInterviewModal {
+        align-items: flex-start;
+        overflow-y: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      #scheduleInterviewModal::-webkit-scrollbar {
+        display: none;
+      }
+      #scheduleInterviewModal .modal-content {
+        overflow: visible;
+        margin: 40px auto;
+      }
+    </style>
+    <div class="modal" id="scheduleInterviewModal">
+      <div class="modal-content" style="max-width: 500px">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="ti ti-calendar"></i> Schedule Interview
+          </div>
+          <button
+            class="modal-close"
+            onclick="closeModal('scheduleInterviewModal')"
+          >
+            <i class="ti ti-x"></i>
+          </button>
+        </div>
         <div>
-          <div class="drawer-name" id="dName"></div>
-          <div class="drawer-pos" id="dPos"></div>
-        </div>
-      </div>
-      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close drawer">
-        <i class="ti ti-x" aria-hidden="true"></i>
-      </button>
-    </div>
-
-    <div class="drawer-tabs">
-      <div class="dtab active" onclick="switchTab('overview')"><i class="ti ti-user" aria-hidden="true"></i> Overview
-      </div>
-      <div class="dtab" onclick="switchTab('timeline')"><i class="ti ti-timeline" aria-hidden="true"></i> Timeline</div>
-      <div class="dtab" onclick="switchTab('actions')"><i class="ti ti-bolt" aria-hidden="true"></i> Actions</div>
-    </div>
-
-    <div class="drawer-body">
-
-      <!-- Overview tab -->
-      <div class="tab-panel active" id="tab-overview">
-        <div class="section">
-          <div class="section-title">Personal Info</div>
-          <table class="info-table" id="infoTable"></table>
-        </div>
-        <div class="section">
-          <div class="section-title">Skills</div>
-          <div class="skills-wrap" id="skillsWrap"></div>
-        </div>
-      </div>
-
-      <!-- Timeline tab -->
-      <div class="tab-panel" id="tab-timeline">
-        <div class="section">
-          <div class="section-title">Activity</div>
-          <div class="timeline" id="timelineEl"></div>
-        </div>
-      </div>
-
-      <!-- Actions tab -->
-      <div class="tab-panel" id="tab-actions">
-        <div class="section stage-move-section" id="secMoveStage">
-          <div class="section-title">Move to Stage</div>
-          <div class="stage-pills" id="stagePills"></div>
-        </div>
-
-        <div class="section" id="secQuickActions">
-          <div class="section-title">Quick Actions</div>
-          <div class="action-grid">
-            <button class="action-btn ab-feedback" id="btnActionFeedback" onclick="doFeedbackAction()" style="display:none; background: var(--teal); color: #fff;">
-              <i class="ti ti-message-circle" aria-hidden="true"></i> Submit Feedback
-            </button>
-            <button class="action-btn ab-hold" id="btnActionHold" onclick="doAction('hold')">
-              <i class="ti ti-player-pause" aria-hidden="true"></i> Put On Hold
-            </button>
-            <button class="action-btn ab-reject" id="btnActionReject" onclick="doAction('reject')">
-              <i class="ti ti-user-x" aria-hidden="true"></i> Reject Candidate
-            </button>
-            <button class="action-btn ab-sync-masset" id="btnActionSyncMasset" onclick="syncToMasset()" style="display:none; background: var(--purple); color: #fff;">
-              <i class="ti ti-refresh" aria-hidden="true"></i> Sync to MASSET
-            </button>
+          <p style="margin-bottom: 15px; color: var(--text-2)">
+            Scheduling interview for <strong id="schCandidateName"></strong>
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+            <div class="form-group" style="grid-column: span 2">
+              <label>Interview Round</label>
+              <input
+                type="text"
+                id="schRound"
+                class="search-input"
+                style="width: 100%"
+                placeholder="e.g. Round 1 – Technical Interview"
+                value="Round 1 - Technical Interview"
+              />
+            </div>
+            <div class="form-group">
+              <label>Mode</label>
+              <select
+                id="interviewMode"
+                class="filter-select"
+                style="width: 100%"
+                onchange="toggleInterviewModeField()"
+              >
+                <option value="online">Online</option>
+                <option value="offline">In-Person</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Date</label>
+              <input
+                type="date"
+                id="schDate"
+                class="search-input"
+                style="width: 100%"
+              />
+            </div>
+            <div
+              class="form-group"
+              style="grid-column: span 2; display: flex; gap: 10px"
+            >
+              <div style="flex: 1">
+                <label>Start Time</label>
+                <input
+                  type="time"
+                  id="schTime"
+                  class="search-input"
+                  style="width: 100%"
+                  value="10:00"
+                />
+              </div>
+              <div style="flex: 1">
+                <label>End Time</label>
+                <input
+                  type="time"
+                  id="schEndTime"
+                  class="search-input"
+                  style="width: 100%"
+                  value="11:00"
+                />
+              </div>
+            </div>
+            <div class="form-group" style="grid-column: span 2">
+              <label id="modeLabel">Meeting Link</label>
+              <input
+                type="text"
+                id="modeInput"
+                class="search-input"
+                style="width: 100%"
+                placeholder="Enter online meeting URL"
+              />
+            </div>
+            <div class="form-group" style="grid-column: span 2">
+              <label>Interviewer</label>
+              <select
+                id="schInterviewer"
+                class="filter-select"
+                style="width: 100%"
+              >
+                <option value="">Loading interviewers…</option>
+              </select>
+            </div>
           </div>
         </div>
-
-        <div class="section" id="secNotes">
-          <div class="section-title">Notes</div>
-          <textarea class="notes-area" id="notesArea" placeholder="Add notes about this candidate…"></textarea>
-          <button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="saveNotes()">
-            <i class="ti ti-device-floppy" aria-hidden="true"></i> Save Notes
+        <div class="modal-footer">
+          <button
+            class="btn btn-ghost"
+            onclick="closeModal('scheduleInterviewModal')"
+          >
+            Cancel
+          </button>
+          <button class="btn btn-primary" onclick="submitSchedule()">
+            <i class="ti ti-calendar" aria-hidden="true"></i> Confirm Schedule
           </button>
         </div>
       </div>
-
     </div>
-  </div>
 
-  <!-- Feedback Modal -->
-  <div class="modal" id="feedbackModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="modal-title"><i class="ti ti-message-circle"></i> Interview Feedback</div>
-        <button class="modal-close" onclick="closeModal('feedbackModal')"><i class="ti ti-x"></i></button>
-      </div>
-      <input type="hidden" id="feedbackJobInterviewId">
-      <div class="form-group">
-        <label>Candidate</label>
-        <input type="text" id="feedbackCandidate" readonly style="background:var(--surface-2);cursor:default;">
-      </div>
-      <div class="form-group">
-        <label>Interview Round</label>
-        <input type="text" id="feedbackRound" placeholder="e.g., Technical Round 1, HR Interview">
-      </div>
-      <div class="form-group">
-        <label>Interview Remarks / Feedback</label>
-        <textarea id="feedbackRemarks" placeholder="Enter detailed interview notes..." style="min-height:120px; resize: vertical;"></textarea>
-      </div>
-      <div class="form-group">
-        <label>Interview Outcome / Status</label>
-        <div class="recommend-toggle">
-          <button type="button" class="rec-btn" id="statusSelected" onclick="setStatus('SELECTED')">
-            <i class="ti ti-circle-check"></i> Selected
-          </button>
-          <button type="button" class="rec-btn" id="statusNextround" onclick="setStatus('NEXT_ROUND')">
-            <i class="ti ti-arrow-right-circle"></i> Next Round
-          </button>
-          <button type="button" class="rec-btn" id="statusRejected" onclick="setStatus('REJECTED')">
-            <i class="ti ti-circle-x"></i> Reject
-          </button>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" onclick="closeModal('feedbackModal')">Cancel</button>
-        <button class="btn btn-primary" onclick="saveFeedback()">Submit Feedback</button>
-      </div>
-    </div>
-  </div>
+    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+    <script src="portal-layout.js"></script>
+    <script>
+      /* ── Data ── */
+      const STAGES = [
+        "Applied",
+        "Screened",
+        "Interview",
+        "Offer",
+        "Offer Accepted",
+        "Onboarded",
+      ];
 
-  <script src="portal-layout.js"></script>
-  <script>
-    /* ── Data ── */
-    const STAGES = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+      const STAGE_META = {
+        Applied: {
+          dot: "applied",
+          badge: "b-applied",
+          border: "#2563eb",
+          av: ["#dbeafe", "#1d4ed8"],
+        },
+        Screened: {
+          dot: "screened",
+          badge: "b-screened",
+          border: "#16a34a",
+          av: ["#dcfce7", "#15803d"],
+        },
+        Interview: {
+          dot: "interview",
+          badge: "b-interview",
+          border: "#ea580c",
+          av: ["#ffedd5", "#c2410c"],
+        },
+        Offer: {
+          dot: "offer",
+          badge: "b-offer",
+          border: "#7c3aed",
+          av: ["#ede9fe", "#6d28d9"],
+        },
+        "Offer Accepted": {
+          dot: "accepted",
+          badge: "b-accepted",
+          border: "#0d9488",
+          av: ["#ccfbf1", "#0f766e"],
+        },
+        Onboarded: {
+          dot: "onboarded",
+          badge: "b-onboarded",
+          border: "#d97706",
+          av: ["#fef3c7", "#b45309"],
+        },
+      };
 
-    const STAGE_META = {
-      'Applied': { dot: 'applied', badge: 'b-applied', border: '#2563eb', av: ['#dbeafe', '#1d4ed8'] },
-      'Screened': { dot: 'screened', badge: 'b-screened', border: '#16a34a', av: ['#dcfce7', '#15803d'] },
-      'Interview': { dot: 'interview', badge: 'b-interview', border: '#ea580c', av: ['#ffedd5', '#c2410c'] },
-      'Offer': { dot: 'offer', badge: 'b-offer', border: '#7c3aed', av: ['#ede9fe', '#6d28d9'] },
-      'Offer Accepted': { dot: 'accepted', badge: 'b-accepted', border: '#0d9488', av: ['#ccfbf1', '#0f766e'] },
-      'Onboarded': { dot: 'onboarded', badge: 'b-onboarded', border: '#d97706', av: ['#fef3c7', '#b45309'] },
-    };
+      const API_BASE = window.AUTH_API_BASE;
+      const _token = () => localStorage.getItem("access_token") || "";
 
-    const API_BASE = window.AUTH_API_BASE;
-    const _token = () => localStorage.getItem('access_token') || '';
+      let candidates = [];
 
-    let candidates = [];
+      const TIMELINES = {
+        Applied: [
+          { t: "Application Received", d: "2 days ago", s: "done" },
+          { t: "Initial Review", d: "In progress", s: "current" },
+          { t: "Phone Screen", d: "Upcoming", s: "pending" },
+        ],
+        Screened: [
+          { t: "Application Received", d: "5 days ago", s: "done" },
+          { t: "Resume Screened", d: "4 days ago", s: "done" },
+          { t: "Phone Screen", d: "Scheduled", s: "current" },
+          { t: "Interview", d: "Pending", s: "pending" },
+        ],
+        Interview: [
+          { t: "Application Received", d: "8 days ago", s: "done" },
+          { t: "Screened", d: "7 days ago", s: "done" },
+          { t: "Round 1 Interview", d: "3 days ago", s: "done" },
+          { t: "Technical Assessment", d: "Ongoing", s: "current" },
+          { t: "Final Decision", d: "Pending", s: "pending" },
+        ],
+        Offer: [
+          { t: "Applied & Screened", d: "12 days ago", s: "done" },
+          { t: "Interviews Cleared", d: "5 days ago", s: "done" },
+          { t: "Offer Sent", d: "2 days ago", s: "done" },
+          { t: "Awaiting Acceptance", d: "Pending", s: "current" },
+        ],
+        "Offer Accepted": [
+          { t: "All Rounds Cleared", d: "15 days ago", s: "done" },
+          { t: "Offer Accepted", d: "3 days ago", s: "done" },
+          { t: "onboarded Initiated", d: "Tomorrow", s: "current" },
+        ],
+        Onboarded: [
+          { t: "All Rounds Cleared", d: "20 days ago", s: "done" },
+          { t: "Offer Accepted", d: "10 days ago", s: "done" },
+          { t: "onboarded Started", d: "3 days ago", s: "done" },
+          { t: "Joining Confirmed", d: "Next week", s: "current" },
+        ],
+      };
 
-    const TIMELINES = {
-      'Applied': [{ t: 'Application Received', d: '2 days ago', s: 'done' }, { t: 'Initial Review', d: 'In progress', s: 'current' }, { t: 'Phone Screen', d: 'Upcoming', s: 'pending' }],
-      'Screened': [{ t: 'Application Received', d: '5 days ago', s: 'done' }, { t: 'Resume Screened', d: '4 days ago', s: 'done' }, { t: 'Phone Screen', d: 'Scheduled', s: 'current' }, { t: 'Interview', d: 'Pending', s: 'pending' }],
-      'Interview': [{ t: 'Application Received', d: '8 days ago', s: 'done' }, { t: 'Screened', d: '7 days ago', s: 'done' }, { t: 'Round 1 Interview', d: '3 days ago', s: 'done' }, { t: 'Technical Assessment', d: 'Ongoing', s: 'current' }, { t: 'Final Decision', d: 'Pending', s: 'pending' }],
-      'Offer': [{ t: 'Applied & Screened', d: '12 days ago', s: 'done' }, { t: 'Interviews Cleared', d: '5 days ago', s: 'done' }, { t: 'Offer Sent', d: '2 days ago', s: 'done' }, { t: 'Awaiting Acceptance', d: 'Pending', s: 'current' }],
-      'Offer Accepted': [{ t: 'All Rounds Cleared', d: '15 days ago', s: 'done' }, { t: 'Offer Accepted', d: '3 days ago', s: 'done' }, { t: 'onboarded Initiated', d: 'Tomorrow', s: 'current' }],
-      'Onboarded': [{ t: 'All Rounds Cleared', d: '20 days ago', s: 'done' }, { t: 'Offer Accepted', d: '10 days ago', s: 'done' }, { t: 'onboarded Started', d: '3 days ago', s: 'done' }, { t: 'Joining Confirmed', d: 'Next week', s: 'current' }],
-    };
+      /* ── State ── */
+      let activeId = null;
+      let dragSrcId = null;
+      let toastTimer = null;
+      let dragAllowed = false;
+      let holdTimer = null;
+      let preventClick = false;
+      const MOBILE_BREAKPOINT = 768;
 
-    /* ── State ── */
-    let activeId = null;
-    let dragSrcId = null;
-    let toastTimer = null;
-    let dragAllowed = false;
-    let holdTimer = null;
-    let preventClick = false;
-    const MOBILE_BREAKPOINT = 768;
+      const mobileDrag = {
+        active: false,
+        pointerId: null,
+        id: null,
+        startX: 0,
+        startY: 0,
+        sourceStage: null,
+        targetStage: null,
+        clone: null,
+        originEl: null,
+      };
 
-    const mobileDrag = {
-      active: false,
-      pointerId: null,
-      id: null,
-      startX: 0,
-      startY: 0,
-      sourceStage: null,
-      targetStage: null,
-      clone: null,
-      originEl: null
-    };
+      const isMobileView = () =>
+        window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
 
-    const isMobileView = () => window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
+      /* ── Helpers ── */
+      const initials = (name) =>
+        name
+          .split(" ")
+          .map((w) => w[0])
+          .join("")
+          .slice(0, 2)
+          .toUpperCase();
 
-    /* ── Helpers ── */
-    const initials = name => name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-
-
-    /* ── Render ── */
-    function buildCard(c) {
-      const m = STAGE_META[c.stage];
-      const [avBg, avFg] = m.av;
-      return `
+      /* ── Render ── */
+      function buildCard(c) {
+        const m = STAGE_META[c.stage];
+        const [avBg, avFg] = m.av;
+        return `
   <div class="candidate-card" id="card-${c.id}"
     draggable="true"
     style="border-left-color:${m.border}"
@@ -1799,30 +2398,31 @@
       <span class="days-ago"><i class="ti ti-clock" aria-hidden="true"></i>${c.daysAgo}d ago</span>
     </div>
   </div>`;
-    }
+      }
 
-    function renderKanban(data) {
-      const container = document.getElementById('kanban');
-      container.innerHTML = '';
+      function renderKanban(data) {
+        const container = document.getElementById("kanban");
+        container.innerHTML = "";
 
-      STAGES.forEach(stage => {
-        const cards = data.filter(c => c.stage === stage);
-        const m = STAGE_META[stage];
-        const colId = 'col-' + stage.replace(/\s+/g, '-');
+        STAGES.forEach((stage) => {
+          const cards = data.filter((c) => c.stage === stage);
+          const m = STAGE_META[stage];
+          const colId = "col-" + stage.replace(/\s+/g, "-");
 
-        const colEl = document.createElement('div');
-        colEl.className = 'column';
-        colEl.id = colId;
-        colEl.dataset.stage = stage;
-        colEl.setAttribute('ondragover', `onDragOver(event,'${stage}')`);
-        colEl.setAttribute('ondragleave', 'onDragLeave(event)');
-        colEl.setAttribute('ondrop', `onDrop(event,'${stage}')`);
+          const colEl = document.createElement("div");
+          colEl.className = "column";
+          colEl.id = colId;
+          colEl.dataset.stage = stage;
+          colEl.setAttribute("ondragover", `onDragOver(event,'${stage}')`);
+          colEl.setAttribute("ondragleave", "onDragLeave(event)");
+          colEl.setAttribute("ondrop", `onDrop(event,'${stage}')`);
 
-        const empty = cards.length === 0
-          ? `<div class="empty-state"><i class="ti ti-inbox" aria-hidden="true"></i><span>No candidates</span></div>`
-          : '';
+          const empty =
+            cards.length === 0
+              ? `<div class="empty-state"><i class="ti ti-inbox" aria-hidden="true"></i><span>No candidates</span></div>`
+              : "";
 
-        colEl.innerHTML = `
+          colEl.innerHTML = `
       <div class="column-header">
         <div class="col-title-wrap">
           <div class="col-dot col-dot-${m.dot}"></div>
@@ -1830,26 +2430,29 @@
         </div>
         <span class="badge ${m.badge}">${cards.length}</span>
       </div>
-      <div class="card-list">${cards.map(buildCard).join('')}${empty}</div>`;
-        container.appendChild(colEl);
-      });
-      updateStats(data);
-    }
+      <div class="card-list">${cards.map(buildCard).join("")}${empty}</div>`;
+          container.appendChild(colEl);
+        });
+        updateStats(data);
+      }
 
-    function updateStats(data) {
-      const grid = document.getElementById('statsGrid');
-      const total = data.length;
-      const applied = data.filter(c => c.stage === 'Applied').length;
-      const interview = data.filter(c => c.stage === 'Interview').length;
-      const offers = data.filter(c => c.stage === 'Offer' || c.stage === 'Offer Accepted').length;
-      const onboarded = data.filter(c => c.stage === 'Onboarded').length;
+      function updateStats(data) {
+        const grid = document.getElementById("statsGrid");
+        const total = data.length;
+        const applied = data.filter((c) => c.stage === "Applied").length;
+        const interview = data.filter((c) => c.stage === "Interview").length;
+        const offers = data.filter(
+          (c) => c.stage === "Offer" || c.stage === "Offer Accepted",
+        ).length;
+        const onboarded = data.filter((c) => c.stage === "Onboarded").length;
 
-      const deltaTotal = window.apiStats?.deltas?.total || '+3 this week';
-      const deltaInterview = window.apiStats?.deltas?.interview || '+1 today';
-      const deltaOffers = window.apiStats?.deltas?.offers || 'Offer + Accepted';
-      const deltaOnboarded = window.apiStats?.deltas?.onboarded || 'On track';
+        const deltaTotal = window.apiStats?.deltas?.total || "+3 this week";
+        const deltaInterview = window.apiStats?.deltas?.interview || "+1 today";
+        const deltaOffers =
+          window.apiStats?.deltas?.offers || "Offer + Accepted";
+        const deltaOnboarded = window.apiStats?.deltas?.onboarded || "On track";
 
-      grid.innerHTML = `
+        grid.innerHTML = `
     <div class="stat-card sc-total" onclick="scrollToStage(null)">
       <div class="stat-icon" style="background:var(--primary-light);color:var(--primary)"><i class="ti ti-users" aria-hidden="true"></i></div>
       <div class="stat-value">${total}</div>
@@ -1879,544 +2482,970 @@
       <div class="stat-label">Onboarded</div>
       <div class="stat-delta">${deltaOnboarded}</div>
     </div>`;
-    }
-
-    function scrollToStage(stage) {
-      document.querySelectorAll('.column').forEach(c => c.classList.remove('highlighted'));
-      if (!stage) return;
-      const col = document.getElementById('col-' + stage.replace(/\s+/g, '-'));
-      if (!col) return;
-      col.classList.add('highlighted');
-      col.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-      setTimeout(() => col.classList.remove('highlighted'), 2000);
-    }
-
-    /* ── Filter ── */
-    function getFiltered() {
-      const q = document.getElementById('searchInput').value.trim().toLowerCase();
-      const job = document.getElementById('jobFilter').value;
-      const school = document.getElementById('schoolFilter').value;
-      return candidates.filter(c =>
-        (!q || c.name.toLowerCase().includes(q) || c.position.toLowerCase().includes(q)) &&
-        (!job || c.position === job) &&
-        (!school || c.school === school)
-      );
-    }
-    function filterCards() { renderKanban(getFiltered()); }
-
-    /* ── Drawer ── */
-    function openDrawer(event, id) {
-      if (preventClick) {
-        preventClick = false;
-        return;
       }
-      const c = candidates.find(x => x.id === id);
-      if (!c) return;
-      activeId = id;
 
-      const [avBg, avFg] = STAGE_META[c.stage].av;
-      const avEl = document.getElementById('dAvatar');
-      avEl.textContent = initials(c.name);
-      // avEl.style.cssText = `background:${avBg};color:${avFg};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600`;
+      function scrollToStage(stage) {
+        document
+          .querySelectorAll(".column")
+          .forEach((c) => c.classList.remove("highlighted"));
+        if (!stage) return;
+        const col = document.getElementById(
+          "col-" + stage.replace(/\s+/g, "-"),
+        );
+        if (!col) return;
+        col.classList.add("highlighted");
+        col.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
+        setTimeout(() => col.classList.remove("highlighted"), 2000);
+      }
 
-      document.getElementById('dName').textContent = c.name;
-      document.getElementById('dPos').textContent = c.position + ' · ' + c.school;
+      async function loadUnits() {
+        try {
+          const res = await fetch(`${API_BASE}/auth/units`);
+          if (res.ok) {
+            const units = await res.json();
+            const schoolFilter = document.getElementById("schoolFilter");
+            units.forEach((u) => {
+              const opt = document.createElement("option");
+              opt.value = u.unit_name;
+              opt.textContent = u.unit_name;
+              schoolFilter.appendChild(opt);
+            });
+          }
+        } catch (e) {
+          console.error("Failed to load units", e);
+        }
+      }
 
-      // Info table
-      document.getElementById('infoTable').innerHTML = `
+      /* ── Filter ── */
+      function getFiltered() {
+        const q = document
+          .getElementById("searchInput")
+          .value.trim()
+          .toLowerCase();
+        const job = document.getElementById("jobFilter").value;
+        const school = document.getElementById("schoolFilter").value;
+        return candidates.filter(
+          (c) =>
+            (!q ||
+              c.name.toLowerCase().includes(q) ||
+              c.position.toLowerCase().includes(q)) &&
+            (!job || c.position === job) &&
+            (!school || c.school === school),
+        );
+      }
+      function filterCards() {
+        renderKanban(getFiltered());
+      }
+
+      /* ── Drawer ── */
+      function openDrawer(event, id) {
+        if (preventClick) {
+          preventClick = false;
+          return;
+        }
+        const c = candidates.find((x) => x.id === id);
+        if (!c) return;
+        activeId = id;
+
+        const [avBg, avFg] = STAGE_META[c.stage].av;
+        const avEl = document.getElementById("dAvatar");
+        avEl.textContent = initials(c.name);
+        // avEl.style.cssText = `background:${avBg};color:${avFg};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600`;
+
+        document.getElementById("dName").textContent = c.name;
+        document.getElementById("dPos").textContent =
+          c.position + " · " + c.school;
+
+        // Info table
+        document.getElementById("infoTable").innerHTML = `
     <tr><td class="lbl">School</td><td class="val">${c.school}</td></tr>
     <tr><td class="lbl">Email</td><td class="val"><a class="link" href="mailto:${c.email}">${c.email}</a></td></tr>
     <tr><td class="lbl">Phone</td><td class="val">${c.phone}</td></tr>
     <tr><td class="lbl">Stage</td><td class="val"><span class="badge ${STAGE_META[c.stage].badge}">${c.stage}</span></td></tr>`;
 
-      // Skills
-      document.getElementById('skillsWrap').innerHTML =
-        c.skills.map(s => `<span class="skill-chip">${s}</span>`).join('');
+        // Skills
+        document.getElementById("skillsWrap").innerHTML = c.skills
+          .map((s) => `<span class="skill-chip">${s}</span>`)
+          .join("");
 
-      // Timeline
-      const tl = c.timeline || TIMELINES[c.stage] || [];
-      document.getElementById('timelineEl').innerHTML = tl.map(t => `
+        // Timeline
+        const tl = c.timeline || TIMELINES[c.stage] || [];
+        document.getElementById("timelineEl").innerHTML = tl
+          .map(
+            (t) => `
     <div class="tl-item">
-      <div class="tl-dot ${t.s === 'done' ? 'done' : t.s === 'current' ? 'current' : 'pending'}"></div>
+      <div class="tl-dot ${t.s === "done" ? "done" : t.s === "current" ? "current" : "pending"}"></div>
       <div class="tl-text">
         <div class="tl-title">${t.t}</div>
         <div class="tl-date">${t.d}</div>
-        ${t.s === 'done' ? '<span class="tl-badge ok">Completed</span>' : ''}
-        ${t.s === 'current' ? '<span class="tl-badge act">In Progress</span>' : ''}
+        ${t.s === "done" ? '<span class="tl-badge ok">Completed</span>' : ""}
+        ${t.s === "current" ? '<span class="tl-badge act">In Progress</span>' : ""}
       </div>
-    </div>`).join('');
+    </div>`,
+          )
+          .join("");
 
-      // Stage pills
-      document.getElementById('stagePills').innerHTML = STAGES.map(s =>
-        `<div class="stage-pill ${s === c.stage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
-      ).join('');
+        // Stage pills
+        document.getElementById("stagePills").innerHTML = STAGES.map(
+          (s) =>
+            `<div class="stage-pill ${s === c.stage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
+        ).join("");
 
-      // Notes
-      document.getElementById('notesArea').value = c.notes || '';
+        // Notes
+        document.getElementById("notesArea").value = c.notes || "";
 
-      // Action visibility
-      if (c.stage === 'Offer Accepted') {
-        document.getElementById('secMoveStage').style.display = 'none';
-        document.getElementById('secNotes').style.display = 'none';
-        document.getElementById('btnActionFeedback').style.display = 'none';
-        document.getElementById('btnActionHold').style.display = 'none';
-        document.getElementById('btnActionReject').style.display = 'none';
-        document.getElementById('btnActionSyncMasset').style.display = 'flex';
-      } else {
-        document.getElementById('secMoveStage').style.display = 'block';
-        document.getElementById('secNotes').style.display = 'block';
-        document.getElementById('btnActionSyncMasset').style.display = 'none';
-        document.getElementById('btnActionHold').style.display = 'flex';
-        document.getElementById('btnActionReject').style.display = 'flex';
-        if (c.stage === 'Interview') {
-          document.getElementById('btnActionFeedback').style.display = 'flex';
+        // Action visibility
+        if (c.stage === "Offer Accepted") {
+          document.getElementById("secMoveStage").style.display = "none";
+          document.getElementById("secNotes").style.display = "none";
+          document.getElementById("btnActionFeedback").style.display = "none";
+          document.getElementById("btnActionHold").style.display = "none";
+          document.getElementById("btnActionReject").style.display = "none";
+          document.getElementById("btnActionSyncMasset").style.display = "flex";
         } else {
-          document.getElementById('btnActionFeedback').style.display = 'none';
+          document.getElementById("secMoveStage").style.display = "block";
+          document.getElementById("secNotes").style.display = "block";
+          document.getElementById("btnActionSyncMasset").style.display = "none";
+          document.getElementById("btnActionHold").style.display = "flex";
+          document.getElementById("btnActionReject").style.display = "flex";
+          if (c.stage === "Interview") {
+            document.getElementById("btnActionFeedback").style.display = "flex";
+          } else {
+            document.getElementById("btnActionFeedback").style.display = "none";
+          }
+        }
+
+        switchTab("overview");
+        document.getElementById("drawer").classList.add("active");
+        document.getElementById("overlay").classList.add("active");
+      }
+
+      function closeDrawer() {
+        document.getElementById("drawer").classList.remove("active");
+        document.getElementById("overlay").classList.remove("active");
+        activeId = null;
+      }
+
+      function switchTab(tab) {
+        const tabs = ["overview", "timeline", "actions"];
+        document
+          .querySelectorAll(".dtab")
+          .forEach((el, i) => el.classList.toggle("active", tabs[i] === tab));
+        document
+          .querySelectorAll(".tab-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document.getElementById("tab-" + tab).classList.add("active");
+      }
+
+      let pendingCandidateForOffer = null;
+
+      function closeSelectCandidateModal() {
+        document
+          .getElementById("selectCandidateModal")
+          .classList.remove("open");
+        pendingCandidateForOffer = null;
+      }
+
+      function confirmSelectCandidate() {
+        if (!pendingCandidateForOffer) return;
+        const remarks = document
+          .getElementById("selectCandidateRemarks")
+          .value.trim();
+        const c = pendingCandidateForOffer;
+        pendingCandidateForOffer = null;
+        document
+          .getElementById("selectCandidateModal")
+          .classList.remove("open");
+        persistStageChange(c, "Offer", remarks);
+      }
+
+      function isStageMoveAllowed(currentStage, targetStage) {
+        if (currentStage === targetStage) return true;
+        if (
+          currentStage === "Screened" &&
+          (targetStage === "Offer" ||
+            targetStage === "Offer Accepted" ||
+            targetStage === "Onboarded")
+        )
+          return false;
+        if (
+          currentStage === "Interview" &&
+          (targetStage === "Applied" || targetStage === "Screened")
+        )
+          return false;
+        if (
+          currentStage === "Offer" &&
+          (targetStage === "Applied" ||
+            targetStage === "Screened" ||
+            targetStage === "Offer Accepted" ||
+            targetStage === "Onboarded")
+        )
+          return false;
+        if (currentStage === "Offer Accepted" || currentStage === "Onboarded")
+          return false;
+        return true;
+      }
+
+      let pendingCandidateForInterview = null;
+
+      function handleStageChangeRequest(c, newStage) {
+        if (!isStageMoveAllowed(c.stage, newStage)) {
+          showToast(
+            `❌ Cannot move candidate from ${c.stage} to ${newStage}`,
+            "danger",
+          );
+          return;
+        }
+        if (c.stage === "Interview" && newStage === "Offer") {
+          pendingCandidateForOffer = c;
+          document.getElementById("selectCandidateRemarks").value = "";
+          document.getElementById("selectCandidateModal").classList.add("open");
+        } else if (c.stage === "Screened" && newStage === "Interview") {
+          pendingCandidateForInterview = c;
+          document.getElementById("confirmScheduleModal").classList.add("open");
+        } else {
+          persistStageChange(c, newStage);
         }
       }
 
-      switchTab('overview');
-      document.getElementById('drawer').classList.add('active');
-      document.getElementById('overlay').classList.add('active');
-    }
-
-    function closeDrawer() {
-      document.getElementById('drawer').classList.remove('active');
-      document.getElementById('overlay').classList.remove('active');
-      activeId = null;
-    }
-
-    function switchTab(tab) {
-      const tabs = ['overview', 'timeline', 'actions'];
-      document.querySelectorAll('.dtab').forEach((el, i) => el.classList.toggle('active', tabs[i] === tab));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.getElementById('tab-' + tab).classList.add('active');
-    }
-
-    async function persistStageChange(candidate, newStage) {
-      const prevStage = candidate.stage;
-      candidate.stage = newStage;
-      renderKanban(getFiltered());
-      showToast(`${candidate.name} moved to ${newStage}`, 'success');
-      try {
-        const res = await fetch(`${API_BASE}/hr/ats-pipeline/${candidate.id}/stage`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${_token()}`
-          },
-          body: JSON.stringify({ stage: newStage })
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      } catch (err) {
-        candidate.stage = prevStage;
+      async function persistStageChange(candidate, newStage, remarks = null) {
+        const prevStage = candidate.stage;
+        candidate.stage = newStage;
         renderKanban(getFiltered());
-        showToast('Failed to save stage change', 'danger');
+        showToast(`${candidate.name} moved to ${newStage}`, "success");
+        try {
+          const payload = { stage: newStage };
+          if (remarks) payload.remarks = remarks;
+          const res = await fetch(
+            `${API_BASE}/hr/ats-pipeline/${candidate.id}/stage`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${_token()}`,
+              },
+              body: JSON.stringify(payload),
+            },
+          );
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        } catch (err) {
+          candidate.stage = prevStage;
+          renderKanban(getFiltered());
+          showToast("Failed to save stage change", "danger");
+        }
       }
-    }
 
-    function moveStage(newStage) {
-      const c = candidates.find(x => x.id === activeId);
-      if (!c || c.stage === newStage) return;
-      // Refresh drawer pills immediately before the async call re-renders
-      document.getElementById('stagePills').innerHTML = STAGES.map(s =>
-        `<div class="stage-pill ${s === newStage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
-      ).join('');
-      persistStageChange(c, newStage);
-    }
+      function moveStage(newStage) {
+        const c = candidates.find((x) => x.id === activeId);
+        if (!c || c.stage === newStage) return;
+        // Refresh drawer pills immediately before the async call re-renders
+        document.getElementById("stagePills").innerHTML = STAGES.map(
+          (s) =>
+            `<div class="stage-pill ${s === newStage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
+        ).join("");
+        handleStageChangeRequest(c, newStage);
+      }
 
-    function doAction(type) {
-      const c = candidates.find(x => x.id === activeId);
-      if (!c) return;
-      const actions = {
-        interview: { stage: 'Interview', msg: `Interview scheduled for ${c.name}`, icon: 'success' },
-        offer: { stage: 'Offer', msg: `Offer letter sent to ${c.name}`, icon: 'success' },
-        hold: { stage: null, msg: `${c.name} put on hold`, icon: 'warning' },
-        reject: { stage: null, msg: `${c.name} has been rejected`, icon: 'danger' },
+      function doAction(type) {
+        const c = candidates.find((x) => x.id === activeId);
+        if (!c) return;
+        const actions = {
+          interview: {
+            stage: "Interview",
+            msg: `Interview scheduled for ${c.name}`,
+            icon: "success",
+          },
+          offer: {
+            stage: "Offer",
+            msg: `Offer letter sent to ${c.name}`,
+            icon: "success",
+          },
+          hold: { stage: null, msg: `${c.name} put on hold`, icon: "warning" },
+          reject: {
+            stage: null,
+            msg: `${c.name} has been rejected`,
+            icon: "danger",
+          },
+        };
+        const a = actions[type];
+        if (a.stage) {
+          handleStageChangeRequest(c, a.stage);
+        } else {
+          showToast(a.msg, a.icon);
+        }
+        if (type === "reject") {
+          closeDrawer();
+        } else if (!a.stage) {
+          document.getElementById("stagePills").innerHTML = STAGES.map(
+            (s) =>
+              `<div class="stage-pill ${s === c.stage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
+          ).join("");
+        }
+      }
+
+      function saveNotes() {
+        const c = candidates.find((x) => x.id === activeId);
+        if (!c) return;
+        c.notes = document.getElementById("notesArea").value;
+        showToast("Notes saved", "success");
+      }
+
+      /* ── Toast ── */
+      // Capture portal-layout's showToast before this script shadows window.showToast
+      const _portalShowToast = window.showToast || null;
+
+      // Define showToast as a variable to prevent hoisting override before capture
+      const showToast = function (msg, type = "success") {
+        const mappedType = type === "danger" ? "error" : type;
+        if (_portalShowToast) {
+          _portalShowToast(msg, mappedType);
+        } else {
+          console.log("[Toast]", msg);
+        }
       };
-      const a = actions[type];
-      if (a.stage) { c.stage = a.stage; renderKanban(getFiltered()); }
-      showToast(a.msg, a.icon);
-      if (type === 'reject') { closeDrawer(); }
-      else {
-        document.getElementById('stagePills').innerHTML = STAGES.map(s =>
-          `<div class="stage-pill ${s === c.stage ? 'active' : ''}" onclick="moveStage('${s}')">${s}</div>`
-        ).join('');
+      window.showToast = showToast;
+
+      function getStageFromPoint(x, y) {
+        const el = document.elementFromPoint(x, y);
+        return el ? el.closest(".column")?.dataset.stage : null;
       }
-    }
 
-    function saveNotes() {
-      const c = candidates.find(x => x.id === activeId);
-      if (!c) return;
-      c.notes = document.getElementById('notesArea').value;
-      showToast('Notes saved', 'success');
-    }
-
-    /* ── Toast ── */
-    // Capture portal-layout's showToast before this script shadows window.showToast
-    const _portalShowToast = window.showToast || null;
-
-    // Define showToast as a variable to prevent hoisting override before capture
-    const showToast = function(msg, type = 'success') {
-      const mappedType = type === 'danger' ? 'error' : type;
-      if (_portalShowToast) {
-        _portalShowToast(msg, mappedType);
-      } else {
-        console.log('[Toast]', msg);
+      function highlightDropTarget(stage) {
+        document.querySelectorAll(".column").forEach((c) => {
+          let isOver = c.dataset.stage === stage;
+          if (isOver && stage) {
+            const card = candidates.find((cand) => cand.id === mobileDrag.id);
+            if (card && !isStageMoveAllowed(card.stage, stage)) {
+              isOver = false;
+            }
+          }
+          c.classList.toggle("drag-over", isOver);
+        });
       }
-    };
-    window.showToast = showToast;
 
-    function getStageFromPoint(x, y) {
-      const el = document.elementFromPoint(x, y);
-      return el ? el.closest('.column')?.dataset.stage : null;
-    }
-
-    function highlightDropTarget(stage) {
-      document.querySelectorAll('.column').forEach(c => c.classList.toggle('drag-over', c.dataset.stage === stage));
-    }
-
-    function createDragClone(el, x, y) {
-      const clone = el.cloneNode(true);
-      clone.classList.add('drag-clone');
-      clone.style.width = `${el.offsetWidth}px`;
-      clone.style.top = `${y}px`;
-      clone.style.left = `${x}px`;
-      clone.style.position = 'fixed';
-      clone.style.margin = '0';
-      clone.style.zIndex = '9999';
-      clone.style.pointerEvents = 'none';
-      document.body.appendChild(clone);
-      mobileDrag.clone = clone;
-    }
-
-    function clearMobileDrag() {
-      dragAllowed = false;
-      if (mobileDrag.clone) {
-        mobileDrag.clone.remove();
-        mobileDrag.clone = null;
+      function createDragClone(el, x, y) {
+        const clone = el.cloneNode(true);
+        clone.classList.add("drag-clone");
+        clone.style.width = `${el.offsetWidth}px`;
+        clone.style.top = `${y}px`;
+        clone.style.left = `${x}px`;
+        clone.style.position = "fixed";
+        clone.style.margin = "0";
+        clone.style.zIndex = "9999";
+        clone.style.pointerEvents = "none";
+        document.body.appendChild(clone);
+        mobileDrag.clone = clone;
       }
-      if (mobileDrag.originEl) {
-        mobileDrag.originEl.classList.remove('dragging');
-        mobileDrag.originEl.style.opacity = '';
-        mobileDrag.originEl.style.pointerEvents = '';
-        mobileDrag.originEl = null;
-      }
-      mobileDrag.active = false;
-      mobileDrag.pointerId = null;
-      mobileDrag.id = null;
-      mobileDrag.startX = 0;
-      mobileDrag.startY = 0;
-      mobileDrag.sourceStage = null;
-      mobileDrag.targetStage = null;
-      highlightDropTarget(null);
-    }
 
-    function finishMobileDrop() {
-      if (!mobileDrag.active) return;
-      const targetStage = mobileDrag.targetStage || mobileDrag.sourceStage;
-      const card = candidates.find(c => c.id === mobileDrag.id);
-      if (card && targetStage && card.stage !== targetStage) {
-        persistStageChange(card, targetStage);
-      }
-      clearMobileDrag();
-    }
-
-    function onCardPointerDown(e, id) {
-      if (!isMobileView() || e.pointerType !== 'touch') return;
-      clearHoldTimer();
-      mobileDrag.pointerId = e.pointerId;
-      mobileDrag.id = id;
-      mobileDrag.sourceStage = e.currentTarget.closest('.column')?.dataset.stage || null;
-      mobileDrag.startX = e.clientX;
-      mobileDrag.startY = e.clientY;
-      e.currentTarget.setPointerCapture(e.pointerId);
-      holdTimer = setTimeout(() => {
-        dragAllowed = true;
-        preventClick = true;
-        mobileDrag.active = true;
-        const el = document.getElementById('card-' + id);
-        mobileDrag.originEl = el;
-        if (el) {
-          el.classList.add('dragging');
-          el.style.opacity = '0.35';
-          el.style.pointerEvents = 'none';
-          createDragClone(el, e.clientX, e.clientY);
+      function clearMobileDrag() {
+        dragAllowed = false;
+        if (mobileDrag.clone) {
+          mobileDrag.clone.remove();
+          mobileDrag.clone = null;
         }
-      }, 250);
-    }
-
-    function onCardPointerMove(e) {
-      if (mobileDrag.pointerId !== e.pointerId && !holdTimer) return;
-      if (holdTimer) {
-        if (Math.abs(e.clientX - mobileDrag.startX) > 10 || Math.abs(e.clientY - mobileDrag.startY) > 10) {
-          clearHoldTimer();
+        if (mobileDrag.originEl) {
+          mobileDrag.originEl.classList.remove("dragging");
+          mobileDrag.originEl.style.opacity = "";
+          mobileDrag.originEl.style.pointerEvents = "";
+          mobileDrag.originEl = null;
         }
+        mobileDrag.active = false;
+        mobileDrag.pointerId = null;
+        mobileDrag.id = null;
+        mobileDrag.startX = 0;
+        mobileDrag.startY = 0;
+        mobileDrag.sourceStage = null;
+        mobileDrag.targetStage = null;
+        highlightDropTarget(null);
       }
-      if (!mobileDrag.active || mobileDrag.pointerId !== e.pointerId) return;
-      e.preventDefault();
-      if (mobileDrag.clone) {
-        mobileDrag.clone.style.top = `${e.clientY}px`;
-        mobileDrag.clone.style.left = `${e.clientX}px`;
-      }
-      const newStage = getStageFromPoint(e.clientX, e.clientY);
-      if (newStage !== mobileDrag.targetStage) {
-        mobileDrag.targetStage = newStage;
-        highlightDropTarget(newStage);
-      }
-      const wrapper = document.querySelector('.kanban-scroll');
-      if (wrapper) {
-        const rect = wrapper.getBoundingClientRect();
-        const edge = 80;
-        const speed = 14;
-        if (e.clientX > rect.right - edge) {
-          wrapper.scrollBy({ left: speed, behavior: 'smooth' });
-        } else if (e.clientX < rect.left + edge) {
-          wrapper.scrollBy({ left: -speed, behavior: 'smooth' });
+
+      function finishMobileDrop() {
+        if (!mobileDrag.active) return;
+        const targetStage = mobileDrag.targetStage || mobileDrag.sourceStage;
+        const card = candidates.find((c) => c.id === mobileDrag.id);
+        if (card && targetStage && card.stage !== targetStage) {
+          handleStageChangeRequest(card, targetStage);
         }
-      }
-    }
-
-    function onCardPointerUp(e) {
-      if (mobileDrag.pointerId && e.currentTarget?.releasePointerCapture) {
-        e.currentTarget.releasePointerCapture(mobileDrag.pointerId);
-      }
-      if (mobileDrag.active) {
-        finishMobileDrop();
-      }
-      clearHoldTimer();
-    }
-
-    function onCardPointerCancel(e) {
-      if (mobileDrag.pointerId && e.currentTarget?.releasePointerCapture) {
-        e.currentTarget.releasePointerCapture(mobileDrag.pointerId);
-      }
-      if (mobileDrag.active) {
         clearMobileDrag();
       }
-      clearHoldTimer();
-    }
 
-    function clearHoldTimer() {
-      if (holdTimer) {
-        clearTimeout(holdTimer);
-        holdTimer = null;
+      function onCardPointerDown(e, id) {
+        if (!isMobileView() || e.pointerType !== "touch") return;
+        clearHoldTimer();
+        mobileDrag.pointerId = e.pointerId;
+        mobileDrag.id = id;
+        mobileDrag.sourceStage =
+          e.currentTarget.closest(".column")?.dataset.stage || null;
+        mobileDrag.startX = e.clientX;
+        mobileDrag.startY = e.clientY;
+        e.currentTarget.setPointerCapture(e.pointerId);
+        holdTimer = setTimeout(() => {
+          dragAllowed = true;
+          preventClick = true;
+          mobileDrag.active = true;
+          const el = document.getElementById("card-" + id);
+          mobileDrag.originEl = el;
+          if (el) {
+            el.classList.add("dragging");
+            el.style.opacity = "0.35";
+            el.style.pointerEvents = "none";
+            createDragClone(el, e.clientX, e.clientY);
+          }
+        }, 250);
       }
-    }
 
-    /* ── Drag & Drop ── */
-    function onDragStart(e, id) {
-      dragSrcId = id;
-      if (isMobileView() && !dragAllowed) {
+      function onCardPointerMove(e) {
+        if (mobileDrag.pointerId !== e.pointerId && !holdTimer) return;
+        if (holdTimer) {
+          if (
+            Math.abs(e.clientX - mobileDrag.startX) > 10 ||
+            Math.abs(e.clientY - mobileDrag.startY) > 10
+          ) {
+            clearHoldTimer();
+          }
+        }
+        if (!mobileDrag.active || mobileDrag.pointerId !== e.pointerId) return;
         e.preventDefault();
-        return;
-      }
-      e.dataTransfer.effectAllowed = 'move';
-      if (isMobileView()) {
-        try { e.dataTransfer.setData('text/plain', String(id)); } catch (err) { }
-      }
-      if (!isMobileView()) {
-        setTimeout(() => {
-          const el = document.getElementById('card-' + id);
-          if (el) el.classList.add('dragging');
-        }, 0);
-      }
-    }
-
-    function onDragEnd() {
-      clearHoldTimer();
-      dragAllowed = false;
-      dragSrcId = null;
-      clearMobileDrag();
-      document.querySelectorAll('.candidate-card').forEach(c => c.classList.remove('dragging'));
-      document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
-    }
-
-    function onDragOver(e, stage) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
-      const col = document.getElementById('col-' + stage.replace(/\s+/g, '-'));
-      if (col) col.classList.add('drag-over');
-    }
-
-    function onKanbanDragOver(e) {
-      if (!isMobileView() || !dragSrcId) return;
-      e.preventDefault();
-      const wrapper = document.querySelector('.kanban-scroll');
-      if (!wrapper) return;
-      const rect = wrapper.getBoundingClientRect();
-      const edge = 80;
-      const speed = 12;
-      if (e.clientX > rect.right - edge) {
-        wrapper.scrollBy({ left: speed, behavior: 'smooth' });
-      } else if (e.clientX < rect.left + edge) {
-        wrapper.scrollBy({ left: -speed, behavior: 'smooth' });
-      }
-    }
-
-    function onDragLeave(e) {
-      if (!e.currentTarget.contains(e.relatedTarget)) {
-        e.currentTarget.classList.remove('drag-over');
-      }
-    }
-
-    function onDrop(e, stage) {
-      e.preventDefault();
-      const c = candidates.find(x => x.id === dragSrcId);
-      if (c && c.stage !== stage) {
-        persistStageChange(c, stage);
-      }
-      document.querySelectorAll('.column').forEach(c => c.classList.remove('drag-over'));
-    }
-
-    /* ── Init ── */
-    async function loadCandidates() {
-      try {
-        const res = await fetch(`${API_BASE}/hr/ats-pipeline`, {
-          headers: { Authorization: `Bearer ${_token()}` }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data.candidates)) {
-            candidates = data.candidates;
-            window.apiStats = data.stats || null;
-            // Populate filter dropdowns from live data
-            const jobs = [...new Set(candidates.map(c => c.position).filter(Boolean))];
-            const schools = [...new Set(candidates.map(c => c.school).filter(Boolean))];
-            const jobSel = document.getElementById('jobFilter');
-            const schSel = document.getElementById('schoolFilter');
-            
-            const escapeHtml = (unsafe) => (unsafe || '').toString()
-              .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-              .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-              
-            jobSel.innerHTML = '<option value="">All Jobs</option>' + jobs.map(j => `<option value="${escapeHtml(j)}">${escapeHtml(j)}</option>`).join('');
-            schSel.innerHTML = '<option value="">All Units</option>' + schools.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+        if (mobileDrag.clone) {
+          mobileDrag.clone.style.top = `${e.clientY}px`;
+          mobileDrag.clone.style.left = `${e.clientX}px`;
+        }
+        const newStage = getStageFromPoint(e.clientX, e.clientY);
+        if (newStage !== mobileDrag.targetStage) {
+          mobileDrag.targetStage = newStage;
+          highlightDropTarget(newStage);
+        }
+        const wrapper = document.querySelector(".kanban-scroll");
+        if (wrapper) {
+          const rect = wrapper.getBoundingClientRect();
+          const edge = 80;
+          const speed = 14;
+          if (e.clientX > rect.right - edge) {
+            wrapper.scrollBy({ left: speed, behavior: "smooth" });
+          } else if (e.clientX < rect.left + edge) {
+            wrapper.scrollBy({ left: -speed, behavior: "smooth" });
           }
         }
-      } catch (e) { /* keep sample data if API unreachable */ }
-      renderKanban(candidates);
-    }
+      }
 
-    /* ── Feedback Modal ── */
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
-    }
+      function onCardPointerUp(e) {
+        if (mobileDrag.pointerId && e.currentTarget?.releasePointerCapture) {
+          e.currentTarget.releasePointerCapture(mobileDrag.pointerId);
+        }
+        if (mobileDrag.active) {
+          finishMobileDrop();
+        }
+        clearHoldTimer();
+      }
 
-    async function doFeedbackAction() {
-      const c = candidates.find(x => x.id === activeId);
-      if (!c) return;
+      function onCardPointerCancel(e) {
+        if (mobileDrag.pointerId && e.currentTarget?.releasePointerCapture) {
+          e.currentTarget.releasePointerCapture(mobileDrag.pointerId);
+        }
+        if (mobileDrag.active) {
+          clearMobileDrag();
+        }
+        clearHoldTimer();
+      }
 
-      try {
-        const res = await fetch(`${API_BASE}/jobs/applicants/${c.id}`, {
-          headers: { Authorization: `Bearer ${_token()}` }
-        });
-        if (res.ok) {
-          const profile = await res.json();
-          if (profile.interviews && profile.interviews.length > 0) {
-            const activeIv = profile.interviews.find(iv => iv.status === 'scheduled' || iv.status === 'rescheduled');
-            if (activeIv) {
-              openFeedbackModal(c.name, activeIv.round, activeIv.job_interview_id);
-            } else {
-              showToast('No active interview found for this candidate.', 'warning');
+      function clearHoldTimer() {
+        if (holdTimer) {
+          clearTimeout(holdTimer);
+          holdTimer = null;
+        }
+      }
+
+      /* ── Drag & Drop ── */
+      function onDragStart(e, id) {
+        dragSrcId = id;
+        if (isMobileView() && !dragAllowed) {
+          e.preventDefault();
+          return;
+        }
+        e.dataTransfer.effectAllowed = "move";
+        if (isMobileView()) {
+          try {
+            e.dataTransfer.setData("text/plain", String(id));
+          } catch (err) {}
+        }
+        if (!isMobileView()) {
+          setTimeout(() => {
+            const el = document.getElementById("card-" + id);
+            if (el) el.classList.add("dragging");
+          }, 0);
+        }
+      }
+
+      function onDragEnd() {
+        clearHoldTimer();
+        dragAllowed = false;
+        dragSrcId = null;
+        clearMobileDrag();
+        document
+          .querySelectorAll(".candidate-card")
+          .forEach((c) => c.classList.remove("dragging"));
+        document
+          .querySelectorAll(".column")
+          .forEach((c) => c.classList.remove("drag-over"));
+      }
+
+      function onDragOver(e, stage) {
+        e.preventDefault();
+        const c = candidates.find((x) => x.id === dragSrcId);
+        if (
+          c &&
+          c.stage === "Interview" &&
+          (stage === "Applied" || stage === "Screened")
+        ) {
+          e.dataTransfer.dropEffect = "none";
+          document
+            .querySelectorAll(".column")
+            .forEach((col) => col.classList.remove("drag-over"));
+          return;
+        }
+        e.dataTransfer.dropEffect = "move";
+        document
+          .querySelectorAll(".column")
+          .forEach((col) => col.classList.remove("drag-over"));
+        const col = document.getElementById(
+          "col-" + stage.replace(/\s+/g, "-"),
+        );
+        if (col) col.classList.add("drag-over");
+      }
+
+      function onKanbanDragOver(e) {
+        if (!isMobileView() || !dragSrcId) return;
+        e.preventDefault();
+        const wrapper = document.querySelector(".kanban-scroll");
+        if (!wrapper) return;
+        const rect = wrapper.getBoundingClientRect();
+        const edge = 80;
+        const speed = 12;
+        if (e.clientX > rect.right - edge) {
+          wrapper.scrollBy({ left: speed, behavior: "smooth" });
+        } else if (e.clientX < rect.left + edge) {
+          wrapper.scrollBy({ left: -speed, behavior: "smooth" });
+        }
+      }
+
+      function onDragLeave(e) {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          e.currentTarget.classList.remove("drag-over");
+        }
+      }
+
+      function onDrop(e, stage) {
+        e.preventDefault();
+        const c = candidates.find((x) => x.id === dragSrcId);
+        if (c && c.stage !== stage) {
+          handleStageChangeRequest(c, stage);
+        }
+        document
+          .querySelectorAll(".column")
+          .forEach((col) => col.classList.remove("drag-over"));
+      }
+
+      /* ── Init ── */
+      async function loadCandidates() {
+        try {
+          const res = await fetch(`${API_BASE}/hr/ats-pipeline`, {
+            headers: { Authorization: `Bearer ${_token()}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.candidates)) {
+              candidates = data.candidates;
+              window.apiStats = data.stats || null;
+              // Populate filter dropdowns from live data
+              const jobs = [
+                ...new Set(candidates.map((c) => c.position).filter(Boolean)),
+              ];
+              const jobSel = document.getElementById("jobFilter");
+              const schSel = document.getElementById("schoolFilter");
+
+              const escapeHtml = (unsafe) =>
+                (unsafe || "")
+                  .toString()
+                  .replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;")
+                  .replace(/"/g, "&quot;")
+                  .replace(/'/g, "&#039;");
+
+              jobSel.innerHTML =
+                '<option value="">All Jobs</option>' +
+                jobs
+                  .map(
+                    (j) =>
+                      `<option value="${escapeHtml(j)}">${escapeHtml(j)}</option>`,
+                  )
+                  .join("");
+
+              // Fetch units from backend
+              fetch(`${API_BASE}/auth/units`)
+                .then((res) => res.json())
+                .then((units) => {
+                  schSel.innerHTML =
+                    '<option value="">All Units</option>' +
+                    units
+                      .map(
+                        (u) =>
+                          `<option value="${escapeHtml(u.unit_name)}">${escapeHtml(u.unit_name)}</option>`,
+                      )
+                      .join("");
+                })
+                .catch((err) => {
+                  console.error("Failed to load units", err);
+                  const derivedSchools = [
+                    ...new Set(candidates.map((c) => c.school).filter(Boolean)),
+                  ];
+                  schSel.innerHTML =
+                    '<option value="">All Units</option>' +
+                    derivedSchools
+                      .map(
+                        (s) =>
+                          `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`,
+                      )
+                      .join("");
+                });
             }
+          }
+        } catch (e) {
+          /* keep sample data if API unreachable */
+        }
+        renderKanban(candidates);
+      }
+
+      /* ── Feedback Modal ── */
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      async function doFeedbackAction() {
+        const c = candidates.find((x) => x.id === activeId);
+        if (!c) return;
+
+        try {
+          const res = await fetch(`${API_BASE}/jobs/applicants/${c.id}`, {
+            headers: { Authorization: `Bearer ${_token()}` },
+          });
+          if (res.ok) {
+            const profile = await res.json();
+            if (profile.interviews && profile.interviews.length > 0) {
+              const activeIv = profile.interviews.find(
+                (iv) =>
+                  iv.status === "scheduled" || iv.status === "rescheduled",
+              );
+              if (activeIv) {
+                openFeedbackModal(
+                  c.name,
+                  activeIv.round,
+                  activeIv.job_interview_id,
+                );
+              } else {
+                showToast(
+                  "No active interview found for this candidate.",
+                  "warning",
+                );
+              }
+            } else {
+              showToast("No interview history for this candidate.", "warning");
+            }
+          }
+        } catch (err) {
+          showToast("Failed to fetch candidate details", "error");
+        }
+      }
+
+      function openFeedbackModal(candidateName, currentRound, jobInterviewId) {
+        document.getElementById("feedbackCandidate").value =
+          candidateName || "";
+        document.getElementById("feedbackRound").value = currentRound || "";
+        document.getElementById("feedbackJobInterviewId").value =
+          jobInterviewId || "";
+        selectedStatus = "";
+        document
+          .querySelectorAll(".recommend-toggle .rec-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        document.getElementById("feedbackRemarks").value = "";
+        document.getElementById("feedbackModal").classList.add("open");
+      }
+
+      let selectedStatus = "";
+      function setStatus(statusValue) {
+        document
+          .querySelectorAll(".recommend-toggle .rec-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        if (statusValue === "SELECTED")
+          document.getElementById("statusSelected").classList.add("active");
+        if (statusValue === "NEXT_ROUND")
+          document.getElementById("statusNextround").classList.add("active");
+        if (statusValue === "REJECTED")
+          document.getElementById("statusRejected").classList.add("active");
+        selectedStatus = statusValue;
+      }
+
+      async function saveFeedback() {
+        const jobInterviewId = document.getElementById(
+          "feedbackJobInterviewId",
+        ).value;
+        const roundValue = document
+          .getElementById("feedbackRound")
+          .value.trim();
+        const remarksValue = document
+          .getElementById("feedbackRemarks")
+          .value.trim();
+
+        if (
+          !jobInterviewId ||
+          !roundValue ||
+          !remarksValue ||
+          !selectedStatus
+        ) {
+          showToast("Please fill all required fields.", "warning");
+          return;
+        }
+
+        const payload = {
+          round: roundValue,
+          remarks: remarksValue,
+          applicant_status: selectedStatus.toLowerCase(),
+        };
+
+        try {
+          const response = await fetch(
+            `${API_BASE}/job-interviews/${jobInterviewId}/remarks`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${_token()}`,
+              },
+              body: JSON.stringify(payload),
+            },
+          );
+
+          if (response.ok) {
+            closeModal("feedbackModal");
+            showToast("Feedback submitted successfully");
+            loadCandidates(); // Refresh ATS Pipeline
           } else {
-            showToast('No interview history for this candidate.', 'warning');
+            showToast(`Submission failed.`, "danger");
+          }
+        } catch (error) {
+          showToast("Network error, could not submit data.", "danger");
+        }
+      }
+
+      async function syncToMasset() {
+        const c = candidates.find((x) => x.id === activeId);
+        if (!c) return;
+
+        try {
+          const response = await fetch(`${API_BASE}/hr/masset/${c.id}/sync`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${_token()}`,
+            },
+            body: JSON.stringify({}),
+          });
+
+          const data = await response.json();
+          if (response.ok && data.success) {
+            showToast("Candidate successfully synced to MASSET!");
+            closeDrawer();
+            loadCandidates(); // Refresh ATS Pipeline
+          } else {
+            showToast(data.error || "Failed to sync with MASSET.", "danger");
+          }
+        } catch (error) {
+          showToast("Network error, could not sync to MASSET.", "danger");
+        }
+      }
+
+      function closeConfirmScheduleModal() {
+        document
+          .getElementById("confirmScheduleModal")
+          .classList.remove("open");
+        pendingCandidateForInterview = null;
+      }
+
+      function confirmScheduleNo() {
+        const c = pendingCandidateForInterview;
+        closeConfirmScheduleModal();
+
+        if (c) {
+          // Revert any optimistic UI updates in drawer pills
+          if (activeId === c.id) {
+            const stagePillsEl = document.getElementById("stagePills");
+            if (stagePillsEl) {
+              stagePillsEl.innerHTML = STAGES.map(
+                (s) =>
+                  `<div class="stage-pill ${s === c.stage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
+              ).join("");
+            }
           }
         }
-      } catch (err) {
-        showToast('Failed to fetch candidate details', 'error');
-      }
-    }
-
-    function openFeedbackModal(candidateName, currentRound, jobInterviewId) {
-      document.getElementById('feedbackCandidate').value = candidateName || '';
-      document.getElementById('feedbackRound').value = currentRound || '';
-      document.getElementById('feedbackJobInterviewId').value = jobInterviewId || '';
-      selectedStatus = "";
-      document.querySelectorAll('.recommend-toggle .rec-btn').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('feedbackRemarks').value = '';
-      document.getElementById('feedbackModal').classList.add('open');
-    }
-
-    let selectedStatus = "";
-    function setStatus(statusValue) {
-      document.querySelectorAll('.recommend-toggle .rec-btn').forEach(btn => btn.classList.remove('active'));
-      if (statusValue === 'SELECTED') document.getElementById('statusSelected').classList.add('active');
-      if (statusValue === 'NEXT_ROUND') document.getElementById('statusNextround').classList.add('active');
-      if (statusValue === 'REJECTED') document.getElementById('statusRejected').classList.add('active');
-      selectedStatus = statusValue;
-    }
-
-    async function saveFeedback() {
-      const jobInterviewId = document.getElementById('feedbackJobInterviewId').value;
-      const roundValue = document.getElementById('feedbackRound').value.trim();
-      const remarksValue = document.getElementById('feedbackRemarks').value.trim();
-
-      if (!jobInterviewId || !roundValue || !remarksValue || !selectedStatus) {
-        showToast('Please fill all required fields.', 'warning');
-        return;
+        pendingCandidateForInterview = null;
       }
 
-      const payload = {
-        round: roundValue,
-        remarks: remarksValue,
-        applicant_status: selectedStatus.toLowerCase()
-      };
+      function confirmScheduleYes() {
+        const c = pendingCandidateForInterview;
+        document
+          .getElementById("confirmScheduleModal")
+          .classList.remove("open");
+        if (!c) return;
+        document.getElementById("schCandidateName").textContent = c.name;
 
-      try {
-        const response = await fetch(`${API_BASE}/job-interviews/${jobInterviewId}/remarks`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${_token()}`
-          },
-          body: JSON.stringify(payload)
-        });
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
+        const todayStr = `${year}-${month}-${day}`;
 
-        if (response.ok) {
-          closeModal('feedbackModal');
-          showToast('Feedback submitted successfully');
-          loadCandidates(); // Refresh ATS Pipeline
-        } else {
-          showToast(`Submission failed.`, 'danger');
+        const schDateEl = document.getElementById("schDate");
+        schDateEl.value = todayStr;
+        schDateEl.setAttribute('min', todayStr);
+        schDateEl.min = todayStr;
+
+        document.getElementById("scheduleInterviewModal").classList.add("open");
+        loadInterviewers("schInterviewer");
         }
-      } catch (error) {
-        showToast('Network error, could not submit data.', 'danger');
-      }
-    }
 
-    async function syncToMasset() {
-      const c = candidates.find(x => x.id === activeId);
-      if (!c) return;
-
-      try {
-        const response = await fetch(`${API_BASE}/hr/masset/${c.id}/sync`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${_token()}`
-          },
-          body: JSON.stringify({})
-        });
-
-        const data = await response.json();
-        if (response.ok && data.success) {
-          showToast('Candidate successfully synced to MASSET!');
-          closeDrawer();
-          loadCandidates(); // Refresh ATS Pipeline
+      function toggleInterviewModeField() {
+        const mode = document.getElementById("interviewMode").value;
+        const label = document.getElementById("modeLabel");
+        const input = document.getElementById("modeInput");
+        if (mode === "online") {
+          label.innerText = "Meeting Link";
+          input.placeholder = "https://meet.google.com/...";
+          input.value = "";
         } else {
-          showToast(data.error || 'Failed to sync with MASSET.', 'danger');
+          label.innerText = "Location";
+          input.placeholder = "Enter institution address";
+          input.value = "";
         }
-      } catch (error) {
-        showToast('Network error, could not sync to MASSET.', 'danger');
       }
-    }
 
-    loadCandidates();
-  </script>
+      function loadInterviewers(selectId) {
+        fetch(`${API_BASE}/job-interviews/school-admins`, {
+          headers: { Authorization: "Bearer " + _token() },
+        })
+          .then((res) => (res.ok ? res.json() : Promise.reject(res)))
+          .then((list) => {
+            const sel = document.getElementById(selectId);
+            if (!sel) return;
+            if (!list.length) {
+              sel.innerHTML =
+                '<option value="">No school admins found (role_id=7)</option>';
+              return;
+            }
+            sel.innerHTML =
+              '<option value="">Select an interviewer...</option>' +
+              list
+                .map((i) => {
+                  const unitDisplay = i.unit_name
+                    ? ` (Unit: ${i.unit_name})`
+                    : i.unit_id
+                      ? ` (Unit ID: ${i.unit_id})`
+                      : "";
+                  return `<option value="${i.email}">${i.email}${unitDisplay}</option>`;
+                })
+                .join("");
+          })
+          .catch(() => {
+            const sel = document.getElementById(selectId);
+            if (!sel) return;
+            const wrapper = sel.parentElement;
+            const input = document.createElement("input");
+            input.type = "text";
+            input.id = selectId;
+            input.placeholder = "Enter interviewer name";
+            input.className = "search-input";
+            input.style.width = "100%";
+            wrapper.replaceChild(input, sel);
+          });
+      }
 
-</body>
+      function submitSchedule() {
+        const c = pendingCandidateForInterview;
+        if (!c) return;
 
+        const round = document.getElementById("schRound").value.trim();
+        const mode = document.getElementById("interviewMode").value;
+        const schDate = document.getElementById("schDate").value;
+        const schTime = document.getElementById("schTime").value;
+        const schEndTime = document.getElementById("schEndTime").value;
+        const modeInput = document.getElementById("modeInput").value.trim();
+        const interviewer = document
+          .getElementById("schInterviewer")
+          .value.trim();
+
+        if (!round || !schDate || !schTime || !schEndTime) {
+          showToast(
+            "Please fill out all required fields (Round, Date, Start Time, End Time).",
+            "warning",
+          );
+          return;
+        }
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+        
+        if (schDate < todayStr) {
+          showToast('Past dates are not allowed for scheduling interviews.', 'warning');
+          return;
+        }
+
+        const scheduledAtIso = `${schDate}T${schTime}:00`;
+        const endTimeAtIso = `${schDate}T${schEndTime}:00`;
+
+        const payload = {
+          job_id: c.job_id || 1, // Fallback if job_id isn't present
+          job_applicant_id: c.id,
+          interview_round: round,
+          scheduled_at: scheduledAtIso,
+          end_time_at: endTimeAtIso,
+          interview_mode: mode,
+          meeting_link: mode === "online" ? modeInput : null,
+          location: mode === "offline" ? modeInput : null,
+          interviewer_name: interviewer,
+        };
+
+        fetch(`${API_BASE}/job-interviews/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + _token(),
+          },
+          body: JSON.stringify(payload),
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to schedule interview");
+            return res.json();
+          })
+          .then(() => {
+            showToast("Interview scheduled successfully!", "success");
+            closeModal("scheduleInterviewModal");
+            persistStageChange(c, "Interview");
+            pendingCandidateForInterview = null;
+          })
+          .catch((err) => {
+            console.error(err);
+            showToast("Error scheduling interview: " + err.message, "danger");
+          });
+      }
+
+      loadCandidates();
+      loadUnits();
+    </script>
+  </body>
 </html>
