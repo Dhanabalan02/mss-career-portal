@@ -477,11 +477,12 @@
                                         if (btn) btn.setAttribute('aria-expanded', 'false');
                                     }
                                     function copyJobLink() {
-                                        var jobId = new URLSearchParams(window.location.search).get('id');
-                                        var link = window.location.origin + '/mss-career-portal/job-detail?id=' + encodeURIComponent(jobId || '');
+                                        var titleText = document.getElementById('jdTitle') ? document.getElementById('jdTitle').textContent : 'job';
+                                        var titleForUrl = titleText.replace(/ /g, '-');
+                                        var link = window.location.origin + '/mss-career-portal/job-detail?title=' + encodeURIComponent(titleForUrl);
                                         navigator.clipboard.writeText(link).then(function() {
                                             var btn = document.getElementById('mssShareBtn');
-                                            var orig = btn.innerHTML;
+                                            var orig = btn.innerHTML
                                             btn.innerHTML = '<i class="feather-check"></i> Link Copied!';
                                             setTimeout(function() { btn.innerHTML = orig; }, 2000);
                                         }).catch(function() {});
@@ -1329,18 +1330,37 @@
                 if (descEl) descEl.textContent = 'This job posting could not be found or is no longer available.';
             }
 
-            document.addEventListener('DOMContentLoaded', function () {
-                var urlId = new URLSearchParams(window.location.search).get('id');
-                var jobId = urlId || localStorage.getItem('candidate_current_job_id');
+            var loadedJobTitle = '';
+            document.addEventListener('DOMContentLoaded', async function () {
+                var searchParams = new URLSearchParams(window.location.search);
+                var urlId = searchParams.get('id');
+                var urlTitle = searchParams.get('title');
                 
-                if (urlId) {
-                    localStorage.setItem('candidate_current_job_id', urlId);
+                var jobId = urlId;
+                if (!jobId && urlTitle) {
+                    try {
+                        const res = await fetch(JOBS_API_BASE + '/jobs/public');
+                        if (res.ok) {
+                            const jobs = await res.json();
+                            const matchedJob = jobs.find(j => j.job_title && j.job_title.toLowerCase().replace(/ /g, '-') === urlTitle.toLowerCase().replace(/ /g, '-'));
+                            if (matchedJob) jobId = matchedJob.job_id || matchedJob.id;
+                        }
+                    } catch (e) { console.error('Error fetching jobs by title', e); }
+                }
+
+                if (!jobId) {
+                    jobId = localStorage.getItem('candidate_current_job_id');
+                }
+                
+                if (urlId || urlTitle) {
+                    if (jobId) localStorage.setItem('candidate_current_job_id', jobId);
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
 
                 window.shareJob = function(platform) {
                     if (!jobId) return;
-                    var shareUrl = window.location.origin + '/mss-career-portal/job-detail?id=' + encodeURIComponent(jobId);
+                    var titleForUrl = loadedJobTitle ? loadedJobTitle.replace(/ /g, '-') : 'job';
+                    var shareUrl = window.location.origin + '/mss-career-portal/job-detail?title=' + encodeURIComponent(titleForUrl);
                     var text = 'Check out this job opening at The Madras Seva Sadan!';
                     var url = '';
                     if (platform === 'facebook') {
@@ -1354,6 +1374,7 @@
                     }
                     if (url) window.open(url, '_blank', 'width=600,height=400');
                 };
+                
                 if (!jobId) {
                     renderError();
                     return;
@@ -1376,6 +1397,7 @@
                     .then(r => r.json())
                     .then(viewData => {
                         fetchDetails.then(job => {
+                            if (job) loadedJobTitle = job.job_title;
                             if (viewData && viewData.view_counted && viewData.views) {
                                 job.views = viewData.views;
                             }
@@ -1386,13 +1408,19 @@
                         });
                     })
                     .catch(err => {
-                        fetchDetails.then(renderJob).catch(function (error) {
+                        fetchDetails.then(job => {
+                            if (job) loadedJobTitle = job.job_title;
+                            renderJob(job);
+                        }).catch(function (error) {
                             console.error('Job detail fetch failed:', error);
                             renderError();
                         });
                     });
                 } else {
-                    fetchDetails.then(renderJob).catch(function (error) {
+                    fetchDetails.then(job => {
+                        if (job) loadedJobTitle = job.job_title;
+                        renderJob(job);
+                    }).catch(function (error) {
                         console.error('Job detail fetch failed:', error);
                         renderError();
                     });

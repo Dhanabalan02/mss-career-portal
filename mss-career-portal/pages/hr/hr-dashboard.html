@@ -1517,8 +1517,11 @@
                     <td>${c.exp}</td>
                     <td>${stageBadge(c.stage)}</td>
                     <td>${interviewStatusBadge(c.interviewStatus)}</td>
-                    <td><a class="action-link" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/candidate-profile?applicant_id=${c.job_applicant_id}'">Profile</a></td>`;
-              tr.onclick = () => location.href = '/mss-career-portal/hr/candidate-profile?applicant_id=' + c.job_applicant_id;
+                    <td><a class="action-link" onclick="event.stopPropagation();localStorage.setItem('candidateId', ${c.job_applicant_id});location.href='/mss-career-portal/hr/candidate-profile'">Profile</a></td>`;
+              tr.onclick = () => {
+                localStorage.setItem('candidateId', c.job_applicant_id);
+                location.href = '/mss-career-portal/hr/candidate-profile';
+              };
               aBody.appendChild(tr);
             });
           }

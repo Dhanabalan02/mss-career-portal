@@ -834,12 +834,16 @@
       display: flex;
       gap: 5px;
       flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
     }
 
     .act-btn {
-      padding: 4px 10px;
-      border-radius: var(--radius-xs);
-      font-size: 11.5px;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      border-radius: 50%;
+      font-size: 14px;
       font-weight: 500;
       font-family: var(--font-body);
       cursor: pointer;
@@ -848,6 +852,10 @@
       color: var(--text1);
       transition: all 0.12s;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
 
     .act-btn:hover {
@@ -1032,21 +1040,21 @@
         </select>
         <select class="filter-select" id="fDept" onchange="filterJobs()">
           <option value="">All Categories</option>
-          <option>Teaching</option>
-          <option>Admin</option>
-          <option>Marketing</option>
           <option>Accounts</option>
-          <option>CSR</option>
-          <option>ISO</option>
-          <option>HR</option>
+          <option>Admin</option>
+          <option>Art</option>
           <option>Complaince</option>
-          <option>IT</option>
+          <option>CSR</option>
           <option>Facility</option>
+          <option>HR</option>
+          <option>ISO</option>
+          <option>IT</option>
+          <option>Marketing</option>
+          <option>Music</option>
           <option>Security & Maintenance</option>
           <option>Stores</option>
+          <option>Teaching</option>
           <option>Technical</option>
-          <option>Art</option>
-          <option>Music</option>
         </select>
       </div>
 
@@ -1096,7 +1104,7 @@
                 <th>Published</th>
                 <th>Closing Date</th>
                 <th style="text-align:center;">Applicants</th>
-                <th>Actions</th>
+                <th style="text-align:center;">Actions</th>
               </tr>
             </thead>
             <tbody id="jobListBody"></tbody>
@@ -1292,16 +1300,16 @@
       <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
       <td>
         <div class="table-actions">
-          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.id}');location.href='/mss-career-portal/hr/jobpost-details'">View</button>
+          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.id}');location.href='/mss-career-portal/hr/jobpost-details'" title="View"><i class="ti ti-eye"></i></button>
           ${j.status === 'Draft' || j.status === 'Active'
             ? `<button class="act-btn"
-          onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-create?id=${j.id}'">
-          Edit
+          onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-create?id=${j.id}'" title="Edit">
+          <i class="ti ti-edit"></i>
         </button>`
             : ''
           }
-          <button class="act-btn" onclick="event.stopPropagation();duplicateJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Clone">Clone</button>
-          ${j.status === 'Active' ? `<button class="act-btn act-btn-red" onclick="event.stopPropagation();closeJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')">Close</button>` : ''}
+          <button class="act-btn" onclick="event.stopPropagation();duplicateJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Clone"><i class="ti ti-copy"></i></button>
+          ${j.status === 'Active' ? `<button class="act-btn act-btn-red" onclick="event.stopPropagation();closeJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Close"><i class="ti ti-x"></i></button>` : ''}
           ${j.is_clone_ui ? '<span class="cloned-star" style="color:#EF9F27;font-weight:bold;font-size:18px;margin-left:6px;cursor:help;display:inline-block;vertical-align:middle;" title="Cloned Job">*</span>' : ''}
         </div>
       </td>`;

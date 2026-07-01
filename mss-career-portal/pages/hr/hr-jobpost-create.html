@@ -1296,9 +1296,9 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Location <span class="req">*</span></label>
+              <label>Campus <span class="req">*</span></label>
               <select id="location" required>
-                <option value="">Select Location</option>
+                <option value="">Select Campus</option>
                 <option value="Chetpet">Chetpet</option>
                 <option value="Tambaram">Tambaram</option>
                 <option value="T.Nagar">T.Nagar</option>
@@ -1895,6 +1895,7 @@
       const jobType = document.getElementById('jobType').value;
       const vacancies = document.getElementById('vacancies').value;
       const schoolName = document.getElementById('school').value;
+      const location = document.getElementById('location').value;
       const minExp = document.getElementById('expMin').value.trim();
       const maxExp = document.getElementById('expMax').value.trim();
       const closingDate = document.getElementById('closeDate').value;
@@ -1915,11 +1916,23 @@
       if (!jobType) {
         setError('jobType', 'Job Type is required');
       }
+      
+      const programmeGroup = document.getElementById('programmeGroup');
+      const programmeSelect = document.getElementById('programme');
+      if (programmeGroup && programmeGroup.style.display !== 'none') {
+        if (!programmeSelect || !programmeSelect.value) {
+          setError('programme', 'Programme is required');
+        }
+      }
+
       if (!vacancies || parseInt(vacancies) < 1) {
         setError('vacancies', 'Number of Vacancies must be at least 1');
       }
       if (!schoolName) {
         setError('school', 'School / Unit is required');
+      }
+      if (!location) {
+        setError('location', 'Location is required');
       }
       if (!minExp) {
         setError('expMin', 'Minimum Experience is required');
@@ -1947,7 +1960,7 @@
     }
 
     function initValidationListeners() {
-      const fields = ['jobTitle', 'dept', 'jobType', 'vacancies', 'school', 'expMin', 'expMax', 'closeDate', 'jobDesc'];
+      const fields = ['jobTitle', 'dept', 'jobType', 'programme', 'vacancies', 'school', 'location', 'expMin', 'expMax', 'closeDate', 'jobDesc'];
       fields.forEach(id => {
         const el = document.getElementById(id);
         if (el) {

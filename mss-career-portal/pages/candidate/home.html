@@ -300,7 +300,7 @@
                                         <!-- Field: Unit -->
                                         <div class="mss-field" onclick="this.querySelector('select').focus()">
                                             <label class="mss-field-label">
-                                                <i class="feather-home"></i> Our Unit
+                                                <i class="feather-home"></i> Our Units
                                             </label>
                                             <div class="mss-field-inner">
                                                 <select id="srch-unit" class="mss-select">
@@ -2289,7 +2289,7 @@
 
                 // 2. Return the completed HTML string cleanly in ONE continuous expression
                 return '<div class="col-lg-6">' +
-                    '<div class="mss-jc" onclick="localStorage.setItem(\'candidate_current_job_id\', \'' + job.job_id + '\'); location.href=\'/mss-career-portal/pages/candidate/job-detail.html\'" ' +
+                    '<div class="mss-jc" onclick="localStorage.setItem(\'candidate_current_job_id\', \'' + job.job_id + '\'); location.href=\'/mss-career-portal/job-detail\'" ' +
                     'style="background:#fff;border-radius:20px;padding:1.75rem;border:1px solid #E2E8F0;cursor:pointer;transition:all 0.3s ease;height:100%;display:flex;flex-direction:column;" ' +
                     'onmouseover="this.style.borderColor=\'var(--card-border)\';this.style.boxShadow=\'var(--card-border-shadow)\';this.style.transform=\'translateY(-4px)\'" ' +
                     'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">' +

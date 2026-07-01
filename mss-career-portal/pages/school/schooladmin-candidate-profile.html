@@ -1072,8 +1072,7 @@
     }
 
     async function loadCandidateProfile() {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
+      const id = localStorage.getItem('candidateId');
       if (!id) return;
       try {
         const res = await fetch(`${API_BASE}/jobs/applicants/${id}`, {

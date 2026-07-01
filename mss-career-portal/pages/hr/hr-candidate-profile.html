@@ -867,7 +867,6 @@
         <div class="breadcrumb">
           <a href="/mss-career-portal/hr/jobapplicants-list">Applicants</a>
           <span class="breadcrumb-sep">›</span>
-          <span id="breadcrumb-name">—</span>
         </div>
         <div class="page-title" id="profile-title">—</div>
         <div class="page-subtitle" id="profile-subtitle">Applied for: —</div>
@@ -1049,8 +1048,7 @@
     const token = localStorage.getItem('access_token');
 
     // Parse applicant ID
-    const urlParams = new URLSearchParams(window.location.search);
-    const applicantId = urlParams.get('id') || urlParams.get('applicant_id');
+    const applicantId = localStorage.getItem('candidateId');
     let candidateData = null;
 
     if (!applicantId) {
@@ -1123,7 +1121,6 @@
     }
 
     function renderHeader() {
-      document.getElementById('breadcrumb-name').textContent = candidateData.name;
       document.getElementById('profile-title').textContent = candidateData.name;
       document.getElementById('profile-subtitle').textContent = 'Applied for: ' + candidateData.job;
 

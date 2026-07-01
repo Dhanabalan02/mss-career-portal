@@ -642,7 +642,7 @@ function renderApplicants(list) {
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="action-btn blue"  onclick="event.stopPropagation();location.href='/mss-career-portal/school/candidate-profile?id=${c.id}'">Profile</button>
+          <button class="action-btn blue"  onclick="event.stopPropagation();localStorage.setItem('candidateId', ${c.id});location.href='/mss-career-portal/school/candidate-profile'">Profile</button>
         <!-- ${c.stage!=='Rejected' ? `<button class="action-btn red" onclick="event.stopPropagation();rejectCandidate('${c.name}')">Reject</button>` : ''} -->
         </div>
       </td>`;

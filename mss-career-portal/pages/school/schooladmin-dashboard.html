@@ -1268,7 +1268,8 @@
 
     function candidateDetails(id) {
       if (id) {
-        window.location.href = `/mss-career-portal/school/candidate-profile?id=${id}`;
+        localStorage.setItem('candidateId', id);
+        window.location.href = '/mss-career-portal/school/candidate-profile';
       } else {
         window.location.href = '/mss-career-portal/school/candidate-profile';
       }
@@ -1389,7 +1390,7 @@
               return sLower.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
             };
             applicantsTbody.innerHTML = data.recent_applicants.map(a => `
-              <tr onclick="window.location.href='/mss-career-portal/school/candidate-profile?id=${a.id}'">
+              <tr onclick="localStorage.setItem('candidateId', ${a.id}); window.location.href='/mss-career-portal/school/candidate-profile'">
                 <td>
                   <div class="td-name">
                     <div class="table-avatar" style="background:${a.color || '#2563eb'}">${a.initials}</div>

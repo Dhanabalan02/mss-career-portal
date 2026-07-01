@@ -616,7 +616,7 @@ def get_hr_reports(
     fulfillment_rate = round((offer_accepted / total_jobs) * 100) if total_jobs else 0
 
     stages = {
-        "Applied": max(total - selected - on_hold - rejected, 0),
+        "PreScreening Rejection": max(rejected, 0),
         "Screened": selected + on_hold,
         "Interview": interviewed,
         "Offer": offer_sent,

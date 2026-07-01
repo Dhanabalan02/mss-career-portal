@@ -329,7 +329,7 @@ def get_applicants_route(
     onboarding_count = 0
 
     chip_counts = {
-        "Applied": 0,
+        "PreScreen Rejection": 0,
         "Screened": 0,
         "Interview": 0,
         "Offer": 0,

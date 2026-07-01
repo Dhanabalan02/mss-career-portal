@@ -50,7 +50,7 @@ def create_job_application(
                 final_status = CandidateStatus.SCREENED
                 db_applicant.applicant_stage = ApplicantStage.SCREENED
             else:
-                final_status = CandidateStatus.REJECTED
+                final_status = CandidateStatus.INELIGIBLE
                 db_applicant.applicant_stage = ApplicantStage.PRESCREEN_REJECT
                 db_applicant.applicant_job_status = ApplicantJobStatus.REJECTED
         else:

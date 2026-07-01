@@ -1423,7 +1423,7 @@
           <thead>
             <tr>
               <th>Question</th>
-              <th>Type</th>
+              <th>Expected Answer</th>
               <th>Mandatory</th>
             </tr>
           </thead>
@@ -1432,31 +1432,31 @@
 
             <tr>
               <td>Total Teaching Experience?</td>
-              <td>Number</td>
+              <td>5</td>
               <td><span class="badge badge-accepted">Required</span></td>
             </tr>
 
             <tr>
               <td>Are you willing to relocate?</td>
-              <td>Yes / No</td>
+              <td>Yes</td>
               <td><span class="badge badge-accepted">Required</span></td>
             </tr>
 
             <tr>
               <td>Current Salary?</td>
-              <td>Currency</td>
+              <td>—</td>
               <td><span class="badge badge-accepted">Required</span></td>
             </tr>
 
             <tr>
               <td>Expected Salary?</td>
-              <td>Currency</td>
+              <td>—</td>
               <td><span class="badge badge-accepted">Required</span></td>
             </tr>
 
             <tr>
               <td>Notice Period?</td>
-              <td>Text</td>
+              <td>30 days</td>
               <td><span class="badge badge-accepted">Required</span></td>
             </tr>
 
@@ -1618,7 +1618,7 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
               <td>${q.question_text}</td>
-              <td style="text-transform: capitalize;">${q.question_type || 'Text'}</td>
+              <td>${q.expected_answer || '—'}</td>
               <td><span class="badge badge-accepted">Required</span></td>
             `;
             questionsBody.appendChild(tr);

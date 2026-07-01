@@ -199,6 +199,21 @@
       // must run after every header (re)injection.
       if (typeof applyAuthUI === 'function') applyAuthUI();
 
+      // Check for open roles to display the "Now Hiring" badge
+      var jobsApiBase = (typeof window.AUTH_API_BASE !== 'undefined') ? window.AUTH_API_BASE : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://127.0.0.1:8000' : window.location.origin);
+      fetch(jobsApiBase + '/jobs/public')
+        .then(function(res) { return res.json(); })
+        .then(function(jobs) {
+          if (Array.isArray(jobs) && jobs.length > 0) {
+            var hiringBadge = document.getElementById('mss-hiring-badge');
+            if (hiringBadge) hiringBadge.style.display = 'flex';
+            document.querySelectorAll('.mss-live-dot').forEach(function(dot) {
+              dot.style.display = 'inline-block';
+            });
+          }
+        })
+        .catch(function(e) { console.error('Error fetching jobs for hiring badge', e); });
+
       document.dispatchEvent(new CustomEvent('shared-header:loaded'));
     })
     .catch(function (error) {
