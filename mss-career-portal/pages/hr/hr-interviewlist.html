@@ -1158,6 +1158,42 @@
         grid-template-columns: 1fr 1fr;
       }
     }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border, #eee);
+      background: var(--surface-1, #fff);
+      margin-top: auto;
+    }
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-body, inherit);
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--border-color, #ccc);
+      color: var(--text-sub, #666);
+      transition: all 0.12s;
+    }
+    .page-btn:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text, #333);
+    }
+    .page-btn.active {
+      background: rgba(233, 30, 99, 0.08);
+      color: #e91e63;
+      border-color: rgba(233, 30, 99, 0.5);
+      font-weight: 700;
+    }
   </style>
 </head>
 
@@ -1231,6 +1267,7 @@
         <table>
           <thead>
             <tr>
+              <th style="width: 50px;">S.No</th>
               <th>Candidate</th>
               <th>Position</th>
               <th>Round</th>
@@ -1242,6 +1279,7 @@
           </thead>
           <tbody id="interviewTable"></tbody>
         </table>
+        <div class="pagination" id="pagination"></div>
       </div>
 
       <!-- Side Grid -->
@@ -1535,7 +1573,14 @@
       document.getElementById('rowCount').textContent = `${data.length} record${data.length !== 1 ? 's' : ''}`;
       if (!data.length) {
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fa-regular fa-calendar-xmark"></i>No interviews match the current filters.</div></td></tr>`;
+        const pg = document.getElementById('pagination');
+        if (pg) pg.style.display = 'none';
         return;
+      } else {
+        const pg = document.getElementById('pagination');
+        if (pg) {
+          buildPagination(data.length, 10);
+        }
       }
       const selectedCandidates = new Set();
       data.forEach(iv => {
@@ -1545,13 +1590,14 @@
       });
 
       tbody.innerHTML = '';
-      data.forEach(iv => {
+      data.forEach((iv, index) => {
         const sc = iv.status === 'Completed' ? 'pill-completed' : iv.status === 'Cancelled' ? 'pill-cancelled' : 'pill-scheduled';
         const [abg, aclr] = avatarColor(iv.candidate);
         const isActionDisabled = selectedCandidates.has(iv.candidate_id) || iv.status.toLowerCase() === 'cancelled' || iv.status.toLowerCase() === 'completed';
         const disableAttr = isActionDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : '';
         tbody.innerHTML += `
       <tr>
+        <td style="font-weight:600;color:var(--text-sub, #666);">${index + 1}</td>
         <td>
           <div class="candidate-cell">
             <div class="avatar" style="background:${abg};color:${aclr};">${initials(iv.candidate)}</div>
@@ -1988,9 +2034,41 @@
       renderUpcomingInterviews(interviews);
     }
     loadInterviews();
+    setupDropdowns();
 
+    /* ── Pagination ── */
+    function buildPagination(total, perPage) {
+      const pg = document.getElementById('pagination');
+      if (!pg) return;
+      
+      const totalPages = Math.ceil(total / perPage) || 1;
+      pg.innerHTML = '';
+      pg.style.display = 'flex';
+
+      const prev = document.createElement('button');
+      prev.className = 'page-btn';
+      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
+      prev.onclick = () => { };
+      pg.appendChild(prev);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i === 1 ? ' active' : '');
+        b.textContent = i;
+        b.onclick = function () {
+          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
+          this.classList.add('active');
+        };
+        pg.appendChild(b);
+      }
+
+      const next = document.createElement('button');
+      next.className = 'page-btn';
+      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
+      next.onclick = () => { };
+      pg.appendChild(next);
+    }
   </script>
-
 </body>
 
 </html>

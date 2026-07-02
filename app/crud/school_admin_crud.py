@@ -276,7 +276,9 @@ def get_school_jobs(db: Session, admin_id: int) -> list:
         applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == j.job_id).count()
         out.append({
             "job_id": j.job_id,
+            "uuid": j.uuid,
             "title": j.job_title or "",
+            "unit": j.school_name or "",
             "dept": j.department or "",
             "type": j.job_type or "Full-time",
             "vacancies": j.vacancy_count or 1,
@@ -318,7 +320,7 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
     for q in job.job_pre_screening_questions:
         questions_list.append({
             "question": q.question_text or "",
-            "type": q.question_type or "Text",
+            "expected_answer": q.expected_answer,
             "is_required": True
         })
 
@@ -407,6 +409,8 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
         out.append({
             "id": app.job_applicant_id,
             "job_id": app.job_id,
+            "user_id": user.user_id,
+            "app_id": app.mss_app_no, 
             "name": name,
             "initials": get_initials(user.first_name, user.last_name),
             "job": job.job_title or "",

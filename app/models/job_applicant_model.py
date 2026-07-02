@@ -53,7 +53,6 @@ class JobApplicant(Base):
              values_callable=lambda x: [e.value for e in x]),
         nullable=True,
     )
-
     applicant_stage: Mapped[Optional[ApplicantStage]] = mapped_column(
         Enum(ApplicantStage, name="applicant_stage_enum",
              values_callable=lambda x: [e.value for e in x]),
@@ -76,6 +75,7 @@ class JobApplicant(Base):
     offer_issued_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     offer_expiry_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     offer_remarks: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    offer_accepted_on: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     offer_template: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
 
     # MASSET sync fields
@@ -84,8 +84,8 @@ class JobApplicant(Base):
     masset_synced_by: Mapped[Optional[int]] = mapped_column(ForeignKey("admins.admin_id"), nullable=True)
     masset_employee_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     masset_status: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
-
     issue_appointment_order: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)
+    masset_sync_success_on: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True)
 
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.current_timestamp())
     updated_at: Mapped[datetime] = mapped_column(

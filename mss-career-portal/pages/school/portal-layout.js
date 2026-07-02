@@ -4,6 +4,19 @@
 (function () {
   'use strict';
 
+  // Define the master base API URL dynamically depending on environment
+  var rawBaseUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://127.0.0.1:8000'
+    : 'https://stagecareer.themadrassevasadan.org';
+
+  // CRITICAL: Strip any accidental trailing slashes so concatenations don't form double slashes (//)
+  var AUTH_API_BASE = rawBaseUrl.replace(/\/$/, '');
+
+  // CRITICAL: Bind explicitly to global window object so scripts outside this IIFE can read them immediately
+  window.AUTH_API_BASE = AUTH_API_BASE;
+  window.JOBS_API_BASE = AUTH_API_BASE;
+  window.API_BASE = AUTH_API_BASE;
+
   /* ── Auth guard ───────────────────────────────────────────── */
   // HR & School Admin pages require a logged-in session. If the access
   // token is missing — after logout, or a stale/bookmarked URL — bounce
@@ -28,8 +41,6 @@
     window.location.replace('/mss-career-portal/home');
     return;
   }
-
-  var AUTH_API_BASE = 'http://127.0.0.1:8000';
 
   /* ── Role config ──────────────────────────────────────────── */
   const PORTAL_ROLES = {

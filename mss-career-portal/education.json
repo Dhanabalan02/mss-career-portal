@@ -40,7 +40,6 @@
       "name": "Diploma in Chemical Engineering",
       "slug": "dche"
     },
-
     {
       "id": 9,
       "name": "Diploma in Fashion Design",
@@ -255,6 +254,18 @@
       "id": 51,
       "name": "Other Professional Course",
       "slug": "other-professional-course"
+    },
+    {
+      "id": 52,
+      "name": "BE Mechanical"
+    },
+    {
+      "id": 53,
+      "name": "BE Mechanical"
+    },
+    {
+      "id": 54,
+      "name": "BE ECE"
     }
   ]
 }

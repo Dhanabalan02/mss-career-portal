@@ -38,7 +38,7 @@ from app.models import (
     InterviewRemark,
 )
 from app.models.job_applicant_model import OfferAcceptanceStatus
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 import re
 
 router = APIRouter(prefix="/jobs", tags=["Job Posts"])
@@ -94,13 +94,12 @@ def format_experience(exp_records: List[CandidateExperience]) -> str:
     total_years += total_months // 12
     total_months = total_months % 12
 
-    parts = []
-    if total_years > 0:
-        parts.append(f"{total_years} year{'s' if total_years != 1 else ''}")
-    if total_months > 0:
-        parts.append(f"{total_months} month{'s' if total_months != 1 else ''}")
-
-    return " & ".join(parts) if parts else "—"
+    if total_years == 0 and total_months == 0:
+        return "—"
+    elif total_months == 0:
+        return f"{total_years} year{'s' if total_years != 1 else ''}"
+    else:
+        return f"{total_years}.{total_months} years"
 
 
 def _get_admin_id_from_token(
@@ -212,6 +211,7 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
 
     return {
         "job_id": job_post.job_id,
+        "uuid": job_post.uuid,
         "job_posted_by": job_post.job_posted_by,
         "job_title": job_post.job_title,
         "department": job_post.department,
@@ -408,7 +408,7 @@ def get_applicants_route(
         "Rejected": 0,
     }
 
-    from datetime import datetime, date
+    from datetime import datetime
 
     for idx, app in enumerate(all_applicants):
         user = app.users
@@ -506,10 +506,12 @@ def get_applicants_route(
             {
                 "id": app.job_applicant_id,
                 "job_id": app.job_id,
+                "user_id": user.user_id, 
+                "mss_app_no": app.mss_app_no,
                 "name": name,
                 "job": job_title,
                 "appliedDate": (
-                    app.created_at.strftime("%Y-%m-%d") if app.created_at else ""
+                    app.created_at.strftime("%d-%m-%y") if app.created_at else ""
                 ),
                 "exp": exp_str,
                 "stage": stage_val,
@@ -605,7 +607,7 @@ def get_applicant_detail_route(
     job_title = job_post.job_title if job_post else "Unknown Job"
 
     # Calculate experience
-    from datetime import datetime, date
+    from datetime import datetime
 
     exp_records = (
         db.query(CandidateExperience)
@@ -623,6 +625,17 @@ def get_applicant_detail_route(
     )
 
     stage_val = "Applied"
+    if app.applicant_stage:
+        stage_map = {
+            "prescreen-reject": "Pre Screen Reject",
+            "screened": "Screened",
+            "interview": "Interview",
+            "offer": "Offer",
+            "offer_accepted": "Offer Accepted",
+            "onboarding": "Onboarding"
+        }
+        stage_val = stage_map.get(app.applicant_stage.value, "Applied")
+        
     interview_status = "Pending"
     if app.applicant_job_status == "rejected":
         stage_val = "Rejected"
@@ -665,10 +678,8 @@ def get_applicant_detail_route(
                 else str(latest_int.status).capitalize()
             )
     elif app.applicant_job_status == "hold":
-        stage_val = "Screened"
         interview_status = "On Hold"
     elif app.applicant_job_status == "selected":
-        stage_val = "Screened"
         interview_status = "Selected"
 
     # Serialize metadata
@@ -843,6 +854,52 @@ def get_applicant_detail_route(
             }
         )
 
+    # Tracking dates for the stage history timeline
+    screened_at = (
+        db.query(func.min(CandidateScreeningAnswer.created_at))
+        .filter(
+            CandidateScreeningAnswer.candidate_id == user.user_id,
+            CandidateScreeningAnswer.job_id == app.job_id,
+        )
+        .scalar()
+    )
+
+    interview_at = None
+    if interviews:
+        interview_at = (
+            db.query(func.min(InterviewRemark.created_at))
+            .join(
+                JobInterviewSchedule,
+                InterviewRemark.job_interview_id
+                == JobInterviewSchedule.job_interview_id,
+            )
+            .filter(
+                JobInterviewSchedule.job_applicant_id == app.job_applicant_id
+            )
+            .scalar()
+        )
+
+    def _fmt_date(value):
+        if not value:
+            return ""
+        return value.strftime("%d-%m-%y")
+
+    def _fmt_ordinal_date(value):
+        if not value:
+            return ""
+        day = value.day
+        suffix = "th" if 11 <= day % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
+        return f"{day}{suffix} {value.strftime('%B %Y')}"
+
+    tracking_dates = {
+        "applied": _fmt_date(app.created_at),
+        "screened": _fmt_date(screened_at),
+        "interview": _fmt_date(interview_at),
+        "offer": _fmt_date(app.offer_issued_date),
+        "offer_accepted": _fmt_date(app.offer_accepted_on),
+        "onboarding": _fmt_date(app.masset_sync_success_on),
+    }
+
     return {
         "id": app.job_applicant_id,
         "name": f"{user.first_name} {user.last_name}".strip(),
@@ -850,19 +907,40 @@ def get_applicant_detail_route(
         "mobile": user.mobile,
         "job": job_title,
         "job_id": app.job_id,
+        "mss_app_no": app.mss_app_no,
         "user_id": user.user_id,
-        "appliedDate": app.created_at.strftime("%Y-%m-%d") if app.created_at else "",
+        "appliedDate": app.created_at.strftime("%d-%m-%y") if app.created_at else "",
         "exp": exp_str,
         "stage": stage_val,
         "interviewStatus": interview_status,
         "sync_masset": app.sync_masset,
         "offer_letter_doc": app.offer_letter_doc or "",
         "offer_acceptance_status": app.offer_acceptance_status or "",
+        "offerDetails": {
+            "offered_salary": app.offered_salary or "",
+            "joining_date": _fmt_ordinal_date(app.joining_date),
+            "probation_period": app.probation_period or "",
+            "offer_issued_date": _fmt_ordinal_date(app.offer_issued_date),
+            "offer_expiry_date": _fmt_ordinal_date(app.offer_expiry_date),
+            "offer_accepted_on": _fmt_ordinal_date(app.offer_accepted_on),
+            "offer_remarks": app.offer_remarks or "",
+        },
+        "massetDetails": {
+            "masset_employee_id": app.masset_employee_id or "",
+            "masset_status": app.masset_status or "",
+            "masset_synced_at": (
+                app.masset_synced_at.strftime("%d-%m-%y %H:%M")
+                if app.masset_synced_at
+                else ""
+            ),
+            "masset_sync_success_on": _fmt_date(app.masset_sync_success_on),
+        },
         "metadata": metadata_dict,
         "education": education_list,
         "experience": experience_list,
         "screening": answers_list,
         "interviews": interviews_history,
+        "trackingDates": tracking_dates,
     }
 
 
@@ -946,13 +1024,25 @@ def update_applicant_status_route(
     return {"message": f"Candidate status updated to {status_lower} successfully."}
 
 
-@router.get("/{job_id}")
+@router.get("/{job_identifier}")
 def get_job_post_by_id_route(
-    job_id: int,
+    job_identifier: str,
     db: Session = Depends(get_db),
     admin_id: int = Depends(_get_admin_id_from_token),
 ):
-    """Retrieves a single job post by its ID."""
+    """Retrieves a single job post by its ID or UUID."""
+    if "-" in job_identifier:
+        from app.models import JobPost
+        job = db.query(JobPost).filter(JobPost.uuid == job_identifier).first()
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        job_id = job.job_id
+    else:
+        try:
+            job_id = int(job_identifier)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid job identifier")
+
     job_post = get_job_post_or_404(db, job_id=job_id)
     from app.models import Admins
     from sqlalchemy.orm import joinedload

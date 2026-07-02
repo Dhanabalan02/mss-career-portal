@@ -1322,9 +1322,9 @@
         const tbody = document.getElementById('recent-jobs-tbody');
         if (tbody) {
           if (Array.isArray(data.recent_jobs) && data.recent_jobs.length > 0) {
-            const statusCls = { Active: 'green', Draft: 'purple', Closed: 'gray' };
-            tbody.innerHTML = data.recent_jobs.map(j => `
-              <tr onclick="window.location.href='/mss-career-portal/school/job-detail?id=${j.job_id}'">
+            const statusCls = { Active: 'green', Publish: 'green', Draft: 'purple', Closed: 'gray' };
+            tbody.innerHTML = data.recent_jobs.slice(0, 5).map(j => `
+              <tr>
                 <td><div class="td-name"><div><div class="td-name-text">${j.title}</div><div class="td-name-sub">${j.type}</div></div></div></td>
                 <td class="td-muted">${j.dept}</td>
                 <td><strong>${j.vacancies}</strong></td>
@@ -1380,8 +1380,8 @@
               if (sLower === 'hold') return 'On Hold';
               return sLower.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
             };
-            applicantsTbody.innerHTML = data.recent_applicants.map(a => `
-              <tr onclick="localStorage.setItem('candidateId', ${a.id}); window.location.href='/mss-career-portal/school/candidate-profile'">
+            applicantsTbody.innerHTML = data.recent_applicants.slice(0, 5).map(a => `
+              <tr>
                 <td>
                   <div class="td-name">
                     <div class="table-avatar" style="background:${a.color || '#2563eb'}">${a.initials}</div>

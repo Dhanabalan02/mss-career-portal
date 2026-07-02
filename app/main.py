@@ -22,6 +22,8 @@ from app.routes.hr_route import router as hr_router
 from app.routes.school_admin_route import router as school_admin_router
 from app.routes.notification_route import router as notification_router
 from app.routes.interview_auth_route import router as interview_auth_router
+from app.routes.prescreen_route import router as prescreen_router
+from app.routes.metadata_route import router as metadata_router
 
 app = FastAPI()
 
@@ -116,7 +118,7 @@ def redirect_short_dashboard():
 def redirect_short_jobs():
     return serve_html_with_base("mss-career-portal/pages/candidate/jobs.html", "/mss-career-portal/pages/candidate/")
 
-@app.get("/mss-career-portal/job-detail")
+@app.get("/mss-career-portal/job-description")
 def redirect_short_job_detail():
     return serve_html_with_base("mss-career-portal/pages/candidate/job-detail.html", "/mss-career-portal/pages/candidate/")
 
@@ -223,6 +225,8 @@ app.include_router(hr_router)
 app.include_router(school_admin_router)
 app.include_router(notification_router)
 app.include_router(interview_auth_router)
+app.include_router(prescreen_router)
+app.include_router(metadata_router)
 
 # Mount uploads folder
 app.mount("/uploads", StaticFiles(directory=str(BASE_DIR / "uploads")), name="uploads")

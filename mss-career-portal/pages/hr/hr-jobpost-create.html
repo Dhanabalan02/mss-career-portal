@@ -1369,7 +1369,7 @@
                 <input type="text" id="skillSearchInput" class="edu-search-input"
                   placeholder="Search skills by name or category…" autocomplete="off"
                   oninput="filterSkillOptions(this.value)" onclick="event.stopPropagation();openSkillDropdown()"
-                  onkeydown="handleSkillKey(event)">
+                  onkeydown="handleSkillKey(event)" onblur="validateSkillSelection()">
               </div>
               <div class="edu-dropdown" id="skillDropdown">
                 <div class="edu-dropdown-list" id="skillOptionsList">
@@ -1377,6 +1377,7 @@
                 </div>
               </div>
             </div>
+            <div class="error-text" id="skillError" style="display:none;color:var(--danger);font-size:12px;margin-top:4px;">Skills are mandatory. Please select at least one skill.</div>
             <div class="hint">Search by skill name or category and select; click a tag to remove it.</div>
           </div>
           <hr class="divider">
@@ -1387,7 +1388,7 @@
                 <div class="edu-tags" id="eduTags">
                   <input type="text" id="eduSearchInput" class="edu-search-input" placeholder="Search qualifications…"
                     autocomplete="off" oninput="filterEduOptions(this.value)"
-                    onclick="event.stopPropagation();openEduDropdown()" onkeydown="handleEduKey(event)">
+                    onclick="event.stopPropagation();openEduDropdown()" onkeydown="handleEduKey(event)" onblur="validateEduSelection()">
                 </div>
                 <div class="edu-dropdown" id="eduDropdown">
                   <div class="edu-dropdown-list" id="eduOptionsList">
@@ -1395,6 +1396,7 @@
                   </div>
                 </div>
               </div>
+              <div class="error-text" id="eduError" style="display:none;color:var(--danger);font-size:12px;margin-top:4px;">Education is mandatory. Please select at least one qualification.</div>
               <div class="hint">Search and select one or more required qualifications.</div>
             </div>
             <div class="form-group span2">
@@ -1482,7 +1484,7 @@
             </svg>
             Add Question
           </button>
-          <button class="btn btn-ghost" onclick="showLibrary()">
+          <button class="btn btn-ghost" onclick="event.preventDefault(); openLibrary()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
               stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -1739,6 +1741,7 @@
       return {
         currentStep,
         jobTitle: fieldVal('jobTitle'), dept: fieldVal('dept'), jobType: fieldVal('jobType'),
+        programme: fieldVal('programme'), location: fieldVal('location'),
         vacancies: fieldVal('vacancies'), school: fieldVal('school'),
         expMin: fieldVal('expMin'), expMax: fieldVal('expMax'),
         salMin: fieldVal('salMin'), salMax: fieldVal('salMax'),
@@ -1810,9 +1813,13 @@
 
       setFieldVal('jobTitle', draft.jobTitle);
       setFieldVal('dept', draft.dept);
+      if (typeof handleDeptChange === 'function') handleDeptChange(document.getElementById('dept'));
       setFieldVal('jobType', draft.jobType);
       setFieldVal('vacancies', draft.vacancies);
       setFieldVal('school', draft.school);
+      if (typeof handleSchoolChange === 'function') handleSchoolChange(document.getElementById('school'));
+      setFieldVal('location', draft.location);
+      setFieldVal('programme', draft.programme);
       setFieldVal('expMin', draft.expMin);
       setFieldVal('expMax', draft.expMax);
       setFieldVal('salMin', draft.salMin);
@@ -1890,6 +1897,8 @@
         if (err) err.style.display = 'none';
       });
     }
+
+    const _token = () => localStorage.getItem('access_token');
 
     function validateStep1() {
       clearAllFieldErrors();
@@ -1980,6 +1989,25 @@
       });
     }
 
+    function validateStep2() {
+      let isValid = true;
+      if (skillState.selected.length === 0) {
+        showFieldError('skillSearchInput', 'Skills are mandatory. Please select at least one skill.');
+        isValid = false;
+      } else {
+        clearFieldError('skillSearchInput');
+      }
+      
+      if (eduState.selected.length === 0) {
+        showFieldError('eduSearchInput', 'Education is mandatory. Please select at least one qualification.');
+        isValid = false;
+      } else {
+        clearFieldError('eduSearchInput');
+      }
+      
+      return isValid;
+    }
+
     function goStep(n) {
       if (n > currentStep) return;
       nextStep(n);
@@ -1987,11 +2015,8 @@
 
     function nextStep(n) {
       if (n > currentStep) {
-        if (currentStep === 1) {
-          if (!validateStep1()) {
-            return;
-          }
-        }
+        if (currentStep === 1 && !validateStep1()) return;
+        if (currentStep === 2 && !validateStep2()) return;
       }
 
       document.getElementById('step' + currentStep).classList.remove('active');
@@ -2180,33 +2205,164 @@
       handleQTypeChange(d.querySelector('select'));
     }
 
-    function showLibrary() {
-      const questions = [
-        'Have you taught in a CBSE school before?',
-        'What is your approach to differentiated learning?',
-        'Are you comfortable with online teaching platforms?',
-        'Do you have experience with the IB curriculum?',
-        'What is your average student pass percentage in board exams?',
-        'Are you willing to take extra classes or weekend sessions?'
-      ];
+    async function openLibrary() {
       const overlay = document.createElement('div');
       overlay.className = 'modal-overlay';
       overlay.innerHTML = `
-    <div class="modal">
-      <div class="modal-title">Question Library</div>
-      <p style="font-size:13px;color:var(--text3);margin-bottom:14px;">Select questions to add to your screening flow</p>
-      ${questions.map(q => `
-        <label class="lib-item">
-          <input type="checkbox">
-          <span>${q}</span>
-        </label>`).join('')}
-      <div class="modal-actions">
+    <div class="modal" style="max-width: 650px; width: 100%;">
+      <div class="modal-title" style="display:flex; justify-content:space-between; align-items:center;">
+        <span>Question Library</span>
+        <button class="btn btn-primary btn-sm" onclick="showAddLibQuestion()"><i class="ti ti-plus" aria-hidden="true"></i> Add</button>
+      </div>
+      <p style="font-size:13px;color:var(--text3);margin-bottom:14px;">Select questions to add to your screening flow or manage the library.</p>
+      
+      <div id="addLibQuestionForm" style="display:none; margin-bottom: 15px; padding: 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg2);">
+        <input type="text" id="newLibQuestionText" class="form-control" placeholder="Enter new question..." style="margin-bottom: 10px;">
+        <div style="display:flex; gap: 8px; justify-content: flex-end;">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('addLibQuestionForm').style.display='none'">Cancel</button>
+          <button class="btn btn-primary btn-sm" onclick="saveNewLibQuestion()">Save</button>
+        </div>
+      </div>
+
+      <div id="libQuestionsContainer" class="scrollbar-thin-1" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+        <div style="text-align:center; padding: 20px;"><span class="spinner-border spinner-border-sm" role="status"></span> Loading...</div>
+      </div>
+      <div class="modal-actions" style="margin-top: 20px;">
         <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
         <button class="btn btn-primary" onclick="addFromLibrary(this)">Add Selected</button>
       </div>
     </div>`;
       document.body.appendChild(overlay);
       overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+      
+      await loadLibraryQuestions();
+    }
+
+    function showAddLibQuestion() {
+      const form = document.getElementById('addLibQuestionForm');
+      form.style.display = 'block';
+      document.getElementById('newLibQuestionText').focus();
+    }
+
+    async function loadLibraryQuestions() {
+      try {
+        const res = await fetch(API_BASE + '/prescreening', { headers: { 'Authorization': 'Bearer ' + _token() } });
+        if (!res.ok) throw new Error('Failed to load library');
+        const data = await res.json();
+        renderLibraryQuestions(data);
+      } catch (err) {
+        showToast(err.message, 'error');
+        document.getElementById('libQuestionsContainer').innerHTML = '<div style="color:var(--danger); padding:10px;">Failed to load questions.</div>';
+      }
+    }
+
+    function renderLibraryQuestions(questions) {
+      const container = document.getElementById('libQuestionsContainer');
+      if (!questions.length) {
+        container.innerHTML = '<div style="padding:15px; text-align:center; color:var(--text3);">No questions in library.</div>';
+        return;
+      }
+      container.innerHTML = questions.map(q => {
+        const safeQ = q.questions.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+        return `
+        <label class="lib-item" style="display:flex; align-items:center; gap: 10px; padding: 10px; border-bottom: 1px solid var(--border); margin:0;">
+          <input type="checkbox" value="${q.id}">
+          <span style="flex:1;">${q.questions}</span>
+          <div class="lib-actions" style="display:flex; gap: 5px;">
+            <button class="btn btn-ghost btn-sm" style="padding: 4px 8px;" onclick="event.preventDefault(); editLibQuestion(${q.id}, '${safeQ}')"><i class="ti ti-pencil" aria-hidden="true"></i></button>
+            <button class="btn btn-danger btn-sm" style="padding: 4px 8px;" onclick="event.preventDefault(); deleteLibQuestion(${q.id})"><i class="ti ti-trash" aria-hidden="true"></i></button>
+          </div>
+        </label>`;
+      }).join('');
+    }
+
+    async function saveNewLibQuestion() {
+      const text = document.getElementById('newLibQuestionText').value.trim();
+      if (!text) { showToast('Question text is required', 'error'); return; }
+      
+      try {
+        const res = await fetch(API_BASE + '/prescreening', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + _token(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ questions: text })
+        });
+        if (!res.ok) throw new Error('Failed to add question');
+        document.getElementById('addLibQuestionForm').style.display = 'none';
+        document.getElementById('newLibQuestionText').value = '';
+        showToast('Question added to library');
+        await loadLibraryQuestions();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function editLibQuestion(id, currentText) {
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.innerHTML = `
+      <div class="modal" style="max-width: 500px; width: 100%;">
+        <div class="modal-title">Edit Question</div>
+        <div style="margin-bottom: 15px;">
+          <input type="text" id="editQuestionInput" class="form-control" value="${currentText.replace(/"/g, '&quot;')}" style="width: 100%; box-sizing: border-box;">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+          <button class="btn btn-primary" id="saveEditQuestionBtn">Save</button>
+        </div>
+      </div>`;
+      document.body.appendChild(overlay);
+
+      document.getElementById('saveEditQuestionBtn').addEventListener('click', async () => {
+        const newText = document.getElementById('editQuestionInput').value;
+        if (newText === null || newText.trim() === '' || newText === currentText) {
+            overlay.remove();
+            return;
+        }
+        
+        try {
+          const res = await fetch(API_BASE + '/prescreening/' + id, {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + _token(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ questions: newText.trim() })
+          });
+          if (!res.ok) throw new Error('Failed to update question');
+          showToast('Question updated', 'success');
+          overlay.remove();
+          await loadLibraryQuestions();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
+    }
+
+    async function deleteLibQuestion(id) {
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.innerHTML = `
+      <div class="modal" style="max-width: 400px; width: 100%;">
+        <div class="modal-title" style="color: var(--danger);">Confirm Delete</div>
+        <p style="margin-bottom: 20px;">Are you sure you want to delete this question from the library? This action cannot be undone.</p>
+        <div style="display:flex; justify-content:flex-end; gap:8px;">
+          <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+          <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+      </div>`;
+      document.body.appendChild(overlay);
+
+      document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+        try {
+          const res = await fetch(API_BASE + '/prescreening/' + id, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + _token() }
+          });
+          if (!res.ok) throw new Error('Failed to delete question');
+          showToast('Question deleted', 'success');
+          overlay.remove();
+          await loadLibraryQuestions();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      });
     }
 
     function addFromLibrary(btn) {
@@ -2346,8 +2502,8 @@
       const jobType = document.getElementById('jobType').value;
       const vacancies = parseInt(document.getElementById('vacancies').value) || 1;
       const schoolName = document.getElementById('school').value;
-      const locationVal = document.getElementById('location') ? document.getElementById('location').value.trim() : null;
-      const programmeVal = document.getElementById('programme') ? document.getElementById('programme').value : null;
+      const locationVal = document.getElementById('location').value;
+      const programmeVal = document.getElementById('programme').value;
 
       const minExp = document.getElementById('expMin').value.trim() || null;
       const maxExp = document.getElementById('expMax').value.trim() || null;
@@ -2587,14 +2743,19 @@
     function renderSkillOptions() {
       const list = document.getElementById('skillOptionsList');
       if (!list) return;
-      if (!skillState.filtered.length) { list.innerHTML = '<div class="edu-no-results">No matches found.</div>'; return; }
+      const q = document.getElementById('skillSearchInput')?.value || '';
+      if (!skillState.filtered.length) { 
+        const safeQ = q.replace(/'/g, "\\'");
+        list.innerHTML = `<div class="edu-no-results">No matches found. <br><button class="btn btn-sm btn-primary" style="margin-top:8px;" onclick="event.preventDefault(); addNewSkillToLibrary('${safeQ}')">Add "${q}" to Library</button></div>`; 
+        return; 
+      }
       const groups = {};
       skillState.filtered.forEach(s => { if (!groups[s.category]) groups[s.category] = []; groups[s.category].push(s); });
       list.innerHTML = Object.entries(groups).map(([cat, skills]) =>
         `<div class="skill-group-header">${escapeHtml(cat)}</div>` +
         skills.map(s => {
           const sel = skillState.selected.some(x => x.id === s.id);
-          return `<div class="edu-option${sel ? ' selected' : ''}" data-skill-id="${s.id}"><span class="edu-check">${sel ? '✓' : ''}</span>${escapeHtml(s.label)}</div>`;
+          return `<div class="edu-option${sel ? ' selected' : ''}" onclick="toggleSkillOption(${s.id}, '${escapeHtml(s.label).replace(/'/g, "\\'")}')" data-skill-id="${s.id}"><span class="edu-check">${sel ? '✓' : ''}</span>${escapeHtml(s.label)}</div>`;
         }).join('')
       ).join('');
     }
@@ -2608,7 +2769,7 @@
         const tag = document.createElement('span');
         tag.className = 'edu-tag';
         tag.dataset.skillId = s.id;
-        tag.innerHTML = `${escapeHtml(s.label)}<span class="rm">×</span>`;
+        tag.innerHTML = `${escapeHtml(s.label)}<span class="rm" onclick="toggleSkillOption(${s.id}, '${escapeHtml(s.label).replace(/'/g, "\\'")}')">×</span>`;
         tagsWrap.insertBefore(tag, input);
       });
       input.placeholder = skillState.selected.length ? '' : 'Search skills by name or category…';
@@ -2703,13 +2864,15 @@
     function renderEduOptions() {
       const list = document.getElementById('eduOptionsList');
       if (!list) return;
+      const q = document.getElementById('eduSearchInput')?.value || '';
       if (!eduState.filtered.length) {
-        list.innerHTML = '<div class="edu-no-results">No matches found.</div>';
+        const safeQ = q.replace(/'/g, "\\'");
+        list.innerHTML = `<div class="edu-no-results">No matches found. <br><button class="btn btn-sm btn-primary" style="margin-top:8px;" onclick="event.preventDefault(); addNewEduToLibrary('${safeQ}')">Add "${q}" to Library</button></div>`;
         return;
       }
       list.innerHTML = eduState.filtered.map(opt => {
         const sel = eduState.selected.some(s => s.id === opt.id);
-        return `<div class="edu-option${sel ? ' selected' : ''}" data-edu-id="${opt.id}">
+        return `<div class="edu-option${sel ? ' selected' : ''}" onclick="toggleEduOption(${opt.id}, '${escapeHtml(opt.label).replace(/'/g, "\\'")}')" data-edu-id="${opt.id}">
       <span class="edu-check">${sel ? '✓' : ''}</span>${escapeHtml(opt.label)}
     </div>`;
       }).join('');
@@ -2733,6 +2896,88 @@
     function handleEduKey(e) {
       if (e.key === 'Escape') closeEduDropdown();
       if (e.key === 'Enter') e.preventDefault();
+    }
+
+    /* ── Close dropdowns globally ── */
+    document.addEventListener('click', () => {
+      document.getElementById('skillSelectWrap')?.classList.remove('open');
+      document.getElementById('eduSelectWrap')?.classList.remove('open');
+    });
+
+    function validateSkillSelection() {
+      setTimeout(() => {
+        if (skillState.selected.length === 0) {
+          showFieldError('skillSearchInput', 'Skills are mandatory. Please select at least one skill.');
+        } else {
+          clearFieldError('skillSearchInput');
+        }
+      }, 200);
+    }
+
+    function validateEduSelection() {
+      setTimeout(() => {
+        if (eduState.selected.length === 0) {
+          showFieldError('eduSearchInput', 'Education is mandatory. Please select at least one qualification.');
+        } else {
+          clearFieldError('eduSearchInput');
+        }
+      }, 200);
+    }
+
+    async function addNewSkillToLibrary(skillName) {
+      if (!skillName.trim()) return;
+      try {
+        const res = await fetch(API_BASE + '/metadata/skills', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + _token(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ skill_name: skillName.trim() })
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || 'Failed to add skill');
+        }
+        const data = await res.json();
+        showToast('Skill added to library', 'success');
+        
+        skillState.all.push({ id: data.skill.id, label: data.skill.skill_name, category: data.skill.category });
+        skillState.selected.push({ id: data.skill.id, label: data.skill.skill_name });
+        
+        document.getElementById('skillSearchInput').value = '';
+        renderSkillTags();
+        filterSkillOptions('');
+        validateSkillSelection();
+        saveDraftState();
+      } catch(err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    async function addNewEduToLibrary(eduName) {
+      if (!eduName.trim()) return;
+      try {
+        const res = await fetch(API_BASE + '/metadata/education', {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + _token(), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: eduName.trim() })
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || 'Failed to add education');
+        }
+        const data = await res.json();
+        showToast('Education added to library', 'success');
+        
+        eduState.all.push({ id: data.education.id, label: data.education.name });
+        eduState.selected.push({ id: data.education.id, label: data.education.name });
+        
+        document.getElementById('eduSearchInput').value = '';
+        renderEduTags();
+        filterEduOptions('');
+        validateEduSelection();
+        saveDraftState();
+      } catch(err) {
+        showToast(err.message, 'error');
+      }
     }
 
     async function loadJobPostToEdit() {

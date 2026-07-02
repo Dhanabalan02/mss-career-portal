@@ -299,23 +299,44 @@ tbody tr:hover { background: var(--bg2); }
 .checkbox { width: 15px; height: 15px; accent-color: var(--accent); cursor: pointer; }
 
 /* ── Pagination ── */
-.pagination {
-  display: flex; align-items: center; gap: 4px;
-  padding: 13px 18px;
-  border-top: 0.5px solid var(--border); background: var(--bg2);
-}
-.page-btn {
-  min-width: 32px; height: 32px; padding: 0 10px;
-  border: 0.5px solid var(--border2);
-  background: var(--surface); color: var(--text1);
-  border-radius: 7px;
-  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-  cursor: pointer; transition: all 0.15s;
-  display: flex; align-items: center; justify-content: center;
-}
-.page-btn:hover { background: var(--bg3); }
-.page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+   .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-1);
+      margin-top: auto;
+    }
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--border2);
+      color: var(--text2);
+      transition: all 0.12s;
+    }
 
+    .page-btn:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text1);
+    }
+
+    .page-btn.active {
+      background: rgba(233, 30, 99, 0.08);
+      color: #e91e63;
+      border-color: rgba(233, 30, 99, 0.5);
+      font-weight: 700;
+    }
 /* ── Modals ── */
 .modal-overlay {
   position: fixed; inset: 0;
@@ -508,7 +529,7 @@ tbody tr:hover { background: var(--bg2); }
         <table>
           <thead>
             <tr>
-              <th>SI NO</th>
+              <th style="width: 50px;">S.No</th>
               <th>Candidate</th>
               <th>Applied For</th>
               <th>Applied Date</th>
@@ -642,7 +663,7 @@ function renderApplicants(list) {
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
       <td>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="action-btn blue"  onclick="event.stopPropagation();localStorage.setItem('candidateId', ${c.id});location.href='/mss-career-portal/school/candidate-profile'">Profile</button>
+          <button class="action-btn blue"  onclick="event.stopPropagation();localStorage.setItem('candidateId', ${c.id});location.href='/mss-career-portal/school/candidate-profile?userId=${c.user_id}&appId=${c.app_id}'">Profile</button>
         <!-- ${c.stage!=='Rejected' ? `<button class="action-btn red" onclick="event.stopPropagation();rejectCandidate('${c.name}')">Reject</button>` : ''} -->
         </div>
       </td>`;
@@ -806,28 +827,37 @@ async function loadApplicants() {
 }
 
 /* ── Pagination ── */
-function buildPagination(total, perPage=10) {
-  const pg = document.getElementById('pagination');
-  if (total === 0) {
-    pg.innerHTML = '';
-    pg.style.display = 'none';
-    return;
-  }
-  pg.style.display = 'flex';
-  const totalPages = Math.ceil(total / perPage) || 1;
-  pg.innerHTML = '';
-  
-  for (let i = 1; i <= totalPages; i++) {
-    const b = document.createElement('button');
-    b.className = 'page-btn' + (i === 1 ? ' active' : '');
-    b.textContent = i;
-    b.onclick = function() {
-      document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-    };
-    pg.appendChild(b);
-  }
-}
+    function buildPagination(total, perPage) {
+      const pg = document.getElementById('pagination');
+      if (!pg) return;
+      
+      const totalPages = Math.ceil(total / perPage) || 1;
+      pg.innerHTML = '';
+      pg.style.display = 'flex';
+
+      const prev = document.createElement('button');
+      prev.className = 'page-btn';
+      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
+      prev.onclick = () => { };
+      pg.appendChild(prev);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i === 1 ? ' active' : '');
+        b.textContent = i;
+        b.onclick = function () {
+          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
+          this.classList.add('active');
+        };
+        pg.appendChild(b);
+      }
+
+      const next = document.createElement('button');
+      next.className = 'page-btn';
+      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
+      next.onclick = () => { };
+      pg.appendChild(next);
+    }
 
 /* ── Init ── */
 loadApplicants();

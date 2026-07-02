@@ -1,6 +1,5 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
-from fastapi.responses import RedirectResponse
 from app.core.html_helper import serve_html_with_base
 from pydantic import BaseModel
 from sqlalchemy.orm import Session

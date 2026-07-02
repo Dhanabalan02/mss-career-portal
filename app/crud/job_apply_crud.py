@@ -107,24 +107,34 @@ def check_already_applied(db: Session, user_id: int, job_id: int) -> Optional[Jo
         JobApplicant.job_id == job_id
     ).first()
 
+from datetime import datetime, timezone
+from sqlalchemy.orm import Session
+
 def respond_to_offer(db: Session, user_id: int, job_id: int, status_str: str) -> bool:
     app = db.query(JobApplicant).filter(
         JobApplicant.user_id == user_id,
         JobApplicant.job_id == job_id
     ).first()
+    
     if not app:
         return False
+        
+    status_lower = status_str.lower()
     
-    if status_str.lower() == 'accepted':
+    if status_lower == 'accepted':
         app.offer_acceptance_status = OfferAcceptanceStatus.ACCEPTED
-    elif status_str.lower() == 'rejected':
+        # Captures current UTC date for the DATE database column
+        app.offer_accepted_on = datetime.now(timezone.utc).date() 
+        
+    elif status_lower == 'rejected':
         app.offer_acceptance_status = OfferAcceptanceStatus.REJECTED
+        
     else:
         return False
-    
+        
     db.commit()
     
-    if status_str.lower() == 'accepted':
+    if status_lower == 'accepted':
         from app.crud.common import check_and_close_job_if_filled
         check_and_close_job_if_filled(db, job_id)
         

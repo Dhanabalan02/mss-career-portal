@@ -1504,7 +1504,7 @@
           if (!applicants || applicants.length === 0) {
             aBody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">No applications received yet.</td></tr>';
           } else {
-            applicants.forEach(c => {
+            applicants.slice(0, 5).forEach(c => {
               const tr = document.createElement('tr');
               tr.innerHTML = `
                     <td>

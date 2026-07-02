@@ -900,36 +900,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--radius-sm);
-      font-size: 12.5px;
+      border-radius: 50%;
+      font-size: 13px;
       font-weight: 500;
       font-family: var(--font-body);
       cursor: pointer;
-      background: var(--bg1);
+      background: transparent;
       border: 1px solid var(--border2);
       color: var(--text2);
       transition: all 0.12s;
     }
 
     .page-btn:hover {
-      background: var(--bg3);
+      background: rgba(0, 0, 0, 0.04);
       color: var(--text1);
     }
 
     .page-btn.active {
-      background: var(--blue);
-      color: #fff;
-      border-color: var(--blue);
+      background: rgba(233, 30, 99, 0.08);
+      color: #e91e63;
+      border-color: rgba(233, 30, 99, 0.5);
       font-weight: 700;
     }
-
-    .page-btn-nav {
-      width: auto;
-      padding: 0 12px;
-      gap: 4px;
-      font-size: 12px;
-    }
-
     /* ─── MODAL ────────────────────────────────────────────────── */
     .modal-overlay {
       position: fixed;
@@ -1203,6 +1195,7 @@
 
             return {
               id: j.job_id,
+              uuid: j.uuid,
               title: j.job_title || 'Untitled Job',
               dept: j.department || 'N/A',
               closing: formattedClosing,
@@ -1291,7 +1284,7 @@
       <td>
         <div class="td-flex">
           <span class="status-dot" style="background:${meta.dot};"></span>
-          <span class="td-job-title" style="cursor:pointer;" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.id}');location.href='/mss-career-portal/hr/jobpost-details'">${j.title}</span>
+          <span class="td-job-title" style="cursor:pointer;" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.uuid}');location.href='/mss-career-portal/hr/jobpost-details?id=${j.uuid}&title=' + encodeURIComponent('${j.title}') + '&unit=' + encodeURIComponent('${j.location}')">${j.title}</span>
         </div>
       </td>
       <td class="td-muted">${j.dept}</td>
@@ -1303,7 +1296,12 @@
       <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
       <td>
         <div class="table-actions">
-          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();localStorage.setItem('hr_current_job_id', '${j.id}');location.href='/mss-career-portal/hr/jobpost-details'" title="View"><i class="ti ti-eye"></i></button>
+          <button 
+            class="act-btn act-btn-blue" 
+            onclick="event.stopPropagation(); localStorage.setItem('hr_current_job_id', '${j.uuid}'); location.href='/mss-career-portal/hr/jobpost-details?id=${j.uuid}&title=' + encodeURIComponent('${j.title}') + '&unit=' + encodeURIComponent('${j.location}')" 
+            title="View">
+            <i class="ti ti-eye"></i>
+          </button>
           ${j.status === 'Draft' || j.status === 'Active'
             ? `<button class="act-btn"
           onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-create?id=${j.id}'" title="Edit">
@@ -1467,47 +1465,34 @@
 
     /* ── PAGINATION ──────────────────────────────────────────────── */
     function buildPagination(total, perPage) {
-      const totalPages = Math.ceil(total / perPage) || 1;
       const pg = document.getElementById('pagination');
+      if (!pg) return;
+      
+      const totalPages = Math.ceil(total / perPage) || 1;
       pg.innerHTML = '';
-
-      if (totalPages <= 1) {
-        return;
-      }
+      pg.style.display = 'flex';
 
       const prev = document.createElement('button');
-      prev.className = 'page-btn page-btn-nav';
-      prev.innerHTML = '← Prev';
-      prev.disabled = (currentPageNum === 1);
-      prev.onclick = () => {
-        if (currentPageNum > 1) {
-          currentPageNum--;
-          filterJobs();
-        }
-      };
+      prev.className = 'page-btn';
+      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
+      prev.onclick = () => { };
       pg.appendChild(prev);
 
       for (let i = 1; i <= totalPages; i++) {
         const b = document.createElement('button');
-        b.className = 'page-btn' + (i === currentPageNum ? ' active' : '');
+        b.className = 'page-btn' + (i === 1 ? ' active' : '');
         b.textContent = i;
         b.onclick = function () {
-          currentPageNum = i;
-          filterJobs();
+          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
+          this.classList.add('active');
         };
         pg.appendChild(b);
       }
 
       const next = document.createElement('button');
-      next.className = 'page-btn page-btn-nav';
-      next.innerHTML = 'Next →';
-      next.disabled = (currentPageNum === totalPages);
-      next.onclick = () => {
-        if (currentPageNum < totalPages) {
-          currentPageNum++;
-          filterJobs();
-        }
-      };
+      next.className = 'page-btn';
+      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
+      next.onclick = () => { };
       pg.appendChild(next);
     }
 
