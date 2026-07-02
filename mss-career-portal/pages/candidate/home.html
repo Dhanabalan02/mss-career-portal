@@ -225,7 +225,7 @@
         }
 
         .why-choose-title{
-            font-size: 1.5rem;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -254,6 +254,17 @@
 
             <!--Banner Start-->
             <div class="mss-hero-section">
+                <!-- Floating card -->
+                <div class="mss-float-card mss-float-card-tl">
+                    <div class="mss-float-icon"
+                        style="background: var(--primary-btn-color);">
+                        <i class="feather-award" style="color:#fff;font-size:1rem;"></i>
+                    </div>
+                    <div>
+                        <div class="mss-float-title">Since 1928</div>
+                        <div class="mss-float-sub">98+ years of service</div>
+                    </div>
+                </div>
 
                 <!-- Animated background orbs -->
                 <div class="mss-orb mss-orb-1"></div>
@@ -277,7 +288,7 @@
                             <!-- Headline -->
                             <h1 class="mss-hero-headline">
                                 Be part of a <br>
-                                <span class="mss-hero-headline-accent">100+ years legacy</span>
+                                <span class="mss-hero-headline-accent">98+ years legacy</span>
                             </h1>
                             <!-- <h1 class="mss-hero-headline">
                                 Be part of a<br>
@@ -449,16 +460,16 @@
                                             class="mss-hero-img"></div>
                                 </div>
                                 <!-- Floating card -->
-                                <div class="mss-float-card mss-float-card-tl">
+                                <!-- <div class="mss-float-card mss-float-card-tl">
                                     <div class="mss-float-icon"
                                         style="background: var(--primary-btn-color);">
                                         <i class="feather-award" style="color:#fff;font-size:1rem;"></i>
                                     </div>
                                     <div>
-                                        <div class="mss-float-title">Since 1914</div>
-                                        <div class="mss-float-sub">110+ years of service</div>
+                                        <div class="mss-float-title">Since 1928</div>
+                                        <div class="mss-float-sub">98+ years of service</div>
                                     </div>
-                                </div>
+                                </div> -->
                                 <!-- <div class="mss-float-card mss-float-card-br">
                                     <div class="mss-float-icon" style="background:linear-gradient(135deg,#10B981,#059669);">
                                         <i class="feather-check-circle" style="color:#fff;font-size:1rem;"></i>
@@ -542,6 +553,10 @@
                 @media (max-width: 991px) {
                     .mss-hero-right {
                         display: none;
+                    }
+
+                    .mss-float-card-tl{
+                        display: none !important;
                     }
 
                     .mss-hero-section {
@@ -871,8 +886,8 @@
                 }
 
                 .mss-float-card-tl {
-                    top: 16%;
-                    left: -30px;
+                    top: 8.5%;
+                    right: 6%;
                     z-index: 1;
                 }
 
@@ -913,6 +928,10 @@
                     font-size: 14px;
                 }
 
+                .testimonials-left-text{
+                    font-size: 1.5rem;
+                }
+
                 /* Mobile: stack search vertically */
                 @media (max-width: 767px) {
                     .mss-bar {
@@ -949,7 +968,7 @@
                 <div class="container-fluid px-3 px-lg-5">
 
                     <!-- TITLE START-->
-                    <div class="wt-separator-two-part ">
+                    <div class="wt-separator-two-part">
                         <div class="row wt-separator-two-part-row">
                             <div class="wt-separator-two-part-left">
                                 <!-- TITLE START-->
@@ -957,7 +976,7 @@
                                     <div class="wt-small-separator site-text-primary">
                                         <div>Why Choose Us</div>
                                     </div>
-                                    <h2 class="wt-title why-choose-title">Be part of an institution with 99 years of legacy, while contributing to work that remains relevant and impactful in today's world.</h2>
+                                    <h2 class="wt-title why-choose-title">Be part of an institution with 98+ years of legacy, while contributing to work that remains relevant and impactful in today's world.</h2>
                                 </div>
                                 <!-- TITLE END-->
                             </div>
@@ -1260,7 +1279,7 @@
                         style="background:#fff;border-radius:16px;padding:1.5rem;text-align:center;border:1px solid #E2E8F0;">
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:1.8rem;font-weight:800;color:var(--primary-color);letter-spacing:-1px;">
-                            98</div>
+                            98+</div>
                         <div
                             style="font-family:'Rubik',sans-serif;font-size:0.78rem;color:#94A3B8;font-weight:500;margin-top:4px;">
                             years of excellence</div>
@@ -1271,7 +1290,7 @@
                         style="background: var(--primary-btn-color); border-radius:16px;padding:1.5rem;text-align:center;cursor:pointer;"
                         onclick="location.href='/mss-career-portal/open-roles'">
                         <div
-                            style="font-family:'Rubik',sans-serif;font-size:1.7rem;font-weight:700;color:#fff;margin-bottom:4px;">
+                            style="font-family:'Rubik',sans-serif;font-size: clamp(1.2rem, 1rem + 0.78vw, 1.7rem);font-weight:700;color:#fff;margin-bottom:4px;">
                             Browse All Jobs</div>
                         <div style="font-family:'Rubik',sans-serif;font-size:0.75rem;color:rgba(255,255,255,0.7);">See
                             full listing &rarr;</div>
@@ -1409,7 +1428,7 @@
         }
         .mss-resume-feature-card:hover {
             border-color: var(--card-border, #BFDBFE);
-            box-shadow: 0 8px 28px rgba(26,86,219,.10), 0 2px 6px rgba(26,86,219,.05);
+            box-shadow: var(--card-border-shadow);
             transform: translateY(-4px);
         }
         .mss-resume-feature-card:hover::before { opacity: 1; }
@@ -1485,7 +1504,7 @@
         }
         .mss-resume-browse-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(153, 59, 246, 0.55);
+            box-shadow: 0 6px 20px rgba(153, 59, 246, 0.55);
             color: #fff;
             text-decoration: none;
         }
@@ -1499,7 +1518,7 @@
                 <div class="mss-resume-cta-badge">
                     <i class="feather-file-text" style="font-size:0.8rem;"></i> Quick Apply
                 </div>
-                <h2 class="mss-resume-cta-title">Upload Your Resume &amp; Get Discovered</h2>
+                <h2 class="mss-resume-cta-title">Upload Your Resume</h2>
                 <p class="mss-resume-cta-sub">Skip the lengthy forms — upload your resume once and apply to any open role across all 11 MSS units instantly.</p>
             </div>
 
@@ -1612,7 +1631,7 @@
                                 <div class="wt-small-separator site-text-primary">
                                     <div>Testimonials</div>
                                 </div>
-                                <h2 class="wt-title">Hear from <span class="site-text-primary">The Madras Seva Sadan
+                                <h2 class="wt-title testimonials-left-text">Hear from <span class="site-text-primary">The Madras Seva Sadan
                                         Family </span></h2>
                             </div>
                             <!-- TITLE END-->
@@ -1794,7 +1813,7 @@
                                 </li>
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
                                         style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: var(--white-color); margin: 0;">hrexecutive@pro.themadrassevasadan.org</p>
+                                    <p style="color: var(--white-color); margin: 0; overflow-wrap:anywhere">hrexecutive@pro.themadrassevasadan.org</p>
                                 </li>
                                 <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
                                         style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
