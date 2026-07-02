@@ -5086,7 +5086,7 @@ ol li {
   display: inline-block;
   /* color: #1967d2; */
   color: var(--primary-color)   ;
-  font-size: 18px;
+  font-size: 2rem;
   line-height: 40px;
   font-weight: 500;
 }
@@ -5095,14 +5095,14 @@ ol li {
 }
 @media (max-width: 991px) {
   .wt-small-separator {
-    font-size: 22px;
+    font-size: 26px;
     margin-bottom: 10px;
   }
 }
 @media (max-width: 575px) {
   .wt-small-separator {
-    font-size: 18px;
-    line-height: 18px;
+    font-size: 24px;
+    /* line-height: 18px; */
     letter-spacing: 0px;
   }
 }
@@ -5143,7 +5143,7 @@ ol li {
 }
 @media (max-width: 575px) {
   .section-head.left.wt-small-separator-outer h2 {
-    font-size: 22px;
+    font-size: 18px;
   }
 }
 .section-head.left.wt-small-separator-outer p {
