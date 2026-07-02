@@ -402,6 +402,14 @@
         border-color: var(--border-strong);
       }
 
+      .stat-card.sc-rejected {
+        border-top-color: var(--danger);
+      }
+
+      .stat-card.sc-screened {
+        border-top-color: var(--success);
+      }
+
       .stat-icon {
         width: 36px;
         height: 36px;
@@ -2226,7 +2234,6 @@
       </div>
     </div>
 
-    <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
     <script src="portal-layout.js"></script>
     <script>
@@ -2362,7 +2369,7 @@
         return `
   <div class="candidate-card" id="card-${c.id}"
     draggable="true"
-    style="border-left-color:${m.border}"
+    style="border-left-color:${m.border}; ${c.stage === 'Prescreen Rejected' || c.stage === 'Screened' ? `border-color: ${m.border};` : ''}"
     onclick="openDrawer(event, ${c.id})"
     ondragstart="onDragStart(event,${c.id})"
     ondragend="onDragEnd(event)"
@@ -2790,20 +2797,6 @@
         showToast("Notes saved", "success");
       }
 
-      /* ── Toast ── */
-      // Capture portal-layout's showToast before this script shadows window.showToast
-      const _portalShowToast = window.showToast || null;
-
-      // Define showToast as a variable to prevent hoisting override before capture
-      const showToast = function (msg, type = "success") {
-        const mappedType = type === "danger" ? "error" : type;
-        if (_portalShowToast) {
-          _portalShowToast(msg, mappedType);
-        } else {
-          console.log("[Toast]", msg);
-        }
-      };
-      window.showToast = showToast;
 
       function getStageFromPoint(x, y) {
         const el = document.elementFromPoint(x, y);

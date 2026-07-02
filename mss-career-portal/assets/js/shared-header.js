@@ -321,7 +321,7 @@ window.showMssToast = function (message, type) {
 
   var iconClass = 'feather-check-circle';
   if (toastType === 'error') {
-    iconClass = 'feather-alert-circle';
+    iconClass = 'feather-x-circle';
   } else if (toastType === 'warning') {
     iconClass = 'feather-alert-triangle';
   } else if (toastType === 'info') {
@@ -605,7 +605,7 @@ async function loginUser() {
 
 
   if (!email || !password) {
-    alert("Please enter email and password");
+    showMssToast("Please enter email and password", "error");
     return;
   }
 
@@ -629,7 +629,7 @@ async function loginUser() {
     console.log("Login response:", result);
 
     if (!response.ok) {
-      alert(result.message || result.detail || "Login Failed");
+      showMssToast(result.message || result.detail || "Login Failed", "error");
       return;
     }
 
@@ -658,7 +658,7 @@ async function loginUser() {
     }
 
     applyAuthUI();
-    alert("Login Successful");
+    showMssToast("Login Successful", "success");
     window.dispatchEvent(new CustomEvent('candidate_login_success'));
 
     var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
@@ -670,7 +670,7 @@ async function loginUser() {
 
   } catch (error) {
     console.error(error);
-    alert("Unable to connect to server");
+    showMssToast("Unable to connect to server", "error");
   }
 }
 
@@ -692,7 +692,7 @@ async function registerCandidate(form) {
   var password = data.get("password") || "";
 
   if (!firstName || !lastName || !email || !mobile || !password) {
-    alert("Please fill in all fields.");
+    showMssToast("Please fill in all fields.", "error");
     return;
   }
 
@@ -713,7 +713,7 @@ async function registerCandidate(form) {
     console.log("Register response:", result);
 
     if (!response.ok) {
-      alert(result.message || result.detail || "Registration failed");
+      showMssToast(result.message || result.detail || "Registration failed", "error");
       return;
     }
 
@@ -733,7 +733,7 @@ async function registerCandidate(form) {
 
     form.reset();
     applyAuthUI();
-    alert("Account created successfully!");
+    showMssToast("Account created successfully!", "success");
     window.dispatchEvent(new CustomEvent('candidate_login_success'));
 
     var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
@@ -745,7 +745,7 @@ async function registerCandidate(form) {
 
   } catch (error) {
     console.error(error);
-    alert("Unable to connect to server");
+    showMssToast("Unable to connect to server", "error");
   }
 }
 
@@ -818,8 +818,7 @@ window.startFpTimer = function () {
 window.fpSendOtp = async function (isResend) {
   var mobile = document.getElementById('fpMobile').value.trim();
   if (!mobile) {
-    if (window.showMssToast) window.showMssToast('Please enter your mobile number', 'error');
-    else alert('Please enter your mobile number');
+    showMssToast('Please enter your mobile number', 'error');
     return;
   }
   var mobileErr = document.getElementById('fpMobileError');
@@ -850,8 +849,7 @@ window.fpSendOtp = async function (isResend) {
           mobileErr.style.display = 'block';
         }
       } else {
-        if (window.showMssToast) window.showMssToast(data.detail || 'Failed to send OTP', 'error');
-        else alert(data.detail || 'Failed to send OTP');
+        showMssToast(data.detail || 'Failed to send OTP', 'error');
       }
     }
   } catch (e) {
@@ -1235,7 +1233,7 @@ window.fpUpdatePassword = async function () {
     if ($(form).find('.is-invalid').length > 0) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      alert("Please correct the errors in the form before submitting.");
+      showMssToast("Please correct the errors in the form before submitting.", "error");
     }
   });
 

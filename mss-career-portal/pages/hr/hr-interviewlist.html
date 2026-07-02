@@ -1508,11 +1508,6 @@
     </div>
   </div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast">
-    <i class="fa-solid fa-circle-check"></i>
-    <span id="toastMsg"></span>
-  </div>
 
   <script src="portal-layout.js"></script>
   <script>
@@ -1859,17 +1854,6 @@
       setTimeout(() => document.getElementById('candidateList').classList.remove('open'), 200);
     }
 
-    /* ── Toast ── */
-    let toastTimer;
-    const _portalShowToast = window.showToast || null;
-    const showToast = function(msg, type = 'success') {
-      if (_portalShowToast) {
-        _portalShowToast(msg, type);
-      } else {
-        console.log(msg);
-      }
-    };
-    window.showToast = showToast;
 
     /* ── Filters ── */
     function applyFilters() {

@@ -462,8 +462,30 @@
                                 </div>
 
                                 <script>
-                                    function toggleShareMenu(e) {
+                                    async function toggleShareMenu(e) {
                                         e.stopPropagation();
+                                        
+                                        var titleText = document.getElementById('jdTitle') ? document.getElementById('jdTitle').textContent : 'Job';
+                                        var link = window.location.origin + '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
+                                                   '&title=' + encodeURIComponent((window.loadedJobTitle || '').replace(/ /g, '-')) +
+                                                   '&unit=' + encodeURIComponent((window.loadedJobUnitName || '').replace(/ /g, '-'));
+
+                                        if (navigator.share) {
+                                            try {
+                                                await navigator.share({
+                                                    title: titleText,
+                                                    text: 'Check out this job opening: ' + titleText,
+                                                    url: link
+                                                });
+                                                return;
+                                            } catch (err) {
+                                                if (err.name === 'AbortError') {
+                                                    return; // User cancelled
+                                                }
+                                                console.warn('Web Share failed, falling back to dropdown:', err);
+                                            }
+                                        }
+
                                         var dd = document.getElementById('mssShareDropdown');
                                         var btn = document.getElementById('mssShareBtn');
                                         var isOpen = dd.classList.contains('open');
@@ -477,9 +499,9 @@
                                         if (btn) btn.setAttribute('aria-expanded', 'false');
                                     }
                                     function copyJobLink() {
-                                        var titleText = document.getElementById('jdTitle') ? document.getElementById('jdTitle').textContent : 'job';
-                                        var titleForUrl = titleText.replace(/ /g, '-');
-                                        var link = window.location.origin + '/mss-career-portal/job-detail?title=' + encodeURIComponent(titleForUrl);
+                                        var link = window.location.origin + '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
+                                                   '&title=' + encodeURIComponent((window.loadedJobTitle || '').replace(/ /g, '-')) +
+                                                   '&unit=' + encodeURIComponent((window.loadedJobUnitName || '').replace(/ /g, '-'));
                                         navigator.clipboard.writeText(link).then(function() {
                                             var btn = document.getElementById('mssShareBtn');
                                             var orig = btn.innerHTML
@@ -1120,7 +1142,7 @@
                 if (loginModal && typeof bootstrap !== 'undefined') {
                     bootstrap.Modal.getOrCreateInstance(loginModal).show();
                 } else {
-                    alert('Please log in to apply for this job.');
+                    if (window.showMssToast) window.showMssToast('Please log in to apply for this job.', 'error');
                 }
             }
 
@@ -1314,12 +1336,12 @@
                     return res.json();
                 })
                 .then(function(data) {
-                    alert('Offer ' + status + ' successfully!');
+                    if (window.showMssToast) window.showMssToast('Offer ' + status + ' successfully!', 'success');
                     window.location.reload();
                 })
                 .catch(function(e) {
                     console.error('Error responding to offer:', e);
-                    alert('There was an error responding to the offer.');
+                    if (window.showMssToast) window.showMssToast('There was an error responding to the offer.', 'error');
                 });
             };
 
@@ -1330,14 +1352,37 @@
                 if (descEl) descEl.textContent = 'This job posting could not be found or is no longer available.';
             }
 
-            var loadedJobTitle = '';
+            window.loadedJobTitle = '';
+            window.loadedJobUuid = '';
+            window.loadedJobUnitName = '';
             document.addEventListener('DOMContentLoaded', async function () {
                 var searchParams = new URLSearchParams(window.location.search);
                 var urlId = searchParams.get('id');
                 var urlTitle = searchParams.get('title');
+                var urlUuid = searchParams.get('uuid');
                 
                 var jobId = urlId;
-                if (!jobId && urlTitle) {
+                var fetchDetails = null;
+
+                if (urlUuid && urlUuid !== 'null' && urlUuid !== 'undefined') {
+                    try {
+                        const response = await fetch(JOBS_API_BASE + '/jobs/public/by-uuid/' + encodeURIComponent(urlUuid));
+                        if (response.ok) {
+                            const job = await response.json();
+                            jobId = job.job_id;
+                            window.loadedJobUuid = job.uuid || '';
+                            window.loadedJobTitle = job.job_title || '';
+                            window.loadedJobUnitName = job.school_name || job.department || '';
+                            fetchDetails = Promise.resolve(job);
+                        } else {
+                            throw new Error('UUID lookup failed');
+                        }
+                    } catch (e) {
+                        console.error('Error fetching job by UUID', e);
+                        renderError();
+                        return;
+                    }
+                } else if (!jobId && urlTitle) {
                     try {
                         const res = await fetch(JOBS_API_BASE + '/jobs/public');
                         if (res.ok) {
@@ -1352,15 +1397,15 @@
                     jobId = localStorage.getItem('candidate_current_job_id');
                 }
                 
-                if (urlId || urlTitle) {
+                if (urlId || urlTitle || urlUuid) {
                     if (jobId) localStorage.setItem('candidate_current_job_id', jobId);
-                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
 
                 window.shareJob = function(platform) {
                     if (!jobId) return;
-                    var titleForUrl = loadedJobTitle ? loadedJobTitle.replace(/ /g, '-') : 'job';
-                    var shareUrl = window.location.origin + '/mss-career-portal/job-detail?title=' + encodeURIComponent(titleForUrl);
+                    var shareUrl = window.location.origin + '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
+                                   '&title=' + encodeURIComponent((window.loadedJobTitle || '').replace(/ /g, '-')) +
+                                   '&unit=' + encodeURIComponent((window.loadedJobUnitName || '').replace(/ /g, '-'));
                     var text = 'Check out this job opening at The Madras Seva Sadan!';
                     var url = '';
                     if (platform === 'facebook') {
@@ -1375,17 +1420,19 @@
                     if (url) window.open(url, '_blank', 'width=600,height=400');
                 };
                 
-                if (!jobId) {
+                if (!jobId && !fetchDetails) {
                     renderError();
                     return;
                 }
                 var token = localStorage.getItem('access_token');
                 
-                var fetchDetails = fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId))
-                    .then(function (response) {
-                        if (!response.ok) throw new Error('Job not found: ' + response.status);
-                        return response.json();
-                    });
+                if (!fetchDetails) {
+                    fetchDetails = fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId))
+                        .then(function (response) {
+                            if (!response.ok) throw new Error('Job not found: ' + response.status);
+                            return response.json();
+                        });
+                }
                     
                 if (token) {
                     fetch(JOBS_API_BASE + '/jobs/public/' + encodeURIComponent(jobId) + '/view', {
@@ -1397,7 +1444,11 @@
                     .then(r => r.json())
                     .then(viewData => {
                         fetchDetails.then(job => {
-                            if (job) loadedJobTitle = job.job_title;
+                            if (job) {
+                                window.loadedJobTitle = job.job_title;
+                                window.loadedJobUuid = job.uuid || '';
+                                window.loadedJobUnitName = job.school_name || job.department || '';
+                            }
                             if (viewData && viewData.view_counted && viewData.views) {
                                 job.views = viewData.views;
                             }
@@ -1409,7 +1460,11 @@
                     })
                     .catch(err => {
                         fetchDetails.then(job => {
-                            if (job) loadedJobTitle = job.job_title;
+                            if (job) {
+                                window.loadedJobTitle = job.job_title;
+                                window.loadedJobUuid = job.uuid || '';
+                                window.loadedJobUnitName = job.school_name || job.department || '';
+                            }
                             renderJob(job);
                         }).catch(function (error) {
                             console.error('Job detail fetch failed:', error);
@@ -1418,7 +1473,11 @@
                     });
                 } else {
                     fetchDetails.then(job => {
-                        if (job) loadedJobTitle = job.job_title;
+                        if (job) {
+                            window.loadedJobTitle = job.job_title;
+                            window.loadedJobUuid = job.uuid || '';
+                            window.loadedJobUnitName = job.school_name || job.department || '';
+                        }
                         renderJob(job);
                     }).catch(function (error) {
                         console.error('Job detail fetch failed:', error);

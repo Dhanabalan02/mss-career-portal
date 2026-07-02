@@ -503,11 +503,14 @@
 
     /* ── Action buttons ── */
     .action-btn {
-      padding: 5px 12px;
+      padding: 6px;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 15px;
       cursor: pointer;
       border: 0.5px solid transparent;
       transition: opacity 0.15s;
@@ -857,7 +860,7 @@
                 <th>Experience</th>
                 <th>Current Stage</th>
                 <th>Interview Status</th>
-                <th>Actions</th>
+                <th style="text-align:center;">Actions</th>
               </tr>
             </thead>
             <tbody id="applicantBody"></tbody>
@@ -1046,7 +1049,9 @@
         return;
       } else {
         const pg = document.getElementById('pagination');
-        if (pg) pg.style.display = 'flex';
+        if (pg) {
+          pg.style.display = list.length > 10 ? 'flex' : 'none';
+        }
       }
       list.forEach((c, index) => {
         let displayStage = c.stage;
@@ -1076,11 +1081,11 @@
       <td style="font-weight:500;">${c.exp}</td>
       <td>${stageBadge(displayStage)}</td>
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
-      <td>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="action-btn blue" onclick="event.stopPropagation(); localStorage.setItem('candidateId', ${c.id}); location.href='/mss-career-portal/hr/candidate-profile'">Profile</button>
-          ${(showActions && c.stage === 'Screened' && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled') ? `<button class="action-btn green" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})">Schedule</button>` : ''}
-          ${canAction ? `<button class="action-btn red" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')">Reject</button>` : ''}
+      <td style="text-align:center;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+          <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); localStorage.setItem('candidateId', ${c.id}); location.href='/mss-career-portal/hr/candidate-profile'"><i class="ti ti-user"></i></button>
+          ${(showActions && c.stage === 'Screened' && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
+          ${canAction ? `<button class="action-btn red" title="Reject Candidate" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')"><i class="ti ti-x"></i></button>` : ''}
         </div>
       </td>`;
         tbody.appendChild(tr);
@@ -1111,7 +1116,7 @@
     <div class="form-grid">
       <div class="form-group span2">
         <label>Interview Round</label>
-        <input type="text" id="schRound" placeholder="e.g. Round 1 – Technical Interview" value="Round 1 - Technical Interview">
+        <input type="text" id="schRound">
       </div>
       <div class="form-group">
         <label>Mode</label>
@@ -1121,7 +1126,7 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Date</label><input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}">
+        <label>Date</label><input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}" min="${new Date().toISOString().split('T')[0]}">
       </div>
       <div class="form-group span2" style="display:flex; flex-direction:row; gap:10px;">
         <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
@@ -1159,7 +1164,7 @@
       const interviewer = document.getElementById('schInterviewer').value.trim();
 
       if (!round || !schDate || !schTime || !schEndTime) {
-        alert('Please fill out all required fields (Round, Date, Start Time, End Time).');
+        if (window.showToast) window.showToast('Please fill out all required fields (Round, Date, Start Time, End Time).', 'error');
         return;
       }
 
@@ -1192,17 +1197,13 @@
         return res.json();
       })
       .then(() => {
-        if (window.showToast) {
-          window.showToast('Interview scheduled successfully!', 'success');
-        } else {
-          alert('Interview scheduled successfully!');
-        }
+        if (window.showToast) window.showToast('Interview scheduled successfully!', 'success');
         document.querySelector('.modal-overlay').remove();
         fetchApplicants();
       })
       .catch(err => {
         console.error(err);
-        alert('Error scheduling interview: ' + err.message);
+        if (window.showToast) window.showToast('Error scheduling interview: ' + err.message, 'error');
       });
     }
 
@@ -1280,17 +1281,13 @@
         return res.json();
       })
       .then(() => {
-        if (window.showToast) {
-          window.showToast('Candidate rejected.', 'error');
-        } else {
-          alert('Candidate rejected.');
-        }
+        if (window.showToast) window.showToast('Candidate rejected.', 'error');
         document.querySelector('.modal-overlay').remove();
         fetchApplicants();
       })
       .catch(err => {
         console.error(err);
-        alert('Error rejecting candidate.');
+        if (window.showToast) window.showToast('Error rejecting candidate.', 'error');
       });
     }
 

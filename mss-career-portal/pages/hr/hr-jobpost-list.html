@@ -1096,6 +1096,7 @@
           <table>
             <thead>
               <tr>
+                <th style="width: 50px;">S.No</th>
                 <th>Job Title</th>
                 <th>Department</th>
                 <th>Unit</th>
@@ -1281,10 +1282,12 @@
       const endIdx = startIdx + itemsPerPage;
       const paginatedJobs = jobs.slice(startIdx, endIdx);
 
-      paginatedJobs.forEach(j => {
+      paginatedJobs.forEach((j, index) => {
         const meta = STATUS_META[j.status] || { badge: 'badge-blue', dot: '#185FA5' };
+        const sNo = startIdx + index + 1;
         const tr = document.createElement('tr');
         tr.innerHTML = `
+      <td class="td-muted">${sNo}</td>
       <td>
         <div class="td-flex">
           <span class="status-dot" style="background:${meta.dot};"></span>

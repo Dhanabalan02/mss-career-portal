@@ -1125,7 +1125,7 @@
     </div><!-- /page-content -->
   </div><!-- /page-shell -->
 
-  <div class="toast" id="toast"></div>
+
 
   <script>
     if (localStorage.getItem('user_type') !== 'hr_head') {
@@ -1139,15 +1139,7 @@
     let vacancyGapChartInstance = null;
     let pipelineChartInstance = null;
 
-    const _portalShowToast = window.showToast || null;
-    const showToast = (msg, type = 'success') => {
-      if (_portalShowToast) {
-        _portalShowToast(msg, type);
-      } else {
-        console.log(msg);
-      }
-    };
-    window.showToast = showToast;
+
 
     function renderMonthlyTrendChart(dataObj) {
       const container = document.getElementById('trendBarView');

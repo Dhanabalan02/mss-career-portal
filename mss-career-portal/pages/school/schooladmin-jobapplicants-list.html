@@ -715,7 +715,7 @@ function rejectCandidate(name) {
 /* ── Export modal ── */
 function exportSelected() {
   const n = document.querySelectorAll('tbody .checkbox:checked').length;
-  if (!n) { alert('Please select at least one candidate to export.'); return; }
+  if (!n) { if (window.showToast) window.showToast('Please select at least one candidate to export.', 'error'); return; }
   showModal(`
     <div class="modal-title"><i class="ti ti-upload" aria-hidden="true"></i> Export Applicants</div>
     <p>Exporting <strong>${n} selected candidate${n !== 1 ? 's' : ''}</strong>.</p>

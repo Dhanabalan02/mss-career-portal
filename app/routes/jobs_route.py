@@ -39,8 +39,68 @@ from app.models import (
 )
 from app.models.job_applicant_model import OfferAcceptanceStatus
 from sqlalchemy import or_
+import re
 
 router = APIRouter(prefix="/jobs", tags=["Job Posts"])
+
+
+def format_experience(exp_records: List[CandidateExperience]) -> str:
+    def parse_experience_string(exp_str):
+        if not exp_str:
+            return 0, 0
+        exp_str = exp_str.strip()
+        
+        # Try parsing decimal values where "." represents separation of years and months
+        # e.g., "2.6 Years", "2.11 Years", "2.6"
+        if "." in exp_str:
+            try:
+                parts = exp_str.split(".")
+                years = int(re.search(r'\d+', parts[0]).group())
+                mo_match = re.search(r'\d+', parts[1])
+                if mo_match:
+                    months = int(mo_match.group())
+                    return years, months
+            except Exception:
+                pass
+                
+        years = 0
+        months = 0
+        try:
+            yr_match = re.search(r'(\d+)\s*(year|yr|y)', exp_str, re.IGNORECASE)
+            if yr_match:
+                years = int(yr_match.group(1))
+                
+            mo_match = re.search(r'(\d+)\s*(month|mon|mo|m)(?!e|a|i)', exp_str, re.IGNORECASE)
+            if mo_match:
+                months = int(mo_match.group(1))
+                
+            if not yr_match and not mo_match:
+                num_match = re.search(r'^\d+$', exp_str)
+                if num_match:
+                    years = int(num_match.group())
+        except Exception:
+            pass
+            
+        return years, months
+
+    total_years = 0
+    total_months = 0
+    for exp_rec in exp_records:
+        if exp_rec.total_experience:
+            y, m = parse_experience_string(str(exp_rec.total_experience))
+            total_years += y
+            total_months += m
+
+    total_years += total_months // 12
+    total_months = total_months % 12
+
+    parts = []
+    if total_years > 0:
+        parts.append(f"{total_years} year{'s' if total_years != 1 else ''}")
+    if total_months > 0:
+        parts.append(f"{total_months} month{'s' if total_months != 1 else ''}")
+
+    return " & ".join(parts) if parts else "—"
 
 
 def _get_admin_id_from_token(
@@ -172,6 +232,7 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "published_date": published_date,
         "applicant_count": applicant_count,
         "views": job_post.views or 0,
+        "uuid": job_post.uuid,
         "pre_screening_questions": (
             [
                 {
@@ -210,6 +271,15 @@ def get_public_job_posts_route(school_name: Optional[str] = None, db: Session = 
 def get_public_job_post_by_id_route(job_id: int, db: Session = Depends(get_db)):
     """Retrieves a single published job post by its ID. No authentication required."""
     job_post = get_published_job_post_or_404(db, job_id=job_id)
+    return _serialize_job_post(job_post, db=db)
+
+
+@router.get("/public/by-uuid/{job_uuid}")
+def get_public_job_post_by_uuid_route(job_uuid: str, db: Session = Depends(get_db)):
+    """Retrieves a single published job post by its UUID. No authentication required."""
+    job_post = db.query(JobPost).filter(JobPost.uuid == job_uuid, JobPost.job_status == JobStatus.PUBLISH).first()
+    if not job_post:
+        raise HTTPException(status_code=404, detail="Job not found.")
     return _serialize_job_post(job_post, db=db)
 
 
@@ -395,19 +465,7 @@ def get_applicants_route(
             .all()
         )
 
-        total_experience = 0.0
-        for exp_rec in exp_records:
-            if exp_rec.total_experience:
-                try:
-                    num_part = str(exp_rec.total_experience).strip().split()[0]
-                    total_experience += float(num_part)
-                except (ValueError, IndexError):
-                    continue
-
-        if total_experience > 0:
-            exp_str = f"{round(total_experience, 1)} yrs"
-        else:
-            exp_str = "—"
+        exp_str = format_experience(exp_records)
 
         # Increment chip counts
         if stage_val in chip_counts:
@@ -554,35 +612,7 @@ def get_applicant_detail_route(
         .filter(CandidateExperience.user_id == user.user_id)
         .all()
     )
-    total_days = 0
-    for exp_rec in exp_records:
-        start_dt = exp_rec.start_date
-        if isinstance(start_dt, str):
-            if start_dt.strip().lower() == "unknown":
-                start_dt = None
-            else:
-                try:
-                    start_dt = datetime.strptime(start_dt.split()[0], "%Y-%m-%d").date()
-                except ValueError:
-                    start_dt = None
-
-        end_dt = exp_rec.end_date
-        if not end_dt or (isinstance(end_dt, str) and end_dt.strip().lower() == "unknown"):
-            end_dt = date.today()
-        elif isinstance(end_dt, str):
-            try:
-                end_dt = datetime.strptime(end_dt.split()[0], "%Y-%m-%d").date()
-            except ValueError:
-                end_dt = date.today()
-
-        if start_dt and end_dt:
-            total_days += (end_dt - start_dt).days
-
-    if total_days > 0:
-        exp_years = round(total_days / 365.25, 1)
-        exp_str = f"{exp_years} yrs"
-    else:
-        exp_str = "—"
+    exp_str = format_experience(exp_records)
 
     # Get latest stage info
     interviews = (
@@ -1344,19 +1374,7 @@ def get_dashboard_recent_applicants(
             .filter(CandidateExperience.user_id == user.user_id)
             .all()
         )
-        total_experience = 0.0
-        for exp_rec in exp_records:
-            if exp_rec.total_experience:
-                try:
-                    num_part = str(exp_rec.total_experience).strip().split()[0]
-                    total_experience += float(num_part)
-                except (ValueError, IndexError):
-                    continue
-
-        if total_experience > 0:
-            exp_str = f"{round(total_experience, 1)} yrs"
-        else:
-            exp_str = "—"
+        exp_str = format_experience(exp_records)
         # ---------------------------------------------------------------------
 
         # Stage + interview status

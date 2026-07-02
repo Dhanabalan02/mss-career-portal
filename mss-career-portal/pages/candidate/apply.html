@@ -890,8 +890,6 @@
             if (type === 'danger') mappedType = 'error';
             if (window.showMssToast) {
                 window.showMssToast(message, mappedType);
-            } else {
-                alert(message);
             }
         }
 
@@ -1243,6 +1241,7 @@
                     resume_doc: finalResumePath,
                     cover_letter: '',
                     expected_salary: '',
+                    mobile_number: $('#input-phone').val().trim(),
                     screening_answers: answers
                 };
 

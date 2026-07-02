@@ -58,6 +58,8 @@ class JobPost(Base):
     
     views: Mapped[Optional[int]] = mapped_column(Integer, default=0, nullable=True)
     
+    uuid: Mapped[Optional[str]] = mapped_column(String(36), nullable=True)
+    
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, server_default=func.current_timestamp()
     )

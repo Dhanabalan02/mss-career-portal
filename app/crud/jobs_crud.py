@@ -120,6 +120,9 @@ def create_job_post(
 ) -> JobPost:
     """Creates a new job post with a generated unique job ID and optional pre-screening questions."""
 
+    import uuid
+    uuid_val = str(uuid.uuid4()) if job_status == JobStatus.PUBLISH else None
+
     job_post = JobPost(
         job_posted_by=job_posted_by,
         job_title=job_title,
@@ -137,6 +140,7 @@ def create_job_post(
         education_qualification=education_qualification,
         additional_requirements=additional_requirements,
         job_status=job_status,
+        uuid=uuid_val,
     )
 
     if pre_screening_questions:
@@ -204,6 +208,10 @@ def update_job_post(
 
             setattr(job_post, field, value)
 
+    if job_post.job_status == JobStatus.PUBLISH and not job_post.uuid:
+        import uuid
+        job_post.uuid = str(uuid.uuid4())
+
     if pre_screening_questions is not None:
 
         db.query(JobPreScreeningQuestion).filter(
@@ -227,6 +235,10 @@ def update_job_status(db: Session, job_id: int, job_status: JobStatus) -> JobPos
     job_post = get_job_post_or_404(db, job_id)
 
     job_post.job_status = job_status
+
+    if job_status == JobStatus.PUBLISH and not job_post.uuid:
+        import uuid
+        job_post.uuid = str(uuid.uuid4())
 
     if job_status == JobStatus.CLOSED:
 
@@ -263,6 +275,7 @@ def clone_job_post(
         closing_date=original_job.closing_date,
         additional_requirements=original_job.additional_requirements,
         job_status=JobStatus.PUBLISH if publish else JobStatus.DRAFT,
+        uuid=str(uuid.uuid4()) if publish else None,
     )
 
     db.add(cloned_job)

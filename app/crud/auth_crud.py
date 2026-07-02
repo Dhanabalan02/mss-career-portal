@@ -15,50 +15,7 @@ def authenticate_user_roles(
     password: str,
     ip_address: str = None
 ) -> str:
-    """Authenticates hr_head, hr_admin, school_admin and candidate users and returns a JWT token."""
-
-    admin = (
-        db.query(Admins)
-        .options(joinedload(Admins.user_roles))
-        .filter(Admins.email == email, Admins.is_active == 1)
-        .first()
-    )
-
-    if admin and admin.user_roles.role_name in ADMIN_ROLES:
-        role_name = admin.user_roles.role_name
-
-        if not verify_password(password, admin.password):
-            logger.warning(f"Failed login attempt for email: {email} from IP: {ip_address}")
-            db.add(UserLoginLog(
-                user_id=admin.admin_id,
-                user_type=role_name,
-                status=LoginStatus.failed,
-                ip_address=ip_address,
-                login_time=datetime.now(timezone.utc)
-            ))
-            db.commit()
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password.")
-
-        token_data = {"sub": str(admin.admin_id), "role": role_name}
-        access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
-
-        db.add(UserLoginLog(
-            user_id=admin.admin_id,
-            user_type=role_name,
-            login_type="password",
-            status=LoginStatus.success,
-            ip_address=ip_address,
-            login_time=datetime.now(timezone.utc),
-            session_id=access_token
-        ))
-        db.commit()
-        logger.info(f"Successful login for {role_name} email: {email} from IP: {ip_address}")
-        return {
-            "access_token": access_token,
-            "user_type": role_name,
-            "token_type": "bearer",
-            "user_id": admin.admin_id
-        }
+    """Authenticates candidate users and returns a JWT token."""
 
     candidate = (
         db.query(Users)
@@ -108,6 +65,62 @@ def authenticate_user_roles(
         "user_id": candidate.user_id
     }
 
+
+def authenticate_admin_roles(
+    db: Session,
+    email: str,
+    password: str,
+    ip_address: str = None
+) -> dict:
+    """Authenticates ONLY hr_head, hr_admin, school_admin and hr_team users and returns a JWT token."""
+    admin = (
+        db.query(Admins)
+        .options(joinedload(Admins.user_roles))
+        .filter(Admins.email == email, Admins.is_active == 1)
+        .first()
+    )
+
+    if not admin or admin.user_roles.role_name not in ADMIN_ROLES:
+        logger.warning(f"Unauthorized admin login attempt for email: {email} from IP: {ip_address}")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or unauthorized access."
+        )
+
+    role_name = admin.user_roles.role_name
+
+    if not verify_password(password, admin.password):
+        logger.warning(f"Failed admin login attempt for email: {email} from IP: {ip_address}")
+        db.add(UserLoginLog(
+            user_id=admin.admin_id,
+            user_type=role_name,
+            status=LoginStatus.failed,
+            ip_address=ip_address,
+            login_time=datetime.now(timezone.utc)
+        ))
+        db.commit()
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password.")
+
+    token_data = {"sub": str(admin.admin_id), "role": role_name}
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
+
+    db.add(UserLoginLog(
+        user_id=admin.admin_id,
+        user_type=role_name,
+        login_type="password",
+        status=LoginStatus.success,
+        ip_address=ip_address,
+        login_time=datetime.now(timezone.utc),
+        session_id=access_token
+    ))
+    db.commit()
+    logger.info(f"Successful admin login for {role_name} email: {email} from IP: {ip_address}")
+    return {
+        "access_token": access_token,
+        "user_type": role_name,
+        "token_type": "bearer",
+        "user_id": admin.admin_id
+    }
 
 def logout_user_logs(
     db: Session, 

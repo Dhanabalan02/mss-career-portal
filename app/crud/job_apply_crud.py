@@ -5,15 +5,30 @@ from app.models.candidate_screening_answer_model import CandidateStatus
 from app.models.job_applicant_model import ApplicantJobStatus, ApplicantStage, OfferAcceptanceStatus
 from app.core.logger import logger
 
+from typing import Optional, List
+from sqlalchemy.orm import Session
+from app.models.user_model import Users
+
 def create_job_application(
     db: Session,
     user_id: int,
     job_id: int,
+    mobile: Optional[str] = None,  # Added mobile parameter
     resume_doc: Optional[str] = None,
     cover_letter: Optional[str] = None,
     screening_answers: Optional[List[dict]] = None
 ) -> JobApplicant:
-    """Creates a new job application record for a candidate and saves their pre-screening answers."""
+    """Creates a new job application record and backfills the user's mobile number if missing."""
+    
+    # --- 1. Check and Update User Mobile Number ---
+    if mobile:
+        user = db.query(Users).filter(Users.user_id == user_id).first()
+        # Update only if the user exists and doesn't already have a mobile number
+        if user and not user.mobile:
+            user.mobile = mobile
+            db.add(user) # Schedules the user record for update
+
+    # --- 2. Create Job Application ---
     db_applicant = JobApplicant(
         job_id=job_id,
         user_id=user_id,
@@ -30,6 +45,7 @@ def create_job_application(
     # Generate and assign the unique application number
     db_applicant.mss_app_no = f"MSS-APP-{db_applicant.job_applicant_id}"
 
+    # --- 3. Process Screening Answers ---
     if screening_answers:
         questions = db.query(JobPreScreeningQuestion).filter(JobPreScreeningQuestion.job_id == job_id).all()
         expected_map = {q.question_id: (q.expected_answer or "").strip().lower() for q in questions if q.expected_answer}
@@ -69,8 +85,10 @@ def create_job_application(
             )
             db.add(db_answer)
 
+    # Commits both the job application and the updated user mobile record atomically
     db.commit()
     db.refresh(db_applicant)
+    
     logger.info(f"Job application created: applicant_id={db_applicant.job_applicant_id}, mss_app_no={db_applicant.mss_app_no}, job_id={job_id}, user_id={user_id}")
     return db_applicant
 

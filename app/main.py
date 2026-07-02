@@ -55,6 +55,28 @@ app.add_middleware(
 @app.on_event("startup")
 async def startup_event():
     logger.info("FastAPI application has started successfully.")
+    try:
+        from sqlalchemy import text
+        from app.core.database import engine
+        with engine.connect() as conn:
+            # Check if uuid column exists in job_posts
+            result = conn.execute(text("SHOW COLUMNS FROM job_posts LIKE 'uuid'")).fetchone()
+            if not result:
+                conn.execute(text("ALTER TABLE job_posts ADD COLUMN uuid VARCHAR(36) NULL"))
+                conn.commit()
+                logger.info("Successfully added uuid column to job_posts table")
+            
+            # Backfill UUIDs for existing jobs that don't have one
+            import uuid
+            jobs_to_update = conn.execute(text("SELECT job_id FROM job_posts WHERE uuid IS NULL OR uuid = ''")).fetchall()
+            if jobs_to_update:
+                for row in jobs_to_update:
+                    new_uuid = str(uuid.uuid4())
+                    conn.execute(text("UPDATE job_posts SET uuid = :uuid WHERE job_id = :job_id"), {"uuid": new_uuid, "job_id": row[0]})
+                conn.commit()
+                logger.info(f"Populated UUID for {len(jobs_to_update)} existing job posts")
+    except Exception as e:
+        logger.error(f"Error checking/adding/backfilling uuid column: {e}")
 
 # API root endpoint returning a welcome JSON response
 # Redirect root URL to candidate home page
@@ -72,6 +94,15 @@ def redirect_to_portal_root():
 @app.get("/mss-career-portal/home")
 def redirect_short_home():
     return serve_html_with_base("mss-career-portal/pages/candidate/home.html", "/mss-career-portal/pages/candidate/")
+
+@app.get("/mss-career-portal/admin")
+@app.get("/mss-career-portal/admin/")
+def redirect_admin_to_login():
+    return RedirectResponse(url="/mss-career-portal/admin/login")
+
+@app.get("/mss-career-portal/admin/login")
+def admin_login():
+    return serve_html_with_base("mss-career-portal/pages/admin-login.html", "/mss-career-portal/pages/admin-login/")
 
 @app.get("/mss-career-portal/register")
 def redirect_short_register():

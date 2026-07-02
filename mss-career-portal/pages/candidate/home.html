@@ -1588,7 +1588,7 @@
             })
             .catch(function(err) {
                 console.error('Resume upload error:', err);
-                alert('Failed to upload resume. Please try again.');
+                if (window.showMssToast) window.showMssToast('Failed to upload resume. Please try again.', 'error');
                 btn.innerHTML = originalHtml;
                 btn.disabled = false;
             });
@@ -2218,7 +2218,9 @@
                 var jobType = escapeHtml(job.job_type || 'Full Time');
                 var description = escapeHtml(job.job_description || '').slice(0, 150);
                 var closing = formatDate(job.closing_date);
-                var detailUrl = 'job-detail.html?id=' + encodeURIComponent(job.job_id);
+                var detailUrl = '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(job.uuid || '') + 
+                                '&title=' + encodeURIComponent((job.job_title || '').replace(/ /g, '-')) + 
+                                '&unit=' + encodeURIComponent((job.school_name || job.department || '').replace(/ /g, '-'));
                 var applyUrl = 'apply.html?id=' + encodeURIComponent(job.job_id);
 
                 var tags = '<span style="background:#F8FAFC;color:#475569;font-family:\'Rubik\',sans-serif;font-size:0.72rem;font-weight:600;padding:4px 10px;border-radius:50px;border:1px solid #E2E8F0;display:inline-flex;align-items:center;gap:5px;"><i class="feather-clock" style="font-size:0.72rem;"></i> ' + jobType + '</span>';
@@ -2273,7 +2275,7 @@
                     if (loginModal && typeof bootstrap !== 'undefined') {
                         bootstrap.Modal.getOrCreateInstance(loginModal).show();
                     } else {
-                        alert('Please log in to apply for this job.');
+                        if (window.showMssToast) window.showMssToast('Please log in to apply for this job.', 'error');
                     }
                 }
 
@@ -2289,7 +2291,7 @@
 
                 // 2. Return the completed HTML string cleanly in ONE continuous expression
                 return '<div class="col-lg-6">' +
-                    '<div class="mss-jc" onclick="localStorage.setItem(\'candidate_current_job_id\', \'' + job.job_id + '\'); location.href=\'/mss-career-portal/job-detail\'" ' +
+                    '<div class="mss-jc" onclick="location.href=\'/mss-career-portal/job-detail?uuid=\' + encodeURIComponent(\'' + (job.uuid || '') + '\') + \'&title=\' + encodeURIComponent(\'' + (job.job_title || '').replace(/ /g, '-') + '\') + \'&unit=\' + encodeURIComponent(\'' + (job.school_name || job.department || '').replace(/ /g, '-') + '\')\" ' +
                     'style="background:#fff;border-radius:20px;padding:1.75rem;border:1px solid #E2E8F0;cursor:pointer;transition:all 0.3s ease;height:100%;display:flex;flex-direction:column;" ' +
                     'onmouseover="this.style.borderColor=\'var(--card-border)\';this.style.boxShadow=\'var(--card-border-shadow)\';this.style.transform=\'translateY(-4px)\'" ' +
                     'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">' +

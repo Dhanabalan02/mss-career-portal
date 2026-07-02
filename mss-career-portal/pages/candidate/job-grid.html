@@ -380,7 +380,8 @@
                                         <div class="jg-input-wrap">
                                             <i class="feather-search jg-input-icon"></i>
                                             <input id="f-keyword" type="text" class="jg-input"
-                                                placeholder="e.g. Teacher, Coach…" oninput="applyFilters()">
+                                                placeholder="e.g. Teacher, Coach…" oninput="applyFilters()"
+                                                autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" onblur="this.setAttribute('readonly', 'readonly');">
                                         </div>
                                     </div>
 
@@ -1643,7 +1644,7 @@
                     if (loginModal && typeof bootstrap !== 'undefined') {
                         bootstrap.Modal.getOrCreateInstance(loginModal).show();
                     } else {
-                        alert('Please log in to apply for this job.');
+                        if (window.showMssToast) window.showMssToast('Please log in to apply for this job.', 'error');
                     }
                 }
 
@@ -1696,7 +1697,9 @@
                         '<span style="color: #10B981; display: inline-flex; align-items: center; gap: 4px;">Applied <i class="bi bi-check-lg"></i></span>' :
                         'View Job <i class="feather-arrow-right"></i>';
 
-                    return '<a href="/mss-career-portal/job-detail?id=' + encodeURIComponent(id) + '" class="jg-card">' +
+                    return '<a href="/mss-career-portal/job-detail?uuid=' + encodeURIComponent(job.uuid || '') + 
+                           '&title=' + encodeURIComponent((job.job_title || '').replace(/ /g, '-')) + 
+                           '&unit=' + encodeURIComponent((job.school_name || job.department || '').replace(/ /g, '-')) + '" class="jg-card">' +
                         '<div class="jg-card-top">' +
                         '<div class="jg-card-logo">' +
                         '<img src="' + logo + '" alt="School Logo">' +

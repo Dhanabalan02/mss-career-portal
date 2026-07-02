@@ -65,7 +65,7 @@
     .page-header {
       display: flex;
       align-items: flex-start;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 16px;
       margin-bottom: 24px;
       flex-wrap: wrap;
@@ -863,14 +863,6 @@
 
     <!-- ── Page header ─────────────────────────────────────── -->
     <div class="page-header">
-      <div>
-        <div class="breadcrumb">
-          <a href="/mss-career-portal/hr/jobapplicants-list">Applicants</a>
-          <span class="breadcrumb-sep">›</span>
-        </div>
-        <div class="page-title" id="profile-title">—</div>
-        <div class="page-subtitle" id="profile-subtitle">Applied for: —</div>
-      </div>
       <div class="header-actions" id="header-actions">
         <!-- Injected dynamically -->
       </div>
@@ -1052,7 +1044,7 @@
     let candidateData = null;
 
     if (!applicantId) {
-      alert('No candidate ID provided.');
+      if (window.showToast) window.showToast('No candidate ID provided.', 'error');
       window.location.href = '/mss-career-portal/hr/jobapplicants-list';
     }
 
@@ -1092,7 +1084,7 @@
         })
         .catch(err => {
           console.error('Failed to load candidate profile:', err);
-          alert('Error loading candidate profile.');
+          if (window.showToast) window.showToast('Error loading candidate profile.', 'error');
         });
     }
 
@@ -1100,7 +1092,7 @@
 
     function getStageBadgeClass(stage) {
       const map = {
-        'Applied': 'badge-blue', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
+        'Applied': 'badge-blue', 'Pre Screen Reject': 'badge-red', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
         'Offer': 'badge-blue', 'Offer Accepted': 'badge-green',
         'Onboarding': 'badge-green', 'Rejected': 'badge-red'
       };
@@ -1121,8 +1113,6 @@
     }
 
     function renderHeader() {
-      document.getElementById('profile-title').textContent = candidateData.name;
-      document.getElementById('profile-subtitle').textContent = 'Applied for: ' + candidateData.job;
 
       const actionsEl = document.getElementById('header-actions');
       actionsEl.innerHTML = '';
@@ -1162,6 +1152,22 @@
     }
 
     function renderOverviewTab() {
+      // Stage Normalization
+      const stageMap = {
+        'applied': 'Applied',
+        'prescreen-reject': 'Pre Screen Reject',
+        'prescreen rejected': 'Pre Screen Reject',
+        'screened': 'Screened',
+        'interview': 'Interview',
+        'offer': 'Offer',
+        'offer accepted': 'Offer Accepted',
+        'onboarding': 'Onboarding',
+        'rejected': 'Rejected',
+        'awaiting offer': 'Offer'
+      };
+      
+      const normalizedStage = candidateData.stage ? (stageMap[candidateData.stage.toLowerCase()] || candidateData.stage) : 'Applied';
+
       // Bio
       document.getElementById('summary-content').textContent = candidateData.metadata.about || 'No professional summary provided.';
 
@@ -1174,8 +1180,14 @@
       }
 
       statsEl.innerHTML = `
-        <div class="info-row"><span class="info-label">Applied Date</span><span class="info-value">${candidateData.appliedDate}</span></div>
-        <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(candidateData.stage)}">${candidateData.stage}</span></span></div>
+       <div class="info-row">
+          <span class="info-label">Applied Date</span>
+          <span class="info-value">
+            ${new Date(candidateData.appliedDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+          </span>
+        </div>
+
+        <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(normalizedStage)}">${normalizedStage}</span></span></div>
         <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${statusHtml}</span></div>
         <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
       `;
@@ -1184,8 +1196,8 @@
       const timelineEl = document.getElementById('overview-timeline');
       timelineEl.innerHTML = '';
 
-      const stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
-      const currentIdx = stages.indexOf(candidateData.stage);
+      const stages = ['Applied', 'Pre Screen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
+      const currentIdx = stages.indexOf(normalizedStage);
 
       stages.forEach((stage, idx) => {
         let dot = '●';
@@ -1193,15 +1205,15 @@
         let bg = 'var(--c-surface2)';
         let sub = '';
 
-        if (idx < currentIdx || (candidateData.stage === 'Rejected' && idx === 0)) {
+        if (idx < currentIdx || (normalizedStage === 'Rejected' && idx === 0)) {
           dot = '✓';
           color = 'var(--c-green)';
           bg = 'var(--c-green-bg)';
-        } else if (stage === candidateData.stage) {
+        } else if (stage === normalizedStage) {
           dot = '●';
-          color = 'var(--c-orange)';
-          bg = 'var(--c-orange-bg)';
-          sub = ' (Active)';
+          color = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? 'var(--c-red)' : 'var(--c-orange)';
+          bg = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? 'var(--c-red-bg)' : 'var(--c-orange-bg)';
+          sub = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? ' (Rejected)' : ' (Active)';
         }
 
         timelineEl.innerHTML += `
@@ -1678,7 +1690,7 @@
       const modeInput = document.getElementById('schModeInput').value.trim();
 
       if (!round || !dateVal || !timeVal || !endtimeVal || !interviewer) {
-        alert('Please fill out all required fields.');
+        if (window.showToast) window.showToast('Please fill out all required fields.', 'error');
         return;
       }
 
@@ -1715,7 +1727,7 @@
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to schedule interview.');
+          if (window.showToast) window.showToast('Failed to schedule interview.', 'error');
         });
     }
 
@@ -1784,7 +1796,7 @@
       const reason = document.getElementById('reschReason').value.trim();
 
       if (!dateVal || !timeVal || !endtimeVal) {
-        alert('Please fill out all required fields.');
+        if (window.showToast) window.showToast('Please fill out all required fields.', 'error');
         return;
       }
 
@@ -1814,7 +1826,7 @@
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to reschedule interview.');
+          if (window.showToast) window.showToast('Failed to reschedule interview.', 'error');
         });
     }
 
@@ -1848,7 +1860,7 @@
       const remarks = document.getElementById('remRemarks').value.trim();
 
       if (!status || !remarks) {
-        alert('Please fill out all required fields.');
+        if (window.showToast) window.showToast('Please fill out all required fields.', 'error');
         return;
       }
 
@@ -1874,7 +1886,7 @@
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to submit feedback.');
+          if (window.showToast) window.showToast('Failed to submit feedback.', 'error');
         });
     }
 
@@ -1929,7 +1941,7 @@
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to put candidate on hold.');
+          if (window.showToast) window.showToast('Failed to put candidate on hold.', 'error');
         });
     }
 
@@ -1985,18 +1997,14 @@
         })
         .catch(err => {
           console.error(err);
-          alert('Failed to reject candidate.');
+          if (window.showToast) window.showToast('Failed to reject candidate.', 'error');
         });
     }
 
     /* ── Mock Application Notes Saver ── */
     function saveInternalNotes() {
       const text = document.getElementById('appNotesText').value.trim();
-      if (window.showToast) {
-        window.showToast('Notes saved successfully!', 'success');
-      } else {
-        alert('Notes saved successfully!');
-      }
+      if (window.showToast) window.showToast('Notes saved successfully!', 'success');
     }
 
     /* ── Fetch Profile on load ── */

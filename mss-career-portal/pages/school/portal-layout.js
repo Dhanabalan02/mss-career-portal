@@ -114,7 +114,7 @@
   };
 
   /* ── Internal state ───────────────────────────────────────── */
-  let notificationFilter = 'all';
+  let notificationFilter = 'unread';
 
   /* ── Utilities ────────────────────────────────────────────── */
   function portalIcon(name) {
@@ -368,8 +368,6 @@
       </div>
       <div class="portal-notification-tabs" role="tablist" aria-label="Filter notifications">
         <button class="portal-notification-tab is-active" role="tab" aria-selected="true"
-                data-notification-filter="all">All</button>
-        <button class="portal-notification-tab" role="tab" aria-selected="false"
                 data-notification-filter="unread">Unread</button>
         <button class="portal-notification-tab" role="tab" aria-selected="false"
                 data-notification-filter="read">Read</button>

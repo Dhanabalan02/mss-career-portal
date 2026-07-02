@@ -17,6 +17,7 @@ from app.core.html_helper import serve_html_with_base
 from sqlalchemy.orm import Session
 from app.crud.auth_crud import (
     authenticate_user_roles,
+    authenticate_admin_roles,
     googlelogin,
     linkedin_login,
     logout_user_logs,
@@ -149,10 +150,27 @@ def get_units(db: Session = Depends(get_db)):
 def user_login(
     request: Request, form_data: UserLoginRequest, db: Session = Depends(get_db)
 ):
-    """Login for hr_head, hr_admin, school_admin and candidate roles."""
+    """Login exclusively for candidate roles."""
     client_ip = request.client.host if request.client else None
     return authenticate_user_roles(
         db=db, email=form_data.email, password=form_data.password, ip_address=client_ip
+    )
+
+@router.post("/admin/login")
+def admin_login(
+    request: Request, form_data: UserLoginRequest, db: Session = Depends(get_db)
+):
+    """Dedicated login API exclusively for admins."""
+    client_ip = request.client.host if request.client else None
+    return authenticate_admin_roles(
+        db=db, email=form_data.email, password=form_data.password, ip_address=client_ip
+    )
+
+@router.get("/admin/login-page")
+def admin_login_page():
+    return serve_html_with_base(
+        "mss-career-portal/pages/admin-login.html",
+        "/mss-career-portal/pages/",
     )
 
 

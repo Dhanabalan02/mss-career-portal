@@ -1936,7 +1936,7 @@
     async function loadCandidateProfile() {
       const token = localStorage.getItem('access_token');
       if (!token) {
-        alert('Please log in to view and edit your profile.');
+        if (window.showMssToast) window.showMssToast('Please log in to view and edit your profile.', 'error');
         window.location.href = '/mss-career-portal/home';
         return;
       }
@@ -1953,7 +1953,7 @@
             localStorage.removeItem('user_name');
             localStorage.removeItem('user_email');
             localStorage.removeItem('user_id');
-            alert('Your session has expired. Please log in again.');
+            if (window.showMssToast) window.showMssToast('Your session has expired. Please log in again.', 'error');
             window.location.href = '/mss-career-portal/home';
             return;
           }

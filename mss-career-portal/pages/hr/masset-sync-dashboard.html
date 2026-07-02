@@ -1308,8 +1308,7 @@
     </div>
   </div>
 
-  <!-- Toast -->
-  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
 
   <script>
     const API_BASE = window.AUTH_API_BASE || `http://${window.location.hostname}:8000`;
@@ -1559,16 +1558,7 @@
       if (e.target === document.getElementById('timelineModal')) closeTimeline();
     }
 
-    /* ── Toast ── */
-    const _portalShowToast = window.showToast || null;
-    const showToast = (msg, type = 'success') => {
-      if (_portalShowToast) {
-        _portalShowToast(msg, type);
-      } else {
-        console.log(msg);
-      }
-    };
-    window.showToast = showToast;
+
 
     /* ── Row animation ── */
     const style = document.createElement('style');

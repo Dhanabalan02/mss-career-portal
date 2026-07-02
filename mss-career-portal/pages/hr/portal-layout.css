@@ -757,15 +757,15 @@ body>.sidebar:not(#portalSidebar) {
   bottom: 20px !important;
   z-index: 2000 !important;
   max-width: min(340px, calc(100vw - 32px)) !important;
-  background: #111827 !important;
-  color: #F9FAFB !important;
+  background: #ffffff !important;
+  color: #1e293b !important;
   border-radius: var(--portal-radius) !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, .25) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
   font-family: var(--portal-font) !important;
   font-size: 13px !important;
   font-weight: 600 !important;
   padding: 13px 18px !important;
-  border-left: 3px solid #16A34A !important;
+  border-left: 4px solid #16A34A !important; /* default success */
   opacity: 0 !important;
   transform: translateY(10px) !important;
   pointer-events: none !important;
@@ -777,10 +777,10 @@ body>.sidebar:not(#portalSidebar) {
   transform: translateY(0) !important;
 }
 
-.portal-toast.success { border-left: 3px solid #16A34A !important; }
-.portal-toast.error { border-left: 3px solid #DC2626 !important; }
-.portal-toast.warning { border-left: 3px solid #D97706 !important; }
-.portal-toast.info { border-left: 3px solid #2563EB !important; }
+.portal-toast.success { border-left: 4px solid #16A34A !important; }
+.portal-toast.error { border-left: 4px solid #DC2626 !important; }
+.portal-toast.warning { border-left: 4px solid #D97706 !important; }
+.portal-toast.info { border-left: 4px solid #2563EB !important; }
 
 /* ═══════════════════════════════════════════
    RESPONSIVE

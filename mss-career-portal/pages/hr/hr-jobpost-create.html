@@ -1638,6 +1638,12 @@
     const jobIdParam = urlParams.get('id');
     const editJobId = jobIdParam ? parseInt(jobIdParam) : null;
 
+    // Don't allow past dates in closing date calendar field
+    const closeDateInput = document.getElementById('closeDate');
+    if (closeDateInput) {
+      closeDateInput.min = new Date().toISOString().split('T')[0];
+    }
+
     function escapeHtml(str) {
       return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     }
@@ -2228,15 +2234,6 @@
       overlay.remove();
     }
 
-    const _portalShowToast = window.showToast || null;
-    const showToast = (msg, type = 'success') => {
-      if (_portalShowToast) {
-        _portalShowToast(msg, type);
-      } else {
-        console.log(msg);
-      }
-    };
-    window.showToast = showToast;
 
     function saveDraft() {
       submitJobPost('draft');

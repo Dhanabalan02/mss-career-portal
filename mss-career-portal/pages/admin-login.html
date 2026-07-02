@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - TMSS Career Portal</title>
+  <link rel="icon" href="../images/mss-logo.svg" type="image/svg+xml">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  
+  <style>
+    body {
+      background-color: #f9f8f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+    .mss-login-card {
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(30, 64, 175, 0.2);
+      max-width: 800px;
+      width: 100%;
+      background: #fff;
+    }
+    
+    /* ── Shared styles from header.html ── */
+    .mss-label {
+      font-family: "Rubik", sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .mss-modal-field {
+      position: relative;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      transition: all 0.25s ease;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+    .mss-modal-field:focus-within {
+      background: #fff;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+    .mss-modal-field > i {
+      padding-left: 1.25rem;
+      color: #94a3b8;
+      font-size: 1.1rem;
+      transition: color 0.25s ease;
+    }
+    .mss-modal-field:focus-within > i {
+      color: #3b82f6;
+    }
+    .mss-modal-field input {
+      border: none;
+      background: transparent;
+      padding: 1rem;
+      width: 100%;
+      font-family: "Rubik", sans-serif;
+      font-size: 0.95rem;
+      color: #0f172a;
+      outline: none;
+    }
+    .mss-modal-field input::placeholder {
+      color: #94a3b8;
+      font-weight: 400;
+    }
+    .mss-modal-field > span {
+      padding-right: 1.25rem;
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: color 0.2s;
+      display: flex;
+    }
+    .mss-modal-field > span:hover {
+      color: #3b82f6;
+    }
+    .mss-submit {
+      background: #1e40af;
+      color: #fff;
+      font-family: "Rubik", sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 1rem;
+      border-radius: 12px;
+      border: none;
+      width: 100%;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+    }
+    .mss-submit:hover {
+      background: #1e3a8a;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 64, 175, 0.3);
+    }
+    .error-msg {
+      color: #ef4444;
+      background: #fef2f2;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      margin-bottom: 20px;
+      display: none;
+      text-align: left;
+      border: 1px solid #fecaca;
+      font-family: "Rubik", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="mss-login-card">
+    <div class="row g-0" style="min-height: 520px">
+      <!-- Left side (Gradient Profile) -->
+      <div
+        class="col-5 d-none d-md-flex flex-column justify-content-between p-5"
+        style="
+          background: linear-gradient(135deg, #cc8cfc, #7b2cbf);
+          position: relative;
+          overflow: hidden;
+        "
+      >
+        <div
+          style="
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            top: -80px;
+            right: -80px;
+          "
+        ></div>
+        <div
+          style="
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            bottom: 40px;
+            left: -60px;
+          "
+        ></div>
+        <div style="position: relative; z-index: 2">
+          <img
+            src="/mss-career-portal/pages/candidate/images/mss/mss-logo.png"
+            alt="MSS"
+            style="
+              height: 56px;
+              width: auto;
+              opacity: 0.95;
+              margin-bottom: 2rem;
+              display: block;
+            "
+            onerror="this.src='/mss-career-portal/pages/candidate/images/mss/mss-logo.png'"
+          />
+          <h3
+            style="
+              font-family: 'Rubik', sans-serif;
+              font-weight: 700;
+              color: #fff;
+              font-size: 1.5rem;
+              line-height: 1.3;
+              margin-bottom: 0.75rem;
+            "
+          >
+            Welcome Admin!
+          </h3>
+          <p
+            style="
+              font-family: 'Rubik', sans-serif;
+              color: rgba(255, 255, 255, 0.75);
+              font-size: 0.9rem;
+              line-height: 1.6;
+              margin: 0;
+            "
+          >
+            Sign in to access your administrative dashboard and securely manage resources.
+          </p>
+        </div>
+        <div style="position: relative; z-index: 2">
+          <div
+            style="
+              background: rgba(255, 255, 255, 0.12);
+              border-radius: 16px;
+              padding: 1.25rem;
+              border: 1px solid rgba(255, 255, 255, 0.15);
+              backdrop-filter: blur(8px);
+            "
+          >
+            <p
+              style="
+                font-family: 'Rubik', sans-serif;
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 0.82rem;
+                font-style: italic;
+                margin: 0 0 0.75rem 0;
+              "
+            >
+              "Administrative access is actively monitored and restricted to authorized personnel."
+            </p>
+            <div
+              style="
+                font-family: 'Rubik', sans-serif;
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 0.75rem;
+                font-weight: 600;
+              "
+            >
+              — System Administrator
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right side (Form Area) -->
+      <div
+        class="col-12 col-md-7 p-4 p-lg-5"
+        style="background: #fff; position: relative"
+      >
+        <h4
+          style="
+            font-family: 'Rubik', sans-serif;
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
+          "
+        >
+          Sign In to Career Portal
+        </h4>
+        <p
+          style="
+            font-family: 'Rubik', sans-serif;
+            color: #94a3b8;
+            font-size: 0.88rem;
+            margin-bottom: 2.5rem;
+          "
+        >
+          Access your administrative dashboard
+        </p>
+        
+        <div id="errorMsg" class="error-msg"></div>
+
+        <form id="loginForm">
+          <div class="mb-4">
+            <label class="mss-label">Email Address</label>
+            <div class="mss-modal-field">
+              <i class="ti ti-mail"></i>
+              <input
+                id="email"
+                placeholder="name@company.com"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <label class="mss-label mb-0">Password</label>
+            </div>
+            <div class="mss-modal-field">
+              <i class="ti ti-lock"></i>
+              <input
+                type="password"
+                id="password"
+                placeholder="••••••••"
+                required
+              />
+              <span
+                class="toggle-password"
+                onclick="
+                  const pwd = document.getElementById('password');
+                  const icon = this.querySelector('i');
+                  if (pwd.type === 'password') {
+                    pwd.type = 'text';
+                    icon.classList.replace('ti-eye', 'ti-eye-off');
+                  } else {
+                    pwd.type = 'password';
+                    icon.classList.replace('ti-eye-off', 'ti-eye');
+                  }
+                "
+              >
+                <i class="ti ti-eye"></i>
+              </span>
+            </div>
+          </div>
+
+          <button type="submit" class="mss-submit mt-4" id="submitBtn">
+            <span id="btnText">Sign In</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Email validation logic from shared-header.js
+    const emailInput = document.getElementById('email');
+    const emailRegex = /^([^\s@]+@)?[^\s@]+\.(com|org|in)$/i;
+
+    function validateEmail() {
+      const val = emailInput.value.trim();
+      let feedback = emailInput.parentElement.nextElementSibling;
+      if (!feedback || !feedback.classList.contains('invalid-feedback')) {
+        feedback = document.createElement('div');
+        feedback.className = 'invalid-feedback';
+        feedback.style.color = '#dc3545';
+        feedback.style.fontSize = '0.82rem';
+        feedback.style.marginTop = '0.25rem';
+        feedback.textContent = 'Please enter a valid domain or email ending in .com, .org, or .in';
+        emailInput.parentElement.parentNode.insertBefore(feedback, emailInput.parentElement.nextSibling);
+      }
+
+      if (val === '') {
+        emailInput.parentElement.style.borderColor = '#e2e8f0';
+        feedback.style.display = 'none';
+        return true;
+      } else if (emailRegex.test(val)) {
+        emailInput.parentElement.style.borderColor = '#10b981'; // Valid green
+        feedback.style.display = 'none';
+        return true;
+      } else {
+        emailInput.parentElement.style.borderColor = '#dc3545'; // Invalid red
+        feedback.style.display = 'block';
+        return false;
+      }
+    }
+
+    emailInput.addEventListener('input', validateEmail);
+    emailInput.addEventListener('blur', validateEmail);
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      if (!validateEmail()) {
+        return;
+      }
+
+      const email = emailInput.value.trim();
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      const submitBtn = document.getElementById('submitBtn');
+      const btnText = document.getElementById('btnText');
+
+      errorMsg.style.display = 'none';
+      submitBtn.disabled = true;
+      btnText.textContent = 'Signing In...';
+
+      try {
+        const authApiBase = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? 'http://127.0.0.1:8000' 
+          : window.location.origin;
+
+        const response = await fetch(authApiBase + '/auth/admin/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Store tokens appropriately
+          localStorage.setItem('admin_token', data.access_token);
+          localStorage.setItem('access_token', data.access_token);
+          localStorage.setItem('admin_role', data.user_type);
+          localStorage.setItem('user_type', data.user_type);
+          localStorage.setItem('user_id', data.user_id);
+
+          // Route to appropriate dashboard
+          if (data.user_type === 'school_admin') {
+            window.location.href = '/mss-career-portal/school/dashboard';
+          } else {
+            // HR Roles: hr_head, hr_admin, hr_team
+            window.location.href = '/mss-career-portal/hr/dashboard';
+          }
+        } else {
+          throw new Error(data.detail || 'Login failed. Please check your credentials.');
+        }
+      } catch (error) {
+        errorMsg.textContent = error.message;
+        errorMsg.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        btnText.textContent = 'Sign In';
+      }
+    });
+  </script>
+</body>
+</html>

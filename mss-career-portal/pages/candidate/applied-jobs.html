@@ -570,11 +570,7 @@
                 })
                 .then(r => r.json())
                 .then(res => {
-                    if (window.showMssToast) {
-                        window.showMssToast("Offer " + status + " successfully!");
-                    } else {
-                        alert("Offer " + status + " successfully!");
-                    }
+                    if (window.showMssToast) window.showMssToast("Offer " + status + " successfully!", 'success');
                     loadJobs(); 
                     openTrackSidebar(jobId);
                 })

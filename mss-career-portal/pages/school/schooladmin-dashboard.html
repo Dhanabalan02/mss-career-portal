@@ -1134,19 +1134,10 @@
     </div>
   </div>
 
-  <div class="toast" id="toast"></div>
+
 
   <script>
-    /* ── Toast ── */
-    const _portalShowToast = window.showToast || null;
-    const showToast = (msg, type = 'success') => {
-      if (_portalShowToast) {
-        _portalShowToast(msg, type);
-      } else {
-        console.log(msg);
-      }
-    };
-    window.showToast = showToast;
+
 
     /* ── Current Date ── */
     (function () {
