@@ -187,7 +187,7 @@ def schedule_interview_route(
     # Send Notifications
     try:
         from app.models import JobApplicant, JobPost, Users
-        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin
         
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == form_data.job_applicant_id).first()
         job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
@@ -220,15 +220,6 @@ def schedule_interview_route(
                     sender_type="hr"
                 )
                 
-                # 3. Notify HR Users
-                notify_hr_users(
-                    db=db,
-                    title="Interview Scheduled",
-                    message=f"Interview round '{form_data.interview_round}' scheduled for {candidate_name} for '{job.job_title}' on {date_str}.",
-                    notification_type="interview_scheduled",
-                    sender_user_id=admin_id,
-                    sender_type="hr"
-                )
     except Exception as e:
         from app.core.logger import logger
         logger.error(f"Error creating interview scheduled notifications: {e}")
@@ -293,7 +284,7 @@ def reschedule_interview_route(
     # Send Notifications
     try:
         from app.models import JobApplicant, JobPost, Users
-        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin
         
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
         job = db.query(JobPost).filter(JobPost.job_id == job_interview.job_id).first()
@@ -327,15 +318,6 @@ def reschedule_interview_route(
                     sender_type="hr"
                 )
                 
-                # 3. Notify HR Users
-                notify_hr_users(
-                    db=db,
-                    title="Interview Rescheduled",
-                    message=f"Interview rescheduled to {date_str} for candidate {candidate_name} ({job.job_title}).",
-                    notification_type="interview_rescheduled",
-                    sender_user_id=admin_id,
-                    sender_type="hr"
-                )
     except Exception as e:
         from app.core.logger import logger
         logger.error(f"Error creating interview rescheduled notifications: {e}")
@@ -360,7 +342,7 @@ def cancel_interview_route(
     # Send Notifications
     try:
         from app.models import JobApplicant, JobPost, Users
-        from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+        from app.crud.notification_crud import notify_candidate, notify_school_admin
         
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
         job = db.query(JobPost).filter(JobPost.job_id == job_interview.job_id).first()
@@ -393,15 +375,6 @@ def cancel_interview_route(
                     sender_type="hr"
                 )
                 
-                # 3. Notify HR Users
-                notify_hr_users(
-                    db=db,
-                    title="Interview Cancelled",
-                    message=f"Interview round '{job_interview.interview_round}' cancelled for {candidate_name} ({job.job_title}).",
-                    notification_type="interview_cancelled",
-                    sender_user_id=admin_id,
-                    sender_type="hr"
-                )
     except Exception as e:
         from app.core.logger import logger
         logger.error(f"Error creating interview cancelled notifications: {e}")
@@ -512,15 +485,6 @@ def submit_interview_remarks_route(
                         sender_type="hr"
                     )
                     
-                    # 3. Notify HR Users
-                    notify_hr_users(
-                        db=db,
-                        title="Application Status Update",
-                        message=f"Application status for candidate {candidate_name} has been updated to {status_str} for '{job.job_title}'.",
-                        notification_type="status_update",
-                        sender_user_id=admin_id,
-                        sender_type="hr"
-                    )
         except Exception as e:
             from app.core.logger import logger
             logger.error(f"Error creating status update notifications: {e}")

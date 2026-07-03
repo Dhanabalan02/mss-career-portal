@@ -1,7 +1,6 @@
 from datetime import date
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import RedirectResponse
 from app.core.html_helper import serve_html_with_base
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -38,12 +37,24 @@ def school_jobs(
     return {"jobs": jobs}
 
 
-@router.get("/jobs/{job_id}")
+@router.get("/jobs/{job_identifier}")
 def school_job_detail(
-    job_id: int,
+    job_identifier: str,
     db: Session = Depends(get_db),
     admin_id: int = Depends(get_current_admin_id),
 ):
+    if "-" in job_identifier:
+        from app.models import JobPost
+        job = db.query(JobPost).filter(JobPost.uuid == job_identifier).first()
+        if not job:
+            raise HTTPException(status_code=404, detail="Job not found")
+        job_id = job.job_id
+    else:
+        try:
+            job_id = int(job_identifier)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid job identifier")
+
     job = get_school_job_detail(db, admin_id, job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -94,16 +105,24 @@ def issue_offer_route(
     # Send Notifications
     if not payload.is_draft:
         try:
-            from app.models import JobApplicant, JobPost, Users
+            from app.models import JobApplicant, JobPost, Users, Admins, Units
             from app.crud.notification_crud import notify_candidate, notify_hr_users
-            
+
             app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
             if app:
                 job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
                 candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
                 if job and candidate:
                     candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
-                    
+
+                    school_admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
+                    school_admin_email = school_admin.email if school_admin else "Unknown"
+                    unit_name = None
+                    if school_admin and school_admin.unit_id:
+                        unit = db.query(Units).filter(Units.id == school_admin.unit_id).first()
+                        unit_name = unit.unit_name if unit else None
+                    unit_display = f" (Unit: {unit_name})" if unit_name else ""
+
                     # 1. Notify Candidate
                     notify_candidate(
                         db=db,
@@ -114,12 +133,12 @@ def issue_offer_route(
                         sender_user_id=admin_id,
                         sender_type="schoolAdmin"
                     )
-                    
+
                     # 2. Notify HR Users
                     notify_hr_users(
                         db=db,
                         title="Job Offer Issued",
-                        message=f"A job offer has been issued to candidate {candidate_name} for '{job.job_title}' at {job.school_name}.",
+                        message=f"A job offer has been issued to candidate {candidate_name} for '{job.job_title}' at {job.school_name} by {school_admin_email}{unit_display}.",
                         notification_type="offer_issued",
                         sender_user_id=admin_id,
                         sender_type="schoolAdmin"
@@ -149,7 +168,7 @@ def update_offer_status_route(
     # Send Notifications
     try:
         from app.models import JobApplicant, JobPost, Users
-        from app.crud.notification_crud import notify_candidate, notify_hr_users
+        from app.crud.notification_crud import notify_hr_users, notify_school_admins
         
         app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
         if app:
@@ -159,25 +178,24 @@ def update_offer_status_route(
                 candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
                 status_cap = payload.status.capitalize()
                 
-                # 1. Notify Candidate
-                notify_candidate(
-                    db=db,
-                    candidate_id=candidate.user_id,
-                    title="Offer Status Updated",
-                    message=f"Your offer status for '{job.job_title}' has been updated to '{payload.status}'.",
-                    notification_type=f"offer_status_{payload.status.lower()}",
-                    sender_user_id=admin_id,
-                    sender_type="schoolAdmin"
-                )
-                
-                # 2. Notify HR Users
+                # 1. Notify HR Users
                 notify_hr_users(
                     db=db,
                     title=f"Offer {status_cap}",
                     message=f"Offer status for candidate {candidate_name} ('{job.job_title}') has been updated to '{payload.status}'.",
                     notification_type=f"offer_status_{payload.status.lower()}",
-                    sender_user_id=admin_id,
-                    sender_type="schoolAdmin"
+                    sender_user_id=candidate.user_id,
+                    sender_type="candidate"
+                )
+                
+                # 2. Notify School Admins
+                notify_school_admins(
+                    db=db,
+                    title=f"Offer {status_cap}",
+                    message=f"Offer status for candidate {candidate_name} ('{job.job_title}') has been updated to '{payload.status}'.",
+                    notification_type=f"offer_status_{payload.status.lower()}",
+                    sender_user_id=candidate.user_id,
+                    sender_type="candidate"
                 )
     except Exception as e:
         from app.core.logger import logger

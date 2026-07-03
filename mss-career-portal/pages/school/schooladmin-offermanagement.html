@@ -1078,6 +1078,42 @@
     .table-scroll {
       overflow-x: auto;
     }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 4px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-1);
+      margin-top: auto;
+    }
+    .page-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      transition: all 0.12s;
+    }
+    .page-btn:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: var(--text);
+    }
+    .page-btn.active {
+      background: rgba(233, 30, 99, 0.08);
+      color: #e91e63;
+      border-color: rgba(233, 30, 99, 0.5);
+      font-weight: 700;
+    }
   </style>
 </head>
 
@@ -1154,6 +1190,7 @@
           <table id="offerTable">
             <thead>
               <tr>
+                <th style="width: 50px;">S.No</th>
                 <th>Candidate</th>
                 <th>Position</th>
                 <th>Department</th>
@@ -1165,6 +1202,7 @@
             </thead>
             <tbody id="tableBody"></tbody>
           </table>
+          <div class="pagination" id="pagination"></div>
         </div>
         <div class="empty-state" id="emptyState" style="display:none;">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1397,12 +1435,22 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
       const tbody = document.getElementById('tableBody');
       const empty = document.getElementById('emptyState');
       document.getElementById('rowCount').textContent = rows.length + ' record' + (rows.length !== 1 ? 's' : '');
-      if (!rows.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+      if (!rows.length) { 
+        tbody.innerHTML = ''; 
+        empty.style.display = 'block'; 
+        const pg = document.getElementById('pagination');
+        if (pg) pg.style.display = 'none';
+        return; 
+      } else {
+        const pg = document.getElementById('pagination');
+        if (pg) buildPagination(rows.length, 10);
+      }
       empty.style.display = 'none';
-      tbody.innerHTML = rows.map(c => {
+      tbody.innerHTML = rows.map((c, i) => {
         const s = STATUS_META[c.status];
         const isEditable = c.status === 'awaiting' || c.status === 'draft';
         return `<tr data-id="${c.id}">
+      <td style="font-weight:600;color:var(--text-sub, #666);">${i + 1}</td>
       <td>
         <div class="avatar-cell">
           <div class="avatar ${c.av}">${c.initials}</div>
@@ -2137,7 +2185,41 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
     // Init
     initMinDates();
     loadCandidates();
+    // Initial Load
+    renderTable(data);
+    
+    /* ── Pagination ── */
+    function buildPagination(total, perPage) {
+      const pg = document.getElementById('pagination');
+      if (!pg) return;
+      
+      const totalPages = Math.ceil(total / perPage) || 1;
+      pg.innerHTML = '';
+      pg.style.display = 'flex';
 
+      const prev = document.createElement('button');
+      prev.className = 'page-btn';
+      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
+      prev.onclick = () => { };
+      pg.appendChild(prev);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const b = document.createElement('button');
+        b.className = 'page-btn' + (i === 1 ? ' active' : '');
+        b.textContent = i;
+        b.onclick = function () {
+          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
+          this.classList.add('active');
+        };
+        pg.appendChild(b);
+      }
+
+      const next = document.createElement('button');
+      next.className = 'page-btn';
+      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
+      next.onclick = () => { };
+      pg.appendChild(next);
+    }
   </script>
 </body>
 

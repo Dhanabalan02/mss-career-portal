@@ -874,6 +874,7 @@
       <div class="profile-info">
         <div class="profile-name" id="hero-name">—</div>
         <div class="profile-role" id="hero-role-exp">—</div>
+        <div class="profile-role" id="hero-exp">—</div>
         <div class="profile-meta" id="hero-meta">
           <!-- Injected dynamically -->
         </div>
@@ -1004,8 +1005,6 @@
       <div class="card">
         <div class="card-header">
           <span class="card-title">Interview History</span>
-          <button class="btn btn-primary btn-sm" id="scheduleNextRoundBtn" onclick="scheduleInterview()">+ Schedule Next
-            Round</button>
         </div>
         <div class="card-body" id="interviews-list">
           <!-- Injected dynamically -->
@@ -1092,7 +1091,7 @@
 
     function getStageBadgeClass(stage) {
       const map = {
-        'Applied': 'badge-blue', 'Pre Screen Reject': 'badge-red', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
+        'Pre Screen Reject': 'badge-red', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
         'Offer': 'badge-blue', 'Offer Accepted': 'badge-green',
         'Onboarding': 'badge-green', 'Rejected': 'badge-red'
       };
@@ -1134,7 +1133,8 @@
       const initials = candidateData.name.split(' ').map(p => p[0]).join('').substring(0, 2).toUpperCase();
       document.getElementById('hero-avatar').textContent = initials;
       document.getElementById('hero-name').textContent = candidateData.name;
-      document.getElementById('hero-role-exp').textContent = `${candidateData.job} · ${candidateData.exp} Experience`;
+      document.getElementById('hero-role-exp').textContent = `Applied for :- ${candidateData.job}`;
+      document.getElementById('hero-exp').textContent = `Total Experience :- ${candidateData.exp}`;
 
       const metaEl = document.getElementById('hero-meta');
       const meta = candidateData.metadata;
@@ -1147,16 +1147,14 @@
       const badgesEl = document.getElementById('hero-badges');
       badgesEl.innerHTML = `
         <span class="badge ${getStageBadgeClass(candidateData.stage)}"><i class="ti ti-point-filled"></i> ${candidateData.stage}</span>
-        <span class="badge badge-gray">Applied ${candidateData.appliedDate} · ID: APP-${String(candidateData.id).padStart(4, '0')}</span>
+        <span class="badge badge-gray">Application-ID: ${candidateData.mss_app_no}</span>
       `;
     }
 
     function renderOverviewTab() {
       // Stage Normalization
       const stageMap = {
-        'applied': 'Applied',
         'prescreen-reject': 'Pre Screen Reject',
-        'prescreen rejected': 'Pre Screen Reject',
         'screened': 'Screened',
         'interview': 'Interview',
         'offer': 'Offer',
@@ -1166,7 +1164,7 @@
         'awaiting offer': 'Offer'
       };
       
-      const normalizedStage = candidateData.stage ? (stageMap[candidateData.stage.toLowerCase()] || candidateData.stage) : 'Applied';
+      const normalizedStage = candidateData.stage ? (stageMap[candidateData.stage.toLowerCase()] || candidateData.stage): '';
 
       // Bio
       document.getElementById('summary-content').textContent = candidateData.metadata.about || 'No professional summary provided.';
@@ -1183,7 +1181,7 @@
        <div class="info-row">
           <span class="info-label">Applied Date</span>
           <span class="info-value">
-            ${new Date(candidateData.appliedDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-')}
+            ${(candidateData.appliedDate)}
           </span>
         </div>
 
@@ -1196,8 +1194,18 @@
       const timelineEl = document.getElementById('overview-timeline');
       timelineEl.innerHTML = '';
 
-      const stages = ['Applied', 'Pre Screen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding'];
+      const stages = ['Pre Screen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding','Rejected'];
       const currentIdx = stages.indexOf(normalizedStage);
+      const tracking = candidateData.trackingDates || {};
+      const stageDateMap = {
+        'Pre Screen Reject': tracking.screened,
+        'Screened': tracking.screened,
+        'Interview': tracking.interview,
+        'Offer': tracking.offer,
+        'Offer Accepted': tracking.offer_accepted,
+        'Onboarding': tracking.onboarding,
+        'Rejected': ''
+      };
 
       stages.forEach((stage, idx) => {
         let dot = '●';
@@ -1216,12 +1224,14 @@
           sub = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? ' (Rejected)' : ' (Active)';
         }
 
+        const stageDate = stageDateMap[stage] || candidateData.appliedDate;
+
         timelineEl.innerHTML += `
           <div class="tl-item">
             <div class="tl-dot" style="background:${bg};color:${color};">${dot}</div>
             <div class="tl-body">
               <div class="tl-title" style="color:${color};font-weight:700;">${stage}${sub}</div>
-              <div class="tl-meta">${idx <= currentIdx ? candidateData.appliedDate : ''}</div>
+              <div class="tl-meta">${idx <= currentIdx ? (stageDate || '') : ''}</div>
             </div>
           </div>
         `;
@@ -1417,14 +1427,6 @@
       const listEl = document.getElementById('interviews-list');
       listEl.innerHTML = '';
 
-      const nextBtn = document.getElementById('scheduleNextRoundBtn');
-      const hasNextRoundStatus = candidateData.interviewStatus && (candidateData.interviewStatus.toLowerCase() === 'next round' || candidateData.interviewStatus.toLowerCase() === 'next_round');
-      if (candidateData.stage === 'Screened' || hasNextRoundStatus) {
-        nextBtn.style.display = 'inline-flex';
-      } else {
-        nextBtn.style.display = 'none';
-      }
-
       if (candidateData.interviews && candidateData.interviews.length) {
         candidateData.interviews.forEach(item => {
           const dateStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
@@ -1475,26 +1477,56 @@
       }
     }
 
+    function getOfferStatusBadgeClass(status) {
+      const sLower = (status || '').toLowerCase();
+      if (sLower === 'accepted') return 'badge-green';
+      if (sLower === 'expired' || sLower === 'rejected') return 'badge-red';
+      return 'badge-orange'; // pending
+    }
+
     function renderOfferTab() {
       const el = document.getElementById('offer-tab-content');
       if (candidateData.offer_letter_doc) {
-        el.className = 'card';
-        el.style.cssText = 'padding: 20px;';
+        el.className = '';
+        el.style.cssText = '';
         const docName = candidateData.offer_letter_doc.split(/[\\/]/).pop();
         const encodedDoc = encodeURIComponent(candidateData.offer_letter_doc);
         const downloadUrl = JOBS_API_BASE + '/apply/download/' + encodedDoc;
-        
+        const offer = candidateData.offerDetails || {};
+        const status = candidateData.offer_acceptance_status || 'pending';
+
         el.innerHTML = `
-          <div class="card-header"><span class="card-title">Offer Letter Details</span></div>
-          <div class="card-body">
-            <p style="font-size:13.5px;margin-bottom:12px;">An offer letter has been generated for this candidate.</p>
-            <div class="pdf-viewer">
-              <div class="icon"><i class="ti ti-file-text"></i></div>
-              <div class="name">${docName}</div>
-              <div class="meta">Status: ${candidateData.offer_acceptance_status.toUpperCase()}</div>
-              <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="downloadOfferBtn">Download Offer Letter</button>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header"><span class="card-title"><i class="ti ti-file-text"></i> Offer Letter</span></div>
+              <div class="card-body">
+                <div class="pdf-viewer">
+                  <div class="icon"><i class="ti ti-file-text"></i></div>
+                  <div class="meta">PDF Document</div>
+                  <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="downloadOfferBtn">Download Offer Letter</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Offer Summary</span>
+                <span class="badge ${getOfferStatusBadgeClass(status)}">${status.toUpperCase()}</span>
+              </div>
+              <div class="card-body">
+                <div class="info-row"><span class="info-label">Offered Salary</span><span class="info-value">${offer.offered_salary ? ('₹ ' + offer.offered_salary + ' LPA') : '—'}</span></div>
+                <div class="info-row"><span class="info-label">Joining Date</span><span class="info-value">${offer.joining_date || '—'}</span></div>
+                <div class="info-row"><span class="info-label">Probation Period</span><span class="info-value">${offer.probation_period || '—'}</span></div>
+                <div class="info-row"><span class="info-label">Offer Issued On</span><span class="info-value">${offer.offer_issued_date || '—'}</span></div>
+                <div class="info-row"><span class="info-label">Offer Expiry</span><span class="info-value">${offer.offer_expiry_date || '—'}</span></div>
+                ${status.toLowerCase() === 'accepted' ? `<div class="info-row"><span class="info-label">Accepted On</span><span class="info-value">${offer.offer_accepted_on || '—'}</span></div>` : ''}
+              </div>
             </div>
           </div>
+          ${offer.offer_remarks ? `
+          <div class="card" style="margin-top:20px;">
+            <div class="card-header"><span class="card-title">Offer Remarks</span></div>
+            <div class="card-body" style="font-size:13px;color:var(--c-text2);line-height:1.6;">${offer.offer_remarks}</div>
+          </div>` : ''}
         `;
         document.getElementById('downloadOfferBtn').onclick = () => {
           const a = document.createElement('a');
@@ -1504,6 +1536,14 @@
           a.click();
           document.body.removeChild(a);
         };
+      } else if (candidateData.interviewStatus === 'Selected') {
+        el.className = 'empty-state';
+        el.innerHTML = `
+          <div class="icon" style="color:var(--c-orange);"><i class="ti ti-hourglass-high" aria-hidden="true"></i></div>
+          <div class="title">Awaiting Offer</div>
+          <div class="body">${candidateData.name} has been <strong>selected</strong> for ${candidateData.job}. Awaiting Offer from the school admin.</div>
+          <span class="badge badge-orange" style="font-size:12.5px;padding:6px 12px;"><i class="ti ti-point-filled"></i> Offer Pending — School Admin Action</span>
+        `;
       } else {
         el.className = 'empty-state';
         el.innerHTML = `
@@ -1559,68 +1599,6 @@
       if (firstFocusable) firstFocusable.focus();
     }
 
-    /* ── Schedule Modal ── */
-    function scheduleInterview() {
-      openModal(`
-    <div class="modal-header"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview – ${candidateData.name}</div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group span2">
-          <label>Round Name *</label>
-          <input type="text" id="schRound" placeholder="e.g. Round 2 – Technical Interview" value="Round 2 - Technical Interview">
-        </div>
-        <div class="form-group">
-          <label>Mode</label>
-          <select id="schMode" onchange="toggleMeetingMode()">
-            <option value="online">Online</option>
-            <option value="offline">In-Person</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Date *</label>
-          <input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}">
-        </div>
-        <div class="form-group">
-          <label>Start Time *</label>
-          <input type="time" id="startTime" value="10:00">
-        </div>
-        <div class="form-group">
-          <label>End Time *</label>
-          <input type="time" id="endTime" value="">
-        </div>
-        <div class="form-group span2">
-          <label>Interviewer *</label>
-          <select id="schInterviewer">
-            <option value="">Loading interviewers…</option>
-          </select>
-        </div>
-        <div class="form-group span2">
-          <label id="dynamicLabel">Meeting Link</label>
-          <input type="text" id="schModeInput" placeholder="https://meet.google.com/...">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitSchedule()"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview</button>
-    </div>`);
-      loadSchoolAdmins('schInterviewer');
-    }
-
-    function toggleMeetingMode() {
-      const mode = document.getElementById('schMode').value;
-      const label = document.getElementById('dynamicLabel');
-      const input = document.getElementById('schModeInput');
-      if (mode === 'online') {
-        label.textContent = 'Meeting Link';
-        input.value = '';
-        input.placeholder = 'https://meet.google.com/...';
-      } else {
-        label.textContent = 'Interview Location';
-        input.value = '';
-        input.placeholder = 'Enter office / hall room location';
-      }
-    }
 
     /* ── Interviewer dropdown loader ── */
     function loadInterviewers(selectId) {
@@ -1680,56 +1658,6 @@
         });
     }
 
-    function submitSchedule() {
-      const round = document.getElementById('schRound').value.trim();
-      const mode = document.getElementById('schMode').value;
-      const dateVal = document.getElementById('schDate').value;
-      const timeVal = document.getElementById('startTime').value;
-      const endtimeVal = document.getElementById('endTime').value;
-      const interviewer = document.getElementById('schInterviewer').value.trim();
-      const modeInput = document.getElementById('schModeInput').value.trim();
-
-      if (!round || !dateVal || !timeVal || !endtimeVal || !interviewer) {
-        if (window.showToast) window.showToast('Please fill out all required fields.', 'error');
-        return;
-      }
-
-      const scheduledAtIso = `${dateVal}T${timeVal}:00`;
-      const endTimeIso = `${dateVal}T${endtimeVal}:00`;
-      const payload = {
-        job_id: candidateData.job_id,
-        job_applicant_id: candidateData.id,
-        interview_round: round,
-        scheduled_at: scheduledAtIso,
-        end_time_at: endTimeIso,
-        interview_mode: mode,
-        meeting_link: mode === 'online' ? modeInput : null,
-        location: mode === 'offline' ? modeInput : null,
-        interviewer_name: interviewer
-      };
-
-      fetch(JOBS_API_BASE + '/job-interviews/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify(payload)
-      })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(() => {
-          if (window.showToast) window.showToast('Interview scheduled!', 'success');
-          document.querySelector('.modal-overlay').remove();
-          fetchCandidateProfile();
-        })
-        .catch(err => {
-          console.error(err);
-          if (window.showToast) window.showToast('Failed to schedule interview.', 'error');
-        });
-    }
 
     /* ── Reschedule Modal ── */
     function rescheduleInterviewModal(interviewId) {

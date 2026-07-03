@@ -1998,6 +1998,7 @@
           overflow: hidden;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
           border: none;
+          position: relative;
         "
       >
         <div
@@ -2011,28 +2012,6 @@
             width: 100%;
           "
         ></div>
-        <button
-          class="modal-close"
-          onclick="closeConfirmScheduleModal()"
-          style="
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--surface-2);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s;
-            color: var(--text-2);
-          "
-        >
-          <i class="ti ti-x"></i>
-        </button>
         <div style="padding: 32px 32px 16px; text-align: left">
           <div
             style="
@@ -2234,7 +2213,6 @@
       </div>
     </div>
 
-
     <script src="portal-layout.js"></script>
     <script>
       /* ── Data ── */
@@ -2369,7 +2347,7 @@
         return `
   <div class="candidate-card" id="card-${c.id}"
     draggable="true"
-    style="border-left-color:${m.border}; ${c.stage === 'Prescreen Rejected' || c.stage === 'Screened' ? `border-color: ${m.border};` : ''}"
+    style="border-left-color:${m.border}; ${c.stage === "Prescreen Rejected" || c.stage === "Screened"}"
     onclick="openDrawer(event, ${c.id})"
     ondragstart="onDragStart(event,${c.id})"
     ondragend="onDragEnd(event)"
@@ -2383,9 +2361,6 @@
         <div class="cand-name">${c.name}</div>
         <div class="cand-pos">${c.position}</div>
       </div>
-      <button class="card-menu-btn" onclick="event.stopPropagation();showToast('Card menu coming soon','warning')" aria-label="Card options">
-        <i class="ti ti-dots-vertical" aria-hidden="true"></i>
-      </button>
     </div>
     <div class="card-tags">
       <span class="tag"><i class="ti ti-building" aria-hidden="true"></i>${c.school}</span>
@@ -2435,7 +2410,9 @@
       function updateStats(data) {
         const grid = document.getElementById("statsGrid");
         const total = data.length;
-        const prescreenReject = data.filter((c) => c.stage === "Prescreen Rejected").length;
+        const prescreenReject = data.filter(
+          (c) => c.stage === "Prescreen Rejected",
+        ).length;
         const screened = data.filter((c) => c.stage === "Screened").length;
         const interview = data.filter((c) => c.stage === "Interview").length;
         const offers = data.filter(
@@ -2668,7 +2645,11 @@
 
       function isStageMoveAllowed(currentStage, targetStage) {
         if (currentStage === targetStage) return true;
-        if (currentStage === "Prescreen Rejected" || targetStage === "Prescreen Rejected") return false;
+        if (
+          currentStage === "Prescreen Rejected" ||
+          targetStage === "Prescreen Rejected"
+        )
+          return false;
         if (
           currentStage === "Screened" &&
           (targetStage === "Offer" ||
@@ -2676,10 +2657,7 @@
             targetStage === "Onboarded")
         )
           return false;
-        if (
-          currentStage === "Interview" &&
-          (targetStage === "Screened")
-        )
+        if (currentStage === "Interview" && targetStage === "Screened")
           return false;
         if (
           currentStage === "Offer" &&
@@ -2698,8 +2676,8 @@
       function handleStageChangeRequest(c, newStage) {
         if (!isStageMoveAllowed(c.stage, newStage)) {
           showToast(
-            `❌ Cannot move candidate from ${c.stage} to ${newStage}`,
-            "danger",
+            `Cannot move candidate from ${c.stage} to ${newStage}`,
+            "info",
           );
           return;
         }
@@ -2796,7 +2774,6 @@
         c.notes = document.getElementById("notesArea").value;
         showToast("Notes saved", "success");
       }
-
 
       function getStageFromPoint(x, y) {
         const el = document.elementFromPoint(x, y);
@@ -3299,12 +3276,12 @@
 
         const schDateEl = document.getElementById("schDate");
         schDateEl.value = todayStr;
-        schDateEl.setAttribute('min', todayStr);
+        schDateEl.setAttribute("min", todayStr);
         schDateEl.min = todayStr;
 
         document.getElementById("scheduleInterviewModal").classList.add("open");
         loadInterviewers("schInterviewer");
-        }
+      }
 
       function toggleInterviewModeField() {
         const mode = document.getElementById("interviewMode").value;
@@ -3385,12 +3362,15 @@
 
         const now = new Date();
         const year = now.getFullYear();
-        const month = String(now.getMonth() + 1).padStart(2, '0');
-        const day = String(now.getDate()).padStart(2, '0');
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const day = String(now.getDate()).padStart(2, "0");
         const todayStr = `${year}-${month}-${day}`;
-        
+
         if (schDate < todayStr) {
-          showToast('Past dates are not allowed for scheduling interviews.', 'warning');
+          showToast(
+            "Past dates are not allowed for scheduling interviews.",
+            "warning",
+          );
           return;
         }
 

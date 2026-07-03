@@ -891,34 +891,27 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: var(--radius-sm);
-      font-size: 12.5px;
+      border-radius: 50%;
+      font-size: 13px;
       font-weight: 500;
       font-family: var(--font-body);
       cursor: pointer;
-      background: var(--bg1);
+      background: transparent;
       border: 1px solid var(--border2);
       color: var(--text2);
       transition: all 0.12s;
     }
 
     .page-btn:hover {
-      background: var(--bg3);
+      background: rgba(0, 0, 0, 0.04);
       color: var(--text1);
     }
 
     .page-btn.active {
-      background: var(--blue);
-      color: #fff;
-      border-color: var(--blue);
+      background: rgba(233, 30, 99, 0.08);
+      color: #e91e63;
+      border-color: rgba(233, 30, 99, 0.5);
       font-weight: 700;
-    }
-
-    .page-btn-nav {
-      width: auto;
-      padding: 0 12px;
-      gap: 4px;
-      font-size: 12px;
     }
 
     /* ─── MODAL ────────────────────────────────────────────────── */
@@ -1074,6 +1067,7 @@
           <table>
             <thead>
               <tr>
+                <th style="width: 50px;">S.No</th>
                 <th>Job Title</th>
                 <th>Department</th>
                 <th style="text-align:center;">Vacancies</th>
@@ -1129,10 +1123,11 @@
         return;
       }
 
-      jobs.forEach(j => {
+      jobs.forEach((j, index) => {
         const meta = STATUS_META[j.status] || { badge: 'badge-blue', dot: '#185FA5' };
         const tr = document.createElement('tr');
         tr.innerHTML = `
+      <td style="font-weight:600;color:var(--text-sub, #666);">${index + 1}</td>
       <td>
         <div class="td-flex">
           <span class="status-dot" style="background:${meta.dot};"></span>
@@ -1147,7 +1142,7 @@
       <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
       <td>
         <div class="table-actions">
-          <button class="act-btn act-btn-blue" onclick="event.stopPropagation();location.href='/mss-career-portal/school/job-detail?id=${j.job_id || 0}'">View</button>
+          <button class="act-btn act-btn-blue" onclick="event.stopPropagation(); location.href='/mss-career-portal/school/job-detail?id=${j.uuid || j.job_id || 0}&title=' + encodeURIComponent('${j.title}') + '&unit=' + encodeURIComponent('${j.unit}')">View</button>
         </div>
       </td>`;
 
@@ -1236,8 +1231,8 @@
       pg.innerHTML = '';
 
       const prev = document.createElement('button');
-      prev.className = 'page-btn page-btn-nav';
-      prev.innerHTML = '← Prev';
+      prev.className = 'page-btn';
+      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
       prev.onclick = () => { };
       pg.appendChild(prev);
 
@@ -1246,15 +1241,15 @@
         b.className = 'page-btn' + (i === 1 ? ' active' : '');
         b.textContent = i;
         b.onclick = function () {
-          document.querySelectorAll('.page-btn:not(.page-btn-nav)').forEach(x => x.classList.remove('active'));
+          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
           this.classList.add('active');
         };
         pg.appendChild(b);
       }
 
       const next = document.createElement('button');
-      next.className = 'page-btn page-btn-nav';
-      next.innerHTML = 'Next →';
+      next.className = 'page-btn';
+      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
       next.onclick = () => { };
       pg.appendChild(next);
     }

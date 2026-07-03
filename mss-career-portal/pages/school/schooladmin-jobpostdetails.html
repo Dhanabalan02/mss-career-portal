@@ -12,7 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap"
     rel="stylesheet">
-  <script src="portal-layout.js" defer></script>
+  <script src="portal-layout.js"></script>
   <style>
     :root {
       --bg: #ffffff;
@@ -1401,7 +1401,7 @@
           <thead>
             <tr>
               <th>Question</th>
-              <th>Type</th>
+              <th>Expected Answer</th>
               <th>Mandatory</th>
             </tr>
           </thead>
@@ -1436,7 +1436,7 @@
           document.getElementById('jobTitle').textContent = j.title || '';
           const expRange = j.min_exp && j.max_exp ? `${j.min_exp}-${j.max_exp} Years` : j.min_exp || '';
           document.getElementById('jobMeta').textContent =
-            `• ${j.dept || ''} • ${j.type || ''} • ${j.school || ''}`;
+            `• ${j.type || ''} • ${j.school || ''}`;
           /* stat cards */
           const sv = document.querySelectorAll('.stat-value');
           if (sv.length >= 4) {
@@ -1497,7 +1497,7 @@
             qBody.innerHTML = j.questions.map(q => `
               <tr>
                 <td>${q.question}</td>
-                <td>${q.type || 'Text'}</td>
+                <td>${q.expected_answer}</td>
                 <td><span class="badge badge-${q.is_required ? 'accepted' : 'gray'}">${q.is_required ? 'Required' : 'Optional'}</span></td>
               </tr>
             `).join('');

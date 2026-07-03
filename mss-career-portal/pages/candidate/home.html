@@ -2237,7 +2237,7 @@
                 var jobType = escapeHtml(job.job_type || 'Full Time');
                 var description = escapeHtml(job.job_description || '').slice(0, 150);
                 var closing = formatDate(job.closing_date);
-                var detailUrl = '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(job.uuid || '') + 
+                var detailUrl = '/mss-career-portal/job-description?uuid=' + encodeURIComponent(job.uuid || '') + 
                                 '&title=' + encodeURIComponent((job.job_title || '').replace(/ /g, '-')) + 
                                 '&unit=' + encodeURIComponent((job.school_name || job.department || '').replace(/ /g, '-'));
                 var applyUrl = 'apply.html?id=' + encodeURIComponent(job.job_id);
@@ -2310,7 +2310,7 @@
 
                 // 2. Return the completed HTML string cleanly in ONE continuous expression
                 return '<div class="col-lg-6">' +
-                    '<div class="mss-jc" onclick="location.href=\'/mss-career-portal/job-detail?uuid=\' + encodeURIComponent(\'' + (job.uuid || '') + '\') + \'&title=\' + encodeURIComponent(\'' + (job.job_title || '').replace(/ /g, '-') + '\') + \'&unit=\' + encodeURIComponent(\'' + (job.school_name || job.department || '').replace(/ /g, '-') + '\')\" ' +
+                    '<div class="mss-jc" onclick="location.href=\'/mss-career-portal/job-description?uuid=\' + encodeURIComponent(\'' + (job.uuid || '') + '\') + \'&title=\' + encodeURIComponent(\'' + (job.job_title || '').replace(/ /g, '-') + '\') + \'&unit=\' + encodeURIComponent(\'' + (job.school_name || job.department || '').replace(/ /g, '-') + '\')\" ' +
                     'style="background:#fff;border-radius:20px;padding:1.75rem;border:1px solid #E2E8F0;cursor:pointer;transition:all 0.3s ease;height:100%;display:flex;flex-direction:column;" ' +
                     'onmouseover="this.style.borderColor=\'var(--card-border)\';this.style.boxShadow=\'var(--card-border-shadow)\';this.style.transform=\'translateY(-4px)\'" ' +
                     'onmouseout="this.style.borderColor=\'#E2E8F0\';this.style.boxShadow=\'none\';this.style.transform=\'translateY(0)\'">' +

@@ -554,6 +554,11 @@
       "id": 111,
       "category": "Soft Skills",
       "skill_name": "Decision Making"
+    },
+    {
+      "id": 112,
+      "category": "Custom",
+      "skill_name": "work balance"
     }
   ]
 }

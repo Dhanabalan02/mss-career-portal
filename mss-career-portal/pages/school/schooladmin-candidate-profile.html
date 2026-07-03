@@ -860,36 +860,24 @@
 
   <div class="page-wrap">
 
-    <!-- ── Page header ─────────────────────────────────────── -->
-    <div class="page-header">
-      <div>
-        <div class="breadcrumb">
-          <a href="/mss-career-portal/school/applicants">Applicants</a>
-          <span class="breadcrumb-sep">›</span>
-          <span id="breadcrumbName">Arjun Mehta</span>
-        </div>
-        <div class="page-title" id="pageTitle">Arjun Mehta</div>
-        <div class="page-subtitle" id="pageSubtitle">Applied for: Senior Mathematics Teacher</div>
-      </div>
-    </div>
-
     <!-- ── Profile hero ────────────────────────────────────── -->
     <div class="profile-hero">
-      <div class="profile-avatar" id="profileAvatar">AM</div>
+      <div class="profile-avatar" id="profileAvatar"></div>
       <div class="profile-info">
-        <div class="profile-name" id="profileName">Arjun Mehta</div>
-        <div class="profile-role" id="profileRole">Senior Mathematics Teacher · 6 Years Experience</div>
+        <div class="profile-name" id="profileName"></div>
+        <div class="profile-role" id="profileRole">Applying For :-</div>
+        <div class="profile-role" id="total-experience">Total Experience :-</div>
         <div class="profile-meta" id="profileMeta">
-          <span><i class="ti ti-mail" aria-hidden="true"></i> arjun.mehta@email.com</span>
-          <span><i class="ti ti-device-mobile" aria-hidden="true"></i> +91 98765 43210</span>
-          <span><i class="ti ti-map-pin" aria-hidden="true"></i> Delhi, India</span>
-          <span><i class="ti ti-school" aria-hidden="true"></i> B.Sc. + B.Ed., Delhi University</span>
+          <span><i class="ti ti-mail" aria-hidden="true"></i></span>
+          <span><i class="ti ti-device-mobile" aria-hidden="true"></i></span>
+          <span><i class="ti ti-map-pin" aria-hidden="true"></i></span>
+          <span><i class="ti ti-school" aria-hidden="true"></i></span>
         </div>
         <div class="profile-badges" id="profileBadges">
-          <span class="badge badge-blue"><i class="ti ti-point-filled" aria-hidden="true"></i> Interview</span>
-          <span class="badge badge-green"><i class="ti ti-target" aria-hidden="true"></i> 87% Match</span>
-          <span class="badge badge-orange"><i class="ti ti-star-filled" aria-hidden="true"></i> Shortlisted</span>
-          <span class="badge badge-gray" style="font-size:11px;">Applied May 12, 2025 · ID: APP-0001</span>
+          <span class="badge badge-blue"><i class="ti ti-point-filled" aria-hidden="true"></i></span>
+          <span class="badge badge-green"><i class="ti ti-target" aria-hidden="true"></i></span>
+          <span class="badge badge-orange"><i class="ti ti-star-filled" aria-hidden="true"></i></span>
+          <span class="badge badge-gray" style="font-size:11px;"></span>
         </div>
       </div>
     </div>
@@ -1086,16 +1074,11 @@
         const role = c.job || '';
         const exp  = c.exp || '';
         const meta = c.metadata || {};
-
-        /* breadcrumb + header */
-        document.getElementById('breadcrumbName').textContent = name;
-        document.getElementById('pageTitle').textContent = name;
-        document.getElementById('pageSubtitle').textContent = `Applied for: ${role}`;
-
         /* hero */
         document.getElementById('profileAvatar').textContent = c.initials || name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
         document.getElementById('profileName').textContent = name;
-        document.getElementById('profileRole').textContent = role + (exp ? ` · ${exp} Experience` : '');
+        document.getElementById('profileRole').textContent = role;
+        document.getElementById('total-experience').textContent = exp;
         document.getElementById('profileMeta').innerHTML = [
           c.email ? `<span><i class="ti ti-mail" aria-hidden="true"></i> ${c.email}</span>` : '',
           c.mobile ? `<span><i class="ti ti-device-mobile" aria-hidden="true"></i> ${c.mobile}</span>` : '',
@@ -1103,7 +1086,8 @@
         ].filter(Boolean).join('');
         document.getElementById('profileBadges').innerHTML = [
           c.stage ? `<span class="badge ${getStageBadgeClass(c.stage)}"><i class="ti ti-point-filled" aria-hidden="true"></i> ${c.stage}</span>` : '',
-          `<span class="badge badge-gray" style="font-size:11px;">Applied ${c.appliedDate || ''} · ID: APP-${String(id).padStart(4,'0')}</span>`,
+          `<span class="badge badge-gray" style="font-size:11px;">Applied On: ${c.appliedDate || ''}</span>`,
+          `<span class="badge badge-blue" style="font-size:11px;">Application-ID: ${c.mss_app_no}</span>`,
         ].filter(Boolean).join('');
 
         renderOverviewTab();
@@ -1148,6 +1132,15 @@
       timelineEl.innerHTML = '';
       const stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding to Masset'];
       const currentIdx = stages.indexOf(candidateData.stage);
+      const tracking = candidateData.trackingDates || {};
+      const stageDateMap = {
+        'Applied': tracking.applied,
+        'Screened': tracking.screened,
+        'Interview': tracking.interview,
+        'Offer': tracking.offer,
+        'Offer Accepted': tracking.offer_accepted,
+        'Onboarding to Masset': tracking.onboarding
+      };
 
       stages.forEach((stage, idx) => {
         let dot = '●';
@@ -1166,12 +1159,14 @@
           sub = ' (Active)';
         }
 
+        const stageDate = stageDateMap[stage] || candidateData.appliedDate;
+
         timelineEl.innerHTML += `
           <div class="tl-item">
             <div class="tl-dot" style="background:${bg};color:${color};">${dot}</div>
             <div class="tl-body">
               <div class="tl-title" style="color:${color};font-weight:700;">${stage}${sub}</div>
-              <div class="tl-meta">${idx <= currentIdx ? candidateData.appliedDate : ''}</div>
+              <div class="tl-meta">${idx <= currentIdx ? (stageDate || '') : ''}</div>
             </div>
           </div>
         `;
@@ -1402,23 +1397,61 @@
       }
     }
 
+    function getOfferStatusBadgeClass(status) {
+      const sLower = (status || '').toLowerCase();
+      if (sLower === 'accepted') return 'badge-green';
+      if (sLower === 'expired' || sLower === 'rejected') return 'badge-red';
+      return 'badge-orange'; // pending
+    }
+
     function renderOfferTab() {
       if (!candidateData) return;
       const el = document.getElementById('tab-offer');
-      if (candidateData.offer_acceptance_status) {
+      if (candidateData.offer_letter_doc) {
+        const status = candidateData.offer_acceptance_status || 'pending';
+        const offer = candidateData.offerDetails || {};
         el.innerHTML = `
-          <div class="card">
-            <div class="card-header"><span class="card-title">Offer Details</span></div>
-            <div class="card-body">
-              <div class="info-row"><span class="info-label">Status</span><span class="info-value"><span class="badge badge-green">${candidateData.offer_acceptance_status}</span></span></div>
-              ${candidateData.offer_letter_doc ? `
-                <div class="info-row">
-                  <span class="info-label">Offer Letter</span>
-                  <span class="info-value">
-                    <button class="btn btn-outline" style="font-size: 12px; padding: 6px 12px;" onclick="downloadOfferPDF()"><i class="ti ti-download" style="margin-right:4px;"></i> Download Offer Letter</button>
-                  </span>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <span class="card-title">Offer Summary</span>
+                <span class="badge ${getOfferStatusBadgeClass(status)}">${status.toUpperCase()}</span>
+              </div>
+              <div class="card-body">
+                <div class="info-row"><span class="info-label">Offered Salary</span><span class="info-value">${offer.offered_salary ? ('₹ ' + offer.offered_salary + ' LPA') : '—'}</span></div>
+                <div class="info-row"><span class="info-label">Joining Date</span><span class="info-value">${offer.joining_date || '—'}</span></div>
+                <div class="info-row"><span class="info-label">Probation Period</span><span class="info-value">${offer.probation_period || '—'}</span></div>
+                <div class="info-row"><span class="info-label">Offer Issued On</span><span class="info-value">${offer.offer_issued_date || '—'}</span></div>
+                <div class="info-row"><span class="info-label">Offer Expiry</span><span class="info-value">${offer.offer_expiry_date || '—'}</span></div>
+                ${status.toLowerCase() === 'accepted' ? `<div class="info-row"><span class="info-label">Accepted On</span><span class="info-value">${offer.offer_accepted_on || '—'}</span></div>` : ''}
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Offer Letter</span></div>
+              <div class="card-body">
+                <div class="pdf-viewer">
+                  <div class="icon"><i class="ti ti-file-text"></i></div>
+                  <div class="meta">Status: ${status.toUpperCase()}</div>
+                  <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="downloadOfferPDF()"><i class="ti ti-download" style="margin-right:4px;"></i> Download Offer Letter</button>
                 </div>
-              ` : ''}
+              </div>
+            </div>
+          </div>
+          ${offer.offer_remarks ? `
+          <div class="card" style="margin-top:20px;">
+            <div class="card-header"><span class="card-title">Offer Remarks</span></div>
+            <div class="card-body" style="font-size:13px;color:var(--c-text2);line-height:1.6;">${offer.offer_remarks}</div>
+          </div>` : ''}
+        `;
+      } else if (candidateData.interviewStatus === 'Selected') {
+        el.innerHTML = `
+          <div class="empty-state">
+            <div class="icon" style="color:var(--c-orange);"><i class="ti ti-hourglass-high" aria-hidden="true"></i></div>
+            <div class="title">Awaiting Offer</div>
+            <div class="body">${candidateData.name} has been <strong>selected</strong> for ${candidateData.job}. Please generate and issue an offer letter from Offer Management.</div>
+            <span class="badge badge-orange" style="font-size:12.5px;padding:6px 12px;margin-bottom:16px;display:inline-flex;"><i class="ti ti-point-filled"></i> Offer Pending — Action Required</span>
+            <div>
+              <button class="btn btn-primary" onclick="location.href='/mss-career-portal/school/offers'">Generate Offer</button>
             </div>
           </div>
         `;

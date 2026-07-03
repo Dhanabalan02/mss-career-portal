@@ -463,10 +463,15 @@
                     var stageFeatherIcons = ['feather-file-text', 'feather-users', 'feather-briefcase', 'feather-thumbs-up', 'feather-check-circle'];
                     var currentStage = myApp.stage || 'Applied';
                     var isRejected = false;
-                    
+                    var isOnHold = false;
+
                     if (currentStage.toLowerCase() === 'prescreen-reject' || currentStage.toLowerCase() === 'rejected') {
                         isRejected = true;
                         currentStage = 'Screened';
+                    }
+                    if (currentStage.toLowerCase() === 'on hold') {
+                        isOnHold = true;
+                        currentStage = 'Screened'; // Visual baseline while on hold
                     }
                     if (currentStage.toLowerCase() === 'applied') {
                         currentStage = 'Screened'; // Visual baseline is waiting at Screened
@@ -502,6 +507,8 @@
                     
                     if (isRejected) {
                         timelineHtml += '<div style="margin-top: 30px; padding: 12px; background: #FEF2F2; color: #B91C1C; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.85rem;">Unfortunately, your application was not selected to move forward at this time.</div>';
+                    } else if (isOnHold) {
+                        timelineHtml += '<div style="margin-top: 30px; padding: 12px; background: #FFFBEB; color: #92400E; border-radius: 8px; text-align: center; font-weight: 600; font-size: 0.85rem;">Your application is currently on hold. We will update you as soon as there is progress.</div>';
                     }
                     
                     timelineEl.innerHTML = timelineHtml;
@@ -585,6 +592,7 @@
                 if (s === 'offer')                  return 'jg-badge-teal';
                 if (s === 'offer accepted')         return 'jg-badge-new';
                 if (s === 'onboarded')              return 'jg-badge-green';
+                if (s === 'on hold')                return 'jg-badge-amber';
                 if (s.indexOf('reject') !== -1)     return 'jg-badge-red';
                 if (s.indexOf('prescreen') !== -1)  return 'jg-badge-red';
                 return 'jg-badge-blue';

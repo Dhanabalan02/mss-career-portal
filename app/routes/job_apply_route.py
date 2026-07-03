@@ -52,7 +52,39 @@ class JobApplicationRequest(BaseModel):
     screening_answers: Optional[List[ScreeningAnswerRequest]] = None
 
 
-def _serialize_application(app):
+def _compute_current_stage(app, has_interview: bool = False) -> str:
+    """Derives the candidate-facing stage from the applicant's live status fields, mirroring
+    the logic used on the HR/school-admin candidate profile (jobs_route.get_applicant_detail_route).
+    The `applicant_stage` column is only ever set up to "offer" and is never advanced on
+    reject/hold/offer-accept/onboarding, so it cannot be used on its own without going stale."""
+    if app.applicant_job_status == "rejected":
+        return "Rejected"
+    if app.sync_masset == 1:
+        return "Onboarded"
+    if app.offer_acceptance_status == "accepted":
+        return "Offer Accepted"
+    if app.offer_acceptance_status == "expired":
+        return "Offer"
+    if app.issue_offer == 1 or app.offer_letter_doc:
+        return "Offer"
+    if app.applicant_job_status == "hold":
+        return "On Hold"
+    if has_interview:
+        return "Interview"
+
+    stage_val = (
+        getattr(app.applicant_stage, "value", app.applicant_stage)
+        if getattr(app, "applicant_stage", None)
+        else None
+    )
+    if stage_val == "prescreen-reject":
+        return "prescreen-reject"
+    if stage_val == "screened":
+        return "Screened"
+    return "Applied"
+
+
+def _serialize_application(app, has_interview: bool = False):
     return {
         "job_applicant_id": app.job_applicant_id,
         "job_id": app.job_id,
@@ -67,7 +99,7 @@ def _serialize_application(app):
         "department": app.job.department if hasattr(app, 'job') and app.job else None,
         "location": app.job.location if hasattr(app, 'job') and app.job else None,
         "job_type": app.job.job_type if hasattr(app, 'job') and app.job else None,
-        "stage": getattr(app.applicant_stage, 'value', app.applicant_stage) if getattr(app, 'applicant_stage', None) else "Applied",
+        "stage": _compute_current_stage(app, has_interview),
         "issue_offer": app.issue_offer if hasattr(app, 'issue_offer') else 0
     }
 
@@ -157,8 +189,7 @@ def apply_for_job_route(
     try:
         from app.models.job_post_model import JobPost
         from app.models.user_model import Users
-        from app.crud.notification_crud import notify_candidate, notify_hr_users, create_notification
-        from app.models.admin_model import Admins
+        from app.crud.notification_crud import notify_hr_users
         
         job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
         candidate = db.query(Users).filter(Users.user_id == user_id).first()
@@ -187,16 +218,31 @@ def get_my_applications_route(
 ):
     """Retrieves all applications for the logged-in candidate."""
     applications = get_candidate_applications(db, user_id=user_id)
-    
+
     from app.models.job_post_model import JobPost
+    from app.models import JobInterviewSchedule
     job_ids = [app.job_id for app in applications]
     jobs = db.query(JobPost).filter(JobPost.job_id.in_(job_ids)).all() if job_ids else []
     job_map = {job.job_id: job for job in jobs}
-    
+
+    applicant_ids = [app.job_applicant_id for app in applications]
+    interviewed_ids = set()
+    if applicant_ids:
+        rows = (
+            db.query(JobInterviewSchedule.job_applicant_id)
+            .filter(JobInterviewSchedule.job_applicant_id.in_(applicant_ids))
+            .distinct()
+            .all()
+        )
+        interviewed_ids = {row[0] for row in rows}
+
     for app in applications:
         setattr(app, 'job', job_map.get(app.job_id))
-        
-    return [_serialize_application(app) for app in applications]
+
+    return [
+        _serialize_application(app, has_interview=(app.job_applicant_id in interviewed_ids))
+        for app in applications
+    ]
 
 
 @router.get("/check-applied/{job_id}")
@@ -247,7 +293,7 @@ def respond_to_offer_route(
     try:
         from app.models.job_post_model import JobPost
         from app.models.user_model import Users
-        from app.crud.notification_crud import notify_candidate, notify_hr_users, create_notification
+        from app.crud.notification_crud import notify_hr_users, create_notification
         from app.models.admin_model import Admins
         
         job = db.query(JobPost).filter(JobPost.job_id == job_id).first()

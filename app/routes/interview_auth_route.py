@@ -1,7 +1,6 @@
 import jwt
 from typing import Optional
 from fastapi import APIRouter, Header, HTTPException, status
-from fastapi.responses import RedirectResponse
 from app.core.html_helper import serve_html_with_base
 from app.core.config import settings
 
