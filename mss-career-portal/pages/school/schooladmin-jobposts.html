@@ -1221,28 +1221,30 @@
     /* ── PAGINATION ──────────────────────────────────────────────── */
     function buildPagination(total, perPage) {
       const pg = document.getElementById('pagination');
-      if (total === 0) {
-        pg.innerHTML = '';
-        pg.style.display = 'none';
-        return;
-      }
-      pg.style.display = 'flex';
+      if (!pg) return;
+
       const totalPages = Math.ceil(total / perPage) || 1;
       pg.innerHTML = '';
+      pg.style.display = 'flex';
 
       const prev = document.createElement('button');
       prev.className = 'page-btn';
       prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
-      prev.onclick = () => { };
+      if (currentPageNum <= 1) {
+        prev.disabled = true;
+        prev.style.opacity = '0.4';
+        prev.style.cursor = 'default';
+      } else {
+        prev.onclick = () => goToPage(currentPageNum - 1, totalPages);
+      }
       pg.appendChild(prev);
 
       for (let i = 1; i <= totalPages; i++) {
         const b = document.createElement('button');
-        b.className = 'page-btn' + (i === 1 ? ' active' : '');
+        b.className = 'page-btn' + (i === currentPageNum ? ' active' : '');
         b.textContent = i;
         b.onclick = function () {
-          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
-          this.classList.add('active');
+          goToPage(i, totalPages);
         };
         pg.appendChild(b);
       }
@@ -1250,10 +1252,16 @@
       const next = document.createElement('button');
       next.className = 'page-btn';
       next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
-      next.onclick = () => { };
+      if (currentPageNum >= totalPages) {
+        next.disabled = true;
+        next.style.opacity = '0.4';
+        next.style.cursor = 'default';
+      } else {
+        next.onclick = () => goToPage(currentPageNum + 1, totalPages);
+      }
       pg.appendChild(next);
     }
-
+    
     function recalcJobStats() {
       const allCount = JOBS.length;
       const activeCount = JOBS.filter(j => j.status === 'Active' || j.status === 'Publish' || j.status === 'publish').length;
