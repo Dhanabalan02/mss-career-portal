@@ -559,6 +559,11 @@
       "id": 112,
       "category": "Custom",
       "skill_name": "work balance"
+    },
+    {
+      "id": 113,
+      "category": "Custom",
+      "skill_name": "yoga management"
     }
   ]
 }

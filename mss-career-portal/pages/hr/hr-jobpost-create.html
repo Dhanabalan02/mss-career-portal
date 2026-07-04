@@ -1955,9 +1955,9 @@
       if (!maxExp) {
         setError('expMax', 'Maximum Experience is required');
       }
-      if (minExp && maxExp && parseInt(minExp) > parseInt(maxExp)) {
-        setError('expMin', 'Minimum Experience cannot be greater than Maximum Experience');
-        setError('expMax', 'Maximum Experience cannot be less than Minimum Experience');
+      if (minExp && maxExp && parseInt(minExp) >= parseInt(maxExp)) {
+        setError('expMin', 'Minimum Experience must be less than Maximum Experience');
+        setError('expMax', 'Maximum Experience must strictly exceed Minimum Experience');
       }
       if (!closingDate) {
         setError('closeDate', 'Application Closing Date is required');
@@ -1982,8 +1982,14 @@
           const eventType = el.tagName === 'SELECT' ? 'change' : 'input';
           el.addEventListener(eventType, () => {
             clearFieldError(id);
-            if (id === 'expMin') clearFieldError('expMax');
-            if (id === 'expMax') clearFieldError('expMin');
+            if (id === 'expMin' || id === 'expMax') {
+              clearFieldError(id === 'expMin' ? 'expMax' : 'expMin');
+              const minVal = parseInt(document.getElementById('expMin').value);
+              const maxVal = parseInt(document.getElementById('expMax').value);
+              if (!isNaN(minVal) && !isNaN(maxVal) && minVal >= maxVal) {
+                showFieldError('expMax', 'Maximum Experience must strictly exceed Minimum Experience');
+              }
+            }
           });
         }
       });
@@ -2736,6 +2742,11 @@
       else skillState.selected.push({ id, label });
       renderSkillOptions();
       renderSkillTags();
+      if (skillState.selected.length > 0) {
+        clearFieldError('skillSearchInput');
+      } else {
+        showFieldError('skillSearchInput', 'Skills are mandatory. Please select at least one skill.');
+      }
       document.getElementById('skillSearchInput')?.focus();
       saveDraftState();
     }
@@ -2857,6 +2868,11 @@
       else eduState.selected.push({ id, label });
       renderEduOptions();
       renderEduTags();
+      if (eduState.selected.length > 0) {
+        clearFieldError('eduSearchInput');
+      } else {
+        showFieldError('eduSearchInput', 'Education is mandatory. Please select at least one qualification.');
+      }
       document.getElementById('eduSearchInput')?.focus();
       saveDraftState();
     }

@@ -524,7 +524,7 @@
   function logout() {
     const userId = localStorage.getItem('user_id');
     const sessionId = localStorage.getItem('access_token');
-    const goHome = () => { window.location.href = '/mss-career-portal/home'; };
+    const goHome = () => { window.location.href = '/mss-career-portal/admin/login'; };
 
     if (!userId || !sessionId) { clearSession(); goHome(); return; }
 
