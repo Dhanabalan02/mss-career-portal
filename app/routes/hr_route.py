@@ -153,6 +153,20 @@ def masset_sync(
     return result
 
 
+@router.get("/masset/{applicant_id}/status")
+def get_masset_appointment_status(
+    applicant_id: int,
+    db: Session = Depends(get_db),
+    admin_id: int = Depends(get_current_admin_id),
+):
+    """
+    Fetch the applicant's appointment status from MASSET and update DB.
+    """
+    from app.crud.hr_crud import fetch_masset_status
+    result = fetch_masset_status(db, admin_id, applicant_id)
+    return result
+
+
 @router.get("/pending-actions")
 def pending_actions(
     db: Session = Depends(get_db),

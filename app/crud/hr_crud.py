@@ -435,7 +435,7 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
         })
     return out
 
-def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str) -> dict:
+def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str = "") -> dict:
     # 1. Fetch the applicant using applicant_id
     app = db.query(JobApplicant).filter(
         JobApplicant.job_applicant_id == applicant_id
@@ -448,13 +448,10 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str)
     user_metadata = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == app.user_id).first()
     job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
 
-    # Generate local MASSET employee ID if not already present
-    local_employee_id = app.masset_employee_id or f"EMP-{applicant_id:04d}"
-
     # 2. Construct JSON Payload (tracking via applicant_id and masset_employee_id)
     payload = {
         "candidate_id": applicant_id,
-        "masset_employee_id": local_employee_id,
+        "application_id": app.mss_app_no,
         "first_name": user.first_name if user else "",
         "last_name": user.last_name if user else "",
         "email": user.email if user else "",
@@ -483,7 +480,6 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str)
     
     # 4. Update state to 'Onboarding'. Tracking continues via app.masset_employee_id
     app.sync_masset = 1
-    app.masset_employee_id = local_employee_id
     app.masset_synced_at = datetime.utcnow()
     app.masset_synced_by = admin_id
     
@@ -492,8 +488,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str)
     
     return {
         "success": True, 
-        "message": "Data synced successfully. Tracking managed via masset_employee_id.",
-        "masset_employee_id": app.masset_employee_id, 
+        "message": "Data synced successfully. Tracking managed via application ID.",
         "payload_sent": payload
     }
 
@@ -504,11 +499,11 @@ def update_masset_status_from_webhook(db: Session, employee_id: str, status: str
     (e.g., to 'Onboarded' or 'AO Generated') using the generated masset_employee_id.
     """
     app = db.query(JobApplicant).filter(
-        JobApplicant.masset_employee_id == employee_id
+        JobApplicant.mss_app_no == employee_id
     ).first()
 
     if not app:
-        return {"error": f"No candidate found with MASSET Employee ID: {employee_id}"}
+        return {"error": f"No candidate found with Application ID: {employee_id}"}
 
     app.masset_status = status
     app.updated_at = datetime.utcnow()
@@ -516,13 +511,74 @@ def update_masset_status_from_webhook(db: Session, employee_id: str, status: str
     db.commit()
     db.refresh(app)
     
-    logger.info(f"Successfully updated candidate {app.job_applicant_id} (Employee ID: {employee_id}) to status: {status}")
+    logger.info(f"Successfully updated candidate {app.job_applicant_id} (Application ID: {employee_id}) to status: {status}")
     
     return {
         "success": True,
         "message": f"Candidate status updated to '{status}'"
     }
 
+
+def fetch_masset_status(db: Session, applicant_id: str) -> dict:
+    """
+    Fetch the appointment order completion status from MASSET and store the masset_employee_id
+    into the job_applicants table.
+    """
+    app = db.query(JobApplicant).filter(
+        JobApplicant.job_applicant_id == applicant_id
+    ).first()
+
+    if not app:
+        return {"error": "Applicant not found"}
+
+    masset_api_url = "http://192.168.0.8/synchrms/api/career_sync.php"
+    params = {
+        "action": "get_appointment_status",
+        "application_id": app.mss_app_no
+    }
+    
+    logger.info(f"Fetching MASSET status for candidate {applicant_id} via GET {masset_api_url}")
+    
+    try:
+        response = requests.get(masset_api_url, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        
+        new_status = data.get("appointment_stage")
+        masset_emp_id = data.get("masset_employee_id")
+        
+        updated = False
+
+        # Check if the status from the API is 'completed'
+        if new_status and new_status.strip().lower() == "ID Issued":
+            app.masset_status = "completed"
+            app.masset_employee_id = masset_emp_id
+            app.issue_appointment_order = 1
+            app.masset_sync_success_on = datetime.utcnow()
+            updated = True
+        else:
+            # Fallback/General handling for other statuses if necessary
+            if new_status:
+                app.masset_status = new_status
+                updated = True
+            if masset_emp_id:
+                app.masset_employee_id = masset_emp_id
+                updated = True
+            
+        if updated:
+            app.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(app)
+            
+        return {
+            "success": True,
+            "status": app.masset_status,
+            "masset_employee_id": app.masset_employee_id
+        }
+    except Exception as e:
+        logger.error(f"Failed to fetch MASSET status. Exact issue: {str(e)}", exc_info=True)
+        return {"error": f"Failed to fetch from MASSET platform: {str(e)}"}
+    
 def get_masset_stats(db: Session, admin_id: int) -> dict:
     candidates = get_masset_candidates(db, admin_id)
     counts = {
@@ -828,3 +884,4 @@ def get_sidebar_counts(db: Session, admin_id: int) -> dict:
         "job_posts_count": job_posts_count,
         "job_applicants_count": applicants_count,
     }
+    

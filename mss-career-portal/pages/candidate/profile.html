@@ -506,6 +506,16 @@
       background: var(--cp-surface);
     }
 
+    .cp-section input[readonly],
+    .cp-section textarea[readonly],
+    .cp-section select[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      background: var(--cp-surface-3);
+      color: var(--cp-subtle);
+      filter: blur(0.4px);
+    }
+
     .cp-section textarea {
       min-height: 110px;
       resize: vertical;
@@ -1212,12 +1222,12 @@
               </div>
               <div>
                 <label class="cp-field-label">Email <span style="color:var(--cp-red)">*</span></label>
-                <input type="email" id="pfEmail" placeholder="Email address" />
+                <input type="email" id="pfEmail" placeholder="Email address" readonly />
                 <span class="cp-field-error" id="err-pfEmail"></span>
               </div>
               <div>
                 <label class="cp-field-label">Mobile <span style="color:var(--cp-red)">*</span></label>
-                <input type="tel" id="pfMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric" />
+                <input type="tel" id="pfMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric" readonly />
                 <span class="cp-field-error" id="err-pfMobile"></span>
               </div>
               <div>
@@ -1711,7 +1721,6 @@
         if (!res.ok) throw new Error('Upload failed');
         
         const data = await res.json();
-        showToast('Resume uploaded successfully!', 'success');
 
         document.getElementById('resumeDisplay').innerHTML = `
         <div class="cp-resume-file">
@@ -1724,6 +1733,13 @@
           </div>
           <button class="cp-btn cp-btn-outline" onclick="document.getElementById('resumeUpload').click()">Replace</button>
         </div>`;
+
+        if (data.extracted) {
+          applyExtractedResumeData(data.extracted);
+          showToast('Resume uploaded! We auto-filled your profile — please review and save.', 'success');
+        } else {
+          showToast('Resume uploaded successfully!', 'success');
+        }
       } catch (err) {
         console.error('Error uploading resume:', err);
         showToast('Failed to upload resume. Please try again.', 'danger');
@@ -1975,6 +1991,7 @@
       document.getElementById('pfEmail').value = data.email || '';
       document.getElementById('pfEmail').readOnly = true;
       document.getElementById('pfMobile').value = data.mobile || '';
+      document.getElementById('pfMobile').readOnly = true;
       if (data.gender) document.getElementById('pfGender').value = data.gender;
       
       // 2. Metadata details
@@ -2040,7 +2057,9 @@
       if (meta.employment_type && document.getElementById('pfEmpType')) document.getElementById('pfEmpType').value = meta.employment_type;
       if (meta.preferred_role && document.getElementById('pfPrefRole')) document.getElementById('pfPrefRole').value = meta.preferred_role;
       
-      if (meta.city || meta.state) {
+      if (meta.location) {
+        document.getElementById('pfLocation').value = meta.location;
+      } else if (meta.city || meta.state) {
         document.getElementById('pfLocation').value = [meta.city, meta.state].filter(Boolean).join(', ');
       } else {
         document.getElementById('pfLocation').value = '';
@@ -2137,6 +2156,138 @@
       document.getElementById('cpContactEmail').textContent = data.email || '—';
       document.getElementById('cpContactPhone').textContent = data.mobile || '—';
       
+      cpUpdateSidebar();
+      cpCalcCompletion();
+    }
+
+    /* ── Auto-fill profile from AI-extracted resume data ── */
+    function applyExtractedResumeData(extracted) {
+      if (!extracted) return;
+
+      const setIfEmpty = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && !el.value && val) el.value = val;
+      };
+
+      // For <select> fields, match the extracted text against the option list
+      // case-insensitively instead of assigning it verbatim (which silently
+      // no-ops when the AI's casing/wording doesn't exactly match an <option>).
+      const setSelectIfEmpty = (id, val) => {
+        const el = document.getElementById(id);
+        if (!el || el.value || !val) return;
+        const target = String(val).trim().toLowerCase();
+        const match = Array.from(el.options).find(o => o.value.toLowerCase() === target);
+        if (match) el.value = match.value;
+      };
+
+      // Normalize common AI phrasing/abbreviations to the exact <option> wording
+      // before matching, so e.g. "M", "O positive" still land in the right field.
+      const normalizeGender = (v) => {
+        const s = String(v || '').trim().toLowerCase();
+        if (!s) return '';
+        if (s === 'm' || s === 'male') return 'Male';
+        if (s === 'f' || s === 'female') return 'Female';
+        if (s.includes('not')) return 'Prefer not to say';
+        return v;
+      };
+      const normalizeMaritalStatus = (v) => {
+        const s = String(v || '').trim().toLowerCase();
+        if (!s) return '';
+        if (s.startsWith('single') || s.startsWith('unmarried')) return 'Single';
+        if (s.startsWith('married')) return 'Married';
+        return v;
+      };
+      const normalizeBloodGroup = (v) => {
+        let s = String(v || '').trim().toUpperCase().replace(/\s+/g, '');
+        if (!s) return '';
+        s = s.replace('POSITIVE', '+').replace('POS', '+').replace('NEGATIVE', '-').replace('NEG', '-');
+        return s;
+      };
+
+      const fullName = [extracted.first_name, extracted.last_name].filter(Boolean).join(' ').trim();
+      setIfEmpty('pfName', fullName);
+
+      const meta = extracted.metadata || {};
+      // <input type="date"> silently rejects anything that isn't strict YYYY-MM-DD.
+      const dob = /^\d{4}-\d{2}-\d{2}$/.test(String(meta.date_of_birth || '').trim()) ? meta.date_of_birth : '';
+      setIfEmpty('pfDob', dob);
+      setSelectIfEmpty('pfGender', normalizeGender(meta.gender));
+      setSelectIfEmpty('pfMaritalStatus', normalizeMaritalStatus(meta.marital_status));
+      setSelectIfEmpty('pfBloodGroup', normalizeBloodGroup(meta.blood_group));
+      setIfEmpty('pfAbout', meta.about);
+      setIfEmpty('pfDesig', meta.designation);
+      setIfEmpty('pfComp', meta.company);
+      setIfEmpty('pfLocation', meta.location || [meta.city, meta.state].filter(Boolean).join(', '));
+
+      if (meta.experience) {
+        const expStr = String(meta.experience);
+        const yMatch = expStr.match(/(\d+)\s*[Yy]ear/);
+        const mMatch = expStr.match(/(\d+)\s*[Mm]onth/);
+        const pfExpYears = document.getElementById('pfExpYears');
+        const pfExpMonths = document.getElementById('pfExpMonths');
+        if (pfExpYears && !pfExpYears.value && yMatch) pfExpYears.value = String(Math.min(parseInt(yMatch[1]), 30));
+        if (pfExpMonths && !pfExpMonths.value && mMatch) pfExpMonths.value = String(Math.min(parseInt(mMatch[1]), 11));
+      }
+
+      // Skills — merge, avoid duplicates
+      if (Array.isArray(meta.skills) && meta.skills.length) {
+        meta.skills.forEach(s => {
+          const val = String(s).trim();
+          if (val && !cpSkills.some(x => x.toLowerCase() === val.toLowerCase())) {
+            cpSkills.push(val.charAt(0).toUpperCase() + val.slice(1));
+          }
+        });
+        cpRenderSkills();
+      }
+
+      // Languages — merge, avoid duplicates
+      if (meta.languages) {
+        String(meta.languages).split(',').map(l => l.trim()).filter(Boolean).forEach(l => {
+          if (!cpLanguages.some(x => x.toLowerCase() === l.toLowerCase())) cpLanguages.push(l);
+        });
+        cpRenderLanguages();
+      }
+
+      // Education — replace the (likely blank) list with extracted entries
+      if (Array.isArray(extracted.education) && extracted.education.length) {
+        const eduList = document.getElementById('cpEducationList');
+        eduList.innerHTML = '';
+        extracted.education.forEach(edu => {
+          cpAddEducation();
+          const card = eduList.lastElementChild;
+          const inputs = card.querySelectorAll('input');
+          inputs[0].value = edu.degree_name || '';
+          inputs[1].value = edu.specialization || '';
+          inputs[2].value = edu.university_name || '';
+          inputs[3].value = edu.institution_name || '';
+          inputs[4].value = edu.start_year || '';
+          inputs[5].value = edu.end_year || '';
+          inputs[6].value = edu.cgpa || '';
+          inputs[7].value = edu.percentage || '';
+        });
+      }
+
+      // Experience — replace the (likely blank) list with extracted entries
+      if (Array.isArray(extracted.experience) && extracted.experience.length) {
+        const expList = document.getElementById('cpExperienceList');
+        expList.innerHTML = '';
+        extracted.experience.forEach(exp => {
+          cpAddExperience();
+          const card = expList.lastElementChild;
+          const inputs = card.querySelectorAll('input');
+          const selects = card.querySelectorAll('select');
+          const textarea = card.querySelector('textarea');
+          inputs[0].value = exp.company_name || '';
+          inputs[1].value = exp.job_title || '';
+          if (selects.length > 0) selects[0].value = exp.employment_type || 'Full-time';
+          inputs[2].value = exp.start_date || '';
+          inputs[3].value = exp.end_date || '';
+          if (exp.start_date) inputs[2].type = 'month';
+          if (exp.end_date) inputs[3].type = 'month';
+          textarea.value = exp.description || '';
+        });
+      }
+
       cpUpdateSidebar();
       cpCalcCompletion();
     }

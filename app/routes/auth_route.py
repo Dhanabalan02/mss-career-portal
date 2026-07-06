@@ -31,6 +31,8 @@ from app.crud.auth_crud import (
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.oauth import get_google_user_info, get_linkedin_user_info
+from app.core.logger import logger
+from app.services.resume_extract_api import extract_resume_data
 from pydantic import BaseModel
 
 
@@ -320,7 +322,19 @@ async def upload_candidate_resume(
         buffer.write(await file.read())
 
     db_path = f"uploads/resumes/{filename}"
-    return update_candidate_resume_db(db, user_id=candidate_id, resume_path=db_path)
+    result = update_candidate_resume_db(db, user_id=candidate_id, resume_path=db_path)
+
+    extracted_data = None
+    if filename.lower().endswith(".pdf"):
+        try:
+            extracted_data = extract_resume_data(str(file_path))
+        except Exception as exc:
+            logger.warning(
+                "Resume auto-extraction failed for candidate %s: %s", candidate_id, exc
+            )
+
+    result["extracted"] = extracted_data
+    return result
 
 
 @router.post("/candidate/upload-profile-image")
@@ -409,7 +423,7 @@ def oauth_callback_page():
 
 import random
 import logging
-from app.core.otp_service import OtpService, normalize_whatsapp_number
+from app.services.otp_service import OtpService, normalize_whatsapp_number
 from app.crud.auth_crud import get_user_by_mobile, store_otp, verify_otp, update_user_password
 
 otp_logger = logging.getLogger("otp_debug")

@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     DEBUG: str = "release"
     SECRET_KEY: str
     WHATSAPP_API_KEY: Optional[str] = None
+    OLLAMA_API_KEY: Optional[str] = None
 
     # Google OAuth Settings
     GOOGLE_CLIENT_ID: Optional[str] = None

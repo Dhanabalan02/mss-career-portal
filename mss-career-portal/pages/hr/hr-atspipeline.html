@@ -2643,7 +2643,10 @@
         persistStageChange(c, "Offer", remarks);
       }
 
-      function isStageMoveAllowed(currentStage, targetStage) {
+      function isStageMoveAllowed(c, targetStage) {
+        const currentStage = (typeof c === 'string') ? c : c.stage;
+        const isOfferIssued = (typeof c === 'object' && c) ? Boolean(c.offer_issued || c.offerIssued || c.offer_issued_date || c.offer_status) : false;
+        
         if (currentStage === targetStage) return true;
         if (
           currentStage === "Prescreen Rejected" ||
@@ -2662,6 +2665,7 @@
         if (
           currentStage === "Offer" &&
           (targetStage === "Screened" ||
+            (targetStage === "Interview" && isOfferIssued) ||
             targetStage === "Offer Accepted" ||
             targetStage === "Onboarded")
         )
@@ -2674,7 +2678,7 @@
       let pendingCandidateForInterview = null;
 
       function handleStageChangeRequest(c, newStage) {
-        if (!isStageMoveAllowed(c.stage, newStage)) {
+        if (!isStageMoveAllowed(c, newStage)) {
           showToast(
             `Cannot move candidate from ${c.stage} to ${newStage}`,
             "info",
@@ -2785,7 +2789,7 @@
           let isOver = c.dataset.stage === stage;
           if (isOver && stage) {
             const card = candidates.find((cand) => cand.id === mobileDrag.id);
-            if (card && !isStageMoveAllowed(card.stage, stage)) {
+            if (card && !isStageMoveAllowed(card, stage)) {
               isOver = false;
             }
           }
