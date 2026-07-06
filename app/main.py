@@ -81,7 +81,6 @@ async def startup_event():
         logger.error(f"Error checking/adding/backfilling uuid column: {e}")
 
 # API root endpoint returning a welcome JSON response
-# Redirect root URL to candidate home page
 @app.get("/")
 def redirect_to_home():
     return RedirectResponse(url="/mss-career-portal/home")
@@ -90,7 +89,7 @@ def redirect_to_home():
 @app.get("/mss-career-portal")
 @app.get("/mss-career-portal/")
 def redirect_to_portal_root():
-    return serve_html_with_base("mss-career-portal/pages/candidate/home.html", "/mss-career-portal/pages/candidate/")
+    return RedirectResponse(url="/mss-career-portal/home")
 
 # Candidate Clean Routes
 @app.get("/mss-career-portal/home")
