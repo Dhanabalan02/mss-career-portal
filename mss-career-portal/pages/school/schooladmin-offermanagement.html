@@ -1429,6 +1429,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
     let currentCandidate = null;
     let selectedTemplate = null;
     let data = [...CANDIDATES];
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
 
     /* ── Render Table ──────────────────────────── */
     function renderTable(rows) {
@@ -1443,14 +1445,19 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         return; 
       } else {
         const pg = document.getElementById('pagination');
-        if (pg) buildPagination(rows.length, 10);
+        if (pg) buildPagination(rows.length, itemsPerPage);
       }
       empty.style.display = 'none';
-      tbody.innerHTML = rows.map((c, i) => {
+      
+      const startIndex = (currentPageNum - 1) * itemsPerPage;
+      const paginatedRows = rows.slice(startIndex, startIndex + itemsPerPage);
+      
+      tbody.innerHTML = paginatedRows.map((c, i) => {
+        const globalIndex = startIndex + i + 1;
         const s = STATUS_META[c.status];
         const isEditable = c.status === 'awaiting' || c.status === 'draft';
         return `<tr data-id="${c.id}">
-      <td style="font-weight:600;color:var(--text-sub, #666);">${i + 1}</td>
+      <td style="font-weight:600;color:var(--text-sub, #666);">${globalIndex}</td>
       <td>
         <div class="avatar-cell">
           <div class="avatar ${c.av}">${c.initials}</div>
@@ -1500,6 +1507,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
         return match;
       });
       data = res;
+      currentPageNum = 1;
       renderTable(data);
     }
 
@@ -2189,6 +2197,12 @@ Best regards,<br><strong>School Admin — TMSS</strong>`
     renderTable(data);
     
     /* ── Pagination ── */
+    function goToPage(pageNum, totalPages) {
+      if (pageNum < 1 || pageNum > totalPages) return;
+      currentPageNum = pageNum;
+      renderTable(data);
+    }
+
     function buildPagination(total, perPage) {
       const pg = document.getElementById('pagination');
       if (!pg) return;

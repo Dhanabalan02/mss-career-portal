@@ -1,7 +1,6 @@
 import jwt
 from typing import Optional, List
 from fastapi import APIRouter, Depends, Header, HTTPException, status
-from fastapi.responses import RedirectResponse
 from app.core.html_helper import serve_html_with_base
 from pydantic import BaseModel
 from sqlalchemy.orm import Session

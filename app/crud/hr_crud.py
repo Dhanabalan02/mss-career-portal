@@ -14,7 +14,7 @@ from app.models.candidate_experience_model import CandidateExperience
 from app.models.admin_model import Admins
 from app.models.unit_model import Units
 from app.crud.common import (
-    get_initials, get_color, parse_skills, compute_exp_str, compute_stage, compute_offer_status
+    get_initials, get_color, parse_skills, compute_exp_str
 )
 
 def _is_hr_role(db: Session, admin_id: int) -> bool:
@@ -431,7 +431,6 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
             "lastSync": last_sync,
             "email": user.email,
             "color": get_color(idx),
-            "masset_employee_id": app.masset_employee_id or "",
         })
     return out
 
@@ -459,6 +458,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str 
         "date_of_birth": user_metadata.date_of_birth.strftime('%Y-%m-%d') if (user_metadata and user_metadata.date_of_birth and hasattr(user_metadata.date_of_birth, 'strftime')) else (user_metadata.date_of_birth if user_metadata and user_metadata.date_of_birth else ""),
         'gender': user.gender if user else "",
         "marital_status": user_metadata.marital_status if user_metadata else "", 
+        "blood_group": user_metadata.blood_group if user_metadata else "",
         "designation": job.job_title if job else "",
         "unit_name": job.school_name if job else "",
         "action": "appointment_order"

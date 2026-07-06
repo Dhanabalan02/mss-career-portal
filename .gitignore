@@ -12,3 +12,4 @@ wheels/
 .env
 
 app/app.log
+uploads/
