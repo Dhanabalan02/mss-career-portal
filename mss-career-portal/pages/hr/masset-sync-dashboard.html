@@ -1375,6 +1375,8 @@
 
     let activeStatus = '';
     let toastTimer = null;
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
 
     /* ── Render table ── */
     function renderTable(data) {
@@ -1388,10 +1390,15 @@
       } else {
         const pg = document.getElementById('pagination');
         if (pg) {
-          buildPagination(data.length, 10);
+          buildPagination(data.length, itemsPerPage);
         }
       }
-      tbody.innerHTML = data.map((c, i) => {
+      
+      const startIndex = (currentPageNum - 1) * itemsPerPage;
+      const paginatedRows = data.slice(startIndex, startIndex + itemsPerPage);
+      
+      tbody.innerHTML = paginatedRows.map((c, i) => {
+        const globalIndex = startIndex + i + 1;
         const pct = PROGRESS_MAP[c.status] ?? 0;
 
         // 1. Check if lastSync is empty, null, or equals "not synced" (case-insensitive)
@@ -1401,7 +1408,7 @@
         const showSyncButton = (c.masset_sync == '1') || isNotSynced;
 
         return `<tr style="animation:fadeRow .25s ease ${i * 40}ms both">
-  <td style="font-weight:600;color:var(--text-sub, #666);">${i + 1}</td>
+  <td style="font-weight:600;color:var(--text-sub, #666);">${globalIndex}</td>
   <td>
     <div class="cand-cell">
       <div class="cand-av" style="background:${c.color[0]};color:${c.color[1]}">${c.initials}</div>
@@ -1469,7 +1476,10 @@
         (!status || c.status === status)
       );
     }
-    function applyFilters() { renderTable(getFiltered()); }
+    function applyFilters() { 
+      currentPageNum = 1;
+      renderTable(getFiltered()); 
+    }
     function clearFilters() {
       document.getElementById('searchInput').value = '';
       document.getElementById('schoolFilter').value = '';
@@ -1504,7 +1514,7 @@
            c.lastSync = 'Failed';
            showToast(data.error || 'Failed to sync with MASSET platform', 'error');
         } else {
-           c.status = 'Onboarding'; 
+           c.status = 'AO Pending'; 
            c.lastSync = 'Just now';
            if (data.masset_employee_id) c.masset_employee_id = data.masset_employee_id;
            showToast(`${c.name} synced to MASSET`, 'success');
@@ -1563,9 +1573,13 @@
           steps.push({ icon: 'ti-alert-circle', state: 'failed', title: 'Sync Failed', desc: 'API request to MASSET failed' });
           steps.push({ icon: 'ti-circle', state: 'pending', title: 'AO Generation', desc: 'Pending sync retry' });
           steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
-        } else if (c.status === 'AO Pending' || c.status === 'Sync Pending') {
+        } else if (c.status === 'Sync Pending') {
           steps.push({ icon: 'ti-clock', state: 'current', title: 'Sync Pending', desc: 'Awaiting HR action to sync to MASSET' });
           steps.push({ icon: 'ti-circle', state: 'pending', title: 'AO Generation', desc: 'Pending sync' });
+          steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
+        } else if (c.status === 'AO Pending') {
+          steps.push({ icon: 'ti-check', state: 'done', title: 'Sync Completed', desc: `Synced on ${c.lastSync}` });
+          steps.push({ icon: 'ti-clock', state: 'current', title: 'AO Generation', desc: 'Awaiting for AO generation' });
           steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
         } else if (c.status === 'Syncing') {
           steps.push({ icon: 'ti-refresh', state: 'current', title: 'Syncing', desc: 'API request in progress' });
@@ -1603,8 +1617,6 @@
     function handleModalClick(e) {
       if (e.target === document.getElementById('timelineModal')) closeTimeline();
     }
-
-
 
     /* ── Row animation ── */
     const style = document.createElement('style');
@@ -1700,6 +1712,12 @@
     loadUnits();
 
     /* ── Pagination ── */
+    function goToPage(pageNum, totalPages) {
+      if (pageNum < 1 || pageNum > totalPages) return;
+      currentPageNum = pageNum;
+      renderTable(getFiltered());
+    }
+
     function buildPagination(total, perPage) {
       const pg = document.getElementById('pagination');
       if (!pg) return;

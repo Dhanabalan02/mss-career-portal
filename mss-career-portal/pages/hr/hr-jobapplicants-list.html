@@ -888,6 +888,8 @@
 
     let activeStageFilter = '';
     let applicantsData = [];
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
 
     // Redirect to login if token is missing
     if (!token) {
@@ -963,6 +965,7 @@
 
         // Render table rows
         applicantsData = data.applicants;
+        currentPageNum = 1;
         renderApplicants(applicantsData);
       })
       .catch(err => {
@@ -1052,10 +1055,12 @@
       } else {
         const pg = document.getElementById('pagination');
         if (pg) {
-          buildPagination(list.length, 10);
+          buildPagination(list.length, itemsPerPage);
         }
       }
-      list.forEach((c, index) => {
+      const startIdx = (currentPageNum - 1) * itemsPerPage;
+      const pageList = list.slice(startIdx, startIdx + itemsPerPage);
+      pageList.forEach((c, index) => {
         let displayStage = c.stage;
         let showActions = true;
         if (c.interviewStatus === 'Selected') {
@@ -1068,7 +1073,7 @@
         
         const tr = document.createElement('tr');
         tr.innerHTML = `
-      <td style="font-weight:600;color:var(--text2);"> ${index + 1} </td>
+      <td style="font-weight:600;color:var(--text2);"> ${startIdx + index + 1} </td>
       <td>
         <div class="td-flex">
           <div class="avatar-sm" style="background:linear-gradient(135deg,${avatarGradient(c.name)});">${c.avatar}</div>
@@ -1300,6 +1305,11 @@
     fetchApplicants();
 
     /* ── Pagination ── */
+    function goToPage(pageNum, totalPages) {
+      currentPageNum = Math.min(Math.max(pageNum, 1), totalPages);
+      renderApplicants(applicantsData);
+    }
+
     function buildPagination(total, perPage) {
       const pg = document.getElementById('pagination');
       if (!pg) return;

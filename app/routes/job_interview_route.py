@@ -146,8 +146,6 @@ def get_school_admins_route(
         for r in result
     ]
 
-@router.get("")
-
 @router.post("/")
 def schedule_interview_route(
     form_data: InterviewScheduleRequest,
@@ -186,7 +184,7 @@ def schedule_interview_route(
     
     # Send Notifications
     try:
-        from app.models import JobApplicant, JobPost, Users
+        from app.models import JobApplicant, JobPost, Users, Admins
         from app.crud.notification_crud import notify_candidate, notify_school_admin
         
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == form_data.job_applicant_id).first()
@@ -209,16 +207,23 @@ def schedule_interview_route(
                     sender_type="hr"
                 )
                 
-                # 2. Notify School Admin / Job Poster
-                notify_school_admin(
-                    db=db,
-                    admin_id=job.job_posted_by,
-                    title="Interview Scheduled",
-                    message=f"Interview round '{form_data.interview_round}' has been scheduled for candidate {candidate_name} on {date_str}.",
-                    notification_type="interview_scheduled",
-                    sender_user_id=admin_id,
-                    sender_type="hr"
-                )
+                # 2. Notify School Admin (interviewer)
+                interviewer_admin_id = None
+                if form_data.interviewer_name:
+                    interviewer = db.query(Admins).filter(Admins.email == form_data.interviewer_name).first()
+                    if interviewer:
+                        interviewer_admin_id = interviewer.admin_id
+                
+                if interviewer_admin_id:
+                    notify_school_admin(
+                        db=db,
+                        admin_id=interviewer_admin_id,
+                        title="Interview Scheduled",
+                        message=f"Interview round '{form_data.interview_round}' has been scheduled for candidate {candidate_name} on {date_str}.",
+                        notification_type="interview_scheduled",
+                        sender_user_id=admin_id,
+                        sender_type="hr"
+                    )
                 
     except Exception as e:
         from app.core.logger import logger
@@ -283,7 +288,7 @@ def reschedule_interview_route(
     
     # Send Notifications
     try:
-        from app.models import JobApplicant, JobPost, Users
+        from app.models import JobApplicant, JobPost, Users, Admins
         from app.crud.notification_crud import notify_candidate, notify_school_admin
         
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
@@ -307,16 +312,23 @@ def reschedule_interview_route(
                     sender_type="hr"
                 )
                 
-                # 2. Notify School Admin
-                notify_school_admin(
-                    db=db,
-                    admin_id=job.job_posted_by,
-                    title="Interview Rescheduled",
-                    message=f"Interview round '{job_interview.interview_round}' has been rescheduled to {date_str} for candidate {candidate_name}.{reason_part}",
-                    notification_type="interview_rescheduled",
-                    sender_user_id=admin_id,
-                    sender_type="hr"
-                )
+                # 2. Notify School Admin (interviewer)
+                interviewer_admin_id = None
+                if job_interview.interviewer_name:
+                    interviewer = db.query(Admins).filter(Admins.email == job_interview.interviewer_name).first()
+                    if interviewer:
+                        interviewer_admin_id = interviewer.admin_id
+                
+                if interviewer_admin_id:
+                    notify_school_admin(
+                        db=db,
+                        admin_id=interviewer_admin_id,
+                        title="Interview Rescheduled",
+                        message=f"Interview round '{job_interview.interview_round}' has been rescheduled to {date_str} for candidate {candidate_name}.{reason_part}",
+                        notification_type="interview_rescheduled",
+                        sender_user_id=admin_id,
+                        sender_type="hr"
+                    )
                 
     except Exception as e:
         from app.core.logger import logger
@@ -341,7 +353,7 @@ def cancel_interview_route(
     
     # Send Notifications
     try:
-        from app.models import JobApplicant, JobPost, Users
+        from app.models import JobApplicant, JobPost, Users, Admins
         from app.crud.notification_crud import notify_candidate, notify_school_admin
         
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
@@ -364,16 +376,23 @@ def cancel_interview_route(
                     sender_type="hr"
                 )
                 
-                # 2. Notify School Admin
-                notify_school_admin(
-                    db=db,
-                    admin_id=job.job_posted_by,
-                    title="Interview Cancelled",
-                    message=f"Interview round '{job_interview.interview_round}' for candidate {candidate_name} has been cancelled.{reason_part}",
-                    notification_type="interview_cancelled",
-                    sender_user_id=admin_id,
-                    sender_type="hr"
-                )
+                # 2. Notify School Admin (interviewer)
+                interviewer_admin_id = None
+                if job_interview.interviewer_name:
+                    interviewer = db.query(Admins).filter(Admins.email == job_interview.interviewer_name).first()
+                    if interviewer:
+                        interviewer_admin_id = interviewer.admin_id
+                
+                if interviewer_admin_id:
+                    notify_school_admin(
+                        db=db,
+                        admin_id=interviewer_admin_id,
+                        title="Interview Cancelled",
+                        message=f"Interview round '{job_interview.interview_round}' for candidate {candidate_name} has been cancelled.{reason_part}",
+                        notification_type="interview_cancelled",
+                        sender_user_id=admin_id,
+                        sender_type="hr"
+                    )
                 
     except Exception as e:
         from app.core.logger import logger
@@ -386,7 +405,6 @@ def cancel_interview_route(
 def complete_interview_route(
     job_interview_id: int,
     db: Session = Depends(get_db),
-    admin_id: int = Depends(get_current_admin_id)
 ):
     """Marks an interview as completed."""
     job_interview = complete_interview(db=db, job_interview_id=job_interview_id)
@@ -444,8 +462,8 @@ def submit_interview_remarks_route(
         
         # Send Notifications
         try:
-            from app.models import JobPost, Users
-            from app.crud.notification_crud import notify_candidate, notify_school_admin, notify_hr_users
+            from app.models import JobPost, Users, Admins
+            from app.crud.notification_crud import notify_candidate, notify_school_admin
             
             job = db.query(JobPost).filter(JobPost.job_id == job_id_val).first()
             if applicant_user_id_val and job:
@@ -465,25 +483,32 @@ def submit_interview_remarks_route(
                         sender_type="hr"
                     )
                     
-                    # 2. Notify School Admin
-                    if status_str == "selected":
-                        admin_title = "Offer Letter Request"
-                        admin_message = f"Candidate {candidate_name} has been selected for '{job.job_title}'. Please generate and issue an offer letter."
-                        admin_type = "offer_request"
-                    else:
-                        admin_title = "Application Status Update"
-                        admin_message = f"Application status for candidate {candidate_name} has been updated to {status_str}."
-                        admin_type = "status_update"
-                        
-                    notify_school_admin(
-                        db=db,
-                        admin_id=job.job_posted_by,
-                        title=admin_title,
-                        message=admin_message,
-                        notification_type=admin_type,
-                        sender_user_id=admin_id,
-                        sender_type="hr"
-                    )
+                    # 2. Notify School Admin (interviewer)
+                    interviewer_admin_id = None
+                    if interview_schedule and interview_schedule.interviewer_name:
+                        interviewer = db.query(Admins).filter(Admins.email == interview_schedule.interviewer_name).first()
+                        if interviewer:
+                            interviewer_admin_id = interviewer.admin_id
+                    
+                    if interviewer_admin_id:
+                        if status_str == "selected":
+                            admin_title = "Offer Letter Request"
+                            admin_message = f"Candidate {candidate_name} has been selected for '{job.job_title}'. Please generate and issue an offer letter."
+                            admin_type = "offer_request"
+                        else:
+                            admin_title = "Application Status Update"
+                            admin_message = f"Application status for candidate {candidate_name} has been updated to {status_str}."
+                            admin_type = "status_update"
+                            
+                        notify_school_admin(
+                            db=db,
+                            admin_id=interviewer_admin_id,
+                            title=admin_title,
+                            message=admin_message,
+                            notification_type=admin_type,
+                            sender_user_id=admin_id,
+                            sender_type="hr"
+                        )
                     
         except Exception as e:
             from app.core.logger import logger
