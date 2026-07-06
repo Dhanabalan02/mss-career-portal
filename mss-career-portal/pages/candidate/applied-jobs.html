@@ -267,7 +267,51 @@
             opacity: 1;
         }
 
+    .mss-inner-banner-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+    }
 
+    .mss-breadcrumb-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 50px;
+        padding: 8px 18px;
+        backdrop-filter: blur(10px);
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+    .mss-bc-item {
+        font-family: 'Rubik', sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: rgba(255,255,255,0.75);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        transition: color 0.15s;
+    }
+    .mss-bc-item:hover { color: #fff; }
+    .mss-bc-sep {
+        color: rgba(255,255,255,0.35);
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+    }
+    .mss-bc-active {
+        font-weight: 700;
+        color: #fff !important;
+    }
+    @media (max-width: 767px) {
+        .mss-inner-banner { padding: 2rem 0; }
+        .mss-breadcrumb-pill { display: none; }
+    }
         
     </style>
 </head>
@@ -283,9 +327,18 @@
             <div class="mss-inner-banner">
                 <div class="mss-inner-banner-bg"></div>
                 <div class="container-fluid px-3 px-lg-5" style="position:relative;z-index:2;">
-                    <div class="mss-inner-banner-left">
-                        <h1 class="mss-inner-title">Your Applied Jobs</h1>
-                        <p class="mss-inner-sub">Track the status of your applications.</p>
+                    <div class="mss-inner-banner-row">
+                        <div class="mss-inner-banner-left">
+                            <h1 class="mss-inner-title">Your Applied Jobs</h1>
+                            <p class="mss-inner-sub">Track the status of your applications.</p>
+                        </div>
+                        <nav class="mss-breadcrumb-pill" aria-label="breadcrumb">
+                            <a href="/mss-career-portal/home" class="mss-bc-item">
+                                <i class="feather-home" style="font-size:0.75rem;"></i> Home
+                            </a>
+                            <span class="mss-bc-sep"><i class="feather-chevron-right"></i></span>
+                            <span class="mss-bc-item mss-bc-active">Applied Jobs</span>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -335,78 +388,7 @@
         </div>
     </div>
 
-        <footer class="footer-dark"
-        style="    background: linear-gradient(300deg, #cc8cfc, #7b2cbf) !important; display: block !important; position: relative !important; z-index: 10;">
-        <div class="container-fluid px-3 px-lg-5">
-
-            <div class="footer-top">
-                <div class="row">
-
-                    <div class="col-lg-4 col-md-12">
-                        <div class="widget widget_about">
-                            <div class="logo-footer clearfix">
-                                <a href="/mss-career-portal/home"><img src="images/mss/mss-logo.png" alt=""
-                                        style="max-height: 80px;"></a>
-                            </div>
-                            <p style="color: var(--white-color);">Established in 1928, The Madras Seva Sadan stands as one of South
-                                India’s oldest and most trusted institutions, dedicated to transforming lives through
-                                education, women empowerment, child welfare, social development, arts and sports —
-                                guided by the timeless values of compassion, dignity and service. </p>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget widget_services ftr-list-center">
-                            <h4 class="widget-title pb-1" style="color: #fff;">Quick Links</h4>
-                            <ul>
-                                <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Home</a></li>
-                                <li><a href="https://themadrassevasadan.org/about" target="_blank"
-                                        style="color: #A0AEC0;">About</a></li>
-                                <li><a href="/mss-career-portal/open-roles" style="color: #A0AEC0;">Open Roles</a></li>
-                                <li><a href="/mss-career-portal/home" style="color: #A0AEC0;">Search</a></li>
-                                <li><a href="contact.html" style="color: #A0AEC0;">Contact</a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-6">
-                        <div class="widget widget_info">
-                            <h4 class="widget-title pb-1" style="color: #fff;">Contact Details</h4>
-                            <ul class="ftr-list">
-                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-map-pin"
-                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px; margin-top: 5px;"></i>
-                                    <p style="color: var(--white-color); margin: 0;">'Shenstone Park', <br>No. 7, Harrington Road, Chetpet, <br>Chennai -600031</p>
-                                </li>
-                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-mail"
-                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: var(--white-color); margin: 0; overflow-wrap:anywhere">hrexecutive@pro.themadrassevasadan.org</p>
-                                </li>
-                                <li style="display: flex; margin-bottom: 25px;"><i class="feather-phone"
-                                        style="color: var(--white-color); font-size: 20px; margin-right: 15px;"></i>
-                                    <p style="color: var(--white-color); margin: 0;">+91 98409 07631</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-
-        <div class="footer-bottom">
-            <div class="container-fluid px-3 px-lg-5">
-                <div class="footer-bottom-info d-flex justify-content-center align-items-center w-100"
-                    style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; padding-bottom: 20px;">
-                    <div class="footer-copy-right text-center w-100">
-                        <span class="copyrights-text" style="color: var(--white-color);">Copyright 2026 <strong>The Madras Seva
-                                Sadan</strong>. All Rights Reserved.</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </footer>
+        <div id="shared-footer"></div>
     
     <!-- JAVASCRIPT FILES -->
     <script src="js/jquery-3.6.0.min.js"></script><!-- JQUERY.MIN JS -->
@@ -414,6 +396,7 @@
     <script src="js/bootstrap.min.js"></script><!-- BOOTSTRAP.MIN JS -->
     <script src="js/custom.js"></script><!-- CUSTOM FUCTIONS  -->
     <script src="../../assets/js/shared-header.js?v=5"></script>
+    <script src="../../assets/js/shared-footer.js"></script>
 
     <script>
         (function () {
