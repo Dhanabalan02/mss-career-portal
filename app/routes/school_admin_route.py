@@ -133,6 +133,16 @@ def issue_offer_route(
                         sender_user_id=admin_id,
                         sender_type="schoolAdmin"
                     )
+                    
+                    from app.services.offer_service import OfferService
+                    offer_service = OfferService()
+                    if getattr(candidate, "mobile", None) and payload.offer_letter_doc:
+                        offer_service.issue_offer(
+                            to=candidate.mobile,
+                            job_title=job.job_title,
+                            document_url=payload.offer_letter_doc,
+                            filename="Offer_Letter.pdf"
+                        )
 
                     # 2. Notify HR Users
                     notify_hr_users(

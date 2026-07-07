@@ -194,7 +194,7 @@ def schedule_interview_route(
             candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
             if candidate:
                 candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
-                date_str = scheduled_dt.strftime("%b %d, %Y at %I:%M %p")
+                date_str = scheduled_dt.strftime("%d %B, %Y at %I:%M %p")
                 
                 # 1. Notify Candidate
                 notify_candidate(
@@ -206,6 +206,20 @@ def schedule_interview_route(
                     sender_user_id=admin_id,
                     sender_type="hr"
                 )
+                
+                from app.services.interview_service import InterviewService
+                interview_service = InterviewService()
+                
+                if getattr(candidate, "mobile", None):
+                    interview_service.send_interview_scheduled(
+                        to=candidate.mobile,
+                        candidate_name=candidate_name,
+                        job_title=job.job_title,
+                        interview_mode=str(form_data.interview_mode.value if hasattr(form_data.interview_mode, 'value') else form_data.interview_mode),
+                        interview_date_time=date_str,
+                        interview_type=form_data.interview_round,
+                        interview_link_location=form_data.location or form_data.meeting_link or "N/A"
+                    )
                 
                 # 2. Notify School Admin (interviewer)
                 interviewer_admin_id = None
@@ -224,6 +238,18 @@ def schedule_interview_route(
                         sender_user_id=admin_id,
                         sender_type="hr"
                     )
+                    
+                    interviewer_mobile = getattr(interviewer, "mobile", None)
+                    if interviewer_mobile:
+                        interview_service.send_admin_interview_schedule(
+                            to=interviewer_mobile,
+                            job_title=job.job_title,
+                            candidate_name=candidate_name,
+                            interview_round=form_data.interview_round,
+                            interview_mode=str(form_data.interview_mode.value if hasattr(form_data.interview_mode, 'value') else form_data.interview_mode),
+                            interview_date_time=date_str,
+                            interview_link_location=form_data.location or form_data.meeting_link or "N/A"
+                        )
                 
     except Exception as e:
         from app.core.logger import logger
@@ -298,7 +324,7 @@ def reschedule_interview_route(
             candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
             if candidate:
                 candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
-                date_str = scheduled_dt.strftime("%b %d, %Y at %I:%M %p")
+                date_str = scheduled_dt.strftime("%d %B, %Y at %I:%M %p")
                 reason_part = f" Reason: {form_data.reschedule_reason}." if form_data.reschedule_reason else ""
                 
                 # 1. Notify Candidate
@@ -311,6 +337,20 @@ def reschedule_interview_route(
                     sender_user_id=admin_id,
                     sender_type="hr"
                 )
+                
+                from app.services.interview_service import InterviewService
+                interview_service = InterviewService()
+                if getattr(candidate, "mobile", None):
+                    interview_service.send_interview_rescheduled(
+                        to=candidate.mobile,
+                        candidate_name=candidate_name,
+                        job_title=job.job_title,
+                        interview_mode=str(job_interview.interview_mode.value if hasattr(job_interview.interview_mode, 'value') else job_interview.interview_mode),
+                        interview_new_date_time=date_str,
+                        interview_type=job_interview.interview_round,
+                        interview_link_location=job_interview.location or job_interview.meeting_link or "N/A",
+                        rescheduled_reason=form_data.reschedule_reason or "N/A"
+                    )
                 
                 # 2. Notify School Admin (interviewer)
                 interviewer_admin_id = None
@@ -329,6 +369,18 @@ def reschedule_interview_route(
                         sender_user_id=admin_id,
                         sender_type="hr"
                     )
+                    
+                    interviewer_mobile = getattr(interviewer, "mobile", None)
+                    if interviewer_mobile:
+                        interview_service.send_admin_interview_reschedule(
+                            to=interviewer_mobile,
+                            job_title=job.job_title,
+                            candidate_name=candidate_name,
+                            interview_round=job_interview.interview_round,
+                            interview_mode=str(job_interview.interview_mode.value if hasattr(job_interview.interview_mode, 'value') else job_interview.interview_mode),
+                            interview_new_date_time=date_str,
+                            interview_link_location=job_interview.location or job_interview.meeting_link or "N/A"
+                        )
                 
     except Exception as e:
         from app.core.logger import logger
@@ -376,6 +428,24 @@ def cancel_interview_route(
                     sender_type="hr"
                 )
                 
+                sch_dt = None
+                if job_interview.scheduled_date and job_interview.start_time:
+                    sch_dt = datetime.combine(job_interview.scheduled_date, job_interview.start_time)
+                date_str = sch_dt.strftime("%d %B, %Y at %I:%M %p") if sch_dt else "N/A"
+                
+                from app.services.interview_service import InterviewService
+                interview_service = InterviewService()
+                
+                if getattr(candidate, "mobile", None):
+                    interview_service.send_interview_cancel(
+                        to=candidate.mobile,
+                        candidate_name=candidate_name,
+                        job_title=job.job_title,
+                        interview_round=job_interview.interview_round,
+                        interview_date_time=date_str,
+                        cancel_reason=form_data.cancelled_reason or "N/A"
+                    )
+                
                 # 2. Notify School Admin (interviewer)
                 interviewer_admin_id = None
                 if job_interview.interviewer_name:
@@ -393,6 +463,17 @@ def cancel_interview_route(
                         sender_user_id=admin_id,
                         sender_type="hr"
                     )
+                    
+                    interviewer_mobile = getattr(interviewer, "mobile", None)
+                    if interviewer_mobile:
+                        interview_service.send_admin_interview_cancel(
+                            to=interviewer_mobile,
+                            job_title=job.job_title,
+                            candidate_name=candidate_name,
+                            interview_round=job_interview.interview_round,
+                            interview_date_time=date_str,
+                            cancel_reason=form_data.cancelled_reason or "N/A"
+                        )
                 
     except Exception as e:
         from app.core.logger import logger
@@ -482,6 +563,17 @@ def submit_interview_remarks_route(
                         sender_user_id=admin_id,
                         sender_type="hr"
                     )
+                    
+                    from app.services.interview_service import InterviewService
+                    interview_service = InterviewService()
+                    if getattr(candidate, "mobile", None):
+                        interview_service.send_interview_feedback(
+                            to=candidate.mobile,
+                            candidate_name=candidate_name,
+                            job_title=job.job_title,
+                            status=status_str.capitalize(),
+                            description=form_data.remarks or "N/A"
+                        )
                     
                     # 2. Notify School Admin (interviewer)
                     interviewer_admin_id = None

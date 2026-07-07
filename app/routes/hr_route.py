@@ -150,21 +150,33 @@ def masset_sync(
     admin_id: int = Depends(get_current_admin_id),
 ):
     result = sync_masset(db, admin_id, applicant_id, payload.employee_id or "")
+    if result.get("success"):
+        try:
+            from app.models import JobApplicant, JobPost, Users
+            app = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == applicant_id).first()
+            if app:
+                job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
+                candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
+                
+                if job and candidate and getattr(candidate, "mobile", None):
+                    candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                    doj = app.joining_date.strftime("%d %b, %Y") if app.joining_date else "N/A"
+                    
+                    from app.services.onboard_complete_service import OnboardCompleteService
+                    onboard_service = OnboardCompleteService()
+                    onboard_service.send_onboard_complete(
+                        to=candidate.mobile,
+                        candidate_name=candidate_name,
+                        employee_id=app.masset_employee_id or payload.employee_id or "N/A",
+                        designation=job.job_title or "N/A",
+                        department=job.department or "N/A",
+                        date_of_joining=doj
+                    )
+        except Exception as e:
+            from app.core.logger import logger
+            logger.error(f"Error sending onboard complete notification: {e}")
     return result
 
-
-@router.get("/masset/{applicant_id}/status")
-def get_masset_appointment_status(
-    applicant_id: int,
-    db: Session = Depends(get_db),
-    admin_id: int = Depends(get_current_admin_id),
-):
-    """
-    Fetch the applicant's appointment status from MASSET and update DB.
-    """
-    from app.crud.hr_crud import fetch_masset_status
-    result = fetch_masset_status(db, admin_id, applicant_id)
-    return result
 
 
 @router.get("/pending-actions")
@@ -176,6 +188,7 @@ def pending_actions(
 
 
 class MassetWebhookRequest(BaseModel):
+    application_id: str
     masset_employee_id: str
     status: str
     message: Optional[str] = None
@@ -185,13 +198,41 @@ class MassetWebhookRequest(BaseModel):
 def masset_webhook(payload: MassetWebhookRequest, db: Session = Depends(get_db)):
     """
     Webhook endpoint for MASSET external HRMS to update candidate status
-    based on masset_employee_id.
+    and masset_employee_id based on application_id.
     """
     from app.crud.hr_crud import update_masset_status_from_webhook
 
-    return update_masset_status_from_webhook(
-        db, payload.masset_employee_id, payload.status
+    result = update_masset_status_from_webhook(
+        db, payload.application_id, payload.masset_employee_id, payload.status
     )
+    
+    if result.get("success") and payload.status.lower() == "onboarded":
+        try:
+            from app.models import JobApplicant, JobPost, Users
+            app = db.query(JobApplicant).filter(JobApplicant.mss_app_no == payload.application_id).first()
+            if app:
+                job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
+                candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
+                
+                if job and candidate and getattr(candidate, "mobile", None):
+                    candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
+                    doj = app.joining_date.strftime("%d %b, %Y") if app.joining_date else "N/A"
+                    
+                    from app.services.onboard_complete_service import OnboardCompleteService
+                    onboard_service = OnboardCompleteService()
+                    onboard_service.send_onboard_complete(
+                        to=candidate.mobile,
+                        candidate_name=candidate_name,
+                        employee_id=app.masset_employee_id or payload.masset_employee_id or "N/A",
+                        designation=job.job_title or "N/A",
+                        department=job.department or "N/A",
+                        date_of_joining=doj
+                    )
+        except Exception as e:
+            from app.core.logger import logger
+            logger.error(f"Error sending onboard complete webhook notification: {e}")
+            
+    return result
 
 
 @router.get("/sidebar-counts")

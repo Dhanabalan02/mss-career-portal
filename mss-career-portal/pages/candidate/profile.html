@@ -2100,20 +2100,18 @@
     function applyExtractedResumeData(extracted) {
       if (!extracted) return;
 
-      const setIfEmpty = (id, val) => {
+      const setFieldValue = (id, val) => {
         const el = document.getElementById(id);
-        if (el && !el.value && val) el.value = val;
+        if (el) el.value = val !== undefined && val !== null ? val : '';
       };
 
-      // For <select> fields, match the extracted text against the option list
-      // case-insensitively instead of assigning it verbatim (which silently
-      // no-ops when the AI's casing/wording doesn't exactly match an <option>).
-      const setSelectIfEmpty = (id, val) => {
+      const setSelectValue = (id, val) => {
         const el = document.getElementById(id);
-        if (!el || el.value || !val) return;
+        if (!el) return;
+        if (!val) { el.value = ''; return; }
         const target = String(val).trim().toLowerCase();
         const match = Array.from(el.options).find(o => o.value.toLowerCase() === target);
-        if (match) el.value = match.value;
+        el.value = match ? match.value : '';
       };
 
       // Normalize common AI phrasing/abbreviations to the exact <option> wording
@@ -2141,32 +2139,38 @@
       };
 
       const fullName = [extracted.first_name, extracted.last_name].filter(Boolean).join(' ').trim();
-      setIfEmpty('pfName', fullName);
+      setFieldValue('pfName', fullName);
 
       const meta = extracted.metadata || {};
       // <input type="date"> silently rejects anything that isn't strict YYYY-MM-DD.
       const dob = /^\d{4}-\d{2}-\d{2}$/.test(String(meta.date_of_birth || '').trim()) ? meta.date_of_birth : '';
-      setIfEmpty('pfDob', dob);
-      setSelectIfEmpty('pfGender', normalizeGender(meta.gender));
-      setSelectIfEmpty('pfMaritalStatus', normalizeMaritalStatus(meta.marital_status));
-      setSelectIfEmpty('pfBloodGroup', normalizeBloodGroup(meta.blood_group));
-      setIfEmpty('pfAbout', meta.about);
-      setIfEmpty('pfDesig', meta.designation);
-      setIfEmpty('pfComp', meta.company);
-      setIfEmpty('pfLocation', meta.location || [meta.city, meta.state].filter(Boolean).join(', '));
+      setFieldValue('pfDob', dob);
+      setSelectValue('pfGender', normalizeGender(meta.gender));
+      setSelectValue('pfMaritalStatus', normalizeMaritalStatus(meta.marital_status));
+      setSelectValue('pfBloodGroup', normalizeBloodGroup(meta.blood_group));
+      setFieldValue('pfAbout', meta.about || '');
+      setFieldValue('pfDesig', meta.designation || '');
+      setFieldValue('pfComp', meta.company || '');
+      
+      const loc = meta.location || [meta.city, meta.state].filter(Boolean).join(', ');
+      setFieldValue('pfLocation', loc || '');
 
+      const pfExpYears = document.getElementById('pfExpYears');
+      const pfExpMonths = document.getElementById('pfExpMonths');
       if (meta.experience) {
         const expStr = String(meta.experience);
         const yMatch = expStr.match(/(\d+)\s*[Yy]ear/);
         const mMatch = expStr.match(/(\d+)\s*[Mm]onth/);
-        const pfExpYears = document.getElementById('pfExpYears');
-        const pfExpMonths = document.getElementById('pfExpMonths');
-        if (pfExpYears && !pfExpYears.value && yMatch) pfExpYears.value = String(Math.min(parseInt(yMatch[1]), 30));
-        if (pfExpMonths && !pfExpMonths.value && mMatch) pfExpMonths.value = String(Math.min(parseInt(mMatch[1]), 11));
+        if (pfExpYears) pfExpYears.value = yMatch ? String(Math.min(parseInt(yMatch[1]), 30)) : '';
+        if (pfExpMonths) pfExpMonths.value = mMatch ? String(Math.min(parseInt(mMatch[1]), 11)) : '';
+      } else {
+        if (pfExpYears) pfExpYears.value = '';
+        if (pfExpMonths) pfExpMonths.value = '';
       }
 
-      // Skills — merge, avoid duplicates
-      if (Array.isArray(meta.skills) && meta.skills.length) {
+      // Skills — replace existing
+      if (Array.isArray(meta.skills)) {
+        cpSkills = [];
         meta.skills.forEach(s => {
           const val = String(s).trim();
           if (val && !cpSkills.some(x => x.toLowerCase() === val.toLowerCase())) {
@@ -2176,16 +2180,17 @@
         cpRenderSkills();
       }
 
-      // Languages — merge, avoid duplicates
+      // Languages — replace existing
       if (meta.languages) {
+        cpLanguages = [];
         String(meta.languages).split(',').map(l => l.trim()).filter(Boolean).forEach(l => {
           if (!cpLanguages.some(x => x.toLowerCase() === l.toLowerCase())) cpLanguages.push(l);
         });
         cpRenderLanguages();
       }
 
-      // Education — replace the (likely blank) list with extracted entries
-      if (Array.isArray(extracted.education) && extracted.education.length) {
+      // Education — replace existing with extracted entries
+      if (Array.isArray(extracted.education)) {
         const eduList = document.getElementById('cpEducationList');
         eduList.innerHTML = '';
         extracted.education.forEach(edu => {
@@ -2203,8 +2208,8 @@
         });
       }
 
-      // Experience — replace the (likely blank) list with extracted entries
-      if (Array.isArray(extracted.experience) && extracted.experience.length) {
+      // Experience — replace existing with extracted entries
+      if (Array.isArray(extracted.experience)) {
         const expList = document.getElementById('cpExperienceList');
         expList.innerHTML = '';
         extracted.experience.forEach(exp => {

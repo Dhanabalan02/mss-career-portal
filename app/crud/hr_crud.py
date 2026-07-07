@@ -250,8 +250,8 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
             if remark and remark.applicant_status == ApplicantStatus.SELECTED:
                 remark.applicant_status = ApplicantStatus.NEXT_ROUND
 
-    # Check if candidate is moving to Offer
-    if stage == "Offer" and remarks is not None:
+    # Check if candidate is moving from Interview to Offer
+    if stage == "Offer" and app_record.applicant_stage == ApplicantStage.INTERVIEW:
         latest_interview = (
             db.query(JobInterviewSchedule)
             .filter(JobInterviewSchedule.job_applicant_id == applicant_id)
@@ -270,7 +270,8 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
                 .first()
             )
             if remark:
-                remark.remarks = remarks
+                if remarks is not None:
+                    remark.remarks = remarks
                 remark.applicant_status = ApplicantStatus.SELECTED
                 remark.updated_by = admin_id
             else:
@@ -493,92 +494,32 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str 
     }
 
 
-def update_masset_status_from_webhook(db: Session, employee_id: str, status: str) -> dict:
+def update_masset_status_from_webhook(db: Session, application_id: str, masset_employee_id: str, status: str) -> dict:
     """
     Called by the MASSET external HRMS webhook to update the applicant's status
-    (e.g., to 'Onboarded' or 'AO Generated') using the generated masset_employee_id.
+    and generated masset_employee_id using the application_id.
     """
     app = db.query(JobApplicant).filter(
-        JobApplicant.mss_app_no == employee_id
+        JobApplicant.mss_app_no == application_id
     ).first()
 
     if not app:
-        return {"error": f"No candidate found with Application ID: {employee_id}"}
+        return {"error": f"No candidate found with Application ID: {application_id}"}
 
+    app.masset_employee_id = masset_employee_id
     app.masset_status = status
     app.updated_at = datetime.utcnow()
     
     db.commit()
     db.refresh(app)
     
-    logger.info(f"Successfully updated candidate {app.job_applicant_id} (Application ID: {employee_id}) to status: {status}")
+    logger.info(f"Successfully updated candidate {app.job_applicant_id} (Application ID: {application_id}) to status: {status} with masset_employee_id: {masset_employee_id}")
     
     return {
         "success": True,
         "message": f"Candidate status updated to '{status}'"
     }
 
-
-def fetch_masset_status(db: Session, applicant_id: str) -> dict:
-    """
-    Fetch the appointment order completion status from MASSET and store the masset_employee_id
-    into the job_applicants table.
-    """
-    app = db.query(JobApplicant).filter(
-        JobApplicant.job_applicant_id == applicant_id
-    ).first()
-
-    if not app:
-        return {"error": "Applicant not found"}
-
-    masset_api_url = "http://192.168.0.8/synchrms/api/career_sync.php"
-    params = {
-        "action": "get_appointment_status",
-        "application_id": app.mss_app_no
-    }
-    
-    logger.info(f"Fetching MASSET status for candidate {applicant_id} via GET {masset_api_url}")
-    
-    try:
-        response = requests.get(masset_api_url, params=params, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        
-        new_status = data.get("appointment_stage")
-        masset_emp_id = data.get("masset_employee_id")
-        
-        updated = False
-
-        # Check if the status from the API is 'completed'
-        if new_status and new_status.strip().lower() == "ID Issued":
-            app.masset_status = "completed"
-            app.masset_employee_id = masset_emp_id
-            app.issue_appointment_order = 1
-            app.masset_sync_success_on = datetime.utcnow()
-            updated = True
-        else:
-            # Fallback/General handling for other statuses if necessary
-            if new_status:
-                app.masset_status = new_status
-                updated = True
-            if masset_emp_id:
-                app.masset_employee_id = masset_emp_id
-                updated = True
-            
-        if updated:
-            app.updated_at = datetime.utcnow()
-            db.commit()
-            db.refresh(app)
-            
-        return {
-            "success": True,
-            "status": app.masset_status,
-            "masset_employee_id": app.masset_employee_id
-        }
-    except Exception as e:
-        logger.error(f"Failed to fetch MASSET status. Exact issue: {str(e)}", exc_info=True)
-        return {"error": f"Failed to fetch from MASSET platform: {str(e)}"}
-    
 def get_masset_stats(db: Session, admin_id: int) -> dict:
     candidates = get_masset_candidates(db, admin_id)
     counts = {

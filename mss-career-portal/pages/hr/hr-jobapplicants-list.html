@@ -1063,7 +1063,9 @@
       pageList.forEach((c, index) => {
         let displayStage = c.stage;
         let showActions = true;
-        if (c.interviewStatus === 'Selected') {
+        
+        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Rejected'];
+        if (c.interviewStatus === 'Selected' && !advancedStages.includes(c.stage)) {
           displayStage = 'Awaiting Offer';
           showActions = false;
         }
@@ -1090,7 +1092,7 @@
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
       <td style="text-align:center;">
         <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
-          <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); location.href='/mss-career-portal/hr/candidate-profile?userId=${c.user_id}&appId=${c.mss_app_no}'">
+          <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); localStorage.setItem('candidateId', '${c.id}'); location.href='/mss-career-portal/hr/candidate-profile'">
               <i class="ti ti-user"></i>
           </button>
           ${(showActions && (c.stage === 'Screened' || c.stage === 'Next Round') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}

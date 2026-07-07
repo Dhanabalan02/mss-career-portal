@@ -16,6 +16,7 @@ class Admins(Base):
     role_id: Mapped[int] = mapped_column(ForeignKey("user_roles.role_id", ondelete="CASCADE"))
     unit_id: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     email: Mapped[str] = mapped_column(String(255), nullable=False)
+    mobile: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     is_active: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())

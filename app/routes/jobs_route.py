@@ -930,6 +930,8 @@ def get_applicant_detail_route(
             "masset_status": app.masset_status or "",
             "masset_synced_at": (
                 app.masset_synced_at.strftime("%d-%m-%y %H:%M")
+                if hasattr(app.masset_synced_at, "strftime")
+                else str(app.masset_synced_at)
                 if app.masset_synced_at
                 else ""
             ),

@@ -1852,7 +1852,7 @@
           "
         ></div>
 
-        <button
+        <!-- <button
           class="modal-close"
           onclick="closeSelectCandidateModal()"
           style="
@@ -1873,7 +1873,7 @@
           "
         >
           <i class="ti ti-x"></i>
-        </button>
+        </button> -->
 
         <div style="padding: 32px 32px 16px; text-align: center">
           <div
@@ -2679,10 +2679,17 @@
 
       function handleStageChangeRequest(c, newStage) {
         if (!isStageMoveAllowed(c, newStage)) {
-          showToast(
-            `Cannot move candidate from ${c.stage} to ${newStage}`,
-            "info",
-          );
+          if (c.stage === "Interview" && newStage === "Screened") {
+            showToast(
+              "cannot move the candidate from interview stage to screened",
+              "info"
+            );
+          } else {
+            showToast(
+              `Cannot move candidate from ${c.stage} to ${newStage}`,
+              "info"
+            );
+          }
           return;
         }
         if (c.stage === "Interview" && newStage === "Offer") {
@@ -2966,17 +2973,6 @@
       function onDragOver(e, stage) {
         e.preventDefault();
         const c = candidates.find((x) => x.id === dragSrcId);
-        if (
-          c &&
-          c.stage === "Interview" &&
-          (stage === "PreScreen-Reject" || stage === "Screened")
-        ) {
-          e.dataTransfer.dropEffect = "none";
-          document
-            .querySelectorAll(".column")
-            .forEach((col) => col.classList.remove("drag-over"));
-          return;
-        }
         e.dataTransfer.dropEffect = "move";
         document
           .querySelectorAll(".column")
@@ -2984,7 +2980,9 @@
         const col = document.getElementById(
           "col-" + stage.replace(/\s+/g, "-"),
         );
-        if (col) col.classList.add("drag-over");
+        if (col && c && isStageMoveAllowed(c, stage)) {
+          col.classList.add("drag-over");
+        }
       }
 
       function onKanbanDragOver(e) {
