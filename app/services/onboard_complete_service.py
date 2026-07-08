@@ -33,6 +33,10 @@ class OnboardCompleteService:
         department: str,
         date_of_joining: str,
     ) -> dict:
+        
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping Onboarding completion notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
 
         formatted_to = normalize_whatsapp_number(to)
 

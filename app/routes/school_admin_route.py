@@ -90,7 +90,6 @@ class IssueOfferPayload(BaseModel):
     offer_letter_doc: Optional[str] = None
     is_draft: Optional[bool] = False
 
-
 @router.post("/offers/{applicant_id}/issue")
 def issue_offer_route(
     applicant_id: int,

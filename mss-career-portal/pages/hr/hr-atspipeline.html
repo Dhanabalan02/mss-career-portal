@@ -16,9 +16,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"
     />
-
     <link rel="stylesheet" href="../../assets/css/portal-layout.css" />
-
     <style>
       :root {
         --primary: #2563eb;
@@ -74,6 +72,21 @@
         min-height: 100vh;
         font-size: 14px;
         line-height: 1.5;
+      }
+
+      .scrollbar-thin-1::-webkit-scrollbar {
+        width: 0px;
+        height: 8px;
+      }
+
+      .scrollbar-thin-1::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .scrollbar-thin-1::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        border: 2px solid transparent;
+        background-clip: content-box;
       }
 
       /* ── Layout ── */
@@ -1113,8 +1126,8 @@
       .tl-item::before {
         content: "";
         position: absolute;
-        left: 7px;
-        top: 22px;
+        left: 11px;
+        top: 28px;
         bottom: 0;
         width: 1.5px;
         background: var(--border);
@@ -1125,28 +1138,35 @@
       }
 
       .tl-dot {
-        width: 16px;
-        height: 16px;
+        width: 24px;
+        height: 24px;
         border-radius: 50%;
         border: 2px solid;
         flex-shrink: 0;
-        margin-top: 3px;
+        margin-top: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
       }
 
       .tl-dot.done {
         background: var(--success);
         border-color: var(--success);
+        color: #fff;
       }
 
       .tl-dot.current {
         background: var(--primary);
         border-color: var(--primary);
+        color: #fff;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
       }
 
       .tl-dot.pending {
         background: var(--surface);
         border-color: var(--border-strong);
+        color: var(--text-3);
       }
 
       .tl-text {
@@ -1230,6 +1250,7 @@
 
       .action-btn {
         display: flex;
+        justify-content: center;
         align-items: center;
         gap: 9px;
         padding: 11px 14px;
@@ -1278,72 +1299,6 @@
         border: 1px solid #fca5a5;
       }
 
-      .notes-area {
-        width: 100%;
-        min-height: 90px;
-        padding: 10px 12px;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        font-family: var(--font);
-        font-size: 13px;
-        color: var(--text);
-        background: var(--bg);
-        resize: vertical;
-        transition: var(--transition);
-      }
-
-      .notes-area:focus {
-        outline: none;
-        border-color: var(--primary);
-        background: #fff;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
-      }
-
-      /* Toast */
-      .toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%) translateY(16px);
-        background: var(--text);
-        color: #fff;
-        padding: 10px 18px;
-        border-radius: var(--radius-sm);
-        font-size: 13px;
-        font-weight: 500;
-        z-index: 999;
-        opacity: 0;
-        pointer-events: none;
-        transition:
-          opacity 0.25s,
-          transform 0.25s;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: var(--shadow-lg);
-        white-space: nowrap;
-      }
-
-      .toast.show {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-      }
-
-      .toast i {
-        font-size: 16px;
-      }
-
-      .toast.success i {
-        color: #4ade80;
-      }
-
-      .toast.warning i {
-        color: #fbbf24;
-      }
-
-      .toast.danger i {
-        color: #f87171;
-      }
 
       /* ── Responsive ── */
       @media (max-width: 900px) {
@@ -1659,7 +1614,7 @@
         <div class="dtab" onclick="switchTab('timeline')">
           <i class="ti ti-timeline" aria-hidden="true"></i> Timeline
         </div>
-        <div class="dtab" onclick="switchTab('actions')">
+        <div class="dtab" id="tabHeaderActions" onclick="switchTab('actions')">
           <i class="ti ti-bolt" aria-hidden="true"></i> Actions
         </div>
       </div>
@@ -1727,23 +1682,15 @@
               >
                 <i class="ti ti-refresh" aria-hidden="true"></i> Sync to MASSET
               </button>
+              <button
+                class="action-btn ab-schedule-next"
+                id="btnActionScheduleNext"
+                onclick="pendingCandidateForInterview = candidates.find(x => x.id === activeId); confirmScheduleYes();"
+                style="display: none; background: var(--primary); color: #fff"
+              >
+                <i class="ti ti-calendar" aria-hidden="true"></i> Schedule Next Round
+              </button>
             </div>
-          </div>
-
-          <div class="section" id="secNotes">
-            <div class="section-title">Notes</div>
-            <textarea
-              class="notes-area"
-              id="notesArea"
-              placeholder="Add notes about this candidate…"
-            ></textarea>
-            <button
-              class="btn btn-primary btn-sm"
-              style="margin-top: 8px"
-              onclick="saveNotes()"
-            >
-              <i class="ti ti-device-floppy" aria-hidden="true"></i> Save Notes
-            </button>
           </div>
         </div>
       </div>
@@ -1772,11 +1719,7 @@
         </div>
         <div class="form-group">
           <label>Interview Round</label>
-          <input
-            type="text"
-            id="feedbackRound"
-            placeholder="e.g., Technical Round 1, HR Interview"
-          />
+          <input type="text" id="feedbackRound" readonly />
         </div>
         <div class="form-group">
           <label>Interview Remarks / Feedback</label>
@@ -1851,29 +1794,6 @@
             width: 100%;
           "
         ></div>
-
-        <!-- <button
-          class="modal-close"
-          onclick="closeSelectCandidateModal()"
-          style="
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--surface-2);
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-            cursor: pointer;
-            transition: background 0.2s;
-            color: var(--text-2);
-          "
-        >
-          <i class="ti ti-x"></i>
-        </button> -->
 
         <div style="padding: 32px 32px 16px; text-align: center">
           <div
@@ -1988,7 +1908,7 @@
     </div>
 
     <!-- Confirm Schedule Modal -->
-    <div class="modal" id="confirmScheduleModal">
+    <div class="modal scrollbar-thin-1" id="confirmScheduleModal">
       <div
         class="modal-content"
         style="
@@ -2098,19 +2018,18 @@
         display: none;
       }
       #scheduleInterviewModal .modal-content {
-        /* overflow: visible; */
         margin: 40px auto;
       }
     </style>
     <div class="modal" id="scheduleInterviewModal">
-      <div class="modal-content" style="max-width: 500px">
+      <div class="modal-content scrollbar-thin-1" style="max-width: 500px">
         <div class="modal-header">
           <div class="modal-title">
             <i class="ti ti-calendar"></i> Schedule Interview
           </div>
           <button
             class="modal-close"
-            onclick="closeModal('scheduleInterviewModal')"
+            onclick="closeScheduleInterviewModal()"
           >
             <i class="ti ti-x"></i>
           </button>
@@ -2120,16 +2039,31 @@
             Scheduling interview for <strong id="schCandidateName"></strong>
           </p>
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
-            <div class="form-group" style="grid-column: span 2">
+            <div
+              class="form-group"
+              style="grid-column: span 2; position: relative"
+            >
               <label>Interview Round</label>
               <input
                 type="text"
                 id="schRound"
                 class="search-input"
                 style="width: 100%"
-                placeholder="e.g. Round 1 – Technical Interview"
-                value="Round 1 - Technical Interview"
+                onblur="validateRoundField()"
+                oninput="clearValidationError()"
               />
+              <!-- Error message container -->
+              <span
+                id="schRoundError"
+                style="
+                  color: #dc3545;
+                  font-size: 12px;
+                  display: none;
+                  margin-top: 4px;
+                "
+              >
+                Interview Round is required.
+              </span>
             </div>
             <div class="form-group">
               <label>Mode</label>
@@ -2202,7 +2136,7 @@
         <div class="modal-footer">
           <button
             class="btn btn-ghost"
-            onclick="closeModal('scheduleInterviewModal')"
+            onclick="closeScheduleInterviewModal()"
           >
             Cancel
           </button>
@@ -2215,6 +2149,30 @@
 
     <script src="portal-layout.js"></script>
     <script>
+      const today = new Date().toISOString().split("T")[0];
+
+      document.getElementById("schDate").setAttribute("min", today);
+
+      function validateRoundField() {
+        const input = document.getElementById("schRound");
+        const errorSpan = document.getElementById("schRoundError");
+
+        // Check if the input is empty or just spaces
+        if (input.value.trim() === "") {
+          errorSpan.style.display = "block";
+          input.style.borderColor = "#dc3545"; // Optional: turns border red
+        }
+      }
+
+      function clearValidationError() {
+        const input = document.getElementById("schRound");
+        const errorSpan = document.getElementById("schRoundError");
+
+        // Hide error as soon as the user starts typing
+        errorSpan.style.display = "none";
+        input.style.borderColor = ""; // Optional: resets border
+      }
+
       /* ── Data ── */
       const STAGES = [
         "Prescreen Rejected",
@@ -2295,9 +2253,8 @@
           { t: "Awaiting Acceptance", d: "Pending", s: "current" },
         ],
         "Offer Accepted": [
-          { t: "All Rounds Cleared", d: "15 days ago", s: "done" },
+          { t: "Offer Extended", d: "10 days ago", s: "done" },
           { t: "Offer Accepted", d: "3 days ago", s: "done" },
-          { t: "onboarded Initiated", d: "Tomorrow", s: "current" },
         ],
         Onboarded: [
           { t: "All Rounds Cleared", d: "20 days ago", s: "done" },
@@ -2450,10 +2407,10 @@
       <div class="stat-value">${interview}</div>
       <div class="stat-label">In Interview</div>
     </div>
-    <div class="stat-card sc-offer" onclick="scrollToStage('Offer')">
-      <div class="stat-icon" style="background:var(--purple-light);color:var(--purple)"><i class="ti ti-file-invoice" aria-hidden="true"></i></div>
+    <div class="stat-card sc-offer" onclick="scrollToStage('Offer Accepted')">
+      <div class="stat-icon" style="background:var(--success-light);color:var(--success)"><i class="ti ti-file-check" aria-hidden="true"></i></div>
       <div class="stat-value">${offers}</div>
-      <div class="stat-label">Offers Active</div>
+      <div class="stat-label">Offers Extended</div>
       <div class="stat-delta">${deltaOffers}</div>
     </div>
     <div class="stat-card sc-onboarded" onclick="scrollToStage('Onboarded')">
@@ -2487,6 +2444,7 @@
           const res = await fetch(`${API_BASE}/auth/units`);
           if (res.ok) {
             const units = await res.json();
+            units.sort((a, b) => a.unit_name.localeCompare(b.unit_name));
             const schoolFilter = document.getElementById("schoolFilter");
             units.forEach((u) => {
               const opt = document.createElement("option");
@@ -2534,7 +2492,6 @@
         const [avBg, avFg] = STAGE_META[c.stage].av;
         const avEl = document.getElementById("dAvatar");
         avEl.textContent = initials(c.name);
-        // avEl.style.cssText = `background:${avBg};color:${avFg};width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600`;
 
         document.getElementById("dName").textContent = c.name;
         document.getElementById("dPos").textContent =
@@ -2555,48 +2512,65 @@
         // Timeline
         const tl = c.timeline || TIMELINES[c.stage] || [];
         document.getElementById("timelineEl").innerHTML = tl
-          .map(
-            (t) => `
+          .map((t) => {
+            const iconHtml = t.icon ? `<i class="ti ${t.icon}"></i>` : "";
+            return `
     <div class="tl-item">
-      <div class="tl-dot ${t.s === "done" ? "done" : t.s === "current" ? "current" : "pending"}"></div>
+      <div class="tl-dot ${
+        t.s === "done"
+          ? "done"
+          : t.s === "current"
+          ? "current"
+          : "pending"
+      }">${iconHtml}</div>
       <div class="tl-text">
         <div class="tl-title">${t.t}</div>
         <div class="tl-date">${t.d}</div>
         ${t.s === "done" ? '<span class="tl-badge ok">Completed</span>' : ""}
         ${t.s === "current" ? '<span class="tl-badge act">In Progress</span>' : ""}
       </div>
-    </div>`,
-          )
+    </div>`;
+          })
           .join("");
 
         // Stage pills
-        document.getElementById("stagePills").innerHTML = STAGES.map(
-          (s) =>
-            `<div class="stage-pill ${s === c.stage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
-        ).join("");
+        renderStagePills(c.stage);
 
-        // Notes
-        document.getElementById("notesArea").value = c.notes || "";
 
         // Action visibility
         if (c.stage === "Offer Accepted") {
           document.getElementById("secMoveStage").style.display = "none";
-          document.getElementById("secNotes").style.display = "none";
           document.getElementById("btnActionFeedback").style.display = "none";
           document.getElementById("btnActionHold").style.display = "none";
           document.getElementById("btnActionReject").style.display = "none";
-          document.getElementById("btnActionSyncMasset").style.display = "flex";
+          document.getElementById("btnActionScheduleNext").style.display = "none";
+          if (c.sync_masset === 1 || c.sync_masset === true) {
+            document.getElementById("btnActionSyncMasset").style.display = "none";
+          } else {
+            document.getElementById("btnActionSyncMasset").style.display = "flex";
+          }
         } else {
           document.getElementById("secMoveStage").style.display = "block";
-          document.getElementById("secNotes").style.display = "block";
           document.getElementById("btnActionSyncMasset").style.display = "none";
           document.getElementById("btnActionHold").style.display = "flex";
           document.getElementById("btnActionReject").style.display = "flex";
-          if (c.stage === "Interview") {
+          if (c.stage === "Interview" && (c.has_active_interview === true || c.has_active_interview === 1)) {
             document.getElementById("btnActionFeedback").style.display = "flex";
           } else {
             document.getElementById("btnActionFeedback").style.display = "none";
           }
+          if (c.applicant_job_status === "next_round") {
+            document.getElementById("btnActionScheduleNext").style.display = "flex";
+          } else {
+            document.getElementById("btnActionScheduleNext").style.display = "none";
+          }
+        }
+
+        const noActions = c.stage === "Onboarded" || (c.stage === "Offer Accepted" && (c.sync_masset === 1 || c.sync_masset === true));
+        if (noActions) {
+          document.getElementById("tabHeaderActions").style.display = "none";
+        } else {
+          document.getElementById("tabHeaderActions").style.display = "flex";
         }
 
         switchTab("overview");
@@ -2624,9 +2598,13 @@
       let pendingCandidateForOffer = null;
 
       function closeSelectCandidateModal() {
+        const c = pendingCandidateForOffer;
         document
           .getElementById("selectCandidateModal")
           .classList.remove("open");
+        if (c && activeId === c.id) {
+          renderStagePills(c.stage);
+        }
         pendingCandidateForOffer = null;
       }
 
@@ -2644,13 +2622,22 @@
       }
 
       function isStageMoveAllowed(c, targetStage) {
-        const currentStage = (typeof c === 'string') ? c : c.stage;
-        const isOfferIssued = (typeof c === 'object' && c) ? Boolean(c.offer_issued || c.offerIssued || c.offer_issued_date || c.offer_status) : false;
-        
+        const currentStage = typeof c === "string" ? c : c.stage;
+        const isOfferIssued =
+          typeof c === "object" && c
+            ? Boolean(
+                c.offer_issued ||
+                c.offerIssued ||
+                c.offer_issued_date ||
+                c.offer_status,
+              )
+            : false;
+
         if (currentStage === targetStage) return true;
+        if (targetStage === "Prescreen Rejected") return false;
         if (
-          currentStage === "Prescreen Rejected" ||
-          targetStage === "Prescreen Rejected"
+          currentStage === "Prescreen Rejected" &&
+          targetStage !== "Interview"
         )
           return false;
         if (
@@ -2660,7 +2647,12 @@
             targetStage === "Onboarded")
         )
           return false;
-        if (currentStage === "Interview" && targetStage === "Screened")
+        if (
+          currentStage === "Interview" &&
+          (targetStage === "Screened" ||
+            targetStage === "Offer Accepted" ||
+            targetStage === "Onboarded")
+        )
           return false;
         if (
           currentStage === "Offer" &&
@@ -2682,21 +2674,25 @@
           if (c.stage === "Interview" && newStage === "Screened") {
             showToast(
               "cannot move the candidate from interview stage to screened",
-              "info"
+              "info",
             );
           } else {
             showToast(
               `Cannot move candidate from ${c.stage} to ${newStage}`,
-              "info"
+              "info",
             );
           }
+          renderStagePills(c.stage);
           return;
         }
         if (c.stage === "Interview" && newStage === "Offer") {
           pendingCandidateForOffer = c;
           document.getElementById("selectCandidateRemarks").value = "";
           document.getElementById("selectCandidateModal").classList.add("open");
-        } else if (c.stage === "Screened" && newStage === "Interview") {
+        } else if (
+          (c.stage === "Screened" || c.stage === "Prescreen Rejected") &&
+          newStage === "Interview"
+        ) {
           pendingCandidateForInterview = c;
           document.getElementById("confirmScheduleModal").classList.add("open");
         } else {
@@ -2728,6 +2724,19 @@
           candidate.stage = prevStage;
           renderKanban(getFiltered());
           showToast("Failed to save stage change", "danger");
+          if (activeId === candidate.id) {
+            renderStagePills(prevStage);
+          }
+        }
+      }
+
+      function renderStagePills(currentStage) {
+        const stagePillsEl = document.getElementById("stagePills");
+        if (stagePillsEl) {
+          stagePillsEl.innerHTML = STAGES.map(
+            (s) =>
+              `<div class="stage-pill ${s === currentStage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
+          ).join("");
         }
       }
 
@@ -2735,55 +2744,40 @@
         const c = candidates.find((x) => x.id === activeId);
         if (!c || c.stage === newStage) return;
         // Refresh drawer pills immediately before the async call re-renders
-        document.getElementById("stagePills").innerHTML = STAGES.map(
-          (s) =>
-            `<div class="stage-pill ${s === newStage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
-        ).join("");
+        renderStagePills(newStage);
         handleStageChangeRequest(c, newStage);
       }
 
-      function doAction(type) {
+      async function doAction(type) {
         const c = candidates.find((x) => x.id === activeId);
         if (!c) return;
-        const actions = {
-          interview: {
-            stage: "Interview",
-            msg: `Interview scheduled for ${c.name}`,
-            icon: "success",
-          },
-          offer: {
-            stage: "Offer",
-            msg: `Offer letter sent to ${c.name}`,
-            icon: "success",
-          },
-          hold: { stage: null, msg: `${c.name} put on hold`, icon: "warning" },
-          reject: {
-            stage: null,
-            msg: `${c.name} has been rejected`,
-            icon: "danger",
-          },
-        };
-        const a = actions[type];
-        if (a.stage) {
-          handleStageChangeRequest(c, a.stage);
-        } else {
-          showToast(a.msg, a.icon);
-        }
-        if (type === "reject") {
-          closeDrawer();
-        } else if (!a.stage) {
-          document.getElementById("stagePills").innerHTML = STAGES.map(
-            (s) =>
-              `<div class="stage-pill ${s === c.stage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
-          ).join("");
-        }
-      }
 
-      function saveNotes() {
-        const c = candidates.find((x) => x.id === activeId);
-        if (!c) return;
-        c.notes = document.getElementById("notesArea").value;
-        showToast("Notes saved", "success");
+        if (type === "hold" || type === "reject") {
+          const apiStage = type === "hold" ? "Hold" : "Reject";
+          const msg = type === "hold" ? `${c.name} put on hold` : `${c.name} has been rejected`;
+          const icon = type === "hold" ? "warning" : "danger";
+          
+          try {
+            const res = await fetch(`${API_BASE}/hr/ats-pipeline/${c.id}/stage`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${_token()}`,
+              },
+              body: JSON.stringify({ stage: apiStage }),
+            });
+            if (res.ok) {
+              showToast(msg, icon);
+              closeDrawer();
+              loadCandidates();
+            } else {
+              showToast("Failed to perform action", "danger");
+            }
+          } catch (err) {
+            showToast("Network error, could not contact server.", "danger");
+          }
+          return;
+        }
       }
 
       function getStageFromPoint(x, y) {
@@ -3059,7 +3053,7 @@
                 .then((units) => {
                   schSel.innerHTML =
                     '<option value="">All Units</option>' +
-                    units
+                    units.sort((a, b) => a.unit_name.localeCompare(b.unit_name))
                       .map(
                         (u) =>
                           `<option value="${escapeHtml(u.unit_name)}">${escapeHtml(u.unit_name)}</option>`,
@@ -3070,7 +3064,7 @@
                   console.error("Failed to load units", err);
                   const derivedSchools = [
                     ...new Set(candidates.map((c) => c.school).filter(Boolean)),
-                  ];
+                  ].sort((a, b) => a.localeCompare(b));
                   schSel.innerHTML =
                     '<option value="">All Units</option>' +
                     derivedSchools
@@ -3237,27 +3231,27 @@
       }
 
       function closeConfirmScheduleModal() {
+        const c = pendingCandidateForInterview;
         document
           .getElementById("confirmScheduleModal")
           .classList.remove("open");
+        if (c && activeId === c.id) {
+          renderStagePills(c.stage);
+        }
         pendingCandidateForInterview = null;
       }
 
       function confirmScheduleNo() {
-        const c = pendingCandidateForInterview;
         closeConfirmScheduleModal();
+      }
 
-        if (c) {
-          // Revert any optimistic UI updates in drawer pills
-          if (activeId === c.id) {
-            const stagePillsEl = document.getElementById("stagePills");
-            if (stagePillsEl) {
-              stagePillsEl.innerHTML = STAGES.map(
-                (s) =>
-                  `<div class="stage-pill ${s === c.stage ? "active" : ""}" onclick="moveStage('${s}')">${s}</div>`,
-              ).join("");
-            }
-          }
+      function closeScheduleInterviewModal() {
+        const c = pendingCandidateForInterview;
+        document
+          .getElementById("scheduleInterviewModal")
+          .classList.remove("open");
+        if (c && activeId === c.id) {
+          renderStagePills(c.stage);
         }
         pendingCandidateForInterview = null;
       }
@@ -3406,7 +3400,13 @@
           .then(() => {
             showToast("Interview scheduled successfully!", "success");
             closeModal("scheduleInterviewModal");
-            persistStageChange(c, "Interview");
+            if (c.stage !== "Interview") {
+              persistStageChange(c, "Interview");
+            } else {
+              loadCandidates().then(() => {
+                showCandidateDetail(c.id);
+              });
+            }
             pendingCandidateForInterview = null;
           })
           .catch((err) => {

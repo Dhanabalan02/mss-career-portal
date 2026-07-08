@@ -522,3 +522,107 @@ def update_password(request_data: UpdatePasswordRequest, db: Session = Depends(g
         raise HTTPException(status_code=500, detail="Failed to update password.")
         
     return {"message": "Password updated successfully."}
+
+
+from app.services.email_service import EmailService
+
+class UpdateEmailRequest(BaseModel):
+    email: str
+
+class VerifyUpdateEmailRequest(BaseModel):
+    email: str
+    otp: int
+
+class UpdateMobileRequest(BaseModel):
+    mobile: str
+
+class VerifyUpdateMobileRequest(BaseModel):
+    mobile: str
+    otp: int
+
+def _get_candidate_id_from_token(authorization: Optional[str] = Header(default=None)) -> int:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing or invalid Authorization header.",
+        )
+    token = authorization.split(" ", 1)[1]
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        user_id = int(payload.get("sub", 0))
+        role = payload.get("role")
+        if not user_id or role != "candidate":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Access denied."
+            )
+        return user_id
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired."
+        )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token."
+        )
+
+from app.crud.auth_crud import is_email_taken, is_mobile_taken, update_user_email, update_user_mobile
+
+@router.post("/candidate/profile/update-email/send-otp")
+def profile_update_email_send_otp(request_data: UpdateEmailRequest, db: Session = Depends(get_db), candidate_id: int = Depends(_get_candidate_id_from_token)):
+    email = request_data.email.strip().lower()
+    if is_email_taken(db, email, candidate_id):
+        raise HTTPException(status_code=400, detail="Email address is already registered to another account.")
+    
+    otp_code = random.randint(1000, 9999)
+    store_otp(db, candidate_id, otp_code, "email update")
+    
+    email_svc = EmailService()
+    result = email_svc.send_otp_email(email, str(otp_code))
+    if not result.get("success"):
+        raise HTTPException(status_code=500, detail="Failed to send OTP via email.")
+        
+    return {"message": "OTP sent successfully."}
+
+@router.post("/candidate/profile/update-email/verify-otp")
+def profile_update_email_verify_otp(request_data: VerifyUpdateEmailRequest, db: Session = Depends(get_db), candidate_id: int = Depends(_get_candidate_id_from_token)):
+    email = request_data.email.strip().lower()
+    is_valid = verify_otp(db, candidate_id, request_data.otp, "email update")
+    if not is_valid:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP.")
+        
+    if is_email_taken(db, email, candidate_id):
+        raise HTTPException(status_code=400, detail="Email address is already registered to another account.")
+        
+    if update_user_email(db, candidate_id, email):
+        return {"message": "Email updated successfully."}
+    raise HTTPException(status_code=500, detail="Failed to update email.")
+
+@router.post("/candidate/profile/update-mobile/send-otp")
+def profile_update_mobile_send_otp(request_data: UpdateMobileRequest, db: Session = Depends(get_db), candidate_id: int = Depends(_get_candidate_id_from_token)):
+    mobile = request_data.mobile.strip()
+    if is_mobile_taken(db, mobile, candidate_id):
+        raise HTTPException(status_code=400, detail="Mobile number is already registered to another account.")
+    
+    otp_code = random.randint(1000, 9999)
+    store_otp(db, candidate_id, otp_code, "mobile update")
+    
+    otp_service = OtpService()
+    result = otp_service.send_otp_message(mobile, str(otp_code))
+    if not result.get("success"):
+        raise HTTPException(status_code=502, detail="Failed to send OTP via WhatsApp.")
+        
+    return {"message": "OTP sent successfully."}
+
+@router.post("/candidate/profile/update-mobile/verify-otp")
+def profile_update_mobile_verify_otp(request_data: VerifyUpdateMobileRequest, db: Session = Depends(get_db), candidate_id: int = Depends(_get_candidate_id_from_token)):
+    mobile = request_data.mobile.strip()
+    is_valid = verify_otp(db, candidate_id, request_data.otp, "mobile update")
+    if not is_valid:
+        raise HTTPException(status_code=400, detail="Invalid or expired OTP.")
+        
+    if is_mobile_taken(db, mobile, candidate_id):
+        raise HTTPException(status_code=400, detail="Mobile number is already registered to another account.")
+        
+    if update_user_mobile(db, candidate_id, mobile):
+        return {"message": "Mobile updated successfully."}
+    raise HTTPException(status_code=500, detail="Failed to update mobile.")

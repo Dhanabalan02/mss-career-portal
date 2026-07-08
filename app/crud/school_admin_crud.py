@@ -41,13 +41,20 @@ def _format_time(t) -> str:
         return str(t)
 
 
-def _days_ago(dt) -> int:
-    if not dt:
-        return 0
-    try:
-        return (date.today() - dt.date()).days
-    except Exception:
-        return 0
+def check_and_update_expired_offers(db: Session):
+    from app.models.job_applicant_model import JobApplicant, OfferAcceptanceStatus, ApplicantStage
+    expired_apps = (
+        db.query(JobApplicant)
+        .filter(JobApplicant.offer_expiry_date.isnot(None))
+        .filter(JobApplicant.offer_expiry_date < date.today())
+        .filter(JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.PENDING)
+        .all()
+    )
+    for app in expired_apps:
+        app.offer_acceptance_status = OfferAcceptanceStatus.EXPIRED
+        app.applicant_stage = ApplicantStage.REJECTED
+    if expired_apps:
+        db.commit()
 
 
 def _get_admin_job_filter(db: Session, admin_id: int):
@@ -90,6 +97,7 @@ def _get_admin_job_filter(db: Session, admin_id: int):
         return JobPost.job_id == -1
 
 def get_school_dashboard(db: Session, admin_id: int) -> dict:
+    check_and_update_expired_offers(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
     admin_email = (admin.email or "").strip().lower() if admin else ""
@@ -348,6 +356,7 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
 
 
 def get_school_applicants(db: Session, admin_id: int) -> list:
+    check_and_update_expired_offers(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobApplicant, Users, CandidateMetadata, JobPost)
@@ -425,6 +434,7 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
 
 
 def get_school_offers(db: Session, admin_id: int) -> list:
+    check_and_update_expired_offers(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobApplicant, Users, CandidateMetadata, JobPost)
@@ -519,6 +529,9 @@ def update_offer_status(db: Session, admin_id: int, applicant_id: int, status: s
     if not new_status:
         return {"error": f"Unknown status: {status}"}
     app.offer_acceptance_status = new_status
+    if new_status == OfferAcceptanceStatus.EXPIRED:
+        from app.models.job_applicant_model import ApplicantStage
+        app.applicant_stage = ApplicantStage.REJECTED
     db.commit()
     return {"success": True}
 

@@ -14,6 +14,10 @@
     rel="stylesheet">
   <link rel="stylesheet" href="portal-layout.css">
   <style>
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     /* ── Reset / base ─────────────────────────────────────────── */
     *,
     *::before,
@@ -1093,7 +1097,7 @@
       const map = {
         'Pre Screen Reject': 'badge-red', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
         'Offer': 'badge-blue', 'Offer Accepted': 'badge-green',
-        'Onboarding': 'badge-green', 'Rejected': 'badge-red'
+        'Onboarding': 'badge-green', 'Onboarded': 'badge-green', 'Rejected': 'badge-red'
       };
       return map[stage] || 'badge-gray';
     }
@@ -1116,8 +1120,8 @@
       const actionsEl = document.getElementById('header-actions');
       actionsEl.innerHTML = '';
 
-      // If the candidate status is Selected, Offer, Offer Accepted, Onboarding, or Rejected, hide the actions
-      const hideActionsStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Rejected'];
+      // If the candidate status is Selected, Offer, Offer Accepted, Onboarding, Onboarded, or Rejected, hide the actions
+      const hideActionsStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
       const isSelected = candidateData.interviewStatus === 'Selected';
       const isHold = candidateData.interviewStatus === 'Hold';
 
@@ -1160,6 +1164,7 @@
         'offer': 'Offer',
         'offer accepted': 'Offer Accepted',
         'onboarding': 'Onboarding',
+        'onboarded': 'Onboarded',
         'rejected': 'Rejected',
         'awaiting offer': 'Offer'
       };
@@ -1194,7 +1199,7 @@
       const timelineEl = document.getElementById('overview-timeline');
       timelineEl.innerHTML = '';
 
-      const stages = ['Pre Screen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding','Rejected'];
+      const stages = ['Pre Screen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
       const currentIdx = stages.indexOf(normalizedStage);
       const tracking = candidateData.trackingDates || {};
       const stageDateMap = {
@@ -1204,6 +1209,7 @@
         'Offer': tracking.offer,
         'Offer Accepted': tracking.offer_accepted,
         'Onboarding': tracking.onboarding,
+        'Onboarded': tracking.onboarded,
         'Rejected': ''
       };
 
@@ -1558,14 +1564,39 @@
       const el = document.getElementById('masset-tab-content');
       if (candidateData.sync_masset === 1) {
         el.className = 'card';
-        el.style.cssText = 'padding: 20px;';
-        el.innerHTML = `
-          <div class="card-header"><span class="card-title">MASSET Sync Complete</span></div>
-          <div class="card-body">
-            <span class="badge badge-green" style="font-size:13px;padding:6px 12px;"><i class="ti ti-circle-check"></i> Synced with MASSET Database</span>
-            <p style="font-size:13px;color:var(--c-text2);margin-top:10px;">The candidate record has been successfully synced to the central institutional MASSET platform.</p>
-          </div>
-        `;
+        el.style.cssText = 'padding: 24px; border-radius: 12px;';
+        
+        const m = candidateData.massetDetails || {};
+        if (m.issue_appointment_order === 1) {
+          el.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 20px 0;">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(22, 163, 74, 0.1); color: var(--c-green); display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:16px;">
+                <i class="ti ti-circle-check"></i>
+              </div>
+              <h3 style="font-size: 18px; font-weight:700; color: var(--c-text1); margin-bottom:8px;">Appointment Order Generated</h3>
+              <p style="font-size: 14px; color: var(--c-text2); max-width: 400px; margin-bottom:16px;">
+                The candidate onboarding process has completed. An appointment order has been issued successfully.
+              </p>
+              <div style="background: var(--c-surface2); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px 24px; display:inline-flex; flex-direction:column; gap:4px;">
+                <span style="font-size:12px; color: var(--c-text3); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">MASSET Employee ID</span>
+                <span style="font-size:18px; font-weight:700; color: var(--c-green); font-family: monospace;">${m.masset_employee_id || 'N/A'}</span>
+              </div>
+            </div>
+          `;
+        } else {
+          el.innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 20px 0;">
+              <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(217, 119, 6, 0.1); color: var(--c-orange); display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:16px;">
+                <i class="ti ti-loader" style="animation: spin 2s linear infinite;"></i>
+              </div>
+              <h3 style="font-size: 18px; font-weight:700; color: var(--c-text1); margin-bottom:8px;">Awaiting Appointment Order</h3>
+              <p style="font-size: 14px; color: var(--c-text2); max-width: 400px; margin-bottom:16px;">
+                Awaiting for Appointment Order Generation in MASSET.
+              </p>
+              <span class="badge badge-orange" style="font-size:12px; padding:6px 16px;"><i class="ti ti-hourglass-high"></i> Sync Pending Approval</span>
+            </div>
+          `;
+        }
       } else {
         el.className = 'empty-state';
         el.innerHTML = `

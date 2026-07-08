@@ -633,3 +633,31 @@ def update_user_password(db: Session, user_id: int, new_password: str) -> bool:
         db.commit()
         return True
     return False
+
+
+def get_user_by_email(db: Session, email: str):
+    return db.query(Users).filter(Users.email == email).first()
+
+def is_email_taken(db: Session, email: str, exclude_user_id: int) -> bool:
+    user = db.query(Users).filter(Users.email == email, Users.user_id != exclude_user_id).first()
+    return user is not None
+
+def is_mobile_taken(db: Session, mobile: str, exclude_user_id: int) -> bool:
+    user = db.query(Users).filter(Users.mobile == mobile, Users.user_id != exclude_user_id).first()
+    return user is not None
+
+def update_user_email(db: Session, user_id: int, new_email: str) -> bool:
+    user = db.query(Users).filter(Users.user_id == user_id).first()
+    if user:
+        user.email = new_email
+        db.commit()
+        return True
+    return False
+
+def update_user_mobile(db: Session, user_id: int, new_mobile: str) -> bool:
+    user = db.query(Users).filter(Users.user_id == user_id).first()
+    if user:
+        user.mobile = new_mobile
+        db.commit()
+        return True
+    return False

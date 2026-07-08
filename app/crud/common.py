@@ -69,7 +69,8 @@ _STAGE_ENUM_TO_LABEL = {
     "interview": "Interview",
     "offer": "Offer",
     "offer_accepted": "Offer Accepted",
-    "onboarding": "Onboarding",
+    "onboarding": "Offer Accepted",
+    "onboarded": "Onboarded",
     "rejected": "Rejected",
 }
 
@@ -78,9 +79,13 @@ def compute_stage(app, has_interview: bool) -> str:
     from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus
 
     # 1. Deterministic definitive statuses take highest precedence
+    # If the candidate is marked onboarded in masset, they are Onboarded.
+    if app.masset_status and app.masset_status.lower() == 'onboarded':
+        return 'Onboarded'
+
     # If a candidate is synced to Masset, they are onboarding.
     if app.sync_masset:
-        return 'Onboarding'
+        return 'Offer Accepted'
         
     # If the candidate accepted the offer, they are in Offer Accepted stage.
     offer_status_val = app.offer_acceptance_status.value if hasattr(app.offer_acceptance_status, 'value') else str(app.offer_acceptance_status)

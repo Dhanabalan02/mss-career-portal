@@ -755,7 +755,7 @@ body>.sidebar:not(#portalSidebar) {
   position: fixed !important;
   right: 20px !important;
   bottom: 20px !important;
-  z-index: 2000 !important;
+  z-index: 99999 !important;
   max-width: min(340px, calc(100vw - 32px)) !important;
   background: #ffffff !important;
   color: #1e293b !important;
@@ -765,7 +765,7 @@ body>.sidebar:not(#portalSidebar) {
   font-size: 13px !important;
   font-weight: 600 !important;
   padding: 13px 18px !important;
-  border-left: 4px solid #16A34A !important; /* default success */
+  border-left: 4px solid #16A34A !important; 
   opacity: 0 !important;
   transform: translateY(10px) !important;
   pointer-events: none !important;
@@ -775,6 +775,7 @@ body>.sidebar:not(#portalSidebar) {
 .portal-toast.is-visible {
   opacity: 1 !important;
   transform: translateY(0) !important;
+  pointer-events: auto !important;
 }
 
 .portal-toast.success { border-left: 4px solid #16A34A !important; }

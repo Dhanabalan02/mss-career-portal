@@ -34,6 +34,10 @@ class InterviewService:
         interview_link_location: str,
     ) -> dict:
 
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
+
         formatted_to = normalize_whatsapp_number(to)
 
         label = "Meeting URL" if "online" in str(interview_mode).lower() else "Location"
@@ -151,6 +155,10 @@ class InterviewService:
         interview_link_location: str,
         rescheduled_reason: str,
     ) -> dict:
+
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
 
         formatted_to = normalize_whatsapp_number(to)
 
@@ -272,6 +280,10 @@ class InterviewService:
         cancel_reason: str,
     ) -> dict:
 
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
+
         formatted_to = normalize_whatsapp_number(to)
 
         payload = {
@@ -378,6 +390,10 @@ class InterviewService:
         interview_date_time: str,
         interview_link_location: str,
     ) -> dict:
+
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
 
         formatted_to = normalize_whatsapp_number(to)
 
@@ -496,6 +512,10 @@ class InterviewService:
         interview_link_location: str,
     ) -> dict:
 
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
+
         formatted_to = normalize_whatsapp_number(to)
 
         label = "Meeting URL" if "online" in str(interview_mode).lower() else "Location"
@@ -612,6 +632,10 @@ class InterviewService:
         cancel_reason: str,
     ) -> dict:
 
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
+
         formatted_to = normalize_whatsapp_number(to)
 
         payload = {
@@ -716,6 +740,10 @@ class InterviewService:
         status: str,
         description: str,
     ) -> dict:
+
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping notification.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
 
         formatted_to = normalize_whatsapp_number(to)
 

@@ -51,51 +51,89 @@ def _format_date(d) -> str:
 def build_dynamic_timeline(app, stage: str) -> list:
     applied_days = f"{_days_ago(app.created_at)} days ago" if app.created_at else "Recently"
     
-    stages = ['PreScreen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding']
+    stages = ['Prescreen Rejected', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded']
     try:
         current_idx = stages.index(stage)
     except ValueError:
         current_idx = 0
-        
-    tl = []
-    # 1. Applied
-    if current_idx >= 0:
-        s_status = 'done' if current_idx > 0 else 'current'
-        tl.append({'t': 'Application Received', 'd': applied_days, 's': s_status})
-    
-    # 2. Screened
-    if current_idx >= 1:
-        s_status = 'done' if current_idx > 1 else 'current'
-        tl.append({'t': 'Resume Screened', 'd': 'System Evaluated', 's': s_status})
-    elif current_idx == 0:
-        tl.append({'t': 'Resume Screening', 'd': 'Pending', 's': 'pending'})
-        
-    # 3. Interview
-    if current_idx >= 2:
-        s_status = 'done' if current_idx > 2 else 'current'
-        tl.append({'t': 'Interview Process', 'd': 'In Progress' if s_status == 'current' else 'Cleared', 's': s_status})
-    elif current_idx == 1:
-        tl.append({'t': 'Interview', 'd': 'Pending', 's': 'pending'})
 
-    # 4. Offer
-    if current_idx >= 3:
-        s_status = 'done' if current_idx > 3 else 'current'
-        tl.append({'t': 'Offer Extended', 'd': 'Sent to Candidate', 's': s_status})
+    is_onboarding = app.sync_masset == 1
+    is_onboarded = app.masset_status and app.masset_status.lower() == 'onboarded'
+
+    tl = []
+
+    # 1. Applied (Application Received)
+    s1 = 'done' if current_idx > 0 else 'current'
+    tl.append({'t': 'Application Received', 'd': applied_days, 's': s1, 'icon': 'ti-file-text'})
+
+    # 2. Screened (Resume Screened)
+    if current_idx > 1:
+        s2 = 'done'
+        d2 = 'System Evaluated'
+    elif current_idx == 1:
+        s2 = 'current'
+        d2 = 'System Evaluated'
+    else:
+        s2 = 'pending'
+        d2 = 'Pending'
+    tl.append({'t': 'Resume Screened', 'd': d2, 's': s2, 'icon': 'ti-shield-check'})
+
+    # 3. Interview (Interview Process)
+    if current_idx > 2:
+        s3 = 'done'
+        d3 = 'Cleared'
     elif current_idx == 2:
-        tl.append({'t': 'Offer Generation', 'd': 'Awaiting Decision', 's': 'pending'})
-        
-    # 5. Offer Accepted
-    if current_idx >= 4:
-        s_status = 'done' if current_idx > 4 else 'current'
-        tl.append({'t': 'Offer Accepted', 'd': 'Candidate Agreed', 's': s_status})
+        s3 = 'current'
+        d3 = 'In Progress'
+    else:
+        s3 = 'pending'
+        d3 = 'Pending'
+    tl.append({'t': 'Interview Process', 'd': d3, 's': s3, 'icon': 'ti-microphone-2'})
+
+    # 4. Offer (Offer Extended)
+    if current_idx > 3:
+        s4 = 'done'
+        d4 = 'Sent to Candidate'
     elif current_idx == 3:
-        tl.append({'t': 'Offer Acceptance', 'd': 'Awaiting Reply', 's': 'pending'})
-        
-    # 6. Onboarding
-    if current_idx >= 5:
-        tl.append({'t': 'Onboarding Initiated', 'd': 'In Progress', 's': 'current'})
+        s4 = 'current'
+        d4 = 'Sent to Candidate'
+    else:
+        s4 = 'pending'
+        d4 = 'Pending'
+    tl.append({'t': 'Offer Extended', 'd': d4, 's': s4, 'icon': 'ti-file-invoice'})
+
+    # 5. Offer Accepted
+    if current_idx > 4 or is_onboarding or is_onboarded:
+        s5 = 'done'
+        d5 = 'Candidate Agreed'
     elif current_idx == 4:
-        tl.append({'t': 'Onboarding', 'd': 'Upcoming', 's': 'pending'})
+        s5 = 'current'
+        d5 = 'Candidate Agreed'
+    else:
+        s5 = 'pending'
+        d5 = 'Pending'
+    tl.append({'t': 'Offer Accepted', 'd': d5, 's': s5, 'icon': 'ti-circle-check'})
+
+    # 6. Onboarding Initiated
+    if is_onboarded or is_onboarding:
+        s6 = 'done'
+        d6 = 'Completed'
+    else:
+        s6 = 'pending'
+        d6 = 'Pending'
+    tl.append({'t': 'Onboarding Initiated', 'd': d6, 's': s6, 'icon': 'ti-briefcase'})
+
+    # 7. Onboarding Completed
+    if is_onboarded:
+        s7 = 'done'
+        d7 = 'Joined Company'
+    elif is_onboarding:
+        s7 = 'current'
+        d7 = 'In Progress'
+    else:
+        s7 = 'pending'
+        d7 = 'Pending'
+    tl.append({'t': 'Onboarding Completed', 'd': d7, 's': s7, 'icon': 'ti-briefcase'})
 
     return tl
 
@@ -122,9 +160,10 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
         for e in exps:
             exps_map.setdefault(e.user_id, []).append(e)
 
-    # Batch-check which applicants have at least one interview
+    # Batch-check which applicants have at least one interview, and which have active interviews
     applicant_ids = [app.job_applicant_id for app, _, _, _ in rows]
     interviewed_ids: set[int] = set()
+    active_interview_ids: set[int] = set()
     if applicant_ids:
         result = (
             db.query(JobInterviewSchedule.job_applicant_id)
@@ -133,6 +172,16 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
             .all()
         )
         interviewed_ids = {r[0] for r in result}
+
+        from app.models.interview_schedule_model import InterviewStatus
+        active_result = (
+            db.query(JobInterviewSchedule.job_applicant_id)
+            .filter(JobInterviewSchedule.job_applicant_id.in_(applicant_ids))
+            .filter(JobInterviewSchedule.status.in_([InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]))
+            .distinct()
+            .all()
+        )
+        active_interview_ids = {r[0] for r in active_result}
 
     out = []
     for idx, (app, user, meta, job) in enumerate(rows):
@@ -165,6 +214,9 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
             "skills": skills,
             "color": color,
             "timeline": build_dynamic_timeline(app, stage),
+            "sync_masset": app.sync_masset,
+            "applicant_job_status": app.applicant_job_status,
+            "has_active_interview": app.job_applicant_id in active_interview_ids,
         })
     return out
 
@@ -205,6 +257,12 @@ _STAGE_TO_FIELDS = {
         'offer_acceptance_status': OfferAcceptanceStatus.ACCEPTED,
         'sync_masset': 1,
     },
+    'Hold': {
+        'applicant_job_status': ApplicantJobStatus.HOLD,
+    },
+    'Reject': {
+        'applicant_job_status': ApplicantJobStatus.REJECTED,
+    },
 }
 
 
@@ -227,6 +285,29 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
     app_record, job = row
     if not _is_hr_role(db, admin_id) and job.job_posted_by != admin_id:
         raise HTTPException(status_code=403, detail="Access denied")
+
+    # If the action is Hold or Reject, handle latest interview schedule and remarks
+    if stage in ("Hold", "Reject"):
+        from app.models.interview_schedule_model import JobInterviewSchedule, InterviewStatus
+        latest_interview = (
+            db.query(JobInterviewSchedule)
+            .filter(JobInterviewSchedule.job_applicant_id == applicant_id)
+            .order_by(JobInterviewSchedule.job_interview_id.desc())
+            .first()
+        )
+        if latest_interview:
+            latest_interview.status = InterviewStatus.COMPLETED
+            
+            from app.models.interview_remarks_model import InterviewRemark, ApplicantStatus
+            new_status = ApplicantStatus.HOLD if stage == "Hold" else ApplicantStatus.REJECTED
+            new_remark = InterviewRemark(
+                job_interview_id=latest_interview.job_interview_id,
+                round=latest_interview.interview_round or "General",
+                remarks=remarks or f"Candidate put on {stage.lower()}",
+                applicant_status=new_status,
+                created_by=admin_id
+            )
+            db.add(new_remark)
 
     if (app_record.applicant_stage in (ApplicantStage.OFFER, ApplicantStage.OFFER_ACCEPTED)) and stage == "Interview":
         # Find the latest interview schedule for this applicant

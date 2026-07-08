@@ -632,7 +632,9 @@ def get_applicant_detail_route(
             "interview": "Interview",
             "offer": "Offer",
             "offer_accepted": "Offer Accepted",
-            "onboarding": "Onboarding"
+            "onboarding": "Onboarding",
+            "onboarded": "Onboarded",
+            "rejected": "Rejected",
         }
         stage_val = stage_map.get(app.applicant_stage.value, "Applied")
         
@@ -642,16 +644,19 @@ def get_applicant_detail_route(
         interview_status = "Rejected"
     elif app.sync_masset == 1:
         stage_val = "Onboarding"
-        interview_status = "Synced to MASSET"
+        interview_status = "Selected"
+    elif app.issue_appointment_order == 1:
+        stage_val = "Onboarded"
+        interview_status = "Selected"
     elif app.offer_acceptance_status == "accepted":
         stage_val = "Offer Accepted"
-        interview_status = "Offer Accepted"
+        interview_status = "Selected"
     elif app.offer_acceptance_status == "expired":
         stage_val = "Offer"
-        interview_status = "Offer Expired"
+        interview_status = "Rejected"
     elif app.issue_offer == 1 or app.offer_letter_doc:
         stage_val = "Offer"
-        interview_status = "Offer Sent"
+        interview_status = "Selected"
     elif len(interviews) > 0:
         stage_val = "Interview"
         latest_int = interviews[0]
@@ -898,6 +903,7 @@ def get_applicant_detail_route(
         "offer": _fmt_date(app.offer_issued_date),
         "offer_accepted": _fmt_date(app.offer_accepted_on),
         "onboarding": _fmt_date(app.masset_sync_success_on),
+        "onboarded": _fmt_date(app.masset_synced_at) if app.masset_status == 'onboarded' else "",
     }
 
     return {
@@ -928,6 +934,7 @@ def get_applicant_detail_route(
         "massetDetails": {
             "masset_employee_id": app.masset_employee_id or "",
             "masset_status": app.masset_status or "",
+            "issue_appointment_order": app.issue_appointment_order or 0,
             "masset_synced_at": (
                 app.masset_synced_at.strftime("%d-%m-%y %H:%M")
                 if hasattr(app.masset_synced_at, "strftime")
@@ -1473,21 +1480,19 @@ def get_dashboard_recent_applicants(
         has_interview = app.job_applicant_id in interviewed
         if app.sync_masset == 1:
             stage = "Onboarding"
-            interview_status = "Synced to MASSET"
+            interview_status = "Selected"
         elif app.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED:
             stage = "Offer Accepted"
-            interview_status = "Offer Accepted"
+            interview_status = "Selected"
         elif app.offer_acceptance_status in (
             OfferAcceptanceStatus.EXPIRED,
             OfferAcceptanceStatus.REJECTED,
         ):
             stage = "Offer"
-            interview_status = "Offer " + (
-                app.offer_acceptance_status.value.capitalize()
-            )
+            interview_status = "Rejected"
         elif app.issue_offer == 1:
             stage = "Offer"
-            interview_status = "Offer Sent"
+            interview_status = "Selected"
         elif has_interview:
             stage = "Interview"
             iv = latest_iv[app.job_applicant_id]

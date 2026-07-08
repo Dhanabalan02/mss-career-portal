@@ -71,6 +71,7 @@ def schedule_interview(
     applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_applicant_id).first()
     if applicant:
         applicant.applicant_stage = ApplicantStage.INTERVIEW
+        applicant.applicant_job_status = None
         db.commit()
 
     logger.info(f"Interview scheduled: id={job_interview.job_interview_id} for applicant={job_applicant_id}")

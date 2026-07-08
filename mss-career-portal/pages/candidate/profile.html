@@ -1226,12 +1226,18 @@
               </div>
               <div>
                 <label class="cp-field-label">Email <span style="color:var(--cp-red)">*</span></label>
-                <input type="email" id="pfEmail" placeholder="Email address" readonly />
+                <div style="position:relative;">
+                  <input type="email" id="pfEmail" placeholder="Email address" readonly style="padding-right: 35px;"/>
+                  <button type="button" onclick="openUpdateModal('email')" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text3);"><i class="fa-solid fa-pencil"></i></button>
+                </div>
                 <span class="cp-field-error" id="err-pfEmail"></span>
               </div>
               <div>
                 <label class="cp-field-label">Mobile <span style="color:var(--cp-red)">*</span></label>
-                <input type="tel" id="pfMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric" readonly />
+                <div style="position:relative;">
+                  <input type="tel" id="pfMobile" placeholder="10-digit number" maxlength="10" inputmode="numeric" style="padding-right: 35px;" />
+                  <button type="button" onclick="openUpdateModal('mobile')" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text3);"><i class="fa-solid fa-pencil"></i></button>
+                </div>
                 <span class="cp-field-error" id="err-pfMobile"></span>
               </div>
               <div>
@@ -1927,7 +1933,11 @@
       document.getElementById('pfEmail').value = data.email || '';
       document.getElementById('pfEmail').readOnly = true;
       document.getElementById('pfMobile').value = data.mobile || '';
-      document.getElementById('pfMobile').readOnly = true;
+      if (data.mobile) {
+        document.getElementById('pfMobile').readOnly = true;
+      } else {
+        document.getElementById('pfMobile').readOnly = false;
+      }
       if (data.gender) document.getElementById('pfGender').value = data.gender;
       
       // 2. Metadata details
@@ -2448,7 +2458,197 @@
         }
       });
     });
-  </script>
+    </script>
+
+    <!-- UPDATE MODAL FOR EMAIL/MOBILE -->
+    <div id="updateModalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+      <div style="background:var(--cp-surface); border-radius:12px; width:400px; max-width:90%; padding:24px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="margin:0; font-size:18px; color:var(--cp-text);" id="updateModalTitle">Update</h3>
+          <button onclick="closeUpdateModal()" style="background:none; border:none; font-size:20px; cursor:pointer; color:var(--cp-subtle);">&times;</button>
+        </div>
+        
+        <div id="step1">
+          <label class="cp-field-label" id="updateModalLabel">New Value</label>
+          <input type="text" id="updateModalInput" style="width:100%; padding:10px; border:1px solid var(--cp-border); border-radius:6px; margin-bottom:16px; font-size:14px; background:var(--cp-surface); color:var(--cp-text);" />
+          <button id="updateSendOtpBtn" onclick="sendUpdateOtp()" style="width:100%; background:var(--cp-accent); color:#fff; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:500;">Send OTP</button>
+        </div>
+        
+        <div id="step2" style="display:none;">
+          <p style="font-size:14px; color:var(--cp-muted); margin-bottom:16px;" id="otpMessage"></p>
+          <input type="text" id="updateModalOtp" placeholder="4-digit OTP" maxlength="4" inputmode="numeric" style="width:100%; padding:10px; border:1px solid var(--cp-border); border-radius:6px; margin-bottom:16px; font-size:14px; text-align:center; letter-spacing:4px; background:var(--cp-surface); color:var(--cp-text);" />
+          <button id="updateVerifyOtpBtn" onclick="verifyUpdateOtp()" style="width:100%; background:var(--cp-green); color:#fff; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:500; margin-bottom:8px;">Verify OTP</button>
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+            <button id="updateResendOtpBtn" onclick="sendUpdateOtp()" style="background:none; border:none; color:var(--cp-accent); cursor:pointer; font-size:14px;" disabled>Resend OTP (60s)</button>
+            <button onclick="changeUpdateValue()" style="background:none; border:none; color:var(--cp-subtle); cursor:pointer; font-size:14px; text-decoration:underline;">Change <span id="updateModalTypeDisplay"></span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentUpdateType = '';
+      let updateTimer = null;
+      let updateTimeLeft = 60;
+      
+      function openUpdateModal(type) {
+        currentUpdateType = type;
+        document.getElementById('updateModalTitle').innerText = type === 'email' ? 'Update Email Address' : 'Update Mobile Number';
+        document.getElementById('updateModalLabel').innerText = type === 'email' ? 'New Email Address' : 'New 10-digit Mobile Number';
+        
+        const input = document.getElementById('updateModalInput');
+        input.type = type === 'email' ? 'email' : 'tel';
+        input.value = '';
+        input.placeholder = type === 'email' ? 'Enter new email' : 'Enter new mobile number';
+        if (type === 'mobile') input.maxLength = 10;
+        else input.removeAttribute('maxlength');
+        
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('updateModalTypeDisplay').innerText = type === 'email' ? 'Email' : 'Mobile';
+        document.getElementById('updateModalOverlay').style.display = 'flex';
+      }
+      
+      function closeUpdateModal() {
+        document.getElementById('updateModalOverlay').style.display = 'none';
+        if (updateTimer) clearInterval(updateTimer);
+      }
+      
+      function changeUpdateValue() {
+        document.getElementById('step1').style.display = 'block';
+        document.getElementById('step2').style.display = 'none';
+        if (updateTimer) clearInterval(updateTimer);
+      }
+      
+      function startResendTimer() {
+        const resendBtn = document.getElementById('updateResendOtpBtn');
+        updateTimeLeft = 60;
+        resendBtn.disabled = true;
+        
+        if (updateTimer) clearInterval(updateTimer);
+        updateTimer = setInterval(() => {
+          updateTimeLeft--;
+          if (updateTimeLeft <= 0) {
+            clearInterval(updateTimer);
+            resendBtn.innerText = 'Resend OTP';
+            resendBtn.disabled = false;
+          } else {
+            resendBtn.innerText = `Resend OTP (${updateTimeLeft}s)`;
+          }
+        }, 1000);
+      }
+      
+      async function sendUpdateOtp() {
+        const val = document.getElementById('updateModalInput').value.trim();
+        if (!val) {
+          showToast(`Please enter a valid ${currentUpdateType}.`, 'danger');
+          return;
+        }
+        
+        if (currentUpdateType === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          showToast('Invalid email address.', 'danger');
+          return;
+        }
+        if (currentUpdateType === 'mobile' && !/^\d{10}$/.test(val)) {
+          showToast('Invalid mobile number.', 'danger');
+          return;
+        }
+        
+        const currentVal = document.getElementById(currentUpdateType === 'email' ? 'pfEmail' : 'pfMobile').value.trim();
+        if (val === currentVal) {
+          showToast(`This is already your current ${currentUpdateType}.`, 'warning');
+          return;
+        }
+        
+        const btn = document.getElementById('updateSendOtpBtn');
+        const resendBtn = document.getElementById('updateResendOtpBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        resendBtn.disabled = true;
+        
+        try {
+          const apiBase = window.AUTH_API_BASE;
+          const token = localStorage.getItem('access_token');
+          const payload = currentUpdateType === 'email' ? { email: val } : { mobile: val };
+          
+          const res = await fetch(`${apiBase}/auth/candidate/profile/update-${currentUpdateType}/send-otp`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          const data = await res.json();
+          btn.disabled = false;
+          btn.innerText = 'Send OTP';
+          
+          if (!res.ok) throw new Error(data.detail || 'Failed to send OTP');
+          
+          document.getElementById('otpMessage').innerText = currentUpdateType === 'email' 
+            ? "We've sent a 4-digit verification code to your email address. Please verify to continue."
+            : "We've sent a 4-digit verification code to your mobile number. Please verify to continue.";
+            
+          document.getElementById('step1').style.display = 'none';
+          document.getElementById('step2').style.display = 'block';
+          document.getElementById('updateModalOtp').value = '';
+          startResendTimer();
+          
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerText = 'Send OTP';
+          resendBtn.disabled = false;
+          showToast(err.message, 'danger');
+        }
+      }
+      
+      async function verifyUpdateOtp() {
+        const val = document.getElementById('updateModalInput').value.trim();
+        const otpVal = document.getElementById('updateModalOtp').value.trim();
+        if (!otpVal) {
+          showToast('Please enter the OTP.', 'danger');
+          return;
+        }
+        
+        const btn = document.getElementById('updateVerifyOtpBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Verifying...';
+        
+        try {
+          const apiBase = window.AUTH_API_BASE;
+          const token = localStorage.getItem('access_token');
+          const payload = currentUpdateType === 'email' ? { email: val, otp: parseInt(otpVal) } : { mobile: val, otp: parseInt(otpVal) };
+          
+          const res = await fetch(`${apiBase}/auth/candidate/profile/update-${currentUpdateType}/verify-otp`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(payload)
+          });
+          
+          const data = await res.json();
+          btn.disabled = false;
+          btn.innerText = 'Verify OTP';
+          
+          if (!res.ok) throw new Error(data.detail || 'Failed to verify OTP');
+          
+          showToast(data.message || `${currentUpdateType.charAt(0).toUpperCase() + currentUpdateType.slice(1)} updated successfully!`, 'success');
+          closeUpdateModal();
+          
+          // Refresh profile data
+          loadCandidateProfile();
+          
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerText = 'Verify OTP';
+          showToast(err.message, 'danger');
+        }
+      }
+    </script>
 </body>
 
 </html>

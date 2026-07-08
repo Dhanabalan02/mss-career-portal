@@ -13,6 +13,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     WHATSAPP_API_KEY: Optional[str] = None
     OLLAMA_API_KEY: Optional[str] = None
+    
+    # Feature Flags
+    ENABLE_EXTERNAL_SERVICES: bool = False
 
     # Google OAuth Settings
     GOOGLE_CLIENT_ID: Optional[str] = None
@@ -30,6 +33,11 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: int
     DB_NAME: str
+    
+    SMTP_SERVER: str
+    SMTP_PORT: int
+    SENDER_EMAIL: str
+    SENDER_PASSWORD: str
 
     # Computed Property for MySQL URL
     @property

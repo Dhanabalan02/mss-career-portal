@@ -1697,6 +1697,7 @@
         if (res.ok) {
           const units = await res.json();
           const schoolFilter = document.getElementById('schoolFilter');
+          units.sort((a, b) => a.unit_name.localeCompare(b.unit_name));
           units.forEach(u => {
             const opt = document.createElement('option');
             opt.value = u.unit_name;

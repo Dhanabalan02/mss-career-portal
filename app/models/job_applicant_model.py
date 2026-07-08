@@ -9,7 +9,6 @@ from app.models.base import Base
 
 if TYPE_CHECKING:
     from app.models.interview_schedule_model import JobInterviewSchedule
-    from app.models.job_post_model import JobPost
     from app.models.user_model import Users
 
 
@@ -19,13 +18,11 @@ class ApplicantJobStatus(str, PyEnum):
     REJECTED = "rejected"
     HOLD = "hold"
 
-
 class OfferAcceptanceStatus(str, PyEnum):
     PENDING = "pending"
     ACCEPTED = "accepted"
     EXPIRED = "expired"
     REJECTED = "rejected"
-
 
 class ApplicantStage(str, PyEnum):
     PRESCREEN_REJECT = "prescreen-reject"
@@ -34,7 +31,8 @@ class ApplicantStage(str, PyEnum):
     OFFER = "offer"
     OFFER_ACCEPTED = "offer_accepted"
     ONBOARDING = "onboarding"
-
+    ONBOARDING_COMPLETED = "onboarded"
+    REJECTED = "rejected"
 
 class JobApplicant(Base):
     __tablename__ = "job_applicants"

@@ -32,6 +32,10 @@ class OfferService:
         filename: str = "Offer_Letter.pdf",
     ) -> dict:
 
+        if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
+            logger.info("External services disabled. Skipping offer generation.")
+            return {"success": True, "http_code": 200, "response": "Service disabled"}
+
         formatted_to = normalize_whatsapp_number(to)
 
         payload = {

@@ -152,8 +152,6 @@ def schedule_interview_route(
     db: Session = Depends(get_db),
     admin_id: int = Depends(get_current_admin_id)
 ):
-    """Schedules a new interview round for a job applicant."""
-    # Parse scheduled_at — strip trailing Z / offset for naive datetime
     scheduled_at_str = form_data.scheduled_at.replace("Z", "+00:00")
     end_time_at_str = form_data.end_time_at.replace("Z", "+00:00")
     try:
