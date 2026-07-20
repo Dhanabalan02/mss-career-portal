@@ -147,7 +147,13 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
     if not _is_hr_role(db, admin_id):
         query = query.filter(JobPost.job_posted_by == admin_id)
     rows = (
-        query.filter(or_(JobApplicant.applicant_job_status != ApplicantJobStatus.REJECTED, JobApplicant.applicant_job_status.is_(None)))
+        query.filter(
+            or_(
+                JobApplicant.applicant_job_status != ApplicantJobStatus.REJECTED,
+                JobApplicant.applicant_job_status.is_(None),
+                JobApplicant.applicant_stage == ApplicantStage.PRESCREEN_REJECT
+            )
+        )
         .order_by(JobApplicant.created_at.desc())
         .all()
     )

@@ -957,9 +957,6 @@
           subtitle.textContent = `${data.stats.total} total candidates across all positions`;
         }
 
-        // The backend now guarantees properly cased stage strings, 
-        // so no frontend normalization is needed.
-
         // Render stage chips
         renderStageChips(data.chips);
 
@@ -1095,7 +1092,7 @@
           <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); localStorage.setItem('candidateId', '${c.id}'); location.href='/mss-career-portal/hr/candidate-profile?name=' + encodeURIComponent('${c.name}') + '&job_title=' + encodeURIComponent('${c.job}')">
               <i class="ti ti-user"></i>
           </button>
-          ${(showActions && (c.stage === 'Screened' || c.stage === 'Next Round') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
+          ${(showActions && (c.stage === 'Screened' || c.interviewStatus === 'Next Round') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
           ${canAction ? `<button class="action-btn red" title="Reject Candidate" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')"><i class="ti ti-x"></i></button>` : ''}
         </div>
       </td>`;

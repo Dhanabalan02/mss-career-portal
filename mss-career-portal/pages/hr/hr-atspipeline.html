@@ -2637,7 +2637,8 @@
         if (targetStage === "Prescreen Rejected") return false;
         if (
           currentStage === "Prescreen Rejected" &&
-          targetStage !== "Interview"
+          targetStage !== "Interview" &&
+          targetStage !== "Screened"
         )
           return false;
         if (

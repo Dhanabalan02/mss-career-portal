@@ -1095,6 +1095,17 @@
 
     /* ── DATA ────────────────────────────────────────────────────── */
     let JOBS = [];
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
+    
+    function goToPage(pageNum, totalPages) {
+      if (pageNum < 1 || pageNum > totalPages) return;
+      currentPageNum = pageNum;
+      const startIndex = (currentPageNum - 1) * itemsPerPage;
+      const paginatedJobs = JOBS.slice(startIndex, startIndex + itemsPerPage);
+      renderJobs(paginatedJobs);
+      buildPagination(JOBS.length, itemsPerPage);
+    }
 
     const STATUS_META = {
       Active: { badge: 'badge-green', dot: '#3B6D11' },
@@ -1288,8 +1299,8 @@
         }
       } catch (e) { console.error('Error loading jobs:', e); }
       recalcJobStats();
-      renderJobs(JOBS);
-      buildPagination(JOBS.length, 10);
+      const totalPages = Math.ceil(JOBS.length / itemsPerPage) || 1;
+      goToPage(1, totalPages);
     }
     loadJobs();
   </script>

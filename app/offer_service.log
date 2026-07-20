@@ -1,0 +1,9 @@
+[2026-07-20 11:03:30] INFO in school_admin_route: Initiating WhatsApp OfferService for candidate_id=9
+[2026-07-20 11:03:30] INFO in school_admin_route: Candidate phone resolved to: 6374757014
+[2026-07-20 11:03:30] INFO in school_admin_route: Offer document URL: https://stagecareer.themadrassevasadan.org/uploads/offer/offer_1_1784525610.html, Job Title: Maths
+[2026-07-20 11:03:30] INFO in offer_service: [OFFER] issue_offer called with to=6374757014, candidate_name=Ramesh, job_title=Maths, document_url=https://stagecareer.themadrassevasadan.org/uploads/offer/offer_1_1784525610.html, filename=Offer_Letter.pdf
+[2026-07-20 11:03:30] INFO in offer_service: [OFFER] Normalized WhatsApp number: +916374757014 (original: 6374757014)
+[2026-07-20 11:03:30] INFO in offer_service: [OFFER] Sending offer letter to=+916374757014 job=Maths
+[2026-07-20 11:03:31] INFO in offer_service: [OFFER] Sent successfully status=200 body={'id': '9383f1a4-8259-4147-92d7-3779268f27f0'}
+[2026-07-20 11:03:31] INFO in school_admin_route: OfferService response for candidate_id=9: {'success': True, 'http_code': 200, 'response': {'id': '9383f1a4-8259-4147-92d7-3779268f27f0'}}
+[2026-07-20 11:03:31] INFO in school_admin_route: OfferService().issue_offer executed successfully

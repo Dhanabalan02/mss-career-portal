@@ -1,9 +1,7 @@
 import re
-import logging
 import requests
 from app.core.config import settings
-
-logger = logging.getLogger(__name__)
+from app.core.logger import offer_logger
 
 
 def normalize_whatsapp_number(mobile: str) -> str:
@@ -27,16 +25,19 @@ class OfferService:
     def issue_offer(
         self,
         to: str,
+        candidate_name: str,
         job_title: str,
         document_url: str,
         filename: str = "Offer_Letter.pdf",
     ) -> dict:
+        offer_logger.info(f"[OFFER] issue_offer called with to={to}, candidate_name={candidate_name}, job_title={job_title}, document_url={document_url}, filename={filename}")
 
         if getattr(settings, "ENABLE_EXTERNAL_SERVICES", True) is False:
-            logger.info("External services disabled. Skipping offer generation.")
+            offer_logger.info("[OFFER] External services disabled. Skipping offer generation.")
             return {"success": True, "http_code": 200, "response": "Service disabled"}
 
         formatted_to = normalize_whatsapp_number(to)
+        offer_logger.info(f"[OFFER] Normalized WhatsApp number: {formatted_to} (original: {to})")
 
         payload = {
             "to": formatted_to,
@@ -64,21 +65,13 @@ class OfferService:
                         "parameters": [
                             {
                                 "type": "text",
-                                "text": job_title
+                                "text": candidate_name  # Maps to {{1}}
+                            },
+                            {
+                                "type": "text",
+                                "text": job_title       # Maps to {{2}}
                             }
                         ]
-                    },
-                    {
-                        "type": "button",
-                        "sub_type": "quick_reply",
-                        "index": "0",
-                        "parameters": []
-                    },
-                    {
-                        "type": "button",
-                        "sub_type": "quick_reply",
-                        "index": "1",
-                        "parameters": []
                     }
                 ]
             }
@@ -89,13 +82,13 @@ class OfferService:
             "Content-Type": "application/json"
         }
 
-        logger.info(
+        offer_logger.info(
             "[OFFER] Sending offer letter to=%s job=%s",
             formatted_to,
             job_title
         )
 
-        logger.debug("[OFFER] Payload: %s", payload)
+        offer_logger.debug("[OFFER] Payload: %s", payload)
 
         try:
             response = requests.post(
@@ -113,13 +106,13 @@ class OfferService:
             success = 200 <= response.status_code < 300
 
             if success:
-                logger.info(
+                offer_logger.info(
                     "[OFFER] Sent successfully status=%s body=%s",
                     response.status_code,
                     body
                 )
             else:
-                logger.error(
+                offer_logger.error(
                     "[OFFER] Failed status=%s body=%s",
                     response.status_code,
                     body
@@ -132,7 +125,7 @@ class OfferService:
             }
 
         except requests.exceptions.RequestException as e:
-            logger.exception("[OFFER] Request exception: %s", e)
+            offer_logger.exception("[OFFER] Request exception: %s", e)
 
             return {
                 "success": False,

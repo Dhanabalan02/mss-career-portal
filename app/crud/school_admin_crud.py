@@ -505,7 +505,34 @@ def issue_offer(db: Session, admin_id: int, applicant_id: int, payload: dict) ->
     app.offer_template = payload.get("offer_template", "standard")
     
     if "offer_letter_doc" in payload and payload["offer_letter_doc"]:
-        app.offer_letter_doc = payload["offer_letter_doc"]
+        doc_data = payload["offer_letter_doc"]
+        app.offer_letter_doc = doc_data
+        
+        import os
+        import base64
+        import time
+        try:
+            upload_dir = os.path.join("app", "uploads", "offer")
+            os.makedirs(upload_dir, exist_ok=True)
+            filename = f"offer_{applicant_id}_{int(time.time())}"
+            
+            if doc_data.startswith("data:"):
+                header, encoded = doc_data.split(",", 1)
+                ext = ".pdf" if "pdf" in header.lower() else ".html"
+                filepath = os.path.join(upload_dir, filename + ext)
+                with open(filepath, "wb") as f:
+                    f.write(base64.b64decode(encoded))
+                app.offer_letter_doc_path = f"/uploads/offer/{filename}{ext}"
+            elif doc_data.startswith("http://") or doc_data.startswith("https://"):
+                app.offer_letter_doc_path = doc_data
+            else:
+                filepath = os.path.join(upload_dir, filename + ".html")
+                with open(filepath, "w", encoding="utf-8") as f:
+                    f.write(doc_data)
+                app.offer_letter_doc_path = f"/uploads/offer/{filename}.html"
+        except Exception as e:
+            from app.core.logger import logger
+            logger.error(f"Error saving offer letter document for applicant {applicant_id}: {e}")
         
     app.issued_by = admin_id
     app.offer_acceptance_status = OfferAcceptanceStatus.PENDING

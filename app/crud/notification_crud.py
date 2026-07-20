@@ -173,3 +173,38 @@ def notify_hr_users(
         
     return sent_count
 
+
+def notify_school_admins(
+    db: Session,
+    title: str,
+    message: str,
+    notification_type: str = "general",
+    sender_user_id: int = None,
+    sender_type: str = None
+) -> int:
+    """
+    Send an in-app notification to all active school admins.
+    """
+    from app.models.admin_model import Admins
+    from app.models.user_roles_model import UserRoles
+    
+    school_admins = db.query(Admins).join(UserRoles).filter(
+        UserRoles.role_name == "school_admin",
+        Admins.is_active == 1
+    ).all()
+    
+    sent_count = 0
+    for admin in school_admins:
+        create_notification(
+            db=db,
+            recipient_user_id=admin.admin_id,
+            recipient_type="schoolAdmin",
+            title=title,
+            message=message,
+            notification_type=notification_type,
+            sender_user_id=sender_user_id,
+            sender_type=sender_type
+        )
+        sent_count += 1
+        
+    return sent_count

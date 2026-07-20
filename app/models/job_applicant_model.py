@@ -63,6 +63,7 @@ class JobApplicant(Base):
     probation_period: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
     issue_offer: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)
     offer_letter_doc: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    offer_letter_doc_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     issued_by: Mapped[Optional[int]] = mapped_column(ForeignKey("admins.admin_id"), nullable=True)
     offer_acceptance_status: Mapped[Optional[OfferAcceptanceStatus]] = mapped_column(
         Enum(OfferAcceptanceStatus, name="offer_acceptance_status_enum",

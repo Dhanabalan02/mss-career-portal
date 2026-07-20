@@ -560,6 +560,18 @@ const _token = () => localStorage.getItem('access_token') || '';
 
 /* ── Candidate data (merged from original source) ── */
 let CANDIDATES = [];
+let CURRENT_LIST = [];
+let currentPageNum = 1;
+const itemsPerPage = 10;
+
+function goToPage(pageNum, totalPages) {
+  if (pageNum < 1 || pageNum > totalPages) return;
+  currentPageNum = pageNum;
+  const startIndex = (currentPageNum - 1) * itemsPerPage;
+  const paginatedList = CURRENT_LIST.slice(startIndex, startIndex + itemsPerPage);
+  renderApplicants(paginatedList);
+  buildPagination(CURRENT_LIST.length, itemsPerPage);
+}
 
 /* ── Stage chip config ── */
 let STAGE_CONFIG = [
@@ -669,8 +681,7 @@ function renderApplicants(list) {
       </td>`;
     tbody.appendChild(tr);
   });
-  document.getElementById('resultCount').textContent = `${list.length} candidate${list.length !== 1 ? 's' : ''}`;
-  if (typeof buildPagination === 'function') buildPagination(list.length);
+  document.getElementById('resultCount').textContent = `${CURRENT_LIST.length} candidate${CURRENT_LIST.length !== 1 ? 's' : ''}`;
 }
 
 /* ── Filter ── */
@@ -678,12 +689,14 @@ function filterApplicants() {
   const q     = document.getElementById('searchInput').value.toLowerCase();
   const job   = document.getElementById('fJob').value;
   const stage = document.getElementById('fStage').value || activeStageFilter;
-  const list  = CANDIDATES.filter(c =>
+  CURRENT_LIST = CANDIDATES.filter(c =>
     (!q     || c.name.toLowerCase().includes(q) || c.job.toLowerCase().includes(q)) &&
     (!job   || c.job === job) &&
     (!stage || c.stage === stage)
   );
-  renderApplicants(list);
+  currentPageNum = 1;
+  const totalPages = Math.ceil(CURRENT_LIST.length / itemsPerPage) || 1;
+  goToPage(1, totalPages);
 }
 
 /* ── Select all ── */
@@ -823,7 +836,10 @@ async function loadApplicants() {
       fJob.innerHTML = '<option value="" disabled selected>No Job posts</option>';
     }
   }
-  renderApplicants(CANDIDATES);
+  CURRENT_LIST = [...CANDIDATES];
+  currentPageNum = 1;
+  const totalPages = Math.ceil(CURRENT_LIST.length / itemsPerPage) || 1;
+  goToPage(1, totalPages);
 }
 
 /* ── Pagination ── */
