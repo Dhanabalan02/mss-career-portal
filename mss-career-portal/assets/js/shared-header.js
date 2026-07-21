@@ -1297,28 +1297,19 @@ window.fpUpdatePassword = async function () {
   function validatePhoneField(input) {
     const $input = $(input);
     const val = $input.val().trim();
-    const hasLetters = /[a-zA-Z]/.test(val);
     const $container = $input.closest('.mss-modal-field');
     const $insertAfterTarget = $container.length > 0 ? $container : $input;
 
     let $feedback = $insertAfterTarget.next('.invalid-feedback');
-    if ($feedback.length === 0) {
-      $insertAfterTarget.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem;">Mobile number can only contain digits.</div>');
-      $feedback = $insertAfterTarget.next('.invalid-feedback');
-    }
 
     if (val === '') {
       $input.removeClass('is-invalid is-valid');
       $container.removeClass('is-invalid is-valid');
-      $feedback.hide();
-    } else if (!hasLetters && val.length >= 7) {
+      if ($feedback.length) $feedback.hide();
+    } else {
       $input.removeClass('is-invalid').addClass('is-valid');
       $container.removeClass('is-invalid').addClass('is-valid');
-      $feedback.hide();
-    } else {
-      $input.removeClass('is-valid').addClass('is-invalid');
-      $container.removeClass('is-valid').addClass('is-invalid');
-      $feedback.show();
+      if ($feedback.length) $feedback.hide();
     }
   }
 
