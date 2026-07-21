@@ -1290,6 +1290,43 @@
   </div>
 </div>
 
+<!-- ALUMNI MODAL -->
+<div class="modal fade" id="alumniModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 500px; margin: 1.5rem auto">
+    <div class="modal-content border-0" style="border-radius: 24px; overflow: hidden; box-shadow: 0 40px 80px rgba(30, 64, 175, 0.2);">
+      <div class="modal-body p-4 p-lg-5 text-center" style="background: #fff; position: relative">
+        <h4 style="font-family: 'Rubik', sans-serif; font-weight: 700; color: #0f172a; font-size: 1.4rem; margin-bottom: 0.5rem;">
+          Welcome to The Madras Seva Sadan!!
+        </h4>
+        <p style="font-family: 'Rubik', sans-serif; color: #94a3b8; font-size: 0.95rem; margin-bottom: 1.5rem;">
+          Are you an alumni of our school?
+        </p>
+        <div class="d-flex justify-content-center gap-3 mb-3">
+          <button type="button" class="mss-submit flex-fill" id="alumniBtnYes" style="background: linear-gradient(135deg, #cc8cfc, #7b2cbf); border: none; border-radius: 12px; color: #fff; padding: 0.8rem; font-family: 'Rubik', sans-serif; font-weight: 700;">Yes</button>
+          <button type="button" class="mss-submit flex-fill" id="alumniBtnNo" style="background: #e2e8f0; border: none; border-radius: 12px; color: #475569; padding: 0.8rem; font-family: 'Rubik', sans-serif; font-weight: 700;">No</button>
+        </div>
+        
+        <div id="alumniSchoolDropdown" style="display: none; text-align: left; margin-top: 1rem;">
+          <label class="mss-label" style="display: block; font-family: 'Rubik', sans-serif; font-size: 0.73rem; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Select Your School</label>
+          <div class="mss-modal-field mb-3" style="display: flex; align-items: center; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; height: 48px; padding: 0 10px;">
+            <select class="form-select border-0 bg-transparent w-100" id="alumniSchoolSelect" style="font-family: 'Rubik', sans-serif; font-size: 0.9rem; color: #0f172a; outline: none; box-shadow: none; cursor: pointer; height: 100%;">
+              <option value="" disabled selected>Choose a school...</option>
+              <option value="Lady Andal School IB">Lady Andal School IB</option>
+              <option value="Sir Mutha School, Chetpet">Sir Mutha School, Chetpet</option>
+              <option value="Sir & Lady M. Venkatasubba Rao School, Tambaram">Sir & Lady M. Venkatasubba Rao School, Tambaram</option>
+              <option value="Lady Andal Open School">Lady Andal Open School</option>
+              <option value="The Madras Seva Sadan Higher Secondary School">The Madras Seva Sadan Higher Secondary School</option>
+            </select>
+          </div>
+          <button type="button" class="mss-submit w-100" id="alumniBtnSubmit" style="background: linear-gradient(135deg, #cc8cfc, #7b2cbf); border: none; border-radius: 12px; color: #fff; padding: 0.8rem; font-family: 'Rubik', sans-serif; font-weight: 700;">
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // Show Login Modal
   document

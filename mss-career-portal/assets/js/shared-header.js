@@ -139,14 +139,13 @@
 
       var modalHost = getModalHost();
 
-      // Replace modals atomically: clear any previously injected fragments
-      // so we never end up with partial/duplicated modal markup.
       removeModalsById('candidateLoginModal');
       removeModalsById('candidateRegisterModal');
-      dedupeModals(['candidateLoginModal', 'candidateRegisterModal']);
+      removeModalsById('alumniModal');
+      dedupeModals(['candidateLoginModal', 'candidateRegisterModal', 'alumniModal']);
 
       // Import only the modals we care about.
-      ['candidateLoginModal', 'candidateRegisterModal'].forEach(function (modalId) {
+      ['candidateLoginModal', 'candidateRegisterModal', 'alumniModal'].forEach(function (modalId) {
         var modal = doc.getElementById(modalId);
         if (!modal) return;
         var clonedModal = document.importNode(modal, true);
@@ -195,8 +194,6 @@
         }
       } catch (e) { /* ignore */ }
 
-      // Logged-in candidates see their avatar instead of Login/Apply Now —
-      // must run after every header (re)injection.
       if (typeof applyAuthUI === 'function') applyAuthUI();
 
       // Check for open roles to display the "Now Hiring" badge
@@ -215,12 +212,104 @@
         .catch(function(e) { console.error('Error fetching jobs for hiring badge', e); });
 
       document.dispatchEvent(new CustomEvent('shared-header:loaded'));
+      
+      // Bind Alumni Modal Events
+      var btnYes = document.getElementById('alumniBtnYes');
+      var btnNo = document.getElementById('alumniBtnNo');
+      var btnSubmit = document.getElementById('alumniBtnSubmit');
+      
+      if (btnYes) {
+        btnYes.addEventListener('click', function() {
+          document.getElementById('alumniSchoolDropdown').style.display = 'block';
+          btnYes.style.opacity = '1';
+          if(btnNo) btnNo.style.opacity = '0.5';
+        });
+      }
+      
+      if (btnNo) {
+        btnNo.addEventListener('click', function() {
+          submitAlumniStatus('0', null);
+        });
+      }
+      
+      if (btnSubmit) {
+        btnSubmit.addEventListener('click', function() {
+          var school = document.getElementById('alumniSchoolSelect').value;
+          if (!school) {
+            if(window.showMssToast) window.showMssToast("Please select your school", "error");
+            return;
+          }
+          submitAlumniStatus('1', school);
+        });
+      }
+
+      const showAlumniModal = sessionStorage.getItem('show_alumni_modal') === 'true' || 
+         (localStorage.getItem('access_token') && localStorage.getItem('user_type') === 'candidate' && !localStorage.getItem('is_alumni'));
+
+      if (showAlumniModal) {
+        sessionStorage.removeItem('show_alumni_modal');
+        const alumniModalEl = document.getElementById("alumniModal");
+        if (alumniModalEl && typeof bootstrap !== "undefined") {
+          document.getElementById('alumniSchoolDropdown').style.display = 'none';
+          if(document.getElementById('alumniBtnYes')) document.getElementById('alumniBtnYes').style.opacity = '1';
+          if(document.getElementById('alumniBtnNo')) document.getElementById('alumniBtnNo').style.opacity = '1';
+          if(document.getElementById('alumniSchoolSelect')) document.getElementById('alumniSchoolSelect').value = '';
+          const instance = bootstrap.Modal.getOrCreateInstance(alumniModalEl);
+          instance.show();
+        }
+      }
+
     })
     .catch(function (error) {
       console.error('shared-header.js:', error);
     });
 })();
 
+async function submitAlumniStatus(is_alumni, school_name) {
+  var token = localStorage.getItem('access_token');
+  if (!token) return finishAlumniFlow();
+  
+  try {
+    const res = await fetch(AUTH_API_BASE + '/auth/candidate/alumni-status', {
+      method: 'PUT',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ is_alumni: is_alumni, school_name: school_name })
+    });
+    if (res.ok) {
+      if(window.showMssToast) window.showMssToast("Thank you! Your details have been updated.", "success");
+      localStorage.setItem("is_alumni", is_alumni);
+      if (school_name) {
+          localStorage.setItem("alumni_school", school_name);
+      }
+    } else {
+      console.error("Failed to update alumni status");
+    }
+  } catch(e) {
+    console.error("Error updating alumni status:", e);
+  }
+  
+  finishAlumniFlow();
+}
+
+function finishAlumniFlow() {
+  const modalEl = document.getElementById("alumniModal");
+  if (modalEl && typeof bootstrap !== "undefined") {
+    const instance = bootstrap.Modal.getInstance(modalEl);
+    if (instance) instance.hide();
+  }
+  
+  var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
+  if (pendingJobId) {
+    sessionStorage.removeItem('pending_apply_job_id');
+    localStorage.setItem('candidate_current_job_id', pendingJobId);
+    window.location.href = '/mss-career-portal/apply';
+  } else {
+    // If we're not on the profile or dashboard, we might want to stay on the same page, but for now we just let the modal close.
+  }
+}
 
 // document.getElementById("loginBtn").addEventListener("click", loginUser);
 document.addEventListener("click", function (e) {
@@ -524,6 +613,8 @@ window.mssLogout = function () {
   localStorage.removeItem('user_name');
   localStorage.removeItem('user_email');
   localStorage.removeItem('user_id');
+  localStorage.removeItem('is_alumni');
+  localStorage.removeItem('alumni_school');
   window.location.href = '/mss-career-portal/home';
 };
 
@@ -639,6 +730,15 @@ async function loginUser() {
       localStorage.setItem("user_name", result.name || "");
       localStorage.setItem("user_email", email);
       localStorage.setItem("user_id", result.user_id != null ? String(result.user_id) : "");
+      if (result.is_alumni != null) {
+          localStorage.setItem("is_alumni", result.is_alumni);
+      }
+      if (result.alumni_school != null) {
+          localStorage.setItem("alumni_school", result.alumni_school);
+      }
+      if (result.ask_alumni === "true") {
+          sessionStorage.setItem("show_alumni_modal", "true");
+      }
     }
 
     // HR and school-admin roles have no place on the public site —
@@ -723,6 +823,12 @@ async function registerCandidate(form) {
       localStorage.setItem("user_name", result.name || (firstName + " " + lastName));
       localStorage.setItem("user_email", email);
       localStorage.setItem("user_id", result.user_id != null ? String(result.user_id) : "");
+      if (result.is_alumni != null) {
+          localStorage.setItem("is_alumni", result.is_alumni);
+      }
+      if (result.alumni_school != null) {
+          localStorage.setItem("alumni_school", result.alumni_school);
+      }
     }
 
     const modalEl = document.getElementById("candidateRegisterModal");
@@ -736,11 +842,19 @@ async function registerCandidate(form) {
     showMssToast("Account created successfully!", "success");
     window.dispatchEvent(new CustomEvent('candidate_login_success'));
 
-    var pendingJobId = sessionStorage.getItem('pending_apply_job_id');
-    if (pendingJobId) {
-      sessionStorage.removeItem('pending_apply_job_id');
-      localStorage.setItem('candidate_current_job_id', pendingJobId);
-      window.location.href = '/mss-career-portal/apply';
+    // Show Alumni Modal
+    const alumniModalEl = document.getElementById("alumniModal");
+    if (alumniModalEl && typeof bootstrap !== "undefined") {
+      // reset modal state
+      document.getElementById('alumniSchoolDropdown').style.display = 'none';
+      if(document.getElementById('alumniBtnYes')) document.getElementById('alumniBtnYes').style.opacity = '1';
+      if(document.getElementById('alumniBtnNo')) document.getElementById('alumniBtnNo').style.opacity = '1';
+      if(document.getElementById('alumniSchoolSelect')) document.getElementById('alumniSchoolSelect').value = '';
+      
+      const instance = bootstrap.Modal.getOrCreateInstance(alumniModalEl);
+      instance.show();
+    } else {
+      finishAlumniFlow();
     }
 
   } catch (error) {

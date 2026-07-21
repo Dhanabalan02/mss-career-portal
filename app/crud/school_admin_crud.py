@@ -512,7 +512,7 @@ def issue_offer(db: Session, admin_id: int, applicant_id: int, payload: dict) ->
         import base64
         import time
         try:
-            upload_dir = os.path.join("app", "uploads", "offer")
+            upload_dir = os.path.join("uploads", "offer")
             os.makedirs(upload_dir, exist_ok=True)
             filename = f"offer_{applicant_id}_{int(time.time())}"
             

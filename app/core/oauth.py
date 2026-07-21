@@ -10,15 +10,16 @@ LINKEDIN_TOKEN_URL = "https://www.linkedin.com/oauth/v2/accessToken"
 LINKEDIN_USERINFO_URL = "https://api.linkedin.com/v2/userinfo"
 
 
-def get_google_user_info(code: str) -> dict:
+def get_google_user_info(code: str, redirect_uri: str = None) -> dict:
     """Exchanges a Google OAuth authorization code for the user's email and name."""
+    redirect_uri = redirect_uri or settings.GOOGLE_REDIRECT_URI
     token_response = requests.post(
         GOOGLE_TOKEN_URL,
         data={
             "code": code,
             "client_id": settings.GOOGLE_CLIENT_ID,
             "client_secret": settings.GOOGLE_CLIENT_SECRET,
-            "redirect_uri": settings.GOOGLE_REDIRECT_URI,
+            "redirect_uri": redirect_uri,
             "grant_type": "authorization_code",
         },
     )
@@ -40,15 +41,16 @@ def get_google_user_info(code: str) -> dict:
     return {"email": userinfo.get("email"), "name": userinfo.get("name")}
 
 
-def get_linkedin_user_info(code: str) -> dict:
+def get_linkedin_user_info(code: str, redirect_uri: str = None) -> dict:
     """Exchanges a LinkedIn OAuth authorization code for the user's email and name."""
+    redirect_uri = redirect_uri or settings.LINKEDIN_REDIRECT_URI
     token_response = requests.post(
         LINKEDIN_TOKEN_URL,
         data={
             "code": code,
             "client_id": settings.LINKEDIN_CLIENT_ID,
             "client_secret": settings.LINKEDIN_CLIENT_SECRET,
-            "redirect_uri": settings.LINKEDIN_REDIRECT_URI,
+            "redirect_uri": redirect_uri,
             "grant_type": "authorization_code",
         },
         headers={"Content-Type": "application/x-www-form-urlencoded"},

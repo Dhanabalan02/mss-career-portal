@@ -203,16 +203,57 @@ def candidate_register(
     )
 
 
+import base64
+import json
+from urllib.parse import urlparse
+
+def get_host_from_request(request: Request) -> tuple:
+    referer = request.headers.get("referer", "")
+    if referer:
+        parsed = urlparse(referer)
+        if parsed.hostname not in ("localhost", "127.0.0.1"):
+            return parsed.scheme, parsed.netloc
+
+    scheme = request.headers.get("x-forwarded-proto", request.url.scheme)
+    host = request.headers.get("x-forwarded-host", request.headers.get("host", request.url.netloc))
+    
+    if host.startswith("127.0.0.1"):
+        host = host.replace("127.0.0.1", "localhost", 1)
+        
+    return scheme, host
+
+def get_dynamic_redirect_uri(request: Request, provider: str, state: str = None) -> str:
+    if state:
+        try:
+            state_dict = json.loads(base64.urlsafe_b64decode(state.encode()).decode())
+            host = state_dict.get("host")
+            scheme = state_dict.get("scheme")
+            if host and scheme:
+                return f"{scheme}://{host}/auth/{provider}/callback"
+        except Exception:
+            pass
+    scheme, host = get_host_from_request(request)
+    return f"{scheme}://{host}/auth/{provider}/callback"
+
+def generate_state(request: Request) -> str:
+    scheme, host = get_host_from_request(request)
+    state_data = json.dumps({"scheme": scheme, "host": host}).encode()
+    return base64.urlsafe_b64encode(state_data).decode()
+
+
 @router.get("/google/login")
-def google_login():
+def google_login(request: Request):
     """Redirects the user to Google's OAuth consent screen."""
+    redirect_uri = get_dynamic_redirect_uri(request, "google")
+    state = generate_state(request)
     params = {
         "client_id": settings.GOOGLE_CLIENT_ID,
-        "redirect_uri": settings.GOOGLE_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
         "response_type": "code",
         "scope": "openid email profile",
         "access_type": "offline",
         "prompt": "consent",
+        "state": state,
     }
     return RedirectResponse(
         f"https://accounts.google.com/o/oauth2/v2/auth?{urlencode(params)}"
@@ -220,10 +261,11 @@ def google_login():
 
 
 @router.get("/google/callback")
-def google_callback(request: Request, code: str, db: Session = Depends(get_db)):
+def google_callback(request: Request, code: str, state: str = None, db: Session = Depends(get_db)):
     """Handles the Google OAuth callback and redirects the candidate to the frontend."""
     client_ip = request.client.host if request.client else None
-    user_info = get_google_user_info(code)
+    redirect_uri = get_dynamic_redirect_uri(request, "google", state=state)
+    user_info = get_google_user_info(code, redirect_uri=redirect_uri)
     result = googlelogin(
         db=db, email=user_info["email"], name=user_info["name"], ip_address=client_ip
     )
@@ -234,6 +276,9 @@ def google_callback(request: Request, code: str, db: Session = Depends(get_db)):
             "name": result["name"],
             "user_id": result["user_id"],
             "email": result["email"],
+            "ask_alumni": result.get("ask_alumni", "false"),
+            "is_alumni": result.get("is_alumni") or "",
+            "alumni_school": result.get("alumni_school") or "",
         }
     )
     return RedirectResponse(
@@ -242,13 +287,16 @@ def google_callback(request: Request, code: str, db: Session = Depends(get_db)):
 
 
 @router.get("/linkedin/login")
-def linkedin_oauth_login():
+def linkedin_oauth_login(request: Request):
     """Redirects the user to LinkedIn's OAuth consent screen."""
+    redirect_uri = get_dynamic_redirect_uri(request, "linkedin")
+    state = generate_state(request)
     params = {
         "client_id": settings.LINKEDIN_CLIENT_ID,
-        "redirect_uri": settings.LINKEDIN_REDIRECT_URI,
+        "redirect_uri": redirect_uri,
         "response_type": "code",
         "scope": "openid profile email",
+        "state": state,
     }
     return RedirectResponse(
         f"https://www.linkedin.com/oauth/v2/authorization?{urlencode(params)}"
@@ -256,10 +304,11 @@ def linkedin_oauth_login():
 
 
 @router.get("/linkedin/callback")
-def linkedin_oauth_callback(request: Request, code: str, db: Session = Depends(get_db)):
+def linkedin_oauth_callback(request: Request, code: str, state: str = None, db: Session = Depends(get_db)):
     """Handles the LinkedIn OAuth callback and redirects the candidate to the frontend."""
     client_ip = request.client.host if request.client else None
-    user_info = get_linkedin_user_info(code)
+    redirect_uri = get_dynamic_redirect_uri(request, "linkedin", state=state)
+    user_info = get_linkedin_user_info(code, redirect_uri=redirect_uri)
     result = linkedin_login(
         db=db, email=user_info["email"], name=user_info["name"], ip_address=client_ip
     )
@@ -270,6 +319,9 @@ def linkedin_oauth_callback(request: Request, code: str, db: Session = Depends(g
             "name": result["name"],
             "user_id": result["user_id"],
             "email": result["email"],
+            "ask_alumni": result.get("ask_alumni", "false"),
+            "is_alumni": result.get("is_alumni") or "",
+            "alumni_school": result.get("alumni_school") or "",
         }
     )
     return RedirectResponse(
@@ -626,3 +678,21 @@ def profile_update_mobile_verify_otp(request_data: VerifyUpdateMobileRequest, db
     if update_user_mobile(db, candidate_id, mobile):
         return {"message": "Mobile updated successfully."}
     raise HTTPException(status_code=500, detail="Failed to update mobile.")
+
+class AlumniStatusUpdate(BaseModel):
+    is_alumni: str
+    school_name: Optional[str] = None
+
+from app.crud.auth_crud import update_alumni_status
+
+@router.put("/candidate/alumni-status")
+def candidate_alumni_status(
+    data: AlumniStatusUpdate,
+    db: Session = Depends(get_db),
+    candidate_id: int = Depends(_get_candidate_id_from_token)
+):
+    success = update_alumni_status(db, candidate_id, data.is_alumni, data.school_name)
+    if not success:
+        raise HTTPException(status_code=500, detail="Failed to update alumni status")
+    return {"message": "Alumni status updated successfully"}
+

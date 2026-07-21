@@ -62,7 +62,10 @@ def authenticate_user_roles(
         "user_type": "candidate",
         "token_type": "bearer",
         "name": f"{candidate.first_name} {candidate.last_name}".strip(),
-        "user_id": candidate.user_id
+        "user_id": candidate.user_id,
+        "ask_alumni": "true" if candidate.is_alumni is None else "false",
+        "is_alumni": candidate.is_alumni,
+        "alumni_school": candidate.school_name
     }
 
 
@@ -216,6 +219,9 @@ def googlelogin(
         "name": f"{user.first_name} {user.last_name}".strip(),
         "user_id": user.user_id,
         "email": user.email,
+        "ask_alumni": "true" if user.is_alumni is None else "false",
+        "is_alumni": user.is_alumni,
+        "alumni_school": user.school_name
     }
 
 
@@ -250,6 +256,9 @@ def linkedin_login(
         "name": f"{user.first_name} {user.last_name}".strip(),
         "user_id": user.user_id,
         "email": user.email,
+        "ask_alumni": "true" if user.is_alumni is None else "false",
+        "is_alumni": user.is_alumni,
+        "alumni_school": user.school_name
     }
 
 def register_candidate(
@@ -318,7 +327,10 @@ def register_candidate(
         "user_type": "candidate",
         "token_type": "bearer",
         "name": f"{first_name} {last_name}".strip(),
-        "user_id": new_user.user_id
+        "user_id": new_user.user_id,
+        "ask_alumni": "true",
+        "is_alumni": None,
+        "alumni_school": None
     }
 
 
@@ -658,6 +670,15 @@ def update_user_mobile(db: Session, user_id: int, new_mobile: str) -> bool:
     user = db.query(Users).filter(Users.user_id == user_id).first()
     if user:
         user.mobile = new_mobile
+        db.commit()
+        return True
+    return False
+
+def update_alumni_status(db: Session, user_id: int, is_alumni: str, school_name: str = None) -> bool:
+    user = db.query(Users).filter(Users.user_id == user_id).first()
+    if user:
+        user.is_alumni = is_alumni
+        user.school_name = school_name if is_alumni == '1' else None
         db.commit()
         return True
     return False

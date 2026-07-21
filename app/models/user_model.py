@@ -1,4 +1,4 @@
-from sqlalchemy import String, func
+from sqlalchemy import String, func, Text, Enum
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
@@ -31,6 +31,10 @@ class Users(Base):
     password: Mapped[str] = mapped_column(String(255), nullable=False)
     
     mobile: Mapped[str] = mapped_column(String(15), nullable=False)
+    
+    is_alumni: Mapped[str] = mapped_column(Enum('0', '1', name="alumni_enum"), nullable=True)
+    
+    school_name: Mapped[str] = mapped_column(Text, nullable=True)
     
     image_path: Mapped[str] = mapped_column(String(255), nullable=True)
     
