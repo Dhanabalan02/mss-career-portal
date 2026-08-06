@@ -34,3 +34,25 @@ class EmailService:
         except Exception as e:
             logger.exception(f"[OTP Email] Failed to send email to {to_email}: {e}")
             return {"success": False, "message": str(e)}
+
+    def send_masset_sync_email(self, to_email: str, candidate_name: str, position: str) -> dict:
+        subject = "Candidate Onboarded in MASSET Platform"
+        body = f"Hello,\n\nYou have an employee onboard for the candidate {candidate_name} for the position of {position} in MASSET Platform.\n\nRegards,\nHR Admin"
+
+        msg = MIMEMultipart()
+        msg['From'] = self.sender_email
+        msg['To'] = to_email
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        try:
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as server:
+                server.starttls()
+                server.login(self.sender_email, self.sender_password)
+                server.send_message(msg)
+
+            logger.info(f"[MASSET Sync Email] Sent successfully to {to_email}")
+            return {"success": True, "message": "Email sent successfully."}
+        except Exception as e:
+            logger.exception(f"[MASSET Sync Email] Failed to send email to {to_email}: {e}")
+            return {"success": False, "message": str(e)}

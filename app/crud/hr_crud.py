@@ -574,6 +574,23 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str 
     db.commit()
     db.refresh(app)
     
+    try:
+        from app.models.admin_model import Admins
+        from app.services.email_service import EmailService
+        
+        school_admin = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
+        if school_admin and school_admin.email:
+            candidate_name = f"{user.first_name} {user.last_name}".strip() if user else "Candidate"
+            position = job.job_title if job else "Unknown Position"
+            email_service = EmailService()
+            email_service.send_masset_sync_email(
+                to_email=school_admin.email,
+                candidate_name=candidate_name,
+                position=position
+            )
+    except Exception as e:
+        logger.error(f"Failed to send MASSET sync email: {e}")
+    
     return {
         "success": True, 
         "message": "Data synced successfully. Tracking managed via application ID.",

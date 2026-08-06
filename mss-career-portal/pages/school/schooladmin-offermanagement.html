@@ -1887,7 +1887,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
         const notes = document.getElementById("offNotes").value.trim();
         if (notes)
           body += `<br><br><em style="color:var(--text3);font-size:12px;">Additional terms: ${notes}</em>`;
-        return body;
+        return `<div style="max-width: 600px; margin: 20px auto; text-align: left; border: 1px solid #d4d1cb; padding: 40px; border-radius: 8px; font-size: 16px; line-height: 1.8; background-color: #ffffff;">${body}</div>`;
       }
 
       function buildPreview() {
@@ -2154,6 +2154,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
         if (offerData.notes) {
           body += `<br><br><em style="color:var(--text3);font-size:12px;">Additional terms: ${offerData.notes}</em>`;
         }
+        
+        body = `<div style="max-width: 600px; margin: 20px auto; text-align: left; border: 1px solid #d4d1cb; padding: 40px; border-radius: 8px; font-size: 16px; line-height: 1.8; background-color: #ffffff;">${body}</div>`;
 
         // Populate modal
         document.getElementById("viewModalTitle").textContent =
@@ -2215,8 +2217,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
     }
     body {
       font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 12pt;
-      line-height: 1.6;
+      font-size: 14pt;
+      line-height: 1.8;
       color: #333333;
       margin: 0;
       padding: 0;
@@ -2297,8 +2299,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
                 .pdf-content-wrapper {
                   box-sizing: border-box;
                   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                  font-size: 12pt;
-                  line-height: 1.6;
+                  font-size: 14pt;
+                  line-height: 1.8;
                   color: #333333;
                   width: 6.5in;
                   background-color: #ffffff;

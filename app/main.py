@@ -24,6 +24,7 @@ from app.routes.notification_route import router as notification_router
 from app.routes.interview_auth_route import router as interview_auth_router
 from app.routes.prescreen_route import router as prescreen_router
 from app.routes.metadata_route import router as metadata_router
+from app.index import router as webhook_router
 
 app = FastAPI()
 
@@ -226,6 +227,7 @@ app.include_router(notification_router)
 app.include_router(interview_auth_router)
 app.include_router(prescreen_router)
 app.include_router(metadata_router)
+app.include_router(webhook_router)
 
 # Mount uploads folder
 app.mount("/uploads", StaticFiles(directory=str(BASE_DIR / "uploads")), name="uploads")
