@@ -38,6 +38,8 @@ class Settings(BaseSettings):
     SMTP_PORT: int
     SENDER_EMAIL: str
     SENDER_PASSWORD: str
+    
+    GOOGLE_GEMINI_KEY: Optional[str] = None
 
     # Computed Property for MySQL URL
     @property

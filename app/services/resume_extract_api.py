@@ -115,49 +115,106 @@ def _clean_json_response(raw: str) -> str:
     return text.strip()
 
 
-def call_ollama_extract(resume_text: str) -> dict:
-    """Sends resume text to the Ollama cloud model and returns the parsed JSON."""
-    api_key = settings.OLLAMA_API_KEY
-    if not api_key:
-        raise RuntimeError("OLLAMA_API_KEY is not configured.")
+# def call_ollama_extract(resume_text: str) -> dict:
+#     """Sends resume text to the Ollama cloud model and returns the parsed JSON."""
+#     api_key = settings.OLLAMA_API_KEY
+#     if not api_key:
+#         raise RuntimeError("OLLAMA_API_KEY is not configured.")
+# 
+#     prompt = EXTRACTION_PROMPT % resume_text[:12000]
+# 
+#     response = requests.post(
+#         f"{OLLAMA_HOST}/api/chat",
+#         headers={
+#             "Authorization": f"Bearer {api_key}",
+#             "Content-Type": "application/json",
+#         },
+#         json={
+#             "model": OLLAMA_MODEL,
+#             "messages": [
+#                 {
+#                     "role": "system",
+#                     "content": "You are a precise resume-parsing assistant that only replies with valid JSON.",
+#                 },
+#                 {"role": "user", "content": prompt},
+#             ],
+#             "stream": False,
+#             "format": "json",
+#         },
+#         timeout=90,
+#     )
+#     response.raise_for_status()
+#     body = response.json()
+#     content = body.get("message", {}).get("content", "")
+#     cleaned = _clean_json_response(content)
+# 
+#     try:
+#         return json.loads(cleaned)
+#     except json.JSONDecodeError:
+#         logger.error("Failed to parse Ollama JSON response: %s", content)
+#         raise RuntimeError("Could not parse resume data returned by the AI model.")
+# 
+# 
+# def extract_resume_data(file_path: str) -> dict:
+#     """Reads a PDF resume and returns structured candidate data via the Ollama model."""
+#     resume_text = extract_text_from_pdf(file_path)
+#     if not resume_text:
+#         raise RuntimeError("Could not read any text from the uploaded resume.")
+#     return call_ollama_extract(resume_text)
 
+def call_gemini_extract(resume_text: str) -> dict:
+    """Sends resume text to the Gemini model and returns the parsed JSON."""
+    api_key = settings.GOOGLE_GEMINI_KEY
+    
     prompt = EXTRACTION_PROMPT % resume_text[:12000]
-
+    
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={api_key}"
+    
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": "You are a precise resume-parsing assistant that only replies with valid JSON.\n\n" + prompt}
+                ]
+            }
+        ],
+        "generationConfig": {
+            "responseMimeType": "application/json"
+        }
+    }
+    
     response = requests.post(
-        f"{OLLAMA_HOST}/api/chat",
-        headers={
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json",
-        },
-        json={
-            "model": OLLAMA_MODEL,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a precise resume-parsing assistant that only replies with valid JSON.",
-                },
-                {"role": "user", "content": prompt},
-            ],
-            "stream": False,
-            "format": "json",
-        },
-        timeout=90,
+        url,
+        headers={"Content-Type": "application/json"},
+        json=payload,
+        timeout=90
     )
-    response.raise_for_status()
+    
+    try:
+        response.raise_for_status()
+    except Exception as e:
+        logger.error("Gemini API error: %s - %s", e, response.text)
+        raise RuntimeError("Failed to communicate with Gemini API.")
+        
     body = response.json()
-    content = body.get("message", {}).get("content", "")
+    try:
+        content = body["candidates"][0]["content"]["parts"][0]["text"]
+    except (KeyError, IndexError):
+        logger.error("Unexpected Gemini response structure: %s", body)
+        raise RuntimeError("Could not extract text from Gemini response.")
+        
     cleaned = _clean_json_response(content)
 
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError:
-        logger.error("Failed to parse Ollama JSON response: %s", content)
+        logger.error("Failed to parse Gemini JSON response: %s", content)
         raise RuntimeError("Could not parse resume data returned by the AI model.")
 
 
 def extract_resume_data(file_path: str) -> dict:
-    """Reads a PDF resume and returns structured candidate data via the Ollama model."""
+    """Reads a PDF resume and returns structured candidate data via the Gemini model."""
     resume_text = extract_text_from_pdf(file_path)
     if not resume_text:
         raise RuntimeError("Could not read any text from the uploaded resume.")
-    return call_ollama_extract(resume_text)
+    return call_gemini_extract(resume_text)
