@@ -131,7 +131,7 @@ All JavaScript fuctions Start
 		jQuery("button.scroltop").on('click', function() {
 			jQuery("html, body").animate({
 				scrollTop: 0
-			}, 1000);
+			}, 100);
 			return false;
 		});
 
