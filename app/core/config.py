@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     OLLAMA_API_KEY: Optional[str] = None
     
     # Feature Flags
-    ENABLE_EXTERNAL_SERVICES: bool = True
+    ENABLE_EXTERNAL_SERVICES: bool = False
 
     # Google OAuth Settings
     GOOGLE_CLIENT_ID: Optional[str] = None

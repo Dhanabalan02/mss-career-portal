@@ -274,6 +274,7 @@ _STAGE_TO_FIELDS = {
 
 def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage: str, remarks: Optional[str] = None):
     from fastapi import HTTPException
+    from app.models.interview_schedule_model import JobInterviewSchedule, InterviewStatus
     fields = _STAGE_TO_FIELDS.get(stage)
     if fields is None:
         raise HTTPException(status_code=400, detail=f"Invalid stage: {stage}")
@@ -294,7 +295,6 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
 
     # If the action is Hold or Reject, handle latest interview schedule and remarks
     if stage in ("Hold", "Reject"):
-        from app.models.interview_schedule_model import JobInterviewSchedule, InterviewStatus
         latest_interview = (
             db.query(JobInterviewSchedule)
             .filter(JobInterviewSchedule.job_applicant_id == applicant_id)
@@ -324,7 +324,6 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
             .first()
         )
         if latest_interview:
-            from app.models.interview_schedule_model import InterviewStatus
             latest_interview.status = InterviewStatus.SCHEDULED
             
             # Find the corresponding remark
@@ -347,7 +346,6 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
         )
         if latest_interview:
             from app.models.interview_remarks_model import InterviewRemark, ApplicantStatus
-            from app.models.interview_schedule_model import InterviewStatus
             
             latest_interview.status = InterviewStatus.COMPLETED
             
