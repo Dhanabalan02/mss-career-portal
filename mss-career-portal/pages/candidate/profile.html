@@ -1169,8 +1169,6 @@
             </div>
           </div>
 
-
-
         </div><!-- /sidebar -->
 
         <!-- ════════════════ MAIN ════════════════ -->
@@ -1686,6 +1684,8 @@
         showToast('Failed to upload resume. Please try again.', 'danger');
         document.getElementById('resumeDisplay').innerHTML = oldHtml;
         if (!oldHtml) document.querySelector('.cp-resume-box').style.display = 'flex';
+      } finally {
+        e.target.value = '';
       }
     });
 
@@ -1868,7 +1868,7 @@
       }
       if (desig) document.getElementById('cpSidebarRole').textContent = desig;
       if (email) document.getElementById('cpContactEmail').textContent = email;
-      if (mobile) document.getElementById('cpContactPhone').textContent = mobile;
+      if (mobile) document.getElementById('cpContactPhone').textContent = mobile.length > 10 ? mobile.slice(-10) : mobile;
       if (loc) document.getElementById('cpContactLocation').textContent = loc;
       if (expY !== '' && expY !== undefined) {
         const y = parseInt(expY) || 0;
@@ -1931,7 +1931,8 @@
       document.getElementById('pfName').value = fullName;
       document.getElementById('pfEmail').value = data.email || '';
       document.getElementById('pfEmail').readOnly = true;
-      document.getElementById('pfMobile').value = data.mobile || '';
+      document.getElementById('pfMobile').dataset.originalMobile = data.mobile || '';
+      document.getElementById('pfMobile').value = data.mobile ? (data.mobile.length > 10 ? data.mobile.slice(-10) : data.mobile) : '';
       if (data.mobile) {
         document.getElementById('pfMobile').readOnly = true;
       } else {
@@ -2099,7 +2100,7 @@
       }
       document.getElementById('cpSidebarName').textContent = fullName || 'Your Name';
       document.getElementById('cpContactEmail').textContent = data.email || '—';
-      document.getElementById('cpContactPhone').textContent = data.mobile || '—';
+      document.getElementById('cpContactPhone').textContent = data.mobile ? (data.mobile.length > 10 ? data.mobile.slice(-10) : data.mobile) : '—';
       
       cpUpdateSidebar();
       cpCalcCompletion();
@@ -2394,16 +2395,16 @@
           first_name: firstName,
           last_name: lastName,
           gender: document.getElementById('pfGender').value,
-          mobile: document.getElementById('pfMobile').value.trim(),
+          mobile: document.getElementById('pfMobile').dataset.originalMobile || document.getElementById('pfMobile').value.trim(),
           metadata: {
-            date_of_birth: document.getElementById('pfDob') ? document.getElementById('pfDob').value : null,
-            blood_group: document.getElementById('pfBloodGroup') ? document.getElementById('pfBloodGroup').value : null,
-            marital_status: document.getElementById('pfMaritalStatus') ? document.getElementById('pfMaritalStatus').value : null,
+            date_of_birth: document.getElementById('pfDob')?.value || null,
+            blood_group: document.getElementById('pfBloodGroup')?.value || null,
+            marital_status: document.getElementById('pfMaritalStatus')?.value || null,
             city: city || null,
             state: state || null,
-            about: document.getElementById('pfAbout') ? document.getElementById('pfAbout').value.trim() : null,
-            designation: document.getElementById('pfDesig') ? document.getElementById('pfDesig').value.trim() : null,
-            company: document.getElementById('pfComp') ? document.getElementById('pfComp').value.trim() : null,
+            about: document.getElementById('pfAbout')?.value.trim() || null,
+            designation: document.getElementById('pfDesig')?.value.trim() || null,
+            company: document.getElementById('pfComp')?.value.trim() || null,
             experience: (() => {
               const y = document.getElementById('pfExpYears')?.value;
               const m = document.getElementById('pfExpMonths')?.value;
@@ -2412,12 +2413,12 @@
               const mN = parseInt(m) || 0;
               return `${yN} ${yN === 1 ? 'Year' : 'Years'} ${mN} ${mN === 1 ? 'Month' : 'Months'}`;
             })(),
-            salary: document.getElementById('pfSal') ? document.getElementById('pfSal').value.trim() : null,
-            expected_salary: document.getElementById('pfExpSal') ? document.getElementById('pfExpSal').value.trim() : null,
-            notice_period: document.getElementById('pfNotice') ? document.getElementById('pfNotice').value : null,
-            work_mode: document.getElementById('pfWorkMode') ? document.getElementById('pfWorkMode').value : null,
-            employment_type: document.getElementById('pfEmpType') ? document.getElementById('pfEmpType').value : null,
-            preferred_role: document.getElementById('pfPrefRole') ? document.getElementById('pfPrefRole').value : null,
+            salary: document.getElementById('pfSal')?.value.trim() || null,
+            expected_salary: document.getElementById('pfExpSal')?.value?.trim() || null,
+            notice_period: document.getElementById('pfNotice')?.value || null,
+            work_mode: document.getElementById('pfWorkMode')?.value || null,
+            employment_type: document.getElementById('pfEmpType')?.value || null,
+            preferred_role: document.getElementById('pfPrefRole')?.value || null,
             skills: cpSkills,
             languages: cpLanguages.join(', ')
           },

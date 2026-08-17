@@ -551,7 +551,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str 
     }
 
     # 3. HTTP POST Request to MASSET local server or Webhook URL
-    webhook_url = "http://192.168.0.8/synchrms/api/career_sync.php"
+    webhook_url = "https://test.masset.themadrassevasadan.org/synchrms/api/career_sync.php"
     logger.info(f"Attempting to sync candidate {applicant_id} to {webhook_url}")
     logger.info(f"Payload: {payload}")
     
@@ -827,14 +827,6 @@ def get_hr_reports(
     for dept in vacancy_gap:
         vacancy_gap[dept]["gap"] = max(0, vacancy_gap[dept]["vacancies"] - vacancy_gap[dept]["hired"])
 
-    # Budget (Mock logic as requested by design but dynamic structure)
-    budget = {
-        "allocated": "₹48L",
-        "utilized": "₹41L",
-        "remaining": "₹7L",
-        "percentage": 85
-    }
-
     return {
         "total_applicants": total,
         "total_hires": offer_accepted,
@@ -851,8 +843,7 @@ def get_hr_reports(
         "by_stage": stages,
         "monthly_trend": monthly_trend,
         "school_comparison": school_comparison,
-        "vacancy_gap": vacancy_gap,
-        "budget": budget
+        "vacancy_gap": vacancy_gap
     }
 
 def get_pending_actions(db: Session, admin_id: int) -> dict:
