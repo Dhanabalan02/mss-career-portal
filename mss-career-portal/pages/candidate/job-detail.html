@@ -466,7 +466,7 @@
                                         e.stopPropagation();
                                         
                                         var titleText = document.getElementById('jdTitle') ? document.getElementById('jdTitle').textContent : 'Job';
-                                        var link = window.location.origin + '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
+                                        var link = window.location.origin + '/mss-career-portal/job-description?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
                                                    '&title=' + encodeURIComponent((window.loadedJobTitle || '').replace(/ /g, '-')) +
                                                    '&unit=' + encodeURIComponent((window.loadedJobUnitName || '').replace(/ /g, '-'));
 
@@ -499,7 +499,7 @@
                                         if (btn) btn.setAttribute('aria-expanded', 'false');
                                     }
                                     function copyJobLink() {
-                                        var link = window.location.origin + '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
+                                        var link = window.location.origin + '/mss-career-portal/job-description?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
                                                    '&title=' + encodeURIComponent((window.loadedJobTitle || '').replace(/ /g, '-')) +
                                                    '&unit=' + encodeURIComponent((window.loadedJobUnitName || '').replace(/ /g, '-'));
                                         navigator.clipboard.writeText(link).then(function() {
@@ -1335,7 +1335,7 @@
 
                 window.shareJob = function(platform) {
                     if (!jobId) return;
-                    var shareUrl = window.location.origin + '/mss-career-portal/job-detail?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
+                    var shareUrl = window.location.origin + '/mss-career-portal/job-description?uuid=' + encodeURIComponent(window.loadedJobUuid || '') +
                                    '&title=' + encodeURIComponent((window.loadedJobTitle || '').replace(/ /g, '-')) +
                                    '&unit=' + encodeURIComponent((window.loadedJobUnitName || '').replace(/ /g, '-'));
                     var text = 'Check out this job opening at The Madras Seva Sadan!';
