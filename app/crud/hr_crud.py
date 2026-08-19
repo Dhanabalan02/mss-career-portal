@@ -520,7 +520,7 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
         })
     return out
 
-def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str = "") -> dict:
+def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
     # 1. Fetch the applicant using applicant_id
     app = db.query(JobApplicant).filter(
         JobApplicant.job_applicant_id == applicant_id
@@ -559,7 +559,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str 
         response = requests.post(webhook_url, json=payload, timeout=10)
         logger.info(f"Response Status Code: {response.status_code}")
         logger.info(f"Response Text: {response.text}")
-        response.raise_for_status()  # Ensures we got a 200 OK / success HTTP status
+        response.raise_for_status()
     except Exception as e:
         logger.error(f"MASSET Sync Failed. Exact issue: {str(e)}", exc_info=True)
         return {"error": f"Failed to sync with MASSET platform: {str(e)}"}
@@ -596,7 +596,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int, employee_id: str 
     }
 
 
-def update_masset_status_from_webhook(db: Session, application_id: str, masset_employee_id: str, status: str) -> dict:
+def update_masset_status_from_webhook(db: Session, application_id: str, masset_employee_id: str, status: str, reporting_to: Optional[str]) -> dict:
     """
     Called by the MASSET external HRMS webhook to update the applicant's status
     and generated masset_employee_id using the application_id.
@@ -610,6 +610,12 @@ def update_masset_status_from_webhook(db: Session, application_id: str, masset_e
 
     app.masset_employee_id = masset_employee_id
     app.masset_status = status
+    
+    if status and status.lower() == "onboarded":
+        app.issue_appointment_order = 1
+        app.masset_sync_success_on = datetime.utcnow()
+        app.reporting_to = reporting_to
+        
     app.updated_at = datetime.utcnow()
     
     db.commit()

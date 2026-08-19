@@ -123,7 +123,7 @@ def respond_to_offer(db: Session, user_id: int, job_id: int, status_str: str) ->
     
     if status_lower == 'accepted':
         app.offer_acceptance_status = OfferAcceptanceStatus.ACCEPTED
-        # Captures current UTC date for the DATE database column
+        app.applicant_stage = ApplicantStage.OFFER_ACCEPTED
         app.offer_accepted_on = datetime.now(timezone.utc).date() 
         
     elif status_lower == 'rejected':

@@ -30,7 +30,7 @@ class OnboardCompleteService:
         candidate_name: str,
         employee_id: str,
         designation: str,
-        department: str,
+        reporting_to: str,
         date_of_joining: str,
     ) -> dict:
         
@@ -66,7 +66,7 @@ class OnboardCompleteService:
                             },
                             {
                                 "type": "text",
-                                "text": department
+                                "text": reporting_to
                             },
                             {
                                 "type": "text",

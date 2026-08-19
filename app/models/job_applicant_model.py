@@ -83,6 +83,7 @@ class JobApplicant(Base):
     masset_synced_by: Mapped[Optional[int]] = mapped_column(ForeignKey("admins.admin_id"), nullable=True)
     masset_employee_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     masset_status: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    reporting_to: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
     issue_appointment_order: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)
     masset_sync_success_on: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True)
 
