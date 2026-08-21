@@ -958,7 +958,7 @@
         }
 
         // Render stage chips
-        renderStageChips(data.chips);
+        renderStageChips(data.chips, data.stats.total);
 
         // Render table rows
         applicantsData = data.applicants;
@@ -976,6 +976,7 @@
 
     /* ── Build stage chips dynamically ── */
     const STAGE_CONFIG = [
+      { name: 'All', color: '#444441', bg: '#F1EFE8' },
       { name: 'PreScreen Reject', color: '#534AB7', bg: '#EEEDFE' },
       { name: 'Screened', color: '#185FA5', bg: '#E6F1FB' },
       { name: 'Interview', color: '#BA7517', bg: '#FAEEDA' },
@@ -985,21 +986,21 @@
       { name: 'Rejected', color: '#A32D2D', bg: '#FCEBEB' },
     ];
 
-    function renderStageChips(chipsData) {
+    function renderStageChips(chipsData, totalCount = 0) {
       const chipsEl = document.getElementById('stageChips');
       chipsEl.innerHTML = '';
       STAGE_CONFIG.forEach(s => {
-        const count = chipsData[s.name] || 0;
+        const count = s.name === 'All' ? totalCount : (chipsData[s.name] || 0);
         const chip = document.createElement('button');
         chip.className = 'stage-chip';
         chip.dataset.stage = s.name;
         chip.style.cssText = `background:${s.bg};color:${s.color};border-color:${s.color}30;`;
-        if (activeStageFilter === s.name) {
+        if ((s.name === 'All' && !activeStageFilter) || activeStageFilter === s.name) {
           chip.style.outline = `2px solid ${s.color}`;
         }
         chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${count}</span>`;
         chip.onclick = () => {
-          activeStageFilter = activeStageFilter === s.name ? '' : s.name;
+          activeStageFilter = s.name === 'All' ? '' : (activeStageFilter === s.name ? '' : s.name);
           document.getElementById('fStage').value = activeStageFilter;
           fetchApplicants();
         };

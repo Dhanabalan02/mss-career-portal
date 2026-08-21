@@ -185,11 +185,12 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
     )
     recent_jobs = []
     for j in recent_jobs_rows:
-        applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == j.job_id).count()
+        applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == j.uuid).count()
         recent_jobs.append({
-            "job_id": j.job_id,
+            "job_id": j.uuid,
             "title": j.job_title or "",
             "dept": j.department or "",
+            "school": j.school_name or "",
             "type": j.job_type or "Full-time",
             "vacancies": j.vacancy_count or 1,
             "applicants": applicant_count,

@@ -1281,6 +1281,7 @@
         const meta = STATUS_META[j.status] || { badge: 'badge-blue', dot: '#185FA5' };
         const sNo = startIdx + index + 1;
         const tr = document.createElement('tr');
+        tr.onclick = () => { localStorage.setItem('hr_current_job_id', j.uuid); location.href='/mss-career-portal/hr/jobpost-details?id=' + j.uuid + '&title=' + encodeURIComponent(j.title) + '&unit=' + encodeURIComponent(j.location); };
         tr.innerHTML = `
       <td class="td-muted">${sNo}</td>
       <td>

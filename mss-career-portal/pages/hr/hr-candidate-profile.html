@@ -1041,6 +1041,11 @@
     /* ── API Configuration ── */
     const JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : '';
     const token = localStorage.getItem('access_token');
+    const buildResumeUrl = (resumePath) => {
+      const apiBase = (JOBS_API_BASE || window.location.origin).replace(/\/+$/, '');
+      const filename = String(resumePath || '').split(/[\\/]/).pop();
+      return `${apiBase}/apply/download/${encodeURIComponent(filename)}`;
+    };
 
     // Parse applicant ID
     const applicantId = localStorage.getItem('candidateId');
@@ -1256,8 +1261,7 @@
 
       if (resume) {
         const resumeName = getFilename(resume);
-        const encodedResume = encodeURIComponent(resume);
-        const downloadUrl = JOBS_API_BASE + '/apply/download/' + encodedResume;
+        const downloadUrl = buildResumeUrl(resume);
 
         const doView = () => {
           window.open(downloadUrl + '?inline=true', '_blank');
@@ -1293,8 +1297,7 @@
       docsEl.innerHTML = '';
       if (resume) {
         const resumeName = getFilename(resume);
-        const encodedResume = encodeURIComponent(resume);
-        const downloadUrl = `${JOBS_API_BASE}/apply/download/${encodedResume}`;
+        const downloadUrl = buildResumeUrl(resume);
 
         docsEl.innerHTML += `
           <div class="doc-item">
@@ -1384,28 +1387,36 @@
       skillsRendered = true;
       const el = document.getElementById('skills-chart');
 
-      const skillsList = candidateData.metadata.skills;
-      if (!skillsList || !skillsList.length) {
-        el.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No skills listed on profile.</div>`;
+      const candidateSkills = Array.isArray(candidateData.metadata.skills) ? candidateData.metadata.skills : [];
+      const requiredSkills = Array.isArray(candidateData.jobSkills) ? candidateData.jobSkills : [];
+      const normalizeSkill = skill => String(skill).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      const candidateSkillKeys = new Set(candidateSkills.map(normalizeSkill));
+      const matchedSkills = requiredSkills.filter(skill => candidateSkillKeys.has(normalizeSkill(skill)));
+      const missingSkills = requiredSkills.filter(skill => !candidateSkillKeys.has(normalizeSkill(skill)));
+      const matchPercent = requiredSkills.length ? Math.round((matchedSkills.length / requiredSkills.length) * 100) : 0;
+
+      document.getElementById('skillsMatchBadge').textContent = requiredSkills.length
+        ? `${matchPercent}% Match`
+        : 'No Job Skills';
+
+      if (!candidateSkills.length && !requiredSkills.length) {
+        el.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No skills or job-specific requirements available.</div>`;
         return;
       }
 
-      el.innerHTML = skillsList.map(skill => `
-        <div class="progress-wrap">
-          <div class="progress-label">
-            <span>${skill}</span>
-            <span style="font-weight:800;color:var(--c-green)">Verified</span>
-          </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:0%;background:var(--c-green)" data-target="90"></div>
-          </div>
-        </div>`).join('');
+      const skillTags = (skills, className, emptyText) => skills.length
+        ? skills.map(skill => `<span class="badge ${className}" style="margin:0 6px 6px 0;">${skill}</span>`).join('')
+        : `<span style="color:var(--c-text3);font-size:12px;">${emptyText}</span>`;
 
-      requestAnimationFrame(() => {
-        el.querySelectorAll('.progress-fill').forEach(bar => {
-          bar.style.width = bar.dataset.target + '%';
-        });
-      });
+      el.innerHTML = `
+        <div class="progress-wrap">
+          <div class="progress-label"><span>Job skill match</span><strong>${matchPercent}%</strong></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:${matchPercent}%;background:var(--c-green)"></div></div>
+        </div>
+        <div style="margin-top:18px;"><div style="font-size:12px;font-weight:700;margin-bottom:8px;">Required skills</div>${skillTags(requiredSkills, 'badge-gray', 'No job-specific skills configured.')}</div>
+        <div style="margin-top:12px;"><div style="font-size:12px;font-weight:700;color:var(--c-green);margin-bottom:8px;">Matched skills (${matchedSkills.length})</div>${skillTags(matchedSkills, 'badge-green', 'No required skills matched.')}</div>
+        <div style="margin-top:12px;"><div style="font-size:12px;font-weight:700;color:var(--c-red);margin-bottom:8px;">Missing skills (${missingSkills.length})</div>${skillTags(missingSkills, 'badge-red', 'No missing required skills.')}</div>
+        <div style="margin-top:12px;"><div style="font-size:12px;font-weight:700;color:var(--c-accent);margin-bottom:8px;">Additional candidate skills</div>${skillTags(candidateSkills.filter(skill => !requiredSkills.some(required => normalizeSkill(required) === normalizeSkill(skill))), 'badge-blue', 'None')}</div>`;
     }
 
     function renderPreScreeningTab() {

@@ -1137,6 +1137,7 @@
       jobs.forEach((j, index) => {
         const meta = STATUS_META[j.status] || { badge: 'badge-blue', dot: '#185FA5' };
         const tr = document.createElement('tr');
+        tr.onclick = () => { location.href='/mss-career-portal/school/job-detail?id=' + (j.uuid || j.job_id || 0) + '&title=' + encodeURIComponent(j.title) + '&unit=' + encodeURIComponent(j.unit); };
         tr.innerHTML = `
       <td style="font-weight:600;color:var(--text-sub, #666);">${index + 1}</td>
       <td>

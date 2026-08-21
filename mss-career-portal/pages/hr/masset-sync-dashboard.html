@@ -1431,8 +1431,8 @@
   <td><span class="sync-time"><i class="ti ti-clock" aria-hidden="true"></i>${c.lastSync}</span></td>
   <td>
     <div class="actions-cell">
-      ${showSyncButton ? `<button class="action-btn btn-sync" onclick="syncCandidate(${c.id})"><i class="ti ti-refresh" aria-hidden="true"></i> Sync</button>` : ''}
-      ${c.status === 'Sync Failed' ? `<button class="action-btn btn-retry" onclick="retrySync(${c.id})"><i class="ti ti-rotate" aria-hidden="true"></i> Retry</button>` : ''}
+      ${showSyncButton ? `<button class="action-btn btn-sync" onclick="syncCandidate(${c.id}, this)"><i class="ti ti-refresh" aria-hidden="true"></i> Sync</button>` : ''}
+      ${c.status === 'Sync Failed' ? `<button class="action-btn btn-retry" onclick="retrySync(${c.id}, this)"><i class="ti ti-rotate" aria-hidden="true"></i> Retry</button>` : ''}
       <button class="action-btn btn-timeline" onclick="openTimeline(${c.id})"><i class="ti ti-timeline" aria-hidden="true"></i> Timeline</button>
     </div>
   </td>
@@ -1499,9 +1499,17 @@
     }
 
     /* ── Actions ── */
-    async function syncCandidate(id) {
+    async function syncCandidate(id, btn) {
       const c = candidates.find(x => x.id === id);
       if (!c) return;
+      
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="ti ti-refresh" style="animation: pulse 1.4s infinite;" aria-hidden="true"></i> Syncing...`;
+        btn.style.opacity = '0.7';
+        btn.style.pointerEvents = 'none';
+      }
+
       try {
         const res = await fetch(`${API_BASE}/hr/masset/${id}/sync`, {
           method: 'PATCH',
@@ -1526,8 +1534,8 @@
       }
       renderTable(getFiltered());
     }
-    async function retrySync(id) {
-      return syncCandidate(id);
+    async function retrySync(id, btn) {
+      return syncCandidate(id, btn);
     }
     function refreshAll() {
       showToast('Status refreshed successfully', 'success');

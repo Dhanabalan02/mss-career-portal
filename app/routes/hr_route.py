@@ -18,7 +18,6 @@ from app.crud.hr_crud import (
 
 router = APIRouter(prefix="/hr", tags=["HR"])
 
-
 @router.get("/ats-pipeline")
 def ats_pipeline(
     db: Session = Depends(get_db),

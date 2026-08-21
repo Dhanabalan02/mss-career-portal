@@ -15,7 +15,6 @@ def serve_html_with_base(relative_file_path: str, base_href: str) -> HTMLRespons
     with open(file_path, "r", encoding="utf-8", errors="replace") as f:
         content = f.read()
 
-    # Inject the <base> tag right after the <head> tag
     if "<head>" in content:
         content = content.replace("<head>", f'<head><base href="{base_href}">')
     elif "<HEAD>" in content:

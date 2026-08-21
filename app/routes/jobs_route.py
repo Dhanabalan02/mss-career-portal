@@ -605,6 +605,11 @@ def get_applicant_detail_route(
     user = app.users
     job_post = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
     job_title = job_post.job_title if job_post else "Unknown Job"
+    job_skills = [
+        skill.strip()
+        for skill in (job_post.skills_required or "").split(",")
+        if skill.strip()
+    ] if job_post else []
 
     # Calculate experience
     from datetime import datetime
@@ -913,6 +918,7 @@ def get_applicant_detail_route(
         "mobile": user.mobile,
         "job": job_title,
         "job_id": app.job_id,
+        "jobSkills": job_skills,
         "mss_app_no": app.mss_app_no,
         "user_id": user.user_id,
         "appliedDate": app.created_at.strftime("%d-%m-%y") if app.created_at else "",

@@ -44,7 +44,7 @@ def authenticate_user_roles(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password.")
 
     token_data = {"sub": str(candidate.user_id), "role": "candidate"}
-    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=2))
 
     db.add(UserLoginLog(
         user_id=candidate.user_id,
@@ -105,7 +105,7 @@ def authenticate_admin_roles(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid password.")
 
     token_data = {"sub": str(admin.admin_id), "role": role_name}
-    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=2))
 
     db.add(UserLoginLog(
         user_id=admin.admin_id,
@@ -198,7 +198,7 @@ def googlelogin(
     user = _oauth_get_or_create_user(db, email, name, "Google", ip_address)
 
     token_data = {"sub": str(user.user_id), "role": "candidate"}
-    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=2))
 
     db.add(UserLoginLog(
         user_id=user.user_id,
@@ -235,7 +235,7 @@ def linkedin_login(
     user = _oauth_get_or_create_user(db, email, name, "LinkedIn", ip_address)
 
     token_data = {"sub": str(user.user_id), "role": "candidate"}
-    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=2))
 
     db.add(UserLoginLog(
         user_id=user.user_id,
@@ -308,7 +308,7 @@ def register_candidate(
     db.refresh(new_user)
 
     token_data = {"sub": str(new_user.user_id), "role": "candidate"}
-    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=8))
+    access_token = create_access_token(data=token_data, expires_delta=timedelta(hours=2))
 
     success_log = UserLoginLog(
         user_id=new_user.user_id,

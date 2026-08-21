@@ -575,6 +575,7 @@ function goToPage(pageNum, totalPages) {
 
 /* ── Stage chip config ── */
 let STAGE_CONFIG = [
+  { name:'All',           count:0, color:'#444441', bg:'#F1EFE8' },
   { name:'Applied',        count:0, color:'#534AB7', bg:'#EEEDFE' },
   { name:'Screened',       count:0, color:'#185FA5', bg:'#E6F1FB' },
   { name:'Interview',      count:0, color:'#BA7517', bg:'#FAEEDA' },
@@ -595,10 +596,11 @@ function renderChips() {
     chip.className = 'stage-chip' + (activeStageFilter === s.name ? ' active' : '');
     chip.dataset.stage = s.name;
     chip.style.cssText = `background:${s.bg};color:${s.color};border-color:${s.color}30;`;
-    if (activeStageFilter === s.name) chip.style.outline = `2px solid ${s.color}`;
-    chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${s.count}</span>`;
+    if ((s.name === 'All' && !activeStageFilter) || activeStageFilter === s.name) chip.style.outline = `2px solid ${s.color}`;
+    const count = s.name === 'All' ? CANDIDATES.length : s.count;
+    chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${count}</span>`;
     chip.onclick = () => {
-      activeStageFilter = activeStageFilter === s.name ? '' : s.name;
+      activeStageFilter = s.name === 'All' ? '' : (activeStageFilter === s.name ? '' : s.name);
       document.getElementById('fStage').value = activeStageFilter;
       renderChips();
       filterApplicants();
@@ -674,9 +676,11 @@ function renderApplicants(list) {
       <td>${stageBadge(c.stage)}</td>
       <td>${interviewStatusHtml(c.interviewStatus)}</td>
       <td>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <button class="action-btn blue"  onclick="event.stopPropagation();localStorage.setItem('candidateId', ${c.id});location.href='/mss-career-portal/school/candidate-profile?userId=${c.user_id}&appId=${c.app_id}'">Profile</button>
-        <!-- ${c.stage!=='Rejected' ? `<button class="action-btn red" onclick="event.stopPropagation();rejectCandidate('${c.name}')">Reject</button>` : ''} -->
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+          <!-- Profile Button (Updated to match HR icon style but targets School route) -->
+          <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); localStorage.setItem('candidateId', '${c.id}'); location.href='/mss-career-portal/school/candidate-profile?name=' + encodeURIComponent('${c.name}') + '&job_title=' + encodeURIComponent('${c.job}')">
+            <i class="ti ti-user"></i>
+          </button>
         </div>
       </td>`;
     tbody.appendChild(tr);

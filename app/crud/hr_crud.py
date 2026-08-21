@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import date, datetime
 from sqlalchemy.orm import Session
-from sqlalchemy import func, or_
+from sqlalchemy import or_
 import requests
 from app.core.logger import logger
 
@@ -551,7 +551,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
     }
 
     # 3. HTTP POST Request to MASSET local server or Webhook URL
-    webhook_url = "https://test.masset.themadrassevasadan.org/synchrms/api/career_sync.php"
+    webhook_url = "https://test.masset.themadrassevasadan.org/api/career_sync.php"
     logger.info(f"Attempting to sync candidate {applicant_id} to {webhook_url}")
     logger.info(f"Payload: {payload}")
     
@@ -566,6 +566,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
     
     # 4. Update state to 'Onboarding'. Tracking continues via app.masset_employee_id
     app.sync_masset = 1
+    app.applicant_stage = ApplicantStage.ONBOARDING
     app.masset_synced_at = datetime.utcnow()
     app.masset_synced_by = admin_id
     
@@ -614,6 +615,7 @@ def update_masset_status_from_webhook(db: Session, application_id: str, masset_e
     if status and status.lower() == "onboarded":
         app.issue_appointment_order = 1
         app.masset_sync_success_on = datetime.utcnow()
+        app.applicant_stage = ApplicantStage.ONBOARDING_COMPLETED
         app.reporting_to = reporting_to
         
     app.updated_at = datetime.utcnow()

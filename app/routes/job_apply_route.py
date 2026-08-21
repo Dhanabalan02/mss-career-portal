@@ -359,25 +359,19 @@ def download_resume_route(filename: str, inline: bool = False):
     BASE_DIR = Path(__file__).resolve().parent.parent.parent
     
     # Normalize path separators
-    normalized_path = filename.replace("\\", "/")
+    normalized_path = filename.replace("\\", "/").lstrip("/")
     print(f"DEBUG download: normalized_path = {repr(normalized_path)}")
     download_name = os.path.basename(normalized_path)
     
-    # Check absolute path from BASE_DIR
-    target_path = BASE_DIR / normalized_path
-    
-    if not target_path.exists():
-        # Fallback to app/uploads/resumes
-        fallback_path = BASE_DIR / "app" / "uploads" / "resumes" / download_name
-        if fallback_path.exists():
-            target_path = fallback_path
-        else:
-            # Fallback to root uploads/resumes
-            fallback_path2 = BASE_DIR / "uploads" / "resumes" / download_name
-            if fallback_path2.exists():
-                target_path = fallback_path2
-            else:
-                target_path = None
+    candidate_paths = [
+        BASE_DIR / normalized_path,
+        BASE_DIR / "app" / "uploads" / "resumes" / download_name,
+        BASE_DIR / "uploads" / "resumes" / download_name,
+    ]
+    target_path = next(
+        (path for path in candidate_paths if path.is_file()),
+        None,
+    )
             
     print(f"DEBUG download: target_path = {repr(target_path)}")
     if not target_path:

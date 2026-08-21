@@ -170,7 +170,7 @@
     el.innerHTML = `
       <div class="portal-topbar__left">
           <button class="portal-topbar-logo">
-          <a href="/mss-career-portal/home" class="portal-topbar-logo"
+          <a href="/mss-career-portal/hr/dashboard" class="portal-topbar-logo"
                   type="button"
                   aria-label="Toggle navigation"
                   data-sidebar-open>

@@ -1147,7 +1147,7 @@
   <script src="portal-layout.js"></script>
   <script>
     var token = localStorage.getItem('access_token');
-    var JOBS_API_BASE = window.AUTH_API_BASE || 'http://192.168.0.12:8000';
+    var JOBS_API_BASE = window.AUTH_API_BASE;
 
     /* ── HELPERS ─────────────────────────────────────────────────── */
     function statusBadge(s) {
@@ -1474,8 +1474,8 @@
                     <td>${j.school_name || 'Chetpet'}</td>
                     <td style="text-align:center;font-weight:700;">${j.vacancy_count || 1}</td>
                     <td>${statusBadge(statusLabel)}</td>
-                    <td><a class="action-link" onclick="event.stopPropagation();location.href='/mss-career-portal/hr/jobpost-details?id=${j.job_id}'">View</a></td>`;
-              tr.onclick = () => location.href = '/mss-career-portal/hr/jobpost-details?id=' + j.job_id;
+                    <td><a class="action-link" onclick="event.stopPropagation(); localStorage.setItem('hr_current_job_id', '${j.uuid || j.job_id}'); location.href='/mss-career-portal/hr/jobpost-details?id=${j.uuid || j.job_id}&title=' + encodeURIComponent('${j.job_title}') + '&unit=' + encodeURIComponent('${j.school_name || 'Chetpet'}')">View</a></td>`;
+              tr.onclick = () => { localStorage.setItem('hr_current_job_id', j.uuid || j.job_id); location.href = '/mss-career-portal/hr/jobpost-details?id=' + (j.uuid || j.job_id) + '&title=' + encodeURIComponent(j.job_title) + '&unit=' + encodeURIComponent(j.school_name || 'Chetpet'); };
               jBody.appendChild(tr);
             });
           }
@@ -1517,10 +1517,10 @@
                     <td>${c.exp}</td>
                     <td>${stageBadge(c.stage)}</td>
                     <td>${interviewStatusBadge(c.interviewStatus)}</td>
-                    <td><a class="action-link" onclick="event.stopPropagation();localStorage.setItem('candidateId', ${c.job_applicant_id});location.href='/mss-career-portal/hr/candidate-profile'">Profile</a></td>`;
+                    <td><a class="action-link" onclick="event.stopPropagation(); localStorage.setItem('candidateId', '${c.job_applicant_id || c.id}'); location.href='/mss-career-portal/hr/candidate-profile?name=' + encodeURIComponent('${c.name}') + '&job_title=' + encodeURIComponent('${c.job}')">Profile</a></td>`;
               tr.onclick = () => {
-                localStorage.setItem('candidateId', c.job_applicant_id);
-                location.href = '/mss-career-portal/hr/candidate-profile';
+                localStorage.setItem('candidateId', c.job_applicant_id || c.id);
+                location.href = '/mss-career-portal/hr/candidate-profile?name=' + encodeURIComponent(c.name) + '&job_title=' + encodeURIComponent(c.job);
               };
               aBody.appendChild(tr);
             });
