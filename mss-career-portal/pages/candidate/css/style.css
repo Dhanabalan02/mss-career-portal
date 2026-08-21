@@ -226,10 +226,10 @@ a:hover, a:focus {
   outline: 0px none;
   text-decoration: none;
 }
-/* a:active, a:hover, a:focus {
+a:active, a:hover{
   color: inherit;
-} */
-a:active, a:hover, a:focus {
+}
+a:focus {
   color: var(--white-color);
 }
 
