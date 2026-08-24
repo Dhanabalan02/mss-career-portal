@@ -82,7 +82,6 @@ def sendOmniReply(to, text):
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     }
-    logger.info(f"Access Token: {OMNI_ACCESS_TOKEN}")
     
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=10)
