@@ -1168,8 +1168,13 @@
                   <i class="feather-phone"></i
                   ><input
                     type="tel"
-                    placeholder="+91 90000 00000"
+                    placeholder="90000 00000"
                     name="phone"
+                    inputmode="numeric"
+                    maxlength="10"
+                    minlength="10"
+                    pattern="[0-9]{10}"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
                   />
                 </div>
               </div>
