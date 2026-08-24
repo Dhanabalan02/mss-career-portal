@@ -116,6 +116,19 @@
   background: #fff;
 }
 
+#candidateLoginModal .mss-login-feedback {
+  display: block !important;
+  height: 1.15rem;
+  margin-top: 0.25rem;
+  color: #dc3545;
+  font-size: 0.82rem;
+  visibility: hidden;
+}
+
+#candidateLoginModal .mss-login-feedback.is-visible {
+  visibility: visible;
+}
+
 .form-check-input:checked {
    background-color: var(--primary-color); 
    border-color: var(--primary-color);

@@ -129,6 +129,17 @@
       border: 1px solid #fecaca;
       font-family: "Rubik", sans-serif;
     }
+    .invalid-feedback {
+      display: block !important;
+      color: #dc3545;
+      font-size: 0.82rem;
+      margin-top: 0.25rem;
+      height: 1.15rem;
+      visibility: hidden;
+    }
+    .invalid-feedback.is-visible {
+      visibility: visible;
+    }
   </style>
 </head>
 <body>
@@ -268,7 +279,7 @@
         <div id="errorMsg" class="error-msg"></div>
 
         <form id="loginForm">
-          <div class="mb-4">
+          <div class="mb-2">
             <label class="mss-label">Email Address</label>
             <div class="mss-modal-field">
               <i class="ti ti-mail"></i>
@@ -277,6 +288,9 @@
                 placeholder="name@company.com"
                 required
               />
+            </div>
+            <div id="emailFeedback" class="invalid-feedback" aria-live="polite">
+              Please enter a valid domain or email
             </div>
           </div>
 
@@ -326,28 +340,19 @@
 
     function validateEmail() {
       const val = emailInput.value.trim();
-      let feedback = emailInput.parentElement.nextElementSibling;
-      if (!feedback || !feedback.classList.contains('invalid-feedback')) {
-        feedback = document.createElement('div');
-        feedback.className = 'invalid-feedback';
-        feedback.style.color = '#dc3545';
-        feedback.style.fontSize = '0.82rem';
-        feedback.style.marginTop = '0.25rem';
-        feedback.textContent = 'Please enter a valid domain or email ending in .com, .org, or .in';
-        emailInput.parentElement.parentNode.insertBefore(feedback, emailInput.parentElement.nextSibling);
-      }
+      const feedback = document.getElementById('emailFeedback');
 
       if (val === '') {
         emailInput.parentElement.style.borderColor = '#e2e8f0';
-        feedback.style.display = 'none';
+        feedback.classList.remove('is-visible');
         return true;
       } else if (emailRegex.test(val)) {
         emailInput.parentElement.style.borderColor = '#10b981'; // Valid green
-        feedback.style.display = 'none';
+        feedback.classList.remove('is-visible');
         return true;
       } else {
         emailInput.parentElement.style.borderColor = '#dc3545'; // Invalid red
-        feedback.style.display = 'block';
+        feedback.classList.add('is-visible');
         return false;
       }
     }

@@ -1272,25 +1272,29 @@ window.fpUpdatePassword = async function () {
 
     const $container = $input.closest('.mss-modal-field');
     const $insertAfterTarget = $container.length > 0 ? $container : $input;
+    const isLoginFeedback = $insertAfterTarget.closest('#candidateLoginModal').length > 0;
 
     let $feedback = $insertAfterTarget.next('.invalid-feedback');
     if ($feedback.length === 0) {
-      $insertAfterTarget.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem;">Please enter a valid domain or email ending in .com, .org, or .in</div>');
+      $insertAfterTarget.after('<div class="invalid-feedback" style="color: #dc3545; font-size: 0.82rem; margin-top: 0.25rem;">Please enter a valid domain or email</div>');
       $feedback = $insertAfterTarget.next('.invalid-feedback');
     }
 
     if (val === '') {
       $input.removeClass('is-invalid is-valid');
       $container.removeClass('is-invalid is-valid');
-      $feedback.hide();
+      if (isLoginFeedback) $feedback.removeClass('is-visible');
+      else $feedback.hide();
     } else if (regex.test(val)) {
       $input.removeClass('is-invalid').addClass('is-valid');
       $container.removeClass('is-invalid').addClass('is-valid');
-      $feedback.hide();
+      if (isLoginFeedback) $feedback.removeClass('is-visible');
+      else $feedback.hide();
     } else {
       $input.removeClass('is-valid').addClass('is-invalid');
       $container.removeClass('is-valid').addClass('is-invalid');
-      $feedback.show();
+      if (isLoginFeedback) $feedback.addClass('is-visible');
+      else $feedback.show();
     }
   }
 
