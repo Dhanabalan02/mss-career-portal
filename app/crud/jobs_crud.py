@@ -1,19 +1,10 @@
-import secrets
-
-import string
-
+import uuid
 from datetime import date
-
 from typing import Any, Dict, List, Optional
-
-
 from fastapi import HTTPException, status
 
 from sqlalchemy.orm import Session
-
-
 from app.core.logger import logger
-
 from app.models import JobPost, JobPreScreeningQuestion, JobStatus
 
 

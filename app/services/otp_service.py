@@ -24,7 +24,7 @@ class OtpService:
         self.api_url = "https://wb.omni.tatatelebusiness.com/whatsapp-cloud/messages"
         
         # 2. FIX: Pulled dynamically from your environment settings instead of hardcoding
-        self.api_key = settings.WHATSAPP_API_KEY 
+        self.api_key = settings.OMNI_PORTAL_API_KEY 
 
     def send_otp_message(self, to: str, otp: str) -> dict:
         formatted_to = normalize_whatsapp_number(to)

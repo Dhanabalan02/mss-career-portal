@@ -22,7 +22,7 @@ def normalize_whatsapp_number(mobile: str) -> str:
 class JobReopenedService:
     def __init__(self):
         self.api_url = "https://wb.omni.tatatelebusiness.com/whatsapp-cloud/messages"
-        self.api_key = settings.WHATSAPP_API_KEY
+        self.api_key = settings.OMNI_PORTAL_API_KEY
 
     def send_job_reopened_message(
         self,
