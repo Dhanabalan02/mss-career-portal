@@ -828,6 +828,12 @@
         font-size: 12px;
       }
 
+      .applied-date {
+        font-size: 11px;
+        color: var(--text-3);
+        font-family: var(--mono);
+      }
+
       .match-badge {
         font-size: 11px;
         font-weight: 600;
@@ -2324,6 +2330,7 @@
     </div>
     <div class="card-footer">
       <span class="days-ago"><i class="ti ti-clock" aria-hidden="true"></i>${c.daysAgo}d ago</span>
+      ${c.appliedDate ? `<span class="applied-date">${c.appliedDate}</span>` : ""}
     </div>
   </div>`;
       }
@@ -2634,7 +2641,9 @@
             : false;
 
         if (currentStage === targetStage) return true;
-        if (targetStage === "Prescreen Rejected") return false;
+        if (targetStage === "Prescreen Rejected") {
+          return currentStage === "Screened";
+        }
         if (
           currentStage === "Prescreen Rejected" &&
           targetStage !== "Interview" &&
@@ -2663,8 +2672,12 @@
             targetStage === "Onboarded")
         )
           return false;
-        if (currentStage === "Offer Accepted" || currentStage === "Onboarded")
-          return false;
+        if (currentStage === "Onboarded") return false;
+        if (currentStage === "Offer Accepted") {
+          // An accepted offer can still be walked back to re-issue a fresh offer;
+          // anything past that (Onboarded) is auto-managed by the MASSET sync.
+          return targetStage === "Offer";
+        }
         return true;
       }
 
@@ -2672,7 +2685,12 @@
 
       function handleStageChangeRequest(c, newStage) {
         if (!isStageMoveAllowed(c, newStage)) {
-          if (c.stage === "Interview" && newStage === "Screened") {
+          if (c.stage === "Onboarded" || newStage === "Onboarded") {
+            showToast(
+              "Onboarded status is auto-synced from MASSET after AO creation and cannot be changed manually",
+              "info",
+            );
+          } else if (c.stage === "Interview" && newStage === "Screened") {
             showToast(
               "cannot move the candidate from interview stage to screened",
               "info",
@@ -3354,6 +3372,11 @@
             "Please fill out all required fields (Round, Date, Start Time, End Time).",
             "warning",
           );
+          return;
+        }
+
+        if (!interviewer) {
+          showToast("Please select an interviewer.", "warning");
           return;
         }
 

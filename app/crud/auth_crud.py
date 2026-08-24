@@ -373,6 +373,7 @@ def get_candidate_profile_db(db: Session, user_id: int) -> dict:
             "pincode": meta.pincode if meta else None,
             "skills": skills_list,
             "resume_doc": meta.resume_doc if meta else None,
+            "resume_uploaded_at": meta.resume_uploaded_at.strftime("%Y-%m-%d %H:%M:%S") if (meta and meta.resume_uploaded_at) else None,
             "profile_status": meta.profile_status if meta else None,
             "about": meta.about,
             "designation": experience[0].designation if experience else None,
@@ -419,7 +420,7 @@ def get_candidate_profile_db(db: Session, user_id: int) -> dict:
 
 def update_candidate_profile_db(db: Session, user_id: int, data: dict) -> dict:
     """Updates candidate users, candidate_metadata, candidate_education_details, and candidate_experience tables."""
-    from datetime import date
+    from datetime import date, datetime
     from app.models import CandidateMetadata, CandidateEducationDetail, CandidateExperience
     
     user = db.query(Users).filter(Users.user_id == user_id, Users.user_status == 1).first()
@@ -453,7 +454,10 @@ def update_candidate_profile_db(db: Session, user_id: int, data: dict) -> dict:
         meta.state = metadata_in.get("state", meta.state)
         meta.country = metadata_in.get("country", meta.country)
         meta.pincode = metadata_in.get("pincode", meta.pincode)
-        meta.resume_doc = metadata_in.get("resume_doc", meta.resume_doc)
+        new_resume_doc = metadata_in.get("resume_doc", meta.resume_doc)
+        if new_resume_doc != meta.resume_doc:
+            meta.resume_uploaded_at = datetime.utcnow()
+        meta.resume_doc = new_resume_doc
         meta.profile_status = "complete"
         
         meta.about = metadata_in.get("about", meta.about)
@@ -568,16 +572,22 @@ def get_interviewers_db(db: Session) -> list:
 
 def update_candidate_resume_db(db: Session, user_id: int, resume_path: str) -> dict:
     """Updates candidate's resume_doc path."""
+    from datetime import datetime
     from app.models import CandidateMetadata
-    
+
     meta = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == user_id).first()
     if not meta:
         meta = CandidateMetadata(user_id=user_id)
         db.add(meta)
-    
+
     meta.resume_doc = resume_path
+    meta.resume_uploaded_at = datetime.utcnow()
     db.commit()
-    return {"message": "Resume uploaded successfully", "resume_doc": resume_path}
+    return {
+        "message": "Resume uploaded successfully",
+        "resume_doc": resume_path,
+        "resume_uploaded_at": meta.resume_uploaded_at.strftime("%Y-%m-%d %H:%M:%S"),
+    }
 
 def update_candidate_profile_image_db(db: Session, user_id: int, image_path: str) -> dict:
     """Updates candidate's profile image path in the users table."""

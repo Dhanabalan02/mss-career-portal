@@ -448,6 +448,21 @@
     } catch(e) { console.error('Error marking read', e); }
   }
 
+  function openNotification(id) {
+    const note = getNotes().find(n => n.id === id);
+    markRead(id);
+    if (!note || !note.redirect_url) return;
+
+    try {
+      const redirectUrl = new URL(note.redirect_url, window.location.origin);
+      if (redirectUrl.origin === window.location.origin) {
+        window.location.assign(redirectUrl.href);
+      }
+    } catch (e) {
+      console.warn('Invalid notification redirect URL:', note.redirect_url);
+    }
+  }
+
   async function markAllRead() {
     const notes = getNotes();
     if (!notes.some(n => !n.read)) return;
@@ -550,7 +565,7 @@
       if (e.target.closest('[data-mark-all-read]')) { markAllRead(); return; }
 
       const noteItem = e.target.closest('[data-notification-id]');
-      if (noteItem) { markRead(Number(noteItem.dataset.notificationId)); return; }
+      if (noteItem) { openNotification(Number(noteItem.dataset.notificationId)); return; }
 
       if (e.target.closest('[data-sidebar-open]')) { openSidebar(); return; }
       if (e.target.closest('[data-sidebar-close]')) { closeSidebar(); return; }
@@ -571,7 +586,7 @@
       }
       if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('[data-notification-id]')) {
         e.preventDefault();
-        markRead(Number(e.target.closest('[data-notification-id]').dataset.notificationId));
+        openNotification(Number(e.target.closest('[data-notification-id]').dataset.notificationId));
       }
     });
 

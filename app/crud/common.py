@@ -119,7 +119,7 @@ def compute_stage(app, has_interview: bool) -> str:
     return 'Applied'
 
 
-def compute_offer_status(app) -> str:
+def compute_offer_status(app, latest_offer=None) -> str:
     from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus
     if app.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED:
         return 'accepted'
@@ -127,11 +127,41 @@ def compute_offer_status(app) -> str:
         return 'expired'
     if app.issue_offer == 1:
         return 'sent'
-    if app.offered_salary or app.joining_date:
+    if latest_offer is not None:
         return 'draft'
     if app.applicant_job_status == ApplicantJobStatus.SELECTED:
         return 'awaiting'
     return 'awaiting'
+
+
+def get_latest_offer(db, job_applicant_id: int):
+    """Returns the most recently issued JobOffer row for an applicant, or None."""
+    from app.models.job_offer_model import JobOffer
+    return (
+        db.query(JobOffer)
+        .filter(JobOffer.job_applicant_id == job_applicant_id)
+        .order_by(JobOffer.job_offer_id.desc())
+        .first()
+    )
+
+
+def get_latest_offers_map(db, job_applicant_ids: list) -> dict:
+    """Batch-loads the latest JobOffer per job_applicant_id, keyed by job_applicant_id."""
+    from app.models.job_offer_model import JobOffer
+    if not job_applicant_ids:
+        return {}
+    offers = (
+        db.query(JobOffer)
+        .filter(JobOffer.job_applicant_id.in_(job_applicant_ids))
+        .order_by(JobOffer.job_applicant_id, JobOffer.job_offer_id.desc())
+        .all()
+    )
+    latest_map = {}
+    for offer in offers:
+        if offer.job_applicant_id not in latest_map:
+            latest_map[offer.job_applicant_id] = offer
+    return latest_map
+
 
 def check_and_close_job_if_filled(db, job_id: int):
     from app.models.job_post_model import JobPost

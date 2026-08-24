@@ -1,11 +1,25 @@
 import uuid
-from datetime import date
+from datetime import date, datetime
 from typing import Any, Dict, List, Optional
 from fastapi import HTTPException, status
 
 from sqlalchemy.orm import Session
 from app.core.logger import logger
 from app.models import JobPost, JobPreScreeningQuestion, JobStatus
+
+
+def close_expired_job_posts(db: Session) -> None:
+    """Auto-closes any published job posts whose closing date has passed."""
+
+    today = date.today()
+
+    (
+        db.query(JobPost)
+        .filter(JobPost.job_status == JobStatus.PUBLISH, JobPost.closing_date < today)
+        .update({JobPost.job_status: JobStatus.CLOSED}, synchronize_session=False)
+    )
+
+    db.commit()
 
 
 def get_job_post_or_404(db: Session, job_id: int) -> JobPost:
@@ -26,6 +40,8 @@ def get_job_post_or_404(db: Session, job_id: int) -> JobPost:
 
 def get_admin_job_posts(db: Session, admin_id: int) -> List[JobPost]:
     """Retrieves all job posts created by a specific admin (or all if HR)."""
+
+    close_expired_job_posts(db)
 
     from app.models import Admins
 
@@ -50,6 +66,8 @@ def get_published_job_posts(
 ) -> List[JobPost]:
     """Retrieves all published job posts, for the public candidate-facing site."""
 
+    close_expired_job_posts(db)
+
     query = db.query(JobPost).filter(JobPost.job_status == JobStatus.PUBLISH)
 
     if school_name:
@@ -61,6 +79,8 @@ def get_published_job_posts(
 
 def get_published_job_post_or_404(db: Session, job_id: int) -> JobPost:
     """Fetches a single published job post by its primary key or raises a 404."""
+
+    close_expired_job_posts(db)
 
     job_post = (
         db.query(JobPost)
@@ -132,6 +152,7 @@ def create_job_post(
         additional_requirements=additional_requirements,
         job_status=job_status,
         uuid=uuid_val,
+        published_at=datetime.now() if job_status == JobStatus.PUBLISH else None,
     )
 
     if pre_screening_questions:
@@ -175,6 +196,8 @@ def update_job_post(
 
     job_post = get_job_post_or_404(db, job_id)
 
+    previous_status = job_post.job_status
+
     field_updates = {
         "job_title": job_title,
         "department": department,
@@ -203,6 +226,9 @@ def update_job_post(
         import uuid
         job_post.uuid = str(uuid.uuid4())
 
+    if job_post.job_status == JobStatus.PUBLISH and previous_status != JobStatus.PUBLISH:
+        job_post.published_at = datetime.now()
+
     if pre_screening_questions is not None:
 
         db.query(JobPreScreeningQuestion).filter(
@@ -220,16 +246,28 @@ def update_job_post(
     return job_post
 
 
-def update_job_status(db: Session, job_id: int, job_status: JobStatus) -> JobPost:
-    """Sets a job post's status, used to mark a job post as closed or as a draft."""
+def update_job_status(
+    db: Session,
+    job_id: int,
+    job_status: JobStatus,
+    closing_date: Optional[date] = None,
+) -> JobPost:
+    """Sets a job post's status, used to mark a job post as closed, published, or as a draft."""
 
     job_post = get_job_post_or_404(db, job_id)
 
+    previous_status = job_post.job_status
+
     job_post.job_status = job_status
 
-    if job_status == JobStatus.PUBLISH and not job_post.uuid:
-        import uuid
-        job_post.uuid = str(uuid.uuid4())
+    if job_status == JobStatus.PUBLISH:
+        if not job_post.uuid:
+            import uuid
+            job_post.uuid = str(uuid.uuid4())
+        if closing_date:
+            job_post.closing_date = closing_date
+        if previous_status != JobStatus.PUBLISH:
+            job_post.published_at = datetime.now()
 
     if job_status == JobStatus.CLOSED:
 
@@ -267,6 +305,7 @@ def clone_job_post(
         additional_requirements=original_job.additional_requirements,
         job_status=JobStatus.PUBLISH if publish else JobStatus.DRAFT,
         uuid=str(uuid.uuid4()) if publish else None,
+        published_at=datetime.now() if publish else None,
     )
 
     db.add(cloned_job)

@@ -216,7 +216,7 @@ CREATE TABLE `job_applicants` (
   `cover_letter` text DEFAULT NULL,
   `skills_match` decimal(5,2) DEFAULT NULL,
   `applicant_job_status` enum('selected','rejected','hold','next_round') DEFAULT NULL,
-  `applicant_stage` enum('prescreen-reject','screened','interview','offer','offer_accepted','onboarding') DEFAULT NULL,
+  `applicant_stage` enum('prescreen-reject','screened','interview','offer','offer_accepted','onboarded') DEFAULT NULL,
   `offered_salary` decimal(15,2) DEFAULT NULL,
   `joining_date` date DEFAULT NULL,
   `probation_period` varchar(150) DEFAULT NULL,
@@ -249,6 +249,33 @@ INSERT INTO `job_applicants` (`job_applicant_id`, `mss_app_no`, `job_id`, `user_
 (24, 'MSS-APP-24', 37, 15, 'uploads/resumes/anand_data.pdf', '', NULL, NULL, 'screened', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'pending', 0, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-02 05:34:41', '2026-07-02 05:34:41'),
 (25, 'MSS-APP-25', 38, 16, 'uploads/resumes/S_Dhanabalan_Resume-original.pdf', '', NULL, NULL, 'screened', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'pending', 0, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-08 11:48:50', '2026-07-08 11:48:50'),
 (26, 'MSS-APP-26', 37, 16, 'uploads/resumes/S_Dhanabalan_Resume-original.pdf', '', NULL, NULL, 'interview', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'pending', 0, NULL, NULL, NULL, NULL, 0, NULL, '2026-07-08 11:52:02', '2026-07-08 12:18:07');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `job_offers`
+--
+-- One row per offer issued to an applicant (job_applicant_id). Re-issuing an offer
+-- inserts a new row instead of overwriting the previous one, so past offers stay
+-- visible as history; the highest job_offer_id per job_applicant_id is the current offer.
+--
+
+CREATE TABLE `job_offers` (
+  `job_offer_id` int(11) NOT NULL,
+  `job_applicant_id` int(11) NOT NULL,
+  `offered_salary` varchar(150) DEFAULT NULL,
+  `joining_date` date DEFAULT NULL,
+  `probation_period` varchar(150) DEFAULT NULL,
+  `offer_issued_date` date DEFAULT NULL,
+  `offer_expiry_date` date DEFAULT NULL,
+  `offer_remarks` text DEFAULT NULL,
+  `offer_template` varchar(100) DEFAULT NULL,
+  `offer_letter_doc` text DEFAULT NULL,
+  `offer_letter_doc_path` varchar(255) DEFAULT NULL,
+  `issued_by` int(11) DEFAULT NULL,
+  `is_draft` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -399,6 +426,7 @@ CREATE TABLE `notification_logs` (
   `recipient_email` varchar(255) DEFAULT NULL,
   `user_role` varchar(50) DEFAULT NULL,
   `notification_type` varchar(100) DEFAULT NULL,
+  `redirect_url` varchar(500) DEFAULT NULL,
   `channel` varchar(50) DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `message` text DEFAULT NULL,
@@ -738,6 +766,14 @@ ALTER TABLE `job_applicants`
   ADD KEY `fk_offer_issued_id` (`issued_by`);
 
 --
+-- Indexes for table `job_offers`
+--
+ALTER TABLE `job_offers`
+  ADD PRIMARY KEY (`job_offer_id`),
+  ADD KEY `fk_job_offer_applicant_id` (`job_applicant_id`),
+  ADD KEY `fk_job_offer_issued_id` (`issued_by`);
+
+--
 -- Indexes for table `job_interview_schedule`
 --
 ALTER TABLE `job_interview_schedule`
@@ -864,6 +900,12 @@ ALTER TABLE `job_applicants`
   MODIFY `job_applicant_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
+-- AUTO_INCREMENT for table `job_offers`
+--
+ALTER TABLE `job_offers`
+  MODIFY `job_offer_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `job_interview_schedule`
 --
 ALTER TABLE `job_interview_schedule`
@@ -978,6 +1020,13 @@ ALTER TABLE `interview_remarks`
 ALTER TABLE `job_applicants`
   ADD CONSTRAINT `fk_job_apply_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_offer_issued_id` FOREIGN KEY (`issued_by`) REFERENCES `admins` (`admin_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `job_offers`
+--
+ALTER TABLE `job_offers`
+  ADD CONSTRAINT `fk_job_offer_applicant_id` FOREIGN KEY (`job_applicant_id`) REFERENCES `job_applicants` (`job_applicant_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_job_offer_issued_id` FOREIGN KEY (`issued_by`) REFERENCES `admins` (`admin_id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
 -- Constraints for table `job_interview_schedule`

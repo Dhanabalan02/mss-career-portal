@@ -482,7 +482,7 @@ tbody tr:hover { background: var(--bg2); }
       <div class="stat-card sc-onboarding">
         <div class="stat-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
         <div class="stat-value">0</div>
-        <div class="stat-label">Onboarding</div>
+        <div class="stat-label">Onboarded</div>
         <div class="stat-delta"></div>
       </div>
     </div>
@@ -501,7 +501,7 @@ tbody tr:hover { background: var(--bg2); }
         <option>Interview</option>
         <option>Offer</option>
         <option>Offer Accepted</option>
-        <option>Onboarding</option>
+        <option>Onboarded</option>
         <option>Rejected</option>
       </select>
       <select class="filter-select" id="fExp" onchange="filterApplicants()">
@@ -581,7 +581,7 @@ let STAGE_CONFIG = [
   { name:'Interview',      count:0, color:'#BA7517', bg:'#FAEEDA' },
   { name:'Offer',          count:0, color:'#534AB7', bg:'#EEEDFE' },
   { name:'Offer Accepted', count:0, color:'#3B6D11', bg:'#EAF3DE' },
-  { name:'Onboarding',     count:0, color:'#0F6E56', bg:'#E1F5EE' },
+  { name:'Onboarded',      count:0, color:'#0F6E56', bg:'#E1F5EE' },
   { name:'Rejected',       count:0, color:'#A32D2D', bg:'#FCEBEB' },
 ];
 
@@ -615,7 +615,7 @@ function stageBadge(stage) {
   const map = {
     'Applied':'badge-applied', 'Screened':'badge-screened', 'Interview':'badge-interview',
     'Offer':'badge-offer', 'Offer Accepted':'badge-accepted',
-    'Onboarding':'badge-onboarding', 'Rejected':'badge-rejected'
+    'Onboarded':'badge-onboarding', 'Rejected':'badge-rejected'
   };
   return `<span class="badge ${map[stage] || ''}">${stage}</span>`;
 }
@@ -788,7 +788,7 @@ async function loadApplicants() {
     const totalCount = CANDIDATES.length;
     const interviewCount = CANDIDATES.filter(c => c.stage === 'Interview').length;
     const offersCount = CANDIDATES.filter(c => c.stage === 'Offer' || c.stage === 'Offer Accepted').length;
-    const onboardingCount = CANDIDATES.filter(c => c.stage === 'Onboarding').length;
+    const onboardingCount = CANDIDATES.filter(c => c.stage === 'Onboarded').length;
 
     const scTotalVal = document.querySelector('.sc-total .stat-value');
     const scInterviewVal = document.querySelector('.sc-interview .stat-value');

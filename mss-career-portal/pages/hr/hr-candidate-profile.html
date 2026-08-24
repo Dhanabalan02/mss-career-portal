@@ -901,32 +901,20 @@
 
     <!-- ══════════════ TAB: OVERVIEW ════════════════════════════ -->
     <div id="tab-overview" class="tab-panel active">
-      <div class="grid-2">
-        <div class="stack">
-          <!-- Summary -->
-          <div class="card">
-            <div class="card-header"><span class="card-title">Professional Summary</span></div>
-            <div class="card-body" id="summary-content"
-              style="font-size:13.5px; color:var(--c-text2); line-height:1.8;">
-              —
-            </div>
+      <div class="grid-2-eq">
+        <!-- Quick stats -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Quick Stats</span></div>
+          <div class="card-body" id="overview-quick-stats">
+            <!-- Injected dynamically -->
           </div>
         </div>
-        <div class="stack">
-          <!-- Quick stats -->
-          <div class="card">
-            <div class="card-header"><span class="card-title">Quick Stats</span></div>
-            <div class="card-body" id="overview-quick-stats">
+        <!-- Stage history -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">Stage History</span></div>
+          <div class="card-body">
+            <div class="timeline" id="overview-timeline">
               <!-- Injected dynamically -->
-            </div>
-          </div>
-          <!-- Stage history -->
-          <div class="card">
-            <div class="card-header"><span class="card-title">Stage History</span></div>
-            <div class="card-body">
-              <div class="timeline" id="overview-timeline">
-                <!-- Injected dynamically -->
-              </div>
             </div>
           </div>
         </div>
@@ -1047,8 +1035,11 @@
       return `${apiBase}/apply/download/${encodeURIComponent(filename)}`;
     };
 
-    // Parse applicant ID
-    const applicantId = localStorage.getItem('candidateId');
+    // Parse applicant ID — a notification deep link carries it as ?candidate_id=, which
+    // takes priority and is persisted to localStorage for the rest of the page's flows.
+    const _urlCandidateId = new URLSearchParams(window.location.search).get('candidate_id');
+    if (_urlCandidateId) localStorage.setItem('candidateId', _urlCandidateId);
+    const applicantId = _urlCandidateId || localStorage.getItem('candidateId');
     let candidateData = null;
 
     if (!applicantId) {
@@ -1125,16 +1116,24 @@
       const actionsEl = document.getElementById('header-actions');
       actionsEl.innerHTML = '';
 
-      // If the candidate status is Selected, Offer, Offer Accepted, Onboarding, Onboarded, or Rejected, hide the actions
-      const hideActionsStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
+      // If the candidate status is Offer Accepted, Onboarding, Onboarded, or Rejected, hide the actions.
+      // The 'Offer' stage keeps Hold/Reject available (an issued-but-not-yet-accepted offer can still be pulled).
+      const hideActionsStages = ['Pre Screen Reject', 'Prescreen Rejected', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
       const isSelected = candidateData.interviewStatus === 'Selected';
       const isHold = candidateData.interviewStatus === 'Hold';
+      const isOfferStage = candidateData.stage === 'Offer';
 
-      if (!hideActionsStages.includes(candidateData.stage) && !isSelected) {
+      const canSchedule = (candidateData.stage === 'Screened' || candidateData.interviewStatus === 'Next Round') &&
+        !['Completed', 'Scheduled', 'Cancelled', 'Selected'].includes(candidateData.interviewStatus);
+
+      if (!hideActionsStages.includes(candidateData.stage) && (!isSelected || isOfferStage)) {
+        if (canSchedule) {
+          actionsEl.innerHTML += `<button class="btn btn-primary" onclick="scheduleInterviewModal(${candidateData.id}, '${candidateData.name}', ${candidateData.job_id})"><i class="ti ti-calendar-event"></i> Schedule Interview</button>`;
+        }
         actionsEl.innerHTML += `<button class="btn btn-warn" onclick="holdCandidate()"><i class="ti ti-player-pause"></i> Put On Hold</button>`;
         actionsEl.innerHTML += `<button class="btn btn-danger" onclick="rejectCandidate()"><i class="ti ti-circle-x"></i> Reject</button>`;
       } else if (isSelected) {
-        actionsEl.innerHTML += `<span class="badge badge-green" style="font-size: 14px; padding: 8px 12px;">Status: Selected</span>`;
+        actionsEl.innerHTML += `<span class="badge ${getStageBadgeClass(candidateData.stage)}" style="font-size: 14px; padding: 8px 12px;">Current Stage: ${candidateData.stage}</span>`;
       }
     }
 
@@ -1176,9 +1175,6 @@
       
       const normalizedStage = candidateData.stage ? (stageMap[candidateData.stage.toLowerCase()] || candidateData.stage): '';
 
-      // Bio
-      document.getElementById('summary-content').textContent = candidateData.metadata.about || 'No professional summary provided.';
-
       // Quick stats
       const statsEl = document.getElementById('overview-quick-stats');
       const noticePeriod = (candidateData.experience && candidateData.experience.length > 0 && candidateData.experience[0].notice_period) ? candidateData.experience[0].notice_period : '—';
@@ -1204,18 +1200,27 @@
       const timelineEl = document.getElementById('overview-timeline');
       timelineEl.innerHTML = '';
 
-      const stages = ['Pre Screen Reject', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
+      // Prescreen Reject / Rejected are terminal, alternate-path stages: only show them
+      // when that's the candidate's actual outcome, and only show stages actually reached.
+      let stages;
+      if (normalizedStage === 'Pre Screen Reject') {
+        stages = ['Pre Screen Reject'];
+      } else if (normalizedStage === 'Rejected') {
+        stages = ['Screened', 'Interview', 'Rejected'];
+      } else {
+        stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+      }
+
       const currentIdx = stages.indexOf(normalizedStage);
       const tracking = candidateData.trackingDates || {};
       const stageDateMap = {
-        'Pre Screen Reject': tracking.screened,
+        'Pre Screen Reject': tracking.rejected || tracking.screened,
         'Screened': tracking.screened,
         'Interview': tracking.interview,
         'Offer': tracking.offer,
         'Offer Accepted': tracking.offer_accepted,
-        'Onboarding': tracking.onboarding,
         'Onboarded': tracking.onboarded,
-        'Rejected': ''
+        'Rejected': tracking.rejected
       };
 
       stages.forEach((stage, idx) => {
@@ -1223,19 +1228,20 @@
         let color = 'var(--c-text3)';
         let bg = 'var(--c-surface2)';
         let sub = '';
+        const isRejectStage = (stage === 'Pre Screen Reject' || stage === 'Rejected');
 
-        if (idx < currentIdx || (normalizedStage === 'Rejected' && idx === 0)) {
+        if (idx < currentIdx) {
           dot = '✓';
           color = 'var(--c-green)';
           bg = 'var(--c-green-bg)';
         } else if (stage === normalizedStage) {
-          dot = '●';
-          color = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? 'var(--c-red)' : 'var(--c-orange)';
-          bg = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? 'var(--c-red-bg)' : 'var(--c-orange-bg)';
-          sub = (normalizedStage === 'Pre Screen Reject' || normalizedStage === 'Rejected') ? ' (Rejected)' : ' (Active)';
+          dot = isRejectStage ? '✕' : '●';
+          color = isRejectStage ? 'var(--c-red)' : 'var(--c-orange)';
+          bg = isRejectStage ? 'var(--c-red-bg)' : 'var(--c-orange-bg)';
+          sub = isRejectStage ? ' (Rejected)' : ' (Active)';
         }
 
-        const stageDate = stageDateMap[stage] || candidateData.appliedDate;
+        const stageDate = stageDateMap[stage] || (idx === 0 ? candidateData.appliedDate : '');
 
         timelineEl.innerHTML += `
           <div class="tl-item">
@@ -1610,11 +1616,12 @@
         }
       } else {
         el.className = 'empty-state';
+        const showMassetBtn = candidateData.stage === 'Offer Accepted';
         el.innerHTML = `
           <div class="icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
           <div class="title">MASSET Sync Not Initiated</div>
           <div class="body">MASSET database synchronization becomes available after candidate accepts the job offer.</div>
-          <button class="btn btn-primary" onclick="location.href='/mss-career-portal/hr/masset-candidates'">Open MASSET Dashboard</button>
+          ${showMassetBtn ? `<button class="btn btn-primary" onclick="location.href='/mss-career-portal/hr/masset-candidates'">Open MASSET Dashboard</button>` : ''}
         `;
       }
     }
@@ -1698,6 +1705,128 @@
           const sel = document.getElementById(selectId);
           if (sel) sel.innerHTML = '<option value="">Failed to load admins</option>';
         });
+    }
+
+    /* ── Schedule Interview modal ── */
+    function scheduleInterviewModal(applicantId, name, jobId) {
+      openModal(`
+    <div class="modal-header"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview</div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">Scheduling interview for <strong>${name}</strong></p>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Interview Round</label>
+          <input type="text" id="schRound">
+        </div>
+        <div class="form-group">
+          <label>Mode</label>
+          <select id="interviewMode" onchange="toggleInterviewModeField()">
+            <option value="online">Online</option>
+            <option value="offline">In-Person</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}" min="${new Date().toISOString().split('T')[0]}">
+        </div>
+        <div class="form-group span2" style="display:flex; flex-direction:row; gap:10px;">
+          <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+            <label>Start Time</label><input type="time" id="schTime" value="10:00">
+          </div>
+          <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+            <label>End Time</label><input type="time" id="schEndTime" value="11:00">
+          </div>
+        </div>
+        <div class="form-group span2" id="dynamicModeContainer">
+          <label id="modeLabel">Meeting Link</label>
+          <input type="text" id="modeInput" placeholder="Enter online meeting URL">
+        </div>
+        <div class="form-group span2">
+          <label>Interviewer</label>
+          <select id="schInterviewer">
+            <option value="">Loading interviewers…</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitSchedule(${applicantId}, ${jobId})"><i class="ti ti-calendar" aria-hidden="true"></i> Confirm Schedule</button>
+    </div>`);
+      loadSchoolAdmins('schInterviewer');
+    }
+
+    function submitSchedule(applicantId, jobId) {
+      const round = document.getElementById('schRound').value.trim();
+      const mode = document.getElementById('interviewMode').value;
+      const schDate = document.getElementById('schDate').value;
+      const schTime = document.getElementById('schTime').value;
+      const schEndTime = document.getElementById('schEndTime').value;
+      const modeInput = document.getElementById('modeInput').value.trim();
+      const interviewer = document.getElementById('schInterviewer').value.trim();
+
+      if (!round || !schDate || !schTime || !schEndTime) {
+        if (window.showToast) window.showToast('Please fill out all required fields (Round, Date, Start Time, End Time).', 'error');
+        return;
+      }
+
+      if (!interviewer) {
+        if (window.showToast) window.showToast('Please select an interviewer.', 'error');
+        return;
+      }
+
+      const scheduledAtIso = `${schDate}T${schTime}:00`;
+      const endTimeAtIso = `${schDate}T${schEndTime}:00`;
+
+      const payload = {
+        job_id: jobId,
+        job_applicant_id: applicantId,
+        interview_round: round,
+        scheduled_at: scheduledAtIso,
+        end_time_at: endTimeAtIso,
+        interview_mode: mode,
+        meeting_link: mode === 'online' ? modeInput : null,
+        location: mode === 'offline' ? modeInput : null,
+        interviewer_name: interviewer
+      };
+
+      fetch(JOBS_API_BASE + '/job-interviews/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to schedule interview');
+          return res.json();
+        })
+        .then(() => {
+          if (window.showToast) window.showToast('Interview scheduled successfully!', 'success');
+          document.querySelector('.modal-overlay').remove();
+          fetchCandidateProfile();
+        })
+        .catch(err => {
+          console.error(err);
+          if (window.showToast) window.showToast('Error scheduling interview: ' + err.message, 'error');
+        });
+    }
+
+    function toggleInterviewModeField() {
+      const mode = document.getElementById('interviewMode').value;
+      const label = document.getElementById('modeLabel');
+      const input = document.getElementById('modeInput');
+
+      if (mode === 'online') {
+        label.innerText = 'Meeting Link';
+        input.placeholder = 'https://meet.google.com/...';
+        input.value = '';
+      } else {
+        label.innerText = 'Location';
+        input.placeholder = 'Enter institution address';
+        input.value = '';
+      }
     }
 
 

@@ -184,7 +184,7 @@ def schedule_interview_route(
     try:
         from app.models import JobApplicant, JobPost, Users, Admins
         from app.crud.notification_crud import notify_candidate, notify_school_admin
-        
+
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == form_data.job_applicant_id).first()
         job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
         
@@ -202,7 +202,7 @@ def schedule_interview_route(
                     message=f"An interview for '{job.job_title}' has been scheduled on {date_str} (Mode: {form_data.interview_mode.value if hasattr(form_data.interview_mode, 'value') else form_data.interview_mode}).",
                     notification_type="interview_scheduled",
                     sender_user_id=admin_id,
-                    sender_type="hr"
+                    sender_type="hr",
                 )
                 
                 from app.services.interview_service import InterviewService
@@ -234,7 +234,7 @@ def schedule_interview_route(
                         message=f"Interview round '{form_data.interview_round}' has been scheduled for candidate {candidate_name} on {date_str}.",
                         notification_type="interview_scheduled",
                         sender_user_id=admin_id,
-                        sender_type="hr"
+                        sender_type="hr",
                     )
                     
                     interviewer_mobile = getattr(interviewer, "mobile", None)
@@ -314,10 +314,10 @@ def reschedule_interview_route(
     try:
         from app.models import JobApplicant, JobPost, Users, Admins
         from app.crud.notification_crud import notify_candidate, notify_school_admin
-        
+
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
         job = db.query(JobPost).filter(JobPost.job_id == job_interview.job_id).first()
-        
+
         if applicant and job:
             candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
             if candidate:
@@ -333,7 +333,7 @@ def reschedule_interview_route(
                     message=f"Your interview for '{job.job_title}' has been rescheduled to {date_str}.{reason_part}",
                     notification_type="interview_rescheduled",
                     sender_user_id=admin_id,
-                    sender_type="hr"
+                    sender_type="hr",
                 )
                 
                 from app.services.interview_service import InterviewService
@@ -365,7 +365,7 @@ def reschedule_interview_route(
                         message=f"Interview round '{job_interview.interview_round}' has been rescheduled to {date_str} for candidate {candidate_name}.{reason_part}",
                         notification_type="interview_rescheduled",
                         sender_user_id=admin_id,
-                        sender_type="hr"
+                        sender_type="hr",
                     )
                     
                     interviewer_mobile = getattr(interviewer, "mobile", None)
@@ -405,10 +405,10 @@ def cancel_interview_route(
     try:
         from app.models import JobApplicant, JobPost, Users, Admins
         from app.crud.notification_crud import notify_candidate, notify_school_admin
-        
+
         applicant = db.query(JobApplicant).filter(JobApplicant.job_applicant_id == job_interview.job_applicant_id).first()
         job = db.query(JobPost).filter(JobPost.job_id == job_interview.job_id).first()
-        
+
         if applicant and job:
             candidate = db.query(Users).filter(Users.user_id == applicant.user_id).first()
             if candidate:
@@ -459,7 +459,7 @@ def cancel_interview_route(
                         message=f"Interview round '{job_interview.interview_round}' for candidate {candidate_name} has been cancelled.{reason_part}",
                         notification_type="interview_cancelled",
                         sender_user_id=admin_id,
-                        sender_type="hr"
+                        sender_type="hr",
                     )
                     
                     interviewer_mobile = getattr(interviewer, "mobile", None)
@@ -543,7 +543,7 @@ def submit_interview_remarks_route(
         try:
             from app.models import JobPost, Users, Admins
             from app.crud.notification_crud import notify_candidate, notify_school_admin
-            
+
             job = db.query(JobPost).filter(JobPost.job_id == job_id_val).first()
             if applicant_user_id_val and job:
                 candidate = db.query(Users).filter(Users.user_id == applicant_user_id_val).first()
@@ -559,7 +559,8 @@ def submit_interview_remarks_route(
                         message=f"Your application status for '{job.job_title}' has been updated to {status_str}.",
                         notification_type="status_update",
                         sender_user_id=admin_id,
-                        sender_type="hr"
+                        sender_type="hr",
+                        redirect_url="/mss-career-portal/applied-jobs",
                     )
                     
                     from app.services.interview_service import InterviewService
@@ -597,7 +598,8 @@ def submit_interview_remarks_route(
                             message=admin_message,
                             notification_type=admin_type,
                             sender_user_id=admin_id,
-                            sender_type="hr"
+                            sender_type="hr",
+                            redirect_url="/mss-career-portal/school/offers"
                         )
                     
         except Exception as e:

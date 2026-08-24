@@ -1314,6 +1314,7 @@
           }
           <button class="act-btn" onclick="event.stopPropagation();duplicateJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Clone"><i class="ti ti-copy"></i></button>
           ${j.status === 'Active' ? `<button class="act-btn act-btn-red" onclick="event.stopPropagation();closeJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Close"><i class="ti ti-x"></i></button>` : ''}
+          ${j.status === 'Closed' ? `<button class="act-btn act-btn-blue" onclick="event.stopPropagation();reopenJob(${j.id}, '${j.title.replace(/'/g, "\\'")}')" title="Reopen / Publish"><i class="ti ti-rotate-clockwise"></i></button>` : ''}
           ${j.is_clone_ui ? '<span class="cloned-star" style="color:#EF9F27;font-weight:bold;font-size:18px;margin-left:6px;cursor:help;display:inline-block;vertical-align:middle;" title="Cloned Job">*</span>' : ''}
         </div>
       </td>`;
@@ -1452,6 +1453,74 @@
         }
       } catch (err) {
         console.error('Close Error:', err);
+        showToast('❌ Connection error.');
+      }
+    }
+
+    function reopenJob(jobId, title) {
+      openModal(`
+    <div class="modal-title">Reopen Job Post</div>
+    <p class="modal-body">Are you sure you want to reopen "<strong>${title}</strong>"? This will make it active and visible to applicants again.</p>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="executeReopen(${jobId})">Reopen Job</button>
+    </div>`);
+    }
+
+    function promptNewClosingDate(jobId) {
+      const today = new Date().toISOString().split('T')[0];
+      openModal(`
+    <div class="modal-title">Extend Closing Date</div>
+    <p class="modal-body">This job's closing date has already passed. Please set a new closing date to reopen it.</p>
+    <input type="date" id="newClosingDate" min="${today}"
+      style="width:100%;height:38px;padding:0 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-family:var(--font-body);font-size:13px;margin-bottom:16px;color:var(--text1);">
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitNewClosingDate(${jobId})">Reopen Job</button>
+    </div>`);
+    }
+
+    function submitNewClosingDate(jobId) {
+      const val = document.getElementById('newClosingDate').value;
+      if (!val) {
+        showToast('❌ Please select a closing date.');
+        return;
+      }
+      executeReopen(jobId, val);
+    }
+
+    async function executeReopen(jobId, closingDate) {
+      closeModal();
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        showToast('❌ Session expired. Please log in.');
+        return;
+      }
+      try {
+        const apiBase = window.AUTH_API_BASE;
+        const body = {};
+        if (closingDate) body.closing_date = closingDate;
+        const res = await fetch(`${apiBase}/jobs/${jobId}/publish`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+        });
+        if (res.ok) {
+          sessionStorage.setItem('toastMessage', '✅ Job post reopened successfully!');
+          window.location.reload();
+        } else {
+          const errData = await res.json();
+          if (res.status === 400 && !closingDate) {
+            promptNewClosingDate(jobId);
+          } else {
+            showToast(`❌ Failed to reopen job: ${errData.detail || 'Server error'}`);
+          }
+        }
+      } catch (err) {
+        console.error('Reopen Error:', err);
         showToast('❌ Connection error.');
       }
     }

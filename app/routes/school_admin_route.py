@@ -131,6 +131,14 @@ def issue_offer_route(
                 )
 
                 if job and candidate:
+                    from urllib.parse import quote
+
+                    job_description_url = (
+                        "/mss-career-portal/job-description?uuid="
+                        f"{quote(str(job.uuid or ''), safe='')}"
+                        f"&title={quote((job.job_title or '').replace(' ', '-'))}"
+                        f"&unit={quote((job.school_name or '').replace(' ', '-'))}"
+                    )
                     notify_candidate(
                         db=db,
                         candidate_id=candidate.user_id,
@@ -139,6 +147,7 @@ def issue_offer_route(
                         notification_type="offer_issued",
                         sender_user_id=admin_id,
                         sender_type="school_admin",
+                        redirect_url=job_description_url,
                     )
 
                     # Call WhatsApp service
@@ -160,7 +169,7 @@ def issue_offer_route(
 
                         offer_logger.info(f"Candidate phone resolved to: {phone}")
                         if phone:
-                            doc_url = app_record.offer_letter_doc_path
+                            doc_url = result.get("offer_letter_doc_path")
                             if not doc_url:
                                 offer_logger.warning(
                                     f"No offer document path for candidate {candidate.user_id}, skipping WhatsApp offer."
@@ -289,6 +298,7 @@ def update_offer_status_via_webhook(
                 notification_type=f"offer_status_{payload.status.lower()}",
                 sender_user_id=candidate.user_id,
                 sender_type="candidate",
+                redirect_url="/mss-career-portal/hr/masset-candidates"
             )
             notify_school_admins(
                 db=db,
@@ -296,7 +306,7 @@ def update_offer_status_via_webhook(
                 message=f"Offer status for candidate {candidate_name} ('{job.job_title}') has been updated to '{payload.status}' via WhatsApp.",
                 notification_type=f"offer_status_{payload.status.lower()}",
                 sender_user_id=candidate.user_id,
-                sender_type="candidate",
+                sender_type="candidate"
             )
     except Exception as e:
         logger.error(f"Error creating notification events: {e}")
@@ -322,7 +332,7 @@ def update_offer_status_route(
     # Send Notifications
     try:
         from app.models import JobApplicant, JobPost, Users
-        from app.crud.notification_crud import notify_hr_users, notify_school_admins
+        from app.crud.notification_crud import notify_hr_users, notify_school_admins, build_candidate_profile_redirect_url
 
         app = (
             db.query(JobApplicant)
@@ -344,6 +354,7 @@ def update_offer_status_route(
                     notification_type=f"offer_status_{payload.status.lower()}",
                     sender_user_id=candidate.user_id,
                     sender_type="candidate",
+                    redirect_url=build_candidate_profile_redirect_url("hr", app.job_applicant_id, candidate_name, job.job_title)
                 )
 
                 # 2. Notify School Admins
@@ -354,6 +365,7 @@ def update_offer_status_route(
                     notification_type=f"offer_status_{payload.status.lower()}",
                     sender_user_id=candidate.user_id,
                     sender_type="candidate",
+                    redirect_url=build_candidate_profile_redirect_url("schoolAdmin", app.job_applicant_id, candidate_name, job.job_title)
                 )
     except Exception as e:
         logger.error(f"Error creating offer status update notifications: {e}")

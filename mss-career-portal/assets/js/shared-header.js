@@ -553,13 +553,36 @@ function renderCandidateNotifications() {
 window.mssMarkSingleRead = async function (e, id) {
   if (e) e.stopPropagation();
   var token = localStorage.getItem('access_token');
-  if (!token) return;
-
   var note = (window.mssNotifications || []).find(function (n) { return n.id === id; });
+  if (!note) return;
+
   if (note && !note.read) {
     note.read = true;
     renderCandidateNotifications();
   }
+
+  if (note.redirect_url) {
+    try {
+      var redirectUrl = new URL(note.redirect_url, window.location.origin);
+      if (redirectUrl.origin === window.location.origin) {
+        if (token) {
+          fetch(AUTH_API_BASE + '/notifications/' + id + '/read', {
+            method: 'PUT',
+            headers: { 'Authorization': 'Bearer ' + token },
+            keepalive: true
+          }).catch(function (error) {
+            console.warn('Error marking notification as read', error);
+          });
+        }
+        window.location.assign(redirectUrl.href);
+        return;
+      }
+    } catch (error) {
+      console.warn('Invalid notification redirect URL:', note.redirect_url);
+    }
+  }
+
+  if (!token) return;
 
   try {
     await fetch(AUTH_API_BASE + '/notifications/' + id + '/read', {

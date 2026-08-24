@@ -24,7 +24,9 @@ class NotificationLog(Base):
     recipient_email: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     
     notification_type: Mapped[Optional[str]] = mapped_column(String(100), index=True, nullable=True)
-    
+
+    redirect_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+
     channel: Mapped[Optional[str]] = mapped_column(String(50), index=True, nullable=True)
     
     title: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)

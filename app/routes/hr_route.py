@@ -23,7 +23,7 @@ def ats_pipeline(
     db: Session = Depends(get_db),
     admin_id: int = Depends(get_current_admin_id),
 ):
-    from datetime import datetime
+    from app.core.timezone import to_ist, now_ist
 
     candidates = get_ats_candidates(db, admin_id)
 
@@ -40,12 +40,13 @@ def ats_pipeline(
     )
     accepted_count = sum(1 for c in candidates if c.get("stage") == "Offer Accepted")
 
-    current_month = datetime.now().month
-    current_year = datetime.now().year
+    now = now_ist()
+    current_month = now.month
+    current_year = now.year
     onboarded_this_month = 0
     for c in candidates:
         if c.get("stage") == "Onboarded":
-            updated = c.get("updated_at")
+            updated = to_ist(c.get("updated_at"))
             if (
                 updated
                 and updated.month == current_month
@@ -181,19 +182,37 @@ def masset_webhook(payload: MassetWebhookRequest, db: Session = Depends(get_db))
                 job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
                 candidate = db.query(Users).filter(Users.user_id == app.user_id).first()
                 
-                if job and candidate and getattr(candidate, "mobile", None):
+                if job and candidate:
+                    from app.crud.common import get_latest_offer
+                    from app.crud.notification_crud import notify_candidate
+                    latest_offer = get_latest_offer(db, app.job_applicant_id)
                     candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
-                    doj = app.joining_date.strftime("%d %b, %Y") if app.joining_date else "N/A"
-                    
-                    from app.services.onboard_complete_service import OnboardCompleteService
-                    onboard_service = OnboardCompleteService()
-                    onboard_service.send_onboard_complete(
-                        to=candidate.mobile,
-                        candidate_name=candidate_name,
-                        employee_id=app.masset_employee_id or payload.masset_employee_id or "N/A",
-                        designation=job.job_title or "N/A",
-                        reporting_to=payload.reporting_to or "N/A",
-                        date_of_joining=doj
+                    doj = (
+                        latest_offer.joining_date.strftime("%d %b, %Y")
+                        if latest_offer and latest_offer.joining_date
+                        else "N/A"
+                    )
+
+                    if getattr(candidate, "mobile", None):
+                        from app.services.onboard_complete_service import OnboardCompleteService
+                        onboard_service = OnboardCompleteService()
+                        onboard_service.send_onboard_complete(
+                            to=candidate.mobile,
+                            candidate_name=candidate_name,
+                            employee_id=app.masset_employee_id or payload.masset_employee_id or "N/A",
+                            designation=job.job_title or "N/A",
+                            reporting_to=payload.reporting_to or "N/A",
+                            date_of_joining=doj
+                        )
+
+                    notify_candidate(
+                        db=db,
+                        candidate_id=candidate.user_id,
+                        title="Onboarding Complete",
+                        message=f"Congratulations! Your onboarding for '{job.job_title}' is complete. Your Employee ID is {app.masset_employee_id or payload.masset_employee_id or 'N/A'}.",
+                        notification_type="onboarding_complete",
+                        sender_type="system",
+                        redirect_url="/mss-career-portal/applied-jobs",
                     )
         except Exception as e:
             from app.core.logger import logger

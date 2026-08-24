@@ -6,6 +6,7 @@ from sqlalchemy import Integer, String, Text, Numeric, Enum, Date, TIMESTAMP, fu
 from sqlalchemy.dialects.mysql import TINYINT as TinyInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
+from app.core.timezone import utcnow
 
 if TYPE_CHECKING:
     from app.models.interview_schedule_model import JobInterviewSchedule
@@ -30,7 +31,6 @@ class ApplicantStage(str, PyEnum):
     INTERVIEW = "interview"
     OFFER = "offer"
     OFFER_ACCEPTED = "offer_accepted"
-    ONBOARDING = "onboarding"
     ONBOARDING_COMPLETED = "onboarded"
     REJECTED = "rejected"
 
@@ -57,25 +57,15 @@ class JobApplicant(Base):
         nullable=True,
     )
 
-    # Offer fields
-    offered_salary: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
-    joining_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
-    probation_period: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
+    # Offer workflow state; offer details are stored in job_offers.
     issue_offer: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)
-    offer_letter_doc: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    offer_letter_doc_path: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    issued_by: Mapped[Optional[int]] = mapped_column(ForeignKey("admins.admin_id"), nullable=True)
     offer_acceptance_status: Mapped[Optional[OfferAcceptanceStatus]] = mapped_column(
         Enum(OfferAcceptanceStatus, name="offer_acceptance_status_enum",
              values_callable=lambda x: [e.value for e in x]),
         server_default="pending",
         nullable=True,
     )
-    offer_issued_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
-    offer_expiry_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
-    offer_remarks: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     offer_accepted_on: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
-    offer_template: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
 
     # MASSET sync fields
     sync_masset: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)
@@ -87,9 +77,11 @@ class JobApplicant(Base):
     issue_appointment_order: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)
     masset_sync_success_on: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True)
 
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.current_timestamp())
+    created_at: Mapped[datetime] = mapped_column(
+        TIMESTAMP, default=utcnow, server_default=func.current_timestamp()
+    )
     updated_at: Mapped[datetime] = mapped_column(
-        TIMESTAMP, server_default=func.current_timestamp(), onupdate=func.current_timestamp()
+        TIMESTAMP, default=utcnow, onupdate=utcnow, server_default=func.current_timestamp()
     )
 
     users: Mapped["Users"] = relationship(back_populates="job_applicants")

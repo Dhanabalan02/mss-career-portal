@@ -1156,7 +1156,8 @@
     }
     function stageBadge(s) {
       const map = { Applied: 'badge-teal', Screened: 'badge-blue', Interview: 'badge-amber', Offer: 'badge-purple', Onboarding: 'badge-green' };
-      return `<span class="badge ${map[s] || 'badge-blue'}">${s}</span>`;
+      const cls = /reject/i.test(s || '') ? 'badge-red' : (map[s] || 'badge-blue');
+      return `<span class="badge ${cls}">${s}</span>`;
     }
     function interviewStatusBadge(s) {
       if (!s) return `<span class="badge badge-gray">—</span>`;

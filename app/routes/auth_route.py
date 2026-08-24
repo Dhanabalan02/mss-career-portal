@@ -32,7 +32,6 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.oauth import get_google_user_info, get_linkedin_user_info
 from app.core.logger import logger
-from app.services.resume_extract_api import extract_resume_data
 from pydantic import BaseModel
 
 
@@ -375,17 +374,7 @@ async def upload_candidate_resume(
 
     db_path = f"uploads/resumes/{filename}"
     result = update_candidate_resume_db(db, user_id=candidate_id, resume_path=db_path)
-
-    extracted_data = None
-    if filename.lower().endswith(".pdf"):
-        try:
-            extracted_data = extract_resume_data(str(file_path))
-        except Exception as exc:
-            logger.warning(
-                "Resume auto-extraction failed for candidate %s: %s", candidate_id, exc
-            )
-
-    result["extracted"] = extracted_data
+    
     return result
 
 

@@ -366,6 +366,7 @@
                             <div id="sidebar-job-info" style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #E2E8F0;">
                                 <h5 id="sb-job-title" style="font-weight: 700; color: #0F172A; margin-bottom: 8px;">Job Title</h5>
                                 <div style="font-size: 0.85rem; color: #64748B;"><i class="feather-home"></i> <span id="sb-job-school">School Name</span></div>
+                                <div id="sb-applied-on" style="font-size: 0.78rem; color: #94A3B8; margin-top: 6px;"></div>
                             </div>
                             <div id="trackStatusTimeline" style="background: #F8FAFC; border-radius: 12px; padding: 20px; border: 1px solid #E2E8F0; min-height: 250px;">
                                 <!-- Timeline will be injected here -->
@@ -409,6 +410,18 @@
                 });
             }
 
+            function formatStageDate(value) {
+                if (!value) return '';
+                var dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(String(value));
+                var d = dateOnly ? new Date(value + 'T00:00:00') : new Date(value);
+                if (isNaN(d.getTime())) return '';
+                var out = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                if (!dateOnly) {
+                    out += ' · ' + d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit' });
+                }
+                return out;
+            }
+
             function getSchoolLogo(schoolName) {
                 var school = String(schoolName || '').toLowerCase();
                 if (school.indexOf('lady andal') !== -1) return 'images/mss/laib-logo.png';
@@ -439,16 +452,22 @@
                 if (myApp) {
                     document.getElementById('sb-job-title').textContent = myApp.job_title || 'Untitled Role';
                     document.getElementById('sb-job-school').textContent = myApp.school_name || myApp.department || 'The Madras Seva Sadan';
-                    
+
+                    var appliedOnEl = document.getElementById('sb-applied-on');
+                    var appliedDateStr = formatStageDate(myApp.stage_dates && myApp.stage_dates.applied);
+                    if (appliedOnEl) appliedOnEl.textContent = appliedDateStr ? ('Applied on ' + appliedDateStr) : '';
+
                     var timelineEl = document.getElementById('trackStatusTimeline');
-                    
+
                     var stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+                    var stageDateKeys = ['screened', 'interview', 'offer', 'offer_accepted', 'onboarded'];
+                    var stageDates = myApp.stage_dates || {};
                     var stageFeatherIcons = ['feather-file-text', 'feather-users', 'feather-briefcase', 'feather-thumbs-up', 'feather-check-circle'];
                     var currentStage = myApp.stage || 'Applied';
                     var isRejected = false;
                     var isOnHold = false;
 
-                    if (currentStage.toLowerCase() === 'prescreen-reject' || currentStage.toLowerCase() === 'rejected') {
+                    if (currentStage.toLowerCase().indexOf('reject') !== -1) {
                         isRejected = true;
                         currentStage = 'Screened';
                     }
@@ -480,9 +499,16 @@
                             icon = '<i class="feather-x" style="color:#EF4444; font-size:16px;"></i>';
                         }
                         
+                        var stageDateStr = formatStageDate(stageDates[stageDateKeys[idx]]);
+
                         timelineHtml += '<div style="display:flex; align-items:center; gap:16px; z-index:2; position:relative;">';
                         timelineHtml += '<div style="width:28px; height:28px; border-radius:50%; background:' + bg + '; border:2px solid ' + color + '; display:flex; justify-content:center; align-items:center; flex-shrink:0;">' + icon + '</div>';
+                        timelineHtml += '<div style="display:flex; flex-direction:column;">';
                         timelineHtml += '<span style="font-size:0.9rem; font-weight:' + (isCurrent || isFail ? '700' : '500') + '; color:' + (isCurrent ? '#0F172A' : (isFail ? '#B91C1C' : '#64748B')) + ';">' + s + '</span>';
+                        if (stageDateStr) {
+                            timelineHtml += '<span style="font-size:0.72rem; color:#94A3B8; margin-top:2px;">' + escapeHtml(stageDateStr) + '</span>';
+                        }
+                        timelineHtml += '</div>';
                         timelineHtml += '</div>';
                     });
                     

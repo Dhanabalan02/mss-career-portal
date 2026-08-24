@@ -14,8 +14,10 @@ from app.models.candidate_experience_model import CandidateExperience
 from app.models.admin_model import Admins
 from app.models.unit_model import Units
 from app.crud.common import (
-    get_initials, get_color, parse_skills, compute_exp_str
+    get_initials, get_color, parse_skills, compute_exp_str,
+    get_latest_offer, get_latest_offers_map,
 )
+from app.core.timezone import to_ist, now_ist
 
 def _is_hr_role(db: Session, admin_id: int) -> bool:
     from sqlalchemy.orm import joinedload
@@ -26,7 +28,9 @@ def _days_ago(dt) -> int:
     if not dt:
         return 0
     try:
-        return (date.today() - dt.date()).days
+        d = to_ist(dt)
+        ref_date = d.date() if isinstance(d, datetime) else d
+        return (now_ist().date() - ref_date).days
     except Exception:
         return 0
 
@@ -44,13 +48,28 @@ def _format_date(d) -> str:
     if not d:
         return ""
     try:
+        d = to_ist(d)
         return d.strftime("%d-%b-%Y")
     except Exception:
         return str(d)
 
-def build_dynamic_timeline(app, stage: str) -> list:
-    applied_days = f"{_days_ago(app.created_at)} days ago" if app.created_at else "Recently"
-    
+
+def _format_exact(dt) -> Optional[str]:
+    """Formats a date/datetime as an exact, human-readable stamp (with time if available)."""
+    if not dt:
+        return None
+    try:
+        dt = to_ist(dt)
+        if isinstance(dt, datetime):
+            return dt.strftime("%d %b %Y, %I:%M %p")
+        return dt.strftime("%d %b %Y")
+    except Exception:
+        return str(dt)
+
+
+def build_dynamic_timeline(app, stage: str, latest_interview=None, latest_offer=None) -> list:
+    applied_at = _format_exact(app.created_at) or "Recently"
+
     stages = ['Prescreen Rejected', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded']
     try:
         current_idx = stages.index(stage)
@@ -60,19 +79,35 @@ def build_dynamic_timeline(app, stage: str) -> list:
     is_onboarding = app.sync_masset == 1
     is_onboarded = app.masset_status and app.masset_status.lower() == 'onboarded'
 
+    interview_at = None
+    if latest_interview:
+        iv_date = latest_interview.rescheduled_date or latest_interview.scheduled_date
+        iv_time = latest_interview.rescheduled_start_time or latest_interview.start_time
+        if iv_date and iv_time:
+            interview_at = _format_exact(datetime.combine(iv_date, iv_time))
+        elif iv_date:
+            interview_at = _format_exact(iv_date)
+
+    offer_at = _format_exact(latest_offer.offer_issued_date) if latest_offer else None
+    accepted_at = _format_exact(app.offer_accepted_on)
+    onboarding_at = _format_exact(app.masset_synced_at)
+    onboarded_at = _format_exact(app.masset_sync_success_on)
+
     tl = []
 
     # 1. Applied (Application Received)
     s1 = 'done' if current_idx > 0 else 'current'
-    tl.append({'t': 'Application Received', 'd': applied_days, 's': s1, 'icon': 'ti-file-text'})
+    tl.append({'t': 'Application Received', 'd': applied_at, 's': s1, 'icon': 'ti-file-text'})
 
-    # 2. Screened (Resume Screened)
+    # 2. Screened (Resume Screened) - no dedicated timestamp column; best-effort via updated_at
+    # while Screened is (or was most recently) the active stage.
+    screened_at = _format_exact(app.updated_at) if stage == 'Screened' else None
     if current_idx > 1:
         s2 = 'done'
-        d2 = 'System Evaluated'
+        d2 = screened_at or 'Completed'
     elif current_idx == 1:
         s2 = 'current'
-        d2 = 'System Evaluated'
+        d2 = screened_at or 'In Progress'
     else:
         s2 = 'pending'
         d2 = 'Pending'
@@ -81,10 +116,10 @@ def build_dynamic_timeline(app, stage: str) -> list:
     # 3. Interview (Interview Process)
     if current_idx > 2:
         s3 = 'done'
-        d3 = 'Cleared'
+        d3 = interview_at or 'Cleared'
     elif current_idx == 2:
         s3 = 'current'
-        d3 = 'In Progress'
+        d3 = interview_at or 'In Progress'
     else:
         s3 = 'pending'
         d3 = 'Pending'
@@ -93,10 +128,10 @@ def build_dynamic_timeline(app, stage: str) -> list:
     # 4. Offer (Offer Extended)
     if current_idx > 3:
         s4 = 'done'
-        d4 = 'Sent to Candidate'
+        d4 = offer_at or 'Sent to Candidate'
     elif current_idx == 3:
         s4 = 'current'
-        d4 = 'Sent to Candidate'
+        d4 = offer_at or 'Sent to Candidate'
     else:
         s4 = 'pending'
         d4 = 'Pending'
@@ -105,10 +140,10 @@ def build_dynamic_timeline(app, stage: str) -> list:
     # 5. Offer Accepted
     if current_idx > 4 or is_onboarding or is_onboarded:
         s5 = 'done'
-        d5 = 'Candidate Agreed'
+        d5 = accepted_at or 'Candidate Agreed'
     elif current_idx == 4:
         s5 = 'current'
-        d5 = 'Candidate Agreed'
+        d5 = accepted_at or 'Candidate Agreed'
     else:
         s5 = 'pending'
         d5 = 'Pending'
@@ -117,7 +152,7 @@ def build_dynamic_timeline(app, stage: str) -> list:
     # 6. Onboarding Initiated
     if is_onboarded or is_onboarding:
         s6 = 'done'
-        d6 = 'Completed'
+        d6 = onboarding_at or 'Completed'
     else:
         s6 = 'pending'
         d6 = 'Pending'
@@ -126,7 +161,7 @@ def build_dynamic_timeline(app, stage: str) -> list:
     # 7. Onboarding Completed
     if is_onboarded:
         s7 = 'done'
-        d7 = 'Joined Company'
+        d7 = onboarded_at or 'Joined Company'
     elif is_onboarding:
         s7 = 'current'
         d7 = 'In Progress'
@@ -189,6 +224,21 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
         )
         active_interview_ids = {r[0] for r in active_result}
 
+    # Latest interview schedule per applicant (for exact interview date/time on the timeline)
+    latest_interview_map: dict[int, JobInterviewSchedule] = {}
+    if applicant_ids:
+        interview_rows = (
+            db.query(JobInterviewSchedule)
+            .filter(JobInterviewSchedule.job_applicant_id.in_(applicant_ids))
+            .order_by(JobInterviewSchedule.job_applicant_id, JobInterviewSchedule.job_interview_id.desc())
+            .all()
+        )
+        for iv in interview_rows:
+            if iv.job_applicant_id not in latest_interview_map:
+                latest_interview_map[iv.job_applicant_id] = iv
+
+    latest_offer_map = get_latest_offers_map(db, applicant_ids)
+
     out = []
     for idx, (app, user, meta, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
@@ -215,11 +265,12 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
             "email": user.email,
             "phone": user.mobile or "",
             "daysAgo": _days_ago(app.created_at),
+            "appliedDate": _format_date(app.created_at),
             "updated_at": app.updated_at,
             "notes": notes,
             "skills": skills,
             "color": color,
-            "timeline": build_dynamic_timeline(app, stage),
+            "timeline": build_dynamic_timeline(app, stage, latest_interview_map.get(app.job_applicant_id), latest_offer_map.get(app.job_applicant_id)),
             "sync_masset": app.sync_masset,
             "applicant_job_status": app.applicant_job_status,
             "has_active_interview": app.job_applicant_id in active_interview_ids,
@@ -228,6 +279,13 @@ def get_ats_candidates(db: Session, admin_id: int) -> list:
 
 
 _STAGE_TO_FIELDS = {
+    'Prescreen Rejected': {
+        'applicant_stage': ApplicantStage.PRESCREEN_REJECT,
+        'applicant_job_status': ApplicantJobStatus.REJECTED,
+        'issue_offer': 0,
+        'offer_acceptance_status': OfferAcceptanceStatus.PENDING,
+        'sync_masset': 0,
+    },
     'Screened': {
         'applicant_stage': ApplicantStage.SCREENED,
         'applicant_job_status': None,
@@ -255,13 +313,6 @@ _STAGE_TO_FIELDS = {
         'issue_offer': 1,
         'offer_acceptance_status': OfferAcceptanceStatus.ACCEPTED,
         'sync_masset': 0,
-    },
-    'Onboarding': {
-        'applicant_stage': ApplicantStage.ONBOARDING,
-        'applicant_job_status': ApplicantJobStatus.SELECTED,
-        'issue_offer': 1,
-        'offer_acceptance_status': OfferAcceptanceStatus.ACCEPTED,
-        'sync_masset': 1,
     },
     'Hold': {
         'applicant_job_status': ApplicantJobStatus.HOLD,
@@ -292,6 +343,8 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
     app_record, job = row
     if not _is_hr_role(db, admin_id) and job.job_posted_by != admin_id:
         raise HTTPException(status_code=403, detail="Access denied")
+
+    previous_stage = app_record.applicant_stage
 
     # If the action is Hold or Reject, handle latest interview schedule and remarks
     if stage in ("Hold", "Reject"):
@@ -372,6 +425,27 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
         setattr(app_record, attr, value)
 
     db.commit()
+
+    if previous_stage == ApplicantStage.PRESCREEN_REJECT and stage == "Screened":
+        try:
+            from app.crud.notification_crud import notify_candidate
+
+            notify_candidate(
+                db=db,
+                candidate_id=app_record.user_id,
+                title="Application Status Updated",
+                message=(
+                    f"Your application status for '{job.job_title}' has been updated to Screened."
+                ),
+                notification_type="application_status_update",
+                sender_user_id=admin_id,
+                sender_type="hr",
+                redirect_url="/mss-career-portal/applied-jobs",
+            )
+        except Exception as e:
+            logger.error(
+                f"Failed to notify candidate {app_record.user_id} about stage update: {e}"
+            )
     
     from app.crud.common import check_and_close_job_if_filled
     check_and_close_job_if_filled(db, job.job_id)
@@ -398,13 +472,19 @@ def get_interviews(db: Session, admin_id: int) -> dict:
         name = f"{user.first_name} {user.last_name}".strip()
         is_rescheduled = iv.status.value.lower() == "rescheduled" if iv.status else False
         date_val = iv.scheduled_date
-        
+
         start_val = iv.start_time
         end_val = iv.end_time
-        
-        time_str = _format_time(start_val) if start_val else ""
-        if end_val:
-            time_str += f" - {_format_time(end_val)}"
+
+        # scheduled_date/start_time/end_time were split from a UTC instant when the
+        # interview was booked (see job_interview_route.py); recombine before
+        # converting to IST so the date doesn't drift for interviews near midnight.
+        start_ist = to_ist(datetime.combine(date_val, start_val)) if (date_val and start_val) else None
+        end_ist = to_ist(datetime.combine(date_val, end_val)) if (date_val and end_val) else None
+
+        time_str = _format_time(start_ist.time()) if start_ist else ""
+        if end_ist:
+            time_str += f" - {_format_time(end_ist.time())}"
 
         from app.models.interview_remarks_model import InterviewRemark
         status_text = iv.status.value.capitalize() if iv.status else "Scheduled"
@@ -422,7 +502,7 @@ def get_interviews(db: Session, admin_id: int) -> dict:
             "color": get_color(idx),
             "position": job.job_title or "",
             "round": iv.interview_round or "Round 1",
-            "date": _format_date(date_val),
+            "date": _format_date(start_ist or date_val),
             "time": time_str,
             "interviewer": iv.interviewer_name or "",
             "status": status_text,
@@ -455,7 +535,7 @@ def get_interviews(db: Session, admin_id: int) -> dict:
     # Summary stats
     total_today = sum(
         1 for iv in interviews
-        if iv["date"] == _format_date(date.today())
+        if iv["date"] == _format_date(now_ist().date())
     )
     completed = sum(1 for iv in interviews if iv["status"].lower() == "completed")
     pending_feedback = sum(1 for iv in interviews if iv["status"].lower() == "scheduled")
@@ -485,9 +565,12 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
         .all()
     )
 
+    latest_offer_map = get_latest_offers_map(db, [app.job_applicant_id for app, _, _ in rows])
+
     out = []
     for idx, (app, user, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
+        offer = latest_offer_map.get(app.job_applicant_id)
         sync_val = app.masset_synced_at
         if sync_val:
             if isinstance(sync_val, str):
@@ -495,7 +578,7 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
                     sync_val = datetime.strptime(sync_val.split(' ')[0].split('T')[0], "%Y-%m-%d")
                 except Exception:
                     pass
-            last_sync = _format_date(sync_val.date() if hasattr(sync_val, 'date') else sync_val)
+            last_sync = _format_date(sync_val)
         else:
             last_sync = "Not synced"
 
@@ -512,7 +595,7 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
             "initials": get_initials(user.first_name, user.last_name),
             "position": job.job_title or "",
             "school": job.school_name or "",
-            "offerDate": _format_date(app.offer_issued_date),
+            "offerDate": _format_date(offer.offer_issued_date) if offer else "",
             "status": status,
             "lastSync": last_sync,
             "email": user.email,
@@ -533,6 +616,11 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
     user_metadata = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == app.user_id).first()
     job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
 
+    # Resolve the unit id from the units table using school_name
+    unit = None
+    if job and job.school_name:
+        unit = db.query(Units).filter(Units.unit_name == job.school_name).first()
+
     # 2. Construct JSON Payload (tracking via applicant_id and masset_employee_id)
     payload = {
         "candidate_id": applicant_id,
@@ -547,6 +635,7 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
         "blood_group": user_metadata.blood_group if user_metadata else "",
         "designation": job.job_title if job else "",
         "unit_name": job.school_name if job else "",
+        "unit_id": unit.id if unit else None,
         "action": "appointment_order"
     }
 
@@ -564,9 +653,9 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
         logger.error(f"MASSET Sync Failed. Exact issue: {str(e)}", exc_info=True)
         return {"error": f"Failed to sync with MASSET platform: {str(e)}"}
     
-    # 4. Update state to 'Onboarding'. Tracking continues via app.masset_employee_id
+    # MASSET sync does not change the accepted offer stage.
     app.sync_masset = 1
-    app.applicant_stage = ApplicantStage.ONBOARDING
+    app.applicant_stage = ApplicantStage.OFFER_ACCEPTED
     app.masset_synced_at = datetime.utcnow()
     app.masset_synced_by = admin_id
     
@@ -734,10 +823,12 @@ def get_hr_reports(
 
     # Monthly Hiring Trend
     accepted_apps = base_q.filter(JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED).all()
+    accepted_offer_map = get_latest_offers_map(db, [a.job_applicant_id for a in accepted_apps])
     monthly_trend = {}
     for app in accepted_apps:
-        if app.offer_issued_date:
-            month = app.offer_issued_date.strftime("%B")
+        offer = accepted_offer_map.get(app.job_applicant_id)
+        if offer and offer.offer_issued_date:
+            month = offer.offer_issued_date.strftime("%B")
             monthly_trend[month] = monthly_trend.get(month, 0) + 1
     
     if not monthly_trend:
@@ -855,7 +946,7 @@ def get_hr_reports(
     }
 
 def get_pending_actions(db: Session, admin_id: int) -> dict:
-    today = date.today()
+    today = now_ist().date()
     is_hr = _is_hr_role(db, admin_id)
 
     q_pre = (

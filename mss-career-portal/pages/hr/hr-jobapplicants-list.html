@@ -538,6 +538,26 @@
       border-color: #F7C1C1;
     }
 
+    .action-btn.purple {
+      background: var(--purple-bg);
+      color: var(--purple-text);
+      border-color: #D1CCF9;
+    }
+
+    .job-closed-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 3px;
+      padding: 1px 8px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      font-weight: 600;
+      background: var(--red-bg);
+      color: var(--red-text);
+      white-space: nowrap;
+    }
+
     .checkbox {
       width: 15px;
       height: 15px;
@@ -803,7 +823,7 @@
         <div class="stat-card sc-onboarding">
           <div class="stat-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
-          <div class="stat-label">Onboarding</div>
+          <div class="stat-label">Onboarded</div>
           <div class="stat-delta">Active this month</div>
         </div>
       </div>
@@ -827,7 +847,7 @@
           <option>Interview</option>
           <option>Offer</option>
           <option>Offer Accepted</option>
-          <option>Onboarding</option>
+          <option>Onboarded</option>
           <option>Rejected</option>
         </select>
         <select class="filter-select" id="fExp" onchange="filterApplicants()">
@@ -943,12 +963,12 @@
         document.querySelector('.sc-total .stat-value').textContent = data.stats.total;
         document.querySelector('.sc-interview .stat-value').textContent = data.stats.interview;
         document.querySelector('.sc-offers .stat-value').textContent = data.stats.offers;
-        document.querySelector('.sc-onboarding .stat-value').textContent = data.stats.onboarding;
+        document.querySelector('.sc-onboarding .stat-value').textContent = data.stats.onboarded;
 
         if (data.stats.deltas) {
           document.querySelector('.sc-total .stat-delta').textContent = data.stats.deltas.total;
           document.querySelector('.sc-offers .stat-delta').textContent = data.stats.deltas.offers;
-          document.querySelector('.sc-onboarding .stat-delta').textContent = data.stats.deltas.onboarding;
+          document.querySelector('.sc-onboarding .stat-delta').textContent = data.stats.deltas.onboarded;
         }
 
         // Update subtitle
@@ -977,12 +997,12 @@
     /* ── Build stage chips dynamically ── */
     const STAGE_CONFIG = [
       { name: 'All', color: '#444441', bg: '#F1EFE8' },
-      { name: 'PreScreen Reject', color: '#534AB7', bg: '#EEEDFE' },
+      { name: 'Prescreen Rejected', color: '#534AB7', bg: '#EEEDFE' },
       { name: 'Screened', color: '#185FA5', bg: '#E6F1FB' },
       { name: 'Interview', color: '#BA7517', bg: '#FAEEDA' },
       { name: 'Offer', color: '#534AB7', bg: '#EEEDFE' },
       { name: 'Offer Accepted', color: '#3B6D11', bg: '#EAF3DE' },
-      { name: 'Onboarding', color: '#0F6E56', bg: '#E1F5EE' },
+      { name: 'Onboarded', color: '#0F6E56', bg: '#E1F5EE' },
       { name: 'Rejected', color: '#A32D2D', bg: '#FCEBEB' },
     ];
 
@@ -1013,7 +1033,7 @@
       const map = {
         'Prescreen Rejected': 'badge-rejected', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
         'Offer': 'badge-offer', 'Offer Accepted': 'badge-accepted',
-        'Onboarding': 'badge-onboarding', 'Rejected': 'badge-rejected',
+        'Onboarded': 'badge-onboarding', 'Rejected': 'badge-rejected',
         'Awaiting Offer': 'badge-offer'
       };
       return `<span class="badge ${map[stage] || ''}">${stage}</span>`;
@@ -1062,7 +1082,7 @@
         let displayStage = c.stage;
         let showActions = true;
         
-        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Rejected'];
+        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarded', 'Rejected'];
         if (c.interviewStatus === 'Selected' && !advancedStages.includes(c.stage)) {
           displayStage = 'Awaiting Offer';
           showActions = false;
@@ -1083,7 +1103,10 @@
           </div>
         </div>
       </td>
-      <td style="color:var(--text2);max-width:180px;">${c.job}</td>
+      <td style="color:var(--text2);max-width:180px;">
+        <div>${c.job}</div>
+        ${c.job_status === 'closed' ? `<div class="job-closed-tag"><i class="ti ti-lock" aria-hidden="true"></i>Job Closed</div>` : ''}
+      </td>
       <td style="color:var(--text3);white-space:nowrap;">${c.appliedDate}</td>
       <td style="font-weight:500;">${c.exp}</td>
       <td>${stageBadge(displayStage)}</td>
@@ -1095,6 +1118,7 @@
           </button>
           ${(showActions && (c.stage === 'Screened' || c.interviewStatus === 'Next Round') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
           ${canAction ? `<button class="action-btn red" title="Reject Candidate" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')"><i class="ti ti-x"></i></button>` : ''}
+          ${c.job_status === 'closed' ? `<button class="action-btn purple" title="Publish Job" onclick="event.stopPropagation(); publishJobModal(${c.job_id}, '${c.job.replace(/'/g, "\\'")}')"><i class="ti ti-rocket"></i></button>` : ''}
         </div>
       </td>`;
         tbody.appendChild(tr);
@@ -1174,6 +1198,11 @@
 
       if (!round || !schDate || !schTime || !schEndTime) {
         if (window.showToast) window.showToast('Please fill out all required fields (Round, Date, Start Time, End Time).', 'error');
+        return;
+      }
+
+      if (!interviewer) {
+        if (window.showToast) window.showToast('Please select an interviewer.', 'error');
         return;
       }
 
@@ -1297,6 +1326,51 @@
       .catch(err => {
         console.error(err);
         if (window.showToast) window.showToast('Error rejecting candidate.', 'error');
+      });
+    }
+
+    /* ── Publish Closed Job modal ── */
+    function publishJobModal(jobId, jobTitle) {
+      const today = new Date().toISOString().split('T')[0];
+      showModal(`
+    <div class="modal-title"><i class="ti ti-rocket" aria-hidden="true"></i> Publish Job Post</div>
+    <p>Re-publish "<strong>${jobTitle}</strong>" so it becomes visible to candidates again.</p>
+    <div class="form-group">
+      <label>New Closing Date</label>
+      <input type="date" id="pubClosingDate" min="${today}">
+    </div>
+    <div class="modal-actions">
+      <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
+      <button class="btn-primary" onclick="submitPublish(${jobId})"><i class="ti ti-rocket" aria-hidden="true"></i> Publish</button>
+    </div>`);
+    }
+
+    function submitPublish(jobId) {
+      const closingDate = document.getElementById('pubClosingDate').value;
+
+      fetch(JOBS_API_BASE + `/jobs/${jobId}/publish`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({ closing_date: closingDate || null })
+      })
+      .then(async res => {
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || 'Failed to publish job');
+        }
+        return res.json();
+      })
+      .then(() => {
+        if (window.showToast) window.showToast('Job post published successfully!', 'success');
+        document.querySelector('.modal-overlay').remove();
+        fetchApplicants();
+      })
+      .catch(err => {
+        console.error(err);
+        if (window.showToast) window.showToast(err.message || 'Error publishing job.', 'error');
       });
     }
 

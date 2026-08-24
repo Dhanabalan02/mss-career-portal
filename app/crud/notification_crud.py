@@ -1,7 +1,22 @@
+from urllib.parse import quote
 from sqlalchemy.orm import Session
 from sqlalchemy import desc
 from app.models.notification_logs_model import NotificationLog
 import datetime
+
+
+def build_candidate_profile_redirect_url(role: str, job_applicant_id: int, name: str, job_title: str) -> str:
+    """
+    Builds a deep link to the HR / School Admin candidate profile page for a given
+    applicant. The target page reads `candidate_id` from the query string (falling
+    back to localStorage) so the link is self-contained and needs no extra client-side
+    lookup before navigating.
+    """
+    base = "hr" if role == "hr" else "school"
+    return (
+        f"/mss-career-portal/{base}/candidate-profile"
+        f"?candidate_id={job_applicant_id}&name={quote(name or '')}&job_title={quote(job_title or '')}"
+    )
 
 def get_user_notifications(db: Session, user_id: int, role: str):
     """
@@ -67,7 +82,8 @@ def create_notification(
     channel: str = "in_app",
     notification_type: str = None,
     recipient_email: str = None,
-    recipient_mobile: str = None
+    recipient_mobile: str = None,
+    redirect_url: str = None
 ) -> NotificationLog:
     """
     Create a new notification log in the database.
@@ -85,6 +101,7 @@ def create_notification(
         notification_type=notification_type,
         recipient_email=recipient_email,
         recipient_mobile=recipient_mobile,
+        redirect_url=redirect_url,
         updated_at=datetime.datetime.utcnow()
     )
     db.add(db_notification)
@@ -99,7 +116,8 @@ def notify_candidate(
     message: str,
     notification_type: str = "general",
     sender_user_id: int = None,
-    sender_type: str = None
+    sender_type: str = None,
+    redirect_url: str = None
 ) -> NotificationLog:
     """
     Send an in-app notification to a candidate.
@@ -112,7 +130,8 @@ def notify_candidate(
         message=message,
         notification_type=notification_type,
         sender_user_id=sender_user_id,
-        sender_type=sender_type
+        sender_type=sender_type,
+        redirect_url=redirect_url
     )
 
 def notify_school_admin(
@@ -122,7 +141,8 @@ def notify_school_admin(
     message: str,
     notification_type: str = "general",
     sender_user_id: int = None,
-    sender_type: str = None
+    sender_type: str = None,
+    redirect_url: str = None
 ) -> NotificationLog:
     """
     Send an in-app notification to a school admin.
@@ -135,7 +155,8 @@ def notify_school_admin(
         message=message,
         notification_type=notification_type,
         sender_user_id=sender_user_id,
-        sender_type=sender_type
+        sender_type=sender_type,
+        redirect_url=redirect_url
     )
 
 def notify_hr_users(
@@ -144,19 +165,20 @@ def notify_hr_users(
     message: str,
     notification_type: str = "general",
     sender_user_id: int = None,
-    sender_type: str = None
+    sender_type: str = None,
+    redirect_url: str = None
 ) -> int:
     """
     Send an in-app notification to all active HR admins/heads/team members.
     """
     from app.models.admin_model import Admins
     from app.models.user_roles_model import UserRoles
-    
+
     hr_admins = db.query(Admins).join(UserRoles).filter(
         UserRoles.role_name.in_(["hr_head", "hr_admin", "hr_team"]),
         Admins.is_active == 1
     ).all()
-    
+
     sent_count = 0
     for hr in hr_admins:
         create_notification(
@@ -167,10 +189,11 @@ def notify_hr_users(
             message=message,
             notification_type=notification_type,
             sender_user_id=sender_user_id,
-            sender_type=sender_type
+            sender_type=sender_type,
+            redirect_url=redirect_url
         )
         sent_count += 1
-        
+
     return sent_count
 
 
@@ -180,19 +203,20 @@ def notify_school_admins(
     message: str,
     notification_type: str = "general",
     sender_user_id: int = None,
-    sender_type: str = None
+    sender_type: str = None,
+    redirect_url: str = None
 ) -> int:
     """
     Send an in-app notification to all active school admins.
     """
     from app.models.admin_model import Admins
     from app.models.user_roles_model import UserRoles
-    
+
     school_admins = db.query(Admins).join(UserRoles).filter(
         UserRoles.role_name == "school_admin",
         Admins.is_active == 1
     ).all()
-    
+
     sent_count = 0
     for admin in school_admins:
         create_notification(
@@ -203,8 +227,9 @@ def notify_school_admins(
             message=message,
             notification_type=notification_type,
             sender_user_id=sender_user_id,
-            sender_type=sender_type
+            sender_type=sender_type,
+            redirect_url=redirect_url
         )
         sent_count += 1
-        
+
     return sent_count

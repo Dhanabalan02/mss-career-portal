@@ -1,4 +1,5 @@
 import jwt
+from datetime import datetime
 from typing import Optional, List
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from app.core.html_helper import serve_html_with_base
@@ -52,38 +53,70 @@ class JobApplicationRequest(BaseModel):
 
 
 def _compute_current_stage(app, has_interview: bool = False) -> str:
-    """Derives the candidate-facing stage from the applicant's live status fields, mirroring
-    the logic used on the HR/school-admin candidate profile (jobs_route.get_applicant_detail_route).
-    The `applicant_stage` column is only ever set up to "offer" and is never advanced on
-    reject/hold/offer-accept/onboarding, so it cannot be used on its own without going stale."""
-    if app.applicant_job_status == "rejected":
-        return "Rejected"
-    if app.sync_masset == 1:
-        return "Onboarded"
-    if app.offer_acceptance_status == "accepted":
-        return "Offer Accepted"
-    if app.offer_acceptance_status == "expired":
-        return "Offer"
-    if app.issue_offer == 1 or app.offer_letter_doc:
-        return "Offer"
-    if app.applicant_job_status == "hold":
-        return "On Hold"
-    if has_interview:
-        return "Interview"
 
     stage_val = (
         getattr(app.applicant_stage, "value", app.applicant_stage)
         if getattr(app, "applicant_stage", None)
         else None
     )
+
+    # Specific pre-screen rejection must take priority
     if stage_val == "prescreen-reject":
-        return "prescreen-reject"
+        return "Prescreen Rejected"
+
+    if app.applicant_job_status == "rejected":
+        return "Rejected"
+
+    if app.issue_appointment_order == 1:
+        return "Onboarded"
+
+    if app.sync_masset == 1:
+        return "Offer Accepted"
+
+    if app.offer_acceptance_status == "accepted":
+        return "Offer Accepted"
+
+    if app.offer_acceptance_status == "expired":
+        return "Offer"
+
+    if app.issue_offer == 1:
+        return "Offer"
+
+    if app.applicant_job_status == "hold":
+        return "On Hold"
+
+    if has_interview:
+        return "Interview"
+
     if stage_val == "screened":
         return "Screened"
+
     return "Applied"
 
 
-def _serialize_application(app, has_interview: bool = False):
+def _compute_stage_dates(app, current_stage: str, earliest_interview=None, earliest_offer=None) -> dict:
+    """Best-effort date/time for each pipeline stage, built from fields that already
+    exist on job_applicants / job_interview_schedule / job_offers. There is no
+    dedicated timestamp for "Screened" specifically, so it's only reported while
+    the applicant is currently sitting at that stage (using updated_at as an
+    approximation); once they move on, it goes back to unknown rather than guess.
+    """
+    interview_at = None
+    if earliest_interview and earliest_interview.scheduled_date and earliest_interview.start_time:
+        interview_at = datetime.combine(earliest_interview.scheduled_date, earliest_interview.start_time)
+
+    return {
+        "applied": app.created_at,
+        "screened": app.updated_at if current_stage == "Screened" else None,
+        "interview": interview_at,
+        "offer": earliest_offer.created_at if earliest_offer else None,
+        "offer_accepted": app.offer_accepted_on,
+        "onboarded": app.masset_sync_success_on,
+    }
+
+
+def _serialize_application(app, has_interview: bool = False, earliest_interview=None, earliest_offer=None):
+    stage = _compute_current_stage(app, has_interview)
     return {
         "job_applicant_id": app.job_applicant_id,
         "job_id": app.job_id,
@@ -98,8 +131,9 @@ def _serialize_application(app, has_interview: bool = False):
         "department": app.job.department if hasattr(app, 'job') and app.job else None,
         "location": app.job.location if hasattr(app, 'job') and app.job else None,
         "job_type": app.job.job_type if hasattr(app, 'job') and app.job else None,
-        "stage": _compute_current_stage(app, has_interview),
-        "issue_offer": app.issue_offer if hasattr(app, 'issue_offer') else 0
+        "stage": stage,
+        "issue_offer": app.issue_offer if hasattr(app, 'issue_offer') else 0,
+        "stage_dates": _compute_stage_dates(app, stage, earliest_interview, earliest_offer),
     }
 
 
@@ -188,11 +222,11 @@ def apply_for_job_route(
     try:
         from app.models.job_post_model import JobPost
         from app.models.user_model import Users
-        from app.crud.notification_crud import notify_hr_users
-        
+        from app.crud.notification_crud import notify_hr_users, build_candidate_profile_redirect_url
+
         job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
         candidate = db.query(Users).filter(Users.user_id == user_id).first()
-        
+
         if job and candidate:
             candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
             #Notify HR Users
@@ -202,7 +236,8 @@ def apply_for_job_route(
                 message=f"New application received from {candidate_name} for '{job.job_title}' at {job.school_name}.",
                 notification_type="new_application",
                 sender_user_id=user_id,
-                sender_type="candidate"
+                sender_type="candidate",
+                redirect_url=build_candidate_profile_redirect_url("hr", application.job_applicant_id, candidate_name, job.job_title)
             )
     except Exception as e:
         from app.core.logger import logger
@@ -219,27 +254,45 @@ def get_my_applications_route(
     applications = get_candidate_applications(db, user_id=user_id)
 
     from app.models.job_post_model import JobPost
-    from app.models import JobInterviewSchedule
+    from app.models import JobInterviewSchedule, JobOffer
     job_ids = [app.job_id for app in applications]
     jobs = db.query(JobPost).filter(JobPost.job_id.in_(job_ids)).all() if job_ids else []
     job_map = {job.job_id: job for job in jobs}
 
     applicant_ids = [app.job_applicant_id for app in applications]
     interviewed_ids = set()
+    earliest_interview_map = {}
+    earliest_offer_map = {}
     if applicant_ids:
-        rows = (
-            db.query(JobInterviewSchedule.job_applicant_id)
+        interview_rows = (
+            db.query(JobInterviewSchedule)
             .filter(JobInterviewSchedule.job_applicant_id.in_(applicant_ids))
-            .distinct()
+            .order_by(JobInterviewSchedule.job_interview_id.asc())
             .all()
         )
-        interviewed_ids = {row[0] for row in rows}
+        for row in interview_rows:
+            interviewed_ids.add(row.job_applicant_id)
+            earliest_interview_map.setdefault(row.job_applicant_id, row)
+
+        offer_rows = (
+            db.query(JobOffer)
+            .filter(JobOffer.job_applicant_id.in_(applicant_ids))
+            .order_by(JobOffer.job_offer_id.asc())
+            .all()
+        )
+        for row in offer_rows:
+            earliest_offer_map.setdefault(row.job_applicant_id, row)
 
     for app in applications:
         setattr(app, 'job', job_map.get(app.job_id))
 
     return [
-        _serialize_application(app, has_interview=(app.job_applicant_id in interviewed_ids))
+        _serialize_application(
+            app,
+            has_interview=(app.job_applicant_id in interviewed_ids),
+            earliest_interview=earliest_interview_map.get(app.job_applicant_id),
+            earliest_offer=earliest_offer_map.get(app.job_applicant_id),
+        )
         for app in applications
     ]
 
@@ -257,16 +310,18 @@ def check_applied_route(
         
     offer_data = None
     if applied_app.issue_offer == 1:
+        from app.crud.common import get_latest_offer
+        latest_offer = get_latest_offer(db, applied_app.job_applicant_id)
         offer_data = {
-            "offered_salary": applied_app.offered_salary,
-            "joining_date": str(applied_app.joining_date) if hasattr(applied_app, 'joining_date') and applied_app.joining_date else None,
-            "probation_period": applied_app.probation_period if hasattr(applied_app, 'probation_period') else None,
-            "offer_remarks": applied_app.offer_remarks,
-            "offer_expiry_date": str(applied_app.offer_expiry_date) if applied_app.offer_expiry_date else None,
-            "offer_letter_doc": applied_app.offer_letter_doc,
+            "offered_salary": latest_offer.offered_salary if latest_offer else None,
+            "joining_date": str(latest_offer.joining_date) if latest_offer and latest_offer.joining_date else None,
+            "probation_period": latest_offer.probation_period if latest_offer else None,
+            "offer_remarks": latest_offer.offer_remarks if latest_offer else None,
+            "offer_expiry_date": str(latest_offer.offer_expiry_date) if latest_offer and latest_offer.offer_expiry_date else None,
+            "offer_letter_doc": latest_offer.offer_letter_doc if latest_offer else None,
             "offer_acceptance_status": getattr(applied_app.offer_acceptance_status, 'value', applied_app.offer_acceptance_status) if applied_app.offer_acceptance_status else "pending"
         }
-        
+
     return {
         "applied": True,
         "offer": offer_data
@@ -292,16 +347,17 @@ def respond_to_offer_route(
     try:
         from app.models.job_post_model import JobPost
         from app.models.user_model import Users
-        from app.crud.notification_crud import notify_hr_users, create_notification
+        from app.crud.notification_crud import notify_hr_users, create_notification, build_candidate_profile_redirect_url
         from app.models.admin_model import Admins
-        
+
         job = db.query(JobPost).filter(JobPost.job_id == job_id).first()
         candidate = db.query(Users).filter(Users.user_id == user_id).first()
-        
-        if job and candidate:
+        applied_app = check_already_applied(db, user_id=user_id, job_id=job_id)
+
+        if job and candidate and applied_app:
             candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
             status_cap = payload.status.capitalize()
-            
+
             # 1. Notify Job Poster (School Admin or HR)
             poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
             if poster:
@@ -316,9 +372,10 @@ def respond_to_offer_route(
                         message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}'.",
                         notification_type=f"offer_{payload.status.lower()}",
                         sender_user_id=user_id,
-                        sender_type="candidate"
+                        sender_type="candidate",
+                        redirect_url=build_candidate_profile_redirect_url("schoolAdmin", applied_app.job_applicant_id, candidate_name, job.job_title)
                     )
-                
+
             # 2. Notify HR Users
             notify_hr_users(
                 db=db,
@@ -326,7 +383,8 @@ def respond_to_offer_route(
                 message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}' at {job.school_name}.",
                 notification_type=f"offer_{payload.status.lower()}",
                 sender_user_id=user_id,
-                sender_type="candidate"
+                sender_type="candidate",
+                redirect_url=build_candidate_profile_redirect_url("hr", applied_app.job_applicant_id, candidate_name, job.job_title)
             )
     except Exception as e:
         from app.core.logger import logger

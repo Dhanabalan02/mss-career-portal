@@ -20,6 +20,7 @@ from app.crud.jobs_crud import (
     get_published_job_post_or_404,
     get_job_prescreening_questions,
     clone_job_post,
+    close_expired_job_posts,
 )
 from app.models import (
     JobPost,
@@ -192,14 +193,9 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
             is not None
         )
 
-    published_date = None
-    if (
-        job_post.job_status == JobStatus.PUBLISH
-        or getattr(job_post.job_status, "value", None) == "publish"
-    ):
-        published_date = (
-            job_post.updated_at.isoformat() if job_post.updated_at else None
-        )
+    published_date = (
+        job_post.published_at.isoformat() if job_post.published_at else None
+    )
 
     applicant_count = 0
     if db:
@@ -277,6 +273,7 @@ def get_public_job_post_by_id_route(job_id: int, db: Session = Depends(get_db)):
 @router.get("/public/by-uuid/{job_uuid}")
 def get_public_job_post_by_uuid_route(job_uuid: str, db: Session = Depends(get_db)):
     """Retrieves a single published job post by its UUID. No authentication required."""
+    close_expired_job_posts(db)
     job_post = db.query(JobPost).filter(JobPost.uuid == job_uuid, JobPost.job_status == JobStatus.PUBLISH).first()
     if not job_post:
         raise HTTPException(status_code=404, detail="Job not found.")
@@ -360,6 +357,8 @@ def get_applicants_route(
     )
     from sqlalchemy.orm import joinedload
 
+    close_expired_job_posts(db)
+
     admin = (
         db.query(Admins)
         .options(joinedload(Admins.user_roles))
@@ -396,15 +395,15 @@ def get_applicants_route(
     total_count = 0
     interviewing_count = 0
     offers_count = 0
-    onboarding_count = 0
+    onboarded_count = 0
 
     chip_counts = {
-        "PreScreen Rejection": 0,
+        "Prescreen Rejected": 0,
         "Screened": 0,
         "Interview": 0,
         "Offer": 0,
         "Offer Accepted": 0,
-        "Onboarding": 0,
+        "Onboarded": 0,
         "Rejected": 0,
     }
 
@@ -477,8 +476,8 @@ def get_applicants_route(
             interviewing_count += 1
         elif stage_val in ["Offer", "Offer Accepted"]:
             offers_count += 1
-        elif stage_val == "Onboarding":
-            onboarding_count += 1
+        elif stage_val == "Onboarded":
+            onboarded_count += 1
 
         # Filter matching
         if search:
@@ -502,14 +501,26 @@ def get_applicants_route(
             elif exp == "10+ yrs" and not (total_experience > 10):
                 continue
 
+        job_status_val = (
+            getattr(job_post.job_status, "value", job_post.job_status)
+            if job_post
+            else None
+        )
+
         serialized_applicants.append(
             {
                 "id": app.job_applicant_id,
                 "job_id": app.job_id,
-                "user_id": user.user_id, 
+                "user_id": user.user_id,
                 "mss_app_no": app.mss_app_no,
                 "name": name,
                 "job": job_title,
+                "job_status": job_status_val,
+                "job_closing_date": (
+                    job_post.closing_date.isoformat()
+                    if job_post and job_post.closing_date
+                    else None
+                ),
                 "appliedDate": (
                     app.created_at.strftime("%d-%m-%y") if app.created_at else ""
                 ),
@@ -534,15 +545,15 @@ def get_applicants_route(
 
     current_month = datetime.now().month
     current_year = datetime.now().year
-    onboarding_this_month = 0
+    onboarded_this_month = 0
     for app in all_applicants:
-        if app.applicant_stage and app.applicant_stage.value == "Onboarding":
+        if app.masset_status and app.masset_status.lower() == "onboarded":
             if (
-                app.updated_at
-                and app.updated_at.month == current_month
-                and app.updated_at.year == current_year
+                app.masset_sync_success_on
+                and app.masset_sync_success_on.month == current_month
+                and app.masset_sync_success_on.year == current_year
             ):
-                onboarding_this_month += 1
+                onboarded_this_month += 1
 
     return {
         "applicants": serialized_applicants,
@@ -550,12 +561,12 @@ def get_applicants_route(
             "total": total_count,
             "interview": interviewing_count,
             "offers": offers_count,
-            "onboarding": onboarding_count,
+            "onboarded": onboarded_count,
             "deltas": {
                 "total": f"Across {unique_jobs_count} position{'s' if unique_jobs_count != 1 else ''}",
                 "interview": f"{interview_pct}% of pipeline",
                 "offers": f"{accepted_count} accepted so far",
-                "onboarding": f"{onboarding_this_month} active this month",
+                "onboarded": f"{onboarded_this_month} active this month",
             },
         },
         "chips": chip_counts,
@@ -621,6 +632,9 @@ def get_applicant_detail_route(
     )
     exp_str = format_experience(exp_records)
 
+    from app.crud.common import get_latest_offer
+    latest_offer = get_latest_offer(db, app.job_applicant_id)
+
     # Get latest stage info
     interviews = (
         db.query(JobInterviewSchedule)
@@ -644,7 +658,10 @@ def get_applicant_detail_route(
         stage_val = stage_map.get(app.applicant_stage.value, "Applied")
         
     interview_status = "Pending"
-    if app.applicant_job_status == "rejected":
+    if app.applicant_stage == ApplicantStage.PRESCREEN_REJECT:
+        stage_val = "Pre Screen Reject"
+        interview_status = "Pending"
+    elif app.applicant_job_status == "rejected":
         stage_val = "Rejected"
         interview_status = "Rejected"
     elif app.sync_masset == 1:
@@ -659,7 +676,7 @@ def get_applicant_detail_route(
     elif app.offer_acceptance_status == "expired":
         stage_val = "Offer"
         interview_status = "Rejected"
-    elif app.issue_offer == 1 or app.offer_letter_doc:
+    elif app.issue_offer == 1:
         stage_val = "Offer"
         interview_status = "Selected"
     elif len(interviews) > 0:
@@ -894,6 +911,11 @@ def get_applicant_detail_route(
             return ""
         return value.strftime("%d-%m-%y")
 
+    def _fmt_datetime(value):
+        if not value:
+            return ""
+        return value.strftime("%d-%m-%y %I:%M %p")
+
     def _fmt_ordinal_date(value):
         if not value:
             return ""
@@ -902,13 +924,18 @@ def get_applicant_detail_route(
         return f"{day}{suffix} {value.strftime('%B %Y')}"
 
     tracking_dates = {
-        "applied": _fmt_date(app.created_at),
-        "screened": _fmt_date(screened_at),
-        "interview": _fmt_date(interview_at),
-        "offer": _fmt_date(app.offer_issued_date),
+        "applied": _fmt_datetime(app.created_at),
+        "screened": _fmt_datetime(screened_at),
+        "interview": _fmt_datetime(interview_at),
+        "offer": _fmt_date(latest_offer.offer_issued_date) if latest_offer else "",
         "offer_accepted": _fmt_date(app.offer_accepted_on),
-        "onboarding": _fmt_date(app.masset_sync_success_on),
-        "onboarded": _fmt_date(app.masset_synced_at) if app.masset_status == 'onboarded' else "",
+        "onboarding": _fmt_datetime(app.masset_sync_success_on),
+        "onboarded": _fmt_datetime(app.masset_synced_at) if app.masset_status == 'onboarded' else "",
+        "rejected": (
+            _fmt_datetime(app.updated_at)
+            if stage_val in ("Rejected", "Pre Screen Reject")
+            else ""
+        ),
     }
 
     return {
@@ -926,16 +953,16 @@ def get_applicant_detail_route(
         "stage": stage_val,
         "interviewStatus": interview_status,
         "sync_masset": app.sync_masset,
-        "offer_letter_doc": app.offer_letter_doc or "",
+        "offer_letter_doc": (latest_offer.offer_letter_doc if latest_offer else "") or "",
         "offer_acceptance_status": app.offer_acceptance_status or "",
         "offerDetails": {
-            "offered_salary": app.offered_salary or "",
-            "joining_date": _fmt_ordinal_date(app.joining_date),
-            "probation_period": app.probation_period or "",
-            "offer_issued_date": _fmt_ordinal_date(app.offer_issued_date),
-            "offer_expiry_date": _fmt_ordinal_date(app.offer_expiry_date),
+            "offered_salary": (latest_offer.offered_salary if latest_offer else "") or "",
+            "joining_date": _fmt_ordinal_date(latest_offer.joining_date) if latest_offer else "",
+            "probation_period": (latest_offer.probation_period if latest_offer else "") or "",
+            "offer_issued_date": _fmt_ordinal_date(latest_offer.offer_issued_date) if latest_offer else "",
+            "offer_expiry_date": _fmt_ordinal_date(latest_offer.offer_expiry_date) if latest_offer else "",
             "offer_accepted_on": _fmt_ordinal_date(app.offer_accepted_on),
-            "offer_remarks": app.offer_remarks or "",
+            "offer_remarks": (latest_offer.offer_remarks if latest_offer else "") or "",
         },
         "massetDetails": {
             "masset_employee_id": app.masset_employee_id or "",
@@ -1029,6 +1056,7 @@ def update_applicant_status_route(
                 notification_type="status_update",
                 sender_user_id=admin_id,
                 sender_type="hr" if is_hr else "schoolAdmin",
+                redirect_url="/mss-career-portal/applied-jobs",
             )
 
     except Exception as e:
@@ -1058,6 +1086,7 @@ def get_job_post_by_id_route(
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid job identifier")
 
+    close_expired_job_posts(db)
     job_post = get_job_post_or_404(db, job_id=job_id)
     from app.models import Admins
     from sqlalchemy.orm import joinedload
@@ -1116,8 +1145,7 @@ def get_job_post_by_id_route(
         db.query(JobApplicant)
         .filter(
             JobApplicant.job_id == job_id,
-            (JobApplicant.issue_offer == 1)
-            | (JobApplicant.offer_letter_doc.isnot(None)),
+            JobApplicant.issue_offer == 1,
         )
         .count()
     )
@@ -1227,6 +1255,53 @@ def close_job_post_route(
             detail="You do not have permission to close this job post.",
         )
     job_post = update_job_status(db=db, job_id=job_id, job_status=JobStatus.CLOSED)
+    return _serialize_job_post(job_post, db=db)
+
+
+class PublishJobRequest(BaseModel):
+    closing_date: Optional[date] = None
+
+
+@router.patch("/{job_id}/publish")
+def publish_job_post_route(
+    job_id: int,
+    form_data: PublishJobRequest,
+    db: Session = Depends(get_db),
+    admin_id: int = Depends(_get_admin_id_from_token),
+):
+    """Re-publishes a closed or draft job post, optionally extending its closing date."""
+    job_post = get_job_post_or_404(db, job_id=job_id)
+    from app.models import Admins
+    from sqlalchemy.orm import joinedload
+
+    admin = (
+        db.query(Admins)
+        .options(joinedload(Admins.user_roles))
+        .filter(Admins.admin_id == admin_id)
+        .first()
+    )
+    is_hr = admin is not None and admin.user_roles.role_name in {
+        "hr_head",
+        "hr_team",
+        "hr_admin",
+    }
+
+    if job_post.job_posted_by != admin_id and not is_hr:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to publish this job post.",
+        )
+
+    closing_date = form_data.closing_date
+    if not closing_date and job_post.closing_date and job_post.closing_date < date.today():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This job's closing date has already passed. Provide a new closing date to republish it.",
+        )
+
+    job_post = update_job_status(
+        db=db, job_id=job_id, job_status=JobStatus.PUBLISH, closing_date=closing_date
+    )
     return _serialize_job_post(job_post, db=db)
 
 
@@ -1482,57 +1557,76 @@ def get_dashboard_recent_applicants(
         exp_str = format_experience(exp_records)
         # ---------------------------------------------------------------------
 
-        # Stage + interview status
+        # --- Stage + interview status ---
+
         has_interview = app.job_applicant_id in interviewed
-        if app.sync_masset == 1:
-            stage = "Onboarding"
+
+        # applicant_stage is the source of truth for the candidate stage
+        applicant_stage = (
+            app.applicant_stage.value
+            if hasattr(app.applicant_stage, "value")
+            else app.applicant_stage
+        )
+
+        stage_map = {
+            "prescreen-reject": "Prescreen Rejected",
+            "screened": "Screened",
+            "interview": "Interview",
+            "offer": "Offer",
+            "offer_accepted": "Offer Accepted",
+            "onboarding": "Onboarding",
+            "onboarded": "Onboarded",
+            "rejected": "Rejected",
+        }
+
+        stage = stage_map.get(
+            str(applicant_stage).strip().lower()
+            if applicant_stage
+            else "",
+            "Applied",
+        )
+
+        # Interview status
+        if app.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED:
             interview_status = "Selected"
-        elif app.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED:
-            stage = "Offer Accepted"
-            interview_status = "Selected"
+
         elif app.offer_acceptance_status in (
             OfferAcceptanceStatus.EXPIRED,
             OfferAcceptanceStatus.REJECTED,
         ):
-            stage = "Offer"
             interview_status = "Rejected"
+
         elif app.issue_offer == 1:
-            stage = "Offer"
             interview_status = "Selected"
+
         elif has_interview:
-            stage = "Interview"
             iv = latest_iv[app.job_applicant_id]
+
             remark = (
                 db.query(InterviewRemark)
-                .filter(InterviewRemark.job_interview_id == iv.job_interview_id)
+                .filter(
+                    InterviewRemark.job_interview_id == iv.job_interview_id
+                )
                 .first()
             )
+
             if remark and remark.applicant_status:
                 if remark.applicant_status == "next_round":
                     interview_status = "Next Round"
                 else:
                     interview_status = remark.applicant_status.capitalize()
             else:
-                date_str = (
-                    iv.scheduled_date.strftime("%b %d, %Y") if iv.scheduled_date else ""
-                )
                 time_str = str(iv.start_time)[:5] if iv.start_time else ""
-                interview_status = (
-                    f"{iv.interview_round or 'Round 1'} · {time_str}".strip(" ·")
-                )
-        elif app.applicant_job_status in (
-            ApplicantJobStatus.SELECTED,
-            ApplicantJobStatus.HOLD,
-        ):
-            stage = "Screened"
-            interview_status = app.applicant_job_status.value.capitalize()
-        elif app.applicant_job_status == ApplicantJobStatus.REJECTED:
-            stage = "Rejected"
-            interview_status = "Rejected"
-        else:
-            stage = "Applied"
-            interview_status = "Pending"
 
+                interview_status = (
+                    f"{iv.interview_round or 'Round 1'} · {time_str}"
+                ).strip(" ·")
+
+        elif applicant_stage == "prescreen-reject":
+            interview_status = "Rejected"
+
+        else:
+            interview_status = "Pending"
         result.append(
             {
                 "name": name,

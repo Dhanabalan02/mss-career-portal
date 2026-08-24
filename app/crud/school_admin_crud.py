@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.models import(
     JobApplicant, 
     ApplicantJobStatus, 
+    ApplicantStage,
     OfferAcceptanceStatus,
     JobPost, 
     JobStatus,
@@ -20,7 +21,9 @@ from app.models import(
 from app.crud.common import (
     get_initials, get_color, get_av_class, parse_skills,
     compute_exp_str, compute_stage, compute_offer_status,
+    get_latest_offer, get_latest_offers_map,
 )
+from app.crud.jobs_crud import close_expired_job_posts
 
 
 def _format_date(d) -> str:
@@ -43,10 +46,25 @@ def _format_time(t) -> str:
 
 def check_and_update_expired_offers(db: Session):
     from app.models.job_applicant_model import JobApplicant, OfferAcceptanceStatus, ApplicantStage
+    from app.models.job_offer_model import JobOffer
+    from sqlalchemy import func
+
+    # Only the latest offer per applicant governs expiry.
+    latest_offer_subq = (
+        db.query(
+            JobOffer.job_applicant_id.label("job_applicant_id"),
+            func.max(JobOffer.job_offer_id).label("latest_offer_id"),
+        )
+        .group_by(JobOffer.job_applicant_id)
+        .subquery()
+    )
+
     expired_apps = (
         db.query(JobApplicant)
-        .filter(JobApplicant.offer_expiry_date.isnot(None))
-        .filter(JobApplicant.offer_expiry_date < date.today())
+        .join(latest_offer_subq, latest_offer_subq.c.job_applicant_id == JobApplicant.job_applicant_id)
+        .join(JobOffer, JobOffer.job_offer_id == latest_offer_subq.c.latest_offer_id)
+        .filter(JobOffer.offer_expiry_date.isnot(None))
+        .filter(JobOffer.offer_expiry_date < date.today())
         .filter(JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.PENDING)
         .all()
     )
@@ -58,46 +76,25 @@ def check_and_update_expired_offers(db: Session):
 
 
 def _get_admin_job_filter(db: Session, admin_id: int):
-    from sqlalchemy import text, or_, func
+    from sqlalchemy import text
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
-    if not admin:
+    if not admin or not admin.unit_id:
         return JobPost.job_id == -1
 
-    admin_email = (admin.email or "").strip().lower()
-    
-    # Check if there is any interview schedule where this admin is the interviewer
-    has_interviews = db.query(JobInterviewSchedule).filter(
-        func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email
-    ).first() is not None
+    result = db.execute(
+        text("SELECT unit_name FROM units WHERE id = :unit_id"),
+        {"unit_id": admin.unit_id},
+    ).fetchone()
+    school_name = result[0] if result and result[0] else ""
 
-    if not has_interviews:
-        # If this logic is false, then loads no data and display in the dashboard
+    if not school_name:
         return JobPost.job_id == -1
 
-    school_name = ""
-    if admin.unit_id:
-        result = db.execute(text("SELECT unit_name FROM units WHERE id = :unit_id"), {"unit_id": admin.unit_id}).fetchone()
-        if result and result[0]:
-            school_name = result[0]
-
-    iv_job_ids = [
-        r[0] for r in db.query(JobInterviewSchedule.job_id)
-        .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
-        .distinct()
-        .all()
-    ]
-    
-    if school_name and iv_job_ids:
-        return or_(JobPost.school_name == school_name, JobPost.job_id.in_(iv_job_ids))
-    elif school_name:
-        return JobPost.school_name == school_name
-    elif iv_job_ids:
-        return JobPost.job_id.in_(iv_job_ids)
-    else:
-        return JobPost.job_id == -1
+    return JobPost.school_name == school_name
 
 def get_school_dashboard(db: Session, admin_id: int) -> dict:
     check_and_update_expired_offers(db)
+    close_expired_job_posts(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
     admin_email = (admin.email or "").strip().lower() if admin else ""
@@ -108,6 +105,7 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         job_filter,
         JobPost.job_status == JobStatus.PUBLISH,
     )
+    
     active_jobs = jobs_q.count()
 
     all_job_ids = [j.job_id for j in db.query(JobPost.job_id).filter(job_filter).all()]
@@ -184,19 +182,26 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .all()
     )
     recent_jobs = []
-    for j in recent_jobs_rows:
-        applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == j.uuid).count()
-        recent_jobs.append({
-            "job_id": j.uuid,
-            "title": j.job_title or "",
-            "dept": j.department or "",
-            "school": j.school_name or "",
-            "type": j.job_type or "Full-time",
-            "vacancies": j.vacancy_count or 1,
-            "applicants": applicant_count,
-            "closing_date": _format_date(j.closing_date),
-            "status": j.job_status.value.capitalize() if j.job_status else "Draft",
-        })
+    if recent_jobs_rows:
+        recent_job_ids = [j.job_id for j in recent_jobs_rows]
+        counts = dict(
+            db.query(JobApplicant.job_id, func.count(JobApplicant.job_applicant_id))
+            .filter(JobApplicant.job_id.in_(recent_job_ids))
+            .group_by(JobApplicant.job_id)
+            .all()
+        )
+        for j in recent_jobs_rows:
+            recent_jobs.append({
+                "job_id": j.uuid,
+                "title": j.job_title or "",
+                "dept": j.department or "",
+                "school": j.school_name or "",
+                "type": j.job_type or "Full-time",
+                "vacancies": j.vacancy_count or 1,
+                "applicants": counts.get(j.job_id, 0),  # includes ALL statuses, rejected too
+                "closing_date": _format_date(j.closing_date),
+                "status": j.job_status.value.capitalize() if j.job_status else "Draft",
+            })
 
     # Recent applicants (max 5)
     recent_app_rows = (
@@ -273,6 +278,7 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
 
 
 def get_school_jobs(db: Session, admin_id: int) -> list:
+    close_expired_job_posts(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobPost)
@@ -299,6 +305,7 @@ def get_school_jobs(db: Session, admin_id: int) -> list:
 
 
 def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[dict]:
+    close_expired_job_posts(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     job = db.query(JobPost).filter(
         JobPost.job_id == job_id,
@@ -322,7 +329,7 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
     
     offers_count = db.query(JobApplicant).filter(
         JobApplicant.job_id == job_id,
-        (JobApplicant.issue_offer == 1) | (JobApplicant.offer_letter_doc.isnot(None))
+        JobApplicant.issue_offer == 1
     ).count()
 
     questions_list = []
@@ -455,13 +462,17 @@ def get_school_offers(db: Session, admin_id: int) -> list:
         for e in exps:
             exps_map.setdefault(e.user_id, []).append(e)
 
+    applicant_ids = [app.job_applicant_id for app, _, _, _ in rows]
+    latest_offers = get_latest_offers_map(db, applicant_ids)
+
     out = []
     for idx, (app, user, meta, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
         exp_str = compute_exp_str(
             exps_map.get(user.user_id, [])
         )
-        status = compute_offer_status(app)
+        offer = latest_offers.get(app.job_applicant_id)
+        status = compute_offer_status(app, offer)
         av = get_av_class(idx)
         updated = _format_date(app.updated_at.date() if app.updated_at else None)
         out.append({
@@ -475,40 +486,47 @@ def get_school_offers(db: Session, admin_id: int) -> list:
             "exp": exp_str,
             "status": status,
             "updated": updated,
-            "offered_salary": app.offered_salary or "",
-            "joining_date": str(app.joining_date) if app.joining_date else "",
-            "probation_period": app.probation_period or "",
-            "offer_issued_date": str(app.offer_issued_date) if app.offer_issued_date else "",
-            "offer_expiry_date": str(app.offer_expiry_date) if app.offer_expiry_date else "",
-            "offer_remarks": app.offer_remarks or "",
-            "offer_template": app.offer_template or "",
-            "offer_letter_doc": app.offer_letter_doc or "",
+            "offered_salary": (offer.offered_salary if offer else "") or "",
+            "joining_date": str(offer.joining_date) if offer and offer.joining_date else "",
+            "probation_period": (offer.probation_period if offer else "") or "",
+            "offer_issued_date": str(offer.offer_issued_date) if offer and offer.offer_issued_date else "",
+            "offer_expiry_date": str(offer.offer_expiry_date) if offer and offer.offer_expiry_date else "",
+            "offer_remarks": (offer.offer_remarks if offer else "") or "",
+            "offer_template": (offer.offer_template if offer else "") or "",
+            "offer_letter_doc": (offer.offer_letter_doc if offer else "") or "",
         })
     return out
 
 
 def issue_offer(db: Session, admin_id: int, applicant_id: int, payload: dict) -> dict:
+    from app.models.job_offer_model import JobOffer
+
     app = db.query(JobApplicant).filter(
         JobApplicant.job_applicant_id == applicant_id
     ).first()
     if not app:
         return {"error": "Applicant not found"}
     is_draft = payload.get("is_draft", False)
-    app.issue_offer = 0 if is_draft else 1
-    app.offered_salary = payload.get("offered_salary", app.offered_salary)
-    if "joining_date" in payload:
-        app.joining_date = payload["joining_date"]
-    if "probation_period" in payload:
-        app.probation_period = payload["probation_period"]
-    app.offer_issued_date = payload.get("offer_issued_date") or date.today()
-    app.offer_expiry_date = payload.get("offer_expiry_date")
-    app.offer_remarks = payload.get("offer_remarks", "")
-    app.offer_template = payload.get("offer_template", "standard")
-    
+
+    # Each issuance is a new row so a re-offered candidate keeps their earlier
+    # offer(s) as history instead of having them overwritten.
+    offer = JobOffer(
+        job_applicant_id=applicant_id,
+        offered_salary=payload.get("offered_salary"),
+        joining_date=payload.get("joining_date"),
+        probation_period=payload.get("probation_period"),
+        offer_issued_date=payload.get("offer_issued_date") or date.today(),
+        offer_expiry_date=payload.get("offer_expiry_date"),
+        offer_remarks=payload.get("offer_remarks", ""),
+        offer_template=payload.get("offer_template", "standard"),
+        issued_by=admin_id,
+        is_draft=1 if is_draft else 0,
+    )
+
     if "offer_letter_doc" in payload and payload["offer_letter_doc"]:
         doc_data = payload["offer_letter_doc"]
-        app.offer_letter_doc = doc_data
-        
+        offer.offer_letter_doc = doc_data
+
         import os
         import base64
         import time
@@ -516,29 +534,34 @@ def issue_offer(db: Session, admin_id: int, applicant_id: int, payload: dict) ->
             upload_dir = os.path.join("uploads", "offer")
             os.makedirs(upload_dir, exist_ok=True)
             filename = f"offer_{applicant_id}_{int(time.time())}"
-            
+
             if doc_data.startswith("data:"):
                 header, encoded = doc_data.split(",", 1)
                 ext = ".pdf" if "pdf" in header.lower() else ".html"
                 filepath = os.path.join(upload_dir, filename + ext)
                 with open(filepath, "wb") as f:
                     f.write(base64.b64decode(encoded))
-                app.offer_letter_doc_path = f"/uploads/offer/{filename}{ext}"
+                offer.offer_letter_doc_path = f"/uploads/offer/{filename}{ext}"
             elif doc_data.startswith("http://") or doc_data.startswith("https://"):
-                app.offer_letter_doc_path = doc_data
+                offer.offer_letter_doc_path = doc_data
             else:
                 filepath = os.path.join(upload_dir, filename + ".html")
                 with open(filepath, "w", encoding="utf-8") as f:
                     f.write(doc_data)
-                app.offer_letter_doc_path = f"/uploads/offer/{filename}.html"
+                offer.offer_letter_doc_path = f"/uploads/offer/{filename}.html"
         except Exception as e:
             from app.core.logger import logger
             logger.error(f"Error saving offer letter document for applicant {applicant_id}: {e}")
-        
-    app.issued_by = admin_id
+
+    db.add(offer)
+
+    app.issue_offer = 0 if is_draft else 1
     app.offer_acceptance_status = OfferAcceptanceStatus.PENDING
+    if not is_draft:
+        app.applicant_stage = ApplicantStage.OFFER
     db.commit()
-    return {"success": True}
+    db.refresh(offer)
+    return {"success": True, "job_offer_id": offer.job_offer_id, "offer_letter_doc_path": offer.offer_letter_doc_path}
 
 
 def update_offer_status(db: Session, admin_id: int, applicant_id: int, status: str) -> dict:

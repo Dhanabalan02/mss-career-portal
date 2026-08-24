@@ -81,6 +81,19 @@ async def startup_event():
     except Exception as e:
         logger.error(f"Error checking/adding/backfilling uuid column: {e}")
 
+    try:
+        from sqlalchemy import text
+        from app.core.database import engine
+        with engine.connect() as conn:
+            # Check if resume_uploaded_at column exists in candidate_metadata
+            result = conn.execute(text("SHOW COLUMNS FROM candidate_metadata LIKE 'resume_uploaded_at'")).fetchone()
+            if not result:
+                conn.execute(text("ALTER TABLE candidate_metadata ADD COLUMN resume_uploaded_at TIMESTAMP NULL"))
+                conn.commit()
+                logger.info("Successfully added resume_uploaded_at column to candidate_metadata table")
+    except Exception as e:
+        logger.error(f"Error checking/adding resume_uploaded_at column: {e}")
+
 # API root endpoint returning a welcome JSON response
 @app.get("/")
 def redirect_to_home():

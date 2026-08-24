@@ -63,11 +63,15 @@ class JobPost(Base):
     created_at: Mapped[datetime] = mapped_column(
         TIMESTAMP, server_default=func.current_timestamp()
     )
-    
+
     updated_at: Mapped[datetime] = mapped_column(
         TIMESTAMP,
         server_default=func.current_timestamp(),
         onupdate=func.current_timestamp()
+    )
+
+    published_at: Mapped[Optional[datetime]] = mapped_column(
+        TIMESTAMP, nullable=True
     )
     
     candidate_screening_answers : Mapped[List["CandidateScreeningAnswer"]] = relationship(back_populates="job_posts")

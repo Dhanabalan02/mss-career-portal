@@ -1048,7 +1048,7 @@
 
     function getStageBadgeClass(stage) {
       const map = {
-        'Applied': 'badge-blue', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
+        'Applied': 'badge-blue', 'Pre Screen Reject': 'badge-red', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
         'Offer': 'badge-blue', 'Offer Accepted': 'badge-green',
         'Onboarding': 'badge-green', 'Onboarded': 'badge-green', 'Rejected': 'badge-red'
       };
@@ -1069,7 +1069,11 @@
     }
 
     async function loadCandidateProfile() {
-      const id = localStorage.getItem('candidateId');
+      // A notification deep link carries the applicant id as ?candidate_id=, which
+      // takes priority and is persisted to localStorage for the rest of the page's flows.
+      const urlCandidateId = new URLSearchParams(window.location.search).get('candidate_id');
+      if (urlCandidateId) localStorage.setItem('candidateId', urlCandidateId);
+      const id = urlCandidateId || localStorage.getItem('candidateId');
       if (!id) return;
       try {
         const res = await fetch(`${API_BASE}/jobs/applicants/${id}`, {
@@ -1139,43 +1143,61 @@
 
       const timelineEl = document.getElementById('overviewTimeline');
       timelineEl.innerHTML = '';
-      const stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding to Masset', 'Onboarded'];
-      const currentIdx = stages.indexOf(candidateData.stage);
+
+      const rawStage = String(candidateData.stage || '').toLowerCase().replace(/[-_]/g, ' ').trim();
+      const stage = rawStage === 'prescreen rejected' || rawStage === 'pre screen reject'
+        ? 'Pre Screen Reject'
+        : candidateData.stage;
+      const isPrescreenRejected = stage === 'Pre Screen Reject';
+      // Prescreen Reject / Rejected are terminal, alternate-path stages: only show them
+      // when that's the candidate's actual outcome, and only show stages actually reached.
+      let stages;
+      if (isPrescreenRejected) {
+        stages = ['Pre Screen Reject'];
+      } else if (stage === 'Rejected') {
+        stages = ['Applied', 'Screened', 'Interview', 'Rejected'];
+      } else {
+        stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+      }
+
+      const currentIdx = stages.indexOf(stage);
       const tracking = candidateData.trackingDates || {};
       const stageDateMap = {
+        'Pre Screen Reject': tracking.rejected || tracking.applied,
         'Applied': tracking.applied,
         'Screened': tracking.screened,
         'Interview': tracking.interview,
         'Offer': tracking.offer,
         'Offer Accepted': tracking.offer_accepted,
-        'Onboarding to Masset': tracking.onboarding,
-        'Onboarded': tracking.onboarded
+        'Onboarded': tracking.onboarded,
+        'Rejected': tracking.rejected
       };
 
-      stages.forEach((stage, idx) => {
+      stages.forEach((s, idx) => {
         let dot = '●';
         let color = 'var(--c-text3)';
         let bg = 'var(--c-surface2)';
         let sub = '';
+        const isRejectStage = (s === 'Pre Screen Reject' || s === 'Rejected');
 
-        if (idx < currentIdx || (candidateData.stage === 'Rejected' && idx === 0)) {
+        if (idx < currentIdx) {
           dot = '✓';
           color = 'var(--c-green)';
           bg = 'var(--c-green-bg)';
-        } else if (stage === candidateData.stage) {
-          dot = '●';
-          color = 'var(--c-orange)';
-          bg = 'var(--c-orange-bg)';
-          sub = ' (Active)';
+        } else if (s === stage) {
+          dot = isRejectStage ? '✕' : '●';
+          color = isRejectStage ? 'var(--c-red)' : 'var(--c-orange)';
+          bg = isRejectStage ? 'var(--c-red-bg)' : 'var(--c-orange-bg)';
+          sub = isRejectStage ? ' (Rejected)' : ' (Active)';
         }
 
-        const stageDate = stageDateMap[stage] || candidateData.appliedDate;
+        const stageDate = stageDateMap[s] || (idx === 0 ? candidateData.appliedDate : '');
 
         timelineEl.innerHTML += `
           <div class="tl-item">
             <div class="tl-dot" style="background:${bg};color:${color};">${dot}</div>
             <div class="tl-body">
-              <div class="tl-title" style="color:${color};font-weight:700;">${stage}${sub}</div>
+              <div class="tl-title" style="color:${color};font-weight:700;">${s}${sub}</div>
               <div class="tl-meta">${idx <= currentIdx ? (stageDate || '') : ''}</div>
             </div>
           </div>

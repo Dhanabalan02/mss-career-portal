@@ -57,7 +57,8 @@ def get_notifications(
             "title": n.title or "Notification",
             "message": n.message or "",
             "time": n.created_at.strftime("%b %d, %I:%M %p") if n.created_at else "Just now",
-            "read": bool(n.is_read)
+            "read": bool(n.is_read),
+            "redirect_url": n.redirect_url or None
         })
     return result
 
