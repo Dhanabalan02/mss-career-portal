@@ -4,14 +4,15 @@ import os
 import requests
 from datetime import datetime
 import logging
+from app.core.config import settings
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
 
 # ─── OMNI / WHATSAPP CONFIG ───────────────────────────────────────────────────
-OMNI_ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZU51bWJlciI6Iis5MTk1NjYwNTA4MTAiLCJwaG9uZU51bWJlcklkIjoiNzQ0MjM5ODM1NDMxNDc1IiwiaWF0IjoxNzUxNjMyODg1fQ.NGkpXjg0rt2r7PfamBdhXykN4lAI0RTLrGy5qz1BhEs'
-OMNI_WHATSAPP_NUMBER = '+919566050810'
+OMNI_ACCESS_TOKEN = settings.OMNI_PORTAL_API_KEY
+OMNI_WHATSAPP_NUMBER = settings.OMNI_WHATSAPP_NUMBER
 OMNI_API_BASE = 'https://wb.omni.tatatelebusiness.com/Messages'
 
 # ─── CAREER PORTAL CONFIG ─────────────────────────────────────────────────────
@@ -75,11 +76,14 @@ def sendOmniReply(to, text):
         'text': {'body': text},
         'from': OMNI_WHATSAPP_NUMBER,
     }
+    logger.debug(f"Sending Omni reply payload: {payload}")
     headers = {
         'Authorization': f'Bearer {OMNI_ACCESS_TOKEN}',
         'Content-Type': 'application/json',
         'Accept': 'application/json',
     }
+    logger.info(f"Access Token: {OMNI_ACCESS_TOKEN}")
+    
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=10)
         response.raise_for_status()
@@ -103,8 +107,6 @@ def saveUserDetails(details):
     existing.append(details)
     
     try:
-        # File locking is more complex in Python cross-platform, but writing atomically can be done
-        # Using a simple write for now
         with open(USER_DETAILS_FILE, 'w', encoding='utf-8') as f:
             json.dump(existing, f, indent=4, ensure_ascii=False)
     except Exception as e:
@@ -172,7 +174,6 @@ def process_webhook(data: dict):
             
     if messageType == 'text':
         text = str(messageBody).strip().lower()
-        # Process optional text commands down here if needed
 
 # ─── ENTRY POINT ──────────────────────────────────────────────────────────────
 @router.post("/webhook")

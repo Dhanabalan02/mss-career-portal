@@ -21,7 +21,7 @@ def normalize_whatsapp_number(mobile: str) -> str:
 class InterviewService:
     def __init__(self):
         self.api_url = "https://wb.omni.tatatelebusiness.com/whatsapp-cloud/messages"
-        self.api_key = settings.WHATSAPP_API_KEY
+        self.api_key = settings.OMNI_PORTAL_API_KEY
 
     def send_interview_scheduled(
         self,
@@ -100,7 +100,7 @@ class InterviewService:
         )
 
         logger.debug("[INTERVIEW SCHEDULED] Payload: %s", payload)
-
+        logger.debug("[INTERVIEW SCHEDULED] Headers: %s", headers)
         try:
             response = requests.post(
                 self.api_url,
@@ -168,7 +168,7 @@ class InterviewService:
             "to": formatted_to,
             "type": "template",
             "template": {
-                "name": "interview_rescheduled",
+                "name": "interview_reschedule",
                 "language": {
                     "code": "en"
                 },
@@ -226,6 +226,8 @@ class InterviewService:
         )
 
         logger.debug("[INTERVIEW RESCHEDULED] Payload: %s", payload)
+        
+        logger.debug("[INTERVIEW RESCHEDULED] Headers: %s", headers)
 
         try:
             response = requests.post(

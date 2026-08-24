@@ -11,11 +11,12 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Application"
     DEBUG: str = "release"
     SECRET_KEY: str
-    WHATSAPP_API_KEY: Optional[str] = None
     OLLAMA_API_KEY: Optional[str] = None
+    OMNI_PORTAL_API_KEY: Optional[str] = None
+    OMNI_WHATSAPP_NUMBER: Optional[str] = None
     
     # Feature Flags
-    ENABLE_EXTERNAL_SERVICES: bool = False
+    ENABLE_EXTERNAL_SERVICES: bool = True
 
     # Google OAuth Settings
     GOOGLE_CLIENT_ID: Optional[str] = None
