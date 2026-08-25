@@ -1391,12 +1391,6 @@
                   />
                 </div>
               </div>
-              <div class="form-group">
-                <label
-                  >Application Closing Date <span class="req">*</span></label
-                >
-                <input type="date" id="closeDate" required />
-              </div>
               <div class="form-group span2">
                 <label>Job Description <span class="req">*</span></label>
                 <div class="char-wrap">
@@ -1920,38 +1914,11 @@
             <div
               style="
                 display: grid;
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
                 gap: 12px;
                 margin-bottom: 12px;
               "
             >
-              <div
-                style="
-                  background: var(--surface2);
-                  border: 1px solid var(--border);
-                  border-radius: var(--radius-sm);
-                  padding: 14px;
-                "
-              >
-                <div
-                  style="
-                    font-size: 11px;
-                    font-weight: 600;
-                    color: var(--text3);
-                    text-transform: uppercase;
-                    letter-spacing: 0.4px;
-                    margin-bottom: 6px;
-                  "
-                >
-                  Posting Details
-                </div>
-                <div
-                  style="font-size: 13.5px; font-weight: 500"
-                  id="prevPostingDetails"
-                >
-                  Closes on: —
-                </div>
-              </div>
               <div
                 style="
                   background: var(--surface2);
@@ -2082,12 +2049,6 @@
       const jobIdParam = urlParams.get("id");
       const editJobId = jobIdParam ? parseInt(jobIdParam) : null;
 
-      // Don't allow past dates in closing date calendar field
-      const closeDateInput = document.getElementById("closeDate");
-      if (closeDateInput) {
-        closeDateInput.min = new Date().toISOString().split("T")[0];
-      }
-
       function escapeHtml(str) {
         return String(str).replace(
           /[&<>"']/g,
@@ -2158,9 +2119,6 @@
         }
       }
 
-      const today = new Date().toISOString().split("T")[0];
-      document.getElementById("closeDate").setAttribute("min", today);
-
       function collectQuestionsForDraft() {
         const questions = [];
         document
@@ -2205,7 +2163,6 @@
           expMax: fieldVal("expMax"),
           salMin: fieldVal("salMin"),
           salMax: fieldVal("salMax"),
-          closeDate: fieldVal("closeDate"),
           jobDesc: fieldVal("jobDesc"),
           addReqs: fieldVal("addReqs"),
           skills: skillState.selected,
@@ -2313,7 +2270,6 @@
         setFieldVal("expMax", draft.expMax);
         setFieldVal("salMin", draft.salMin);
         setFieldVal("salMax", draft.salMax);
-        setFieldVal("closeDate", draft.closeDate);
         setFieldVal("jobDesc", draft.jobDesc);
         setFieldVal("addReqs", draft.addReqs);
         countChars(document.getElementById("jobDesc"), "descCount");
@@ -2405,7 +2361,6 @@
         const location = document.getElementById("location").value;
         const minExp = document.getElementById("expMin").value.trim();
         const maxExp = document.getElementById("expMax").value.trim();
-        const closingDate = document.getElementById("closeDate").value;
         const jobDescription = document.getElementById("jobDesc").value.trim();
 
         const setError = (id, msg) => {
@@ -2457,9 +2412,6 @@
             "Maximum Experience must strictly exceed Minimum Experience",
           );
         }
-        if (!closingDate) {
-          setError("closeDate", "Application Closing Date is required");
-        }
         if (!jobDescription) {
           setError("jobDesc", "Job Description is required");
         }
@@ -2483,7 +2435,6 @@
           "location",
           "expMin",
           "expMax",
-          "closeDate",
           "jobDesc",
         ];
         fields.forEach((id) => {
@@ -2644,22 +2595,6 @@
           prevAddReqsDiv.textContent = addReqs
             ? addReqs.trim()
             : "None specified.";
-        }
-
-        // Closing Date / Posting Details
-        const prevPostingDetailsDiv =
-          document.getElementById("prevPostingDetails");
-        if (prevPostingDetailsDiv) {
-          const closeDate = document.getElementById("closeDate").value;
-          let formattedDate = closeDate;
-          if (closeDate && closeDate.includes("-")) {
-            const parts = closeDate.split("-");
-            if (parts.length === 3)
-              formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-          }
-          prevPostingDetailsDiv.textContent = closeDate
-            ? `Closes on: ${formattedDate}`
-            : "No closing date specified.";
         }
 
         // Pre-screening questions list
@@ -2984,19 +2919,10 @@
         }
 
         const jobTitle = document.getElementById("jobTitle").value.trim();
-        const closingDate = document.getElementById("closeDate").value;
 
         const overlay = document.createElement("div");
         overlay.className = "modal-overlay";
         const title = jobTitle || "this job post";
-
-        let displayCloseDate = closingDate;
-        try {
-          const parts = closingDate.split("-");
-          if (parts.length === 3) {
-            displayCloseDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-          }
-        } catch (e) {}
 
         overlay.innerHTML = `
     <div class="modal">
@@ -3004,10 +2930,6 @@
       <p style="font-size:13.5px;color:var(--text2);margin-bottom:14px;line-height:1.6;">
         <strong style="color:var(--text);">${title}</strong> will be visible to candidates immediately after publishing.
       </p>
-      <div class="alert alert-info">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        Applications close on <strong>${displayCloseDate}</strong>
-      </div>
       <div class="modal-actions">
         <button class="btn btn-ghost" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
         <button class="btn btn-primary" id="confirmPublishBtn">
@@ -3101,7 +3023,6 @@
         const minExp = document.getElementById("expMin").value.trim() || null;
         const maxExp = document.getElementById("expMax").value.trim() || null;
 
-        const closingDate = document.getElementById("closeDate").value;
         const jobDescription = document.getElementById("jobDesc").value.trim();
 
         const addReqsEl = document.getElementById("addReqs");
@@ -3142,7 +3063,6 @@
           programme: programmeVal || null,
           min_exp: minExp,
           max_exp: maxExp,
-          closing_date: closingDate || null,
           job_description: jobDescription,
           skills_required: skills,
           education_qualification: education,
@@ -3699,10 +3619,6 @@
             if (job.programme) setFieldVal("programme", job.programme);
             setFieldVal("expMin", job.min_exp);
             setFieldVal("expMax", job.max_exp);
-
-            if (job.closing_date) {
-              setFieldVal("closeDate", job.closing_date);
-            }
 
             setFieldVal("jobDesc", job.job_description);
             setFieldVal("addReqs", job.additional_requirements);

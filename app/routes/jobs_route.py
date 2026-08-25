@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.timezone import to_ist
 from app.crud.jobs_crud import (
     create_job_post,
     update_job_post,
@@ -20,7 +21,6 @@ from app.crud.jobs_crud import (
     get_published_job_post_or_404,
     get_job_prescreening_questions,
     clone_job_post,
-    close_expired_job_posts,
 )
 from app.models import (
     JobPost,
@@ -151,7 +151,6 @@ class JobPostCreateRequest(BaseModel):
     programme: Optional[str] = None
     min_exp: Optional[str] = None
     max_exp: Optional[str] = None
-    closing_date: Optional[date] = None
     job_description: Optional[str] = None
     skills_required: Optional[str] = None
     education_qualification: Optional[str] = None
@@ -170,7 +169,6 @@ class JobPostUpdateRequest(BaseModel):
     programme: Optional[str] = None
     min_exp: Optional[str] = None
     max_exp: Optional[str] = None
-    closing_date: Optional[date] = None
     job_description: Optional[str] = None
     skills_required: Optional[str] = None
     education_qualification: Optional[str] = None
@@ -197,6 +195,15 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         job_post.published_at.isoformat() if job_post.published_at else None
     )
 
+    created_by_email = None
+    if db:
+        from app.models import Admins
+
+        creator = (
+            db.query(Admins).filter(Admins.admin_id == job_post.job_posted_by).first()
+        )
+        created_by_email = creator.email if creator else None
+
     applicant_count = 0
     if db:
         applicant_count = (
@@ -209,6 +216,7 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "job_id": job_post.job_id,
         "uuid": job_post.uuid,
         "job_posted_by": job_post.job_posted_by,
+        "created_by_email": created_by_email,
         "job_title": job_post.job_title,
         "department": job_post.department,
         "job_type": job_post.job_type,
@@ -218,7 +226,6 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "programme": job_post.programme,
         "min_exp": job_post.min_exp,
         "max_exp": job_post.max_exp,
-        "closing_date": job_post.closing_date,
         "job_description": job_post.job_description,
         "skills_required": job_post.skills_required,
         "education_qualification": job_post.education_qualification,
@@ -226,6 +233,10 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "job_status": job_post.job_status,
         "is_clone": is_clone,
         "published_date": published_date,
+        "closed_by": job_post.closed_by,
+        "closed_at": job_post.closed_at.isoformat() if job_post.closed_at else None,
+        "reopen_job_by": job_post.reopen_job_by,
+        "reopen_job_at": job_post.reopen_job_at.isoformat() if job_post.reopen_job_at else None,
         "applicant_count": applicant_count,
         "views": job_post.views or 0,
         "uuid": job_post.uuid,
@@ -273,7 +284,6 @@ def get_public_job_post_by_id_route(job_id: int, db: Session = Depends(get_db)):
 @router.get("/public/by-uuid/{job_uuid}")
 def get_public_job_post_by_uuid_route(job_uuid: str, db: Session = Depends(get_db)):
     """Retrieves a single published job post by its UUID. No authentication required."""
-    close_expired_job_posts(db)
     job_post = db.query(JobPost).filter(JobPost.uuid == job_uuid, JobPost.job_status == JobStatus.PUBLISH).first()
     if not job_post:
         raise HTTPException(status_code=404, detail="Job not found.")
@@ -357,8 +367,6 @@ def get_applicants_route(
     )
     from sqlalchemy.orm import joinedload
 
-    close_expired_job_posts(db)
-
     admin = (
         db.query(Admins)
         .options(joinedload(Admins.user_roles))
@@ -395,6 +403,7 @@ def get_applicants_route(
     total_count = 0
     interviewing_count = 0
     offers_count = 0
+    onboarding_count = 0
     onboarded_count = 0
 
     chip_counts = {
@@ -403,6 +412,7 @@ def get_applicants_route(
         "Interview": 0,
         "Offer": 0,
         "Offer Accepted": 0,
+        "Onboarding": 0,
         "Onboarded": 0,
         "Rejected": 0,
     }
@@ -476,6 +486,8 @@ def get_applicants_route(
             interviewing_count += 1
         elif stage_val in ["Offer", "Offer Accepted"]:
             offers_count += 1
+        elif stage_val == "Onboarding":
+            onboarding_count += 1
         elif stage_val == "Onboarded":
             onboarded_count += 1
 
@@ -516,13 +528,10 @@ def get_applicants_route(
                 "name": name,
                 "job": job_title,
                 "job_status": job_status_val,
-                "job_closing_date": (
-                    job_post.closing_date.isoformat()
-                    if job_post and job_post.closing_date
-                    else None
-                ),
                 "appliedDate": (
-                    app.created_at.strftime("%d-%m-%y") if app.created_at else ""
+                    app.created_at.strftime("%d-%m-%y")
+                    if isinstance(app.created_at, date)
+                    else ""
                 ),
                 "exp": exp_str,
                 "stage": stage_val,
@@ -561,11 +570,13 @@ def get_applicants_route(
             "total": total_count,
             "interview": interviewing_count,
             "offers": offers_count,
+            "onboarding": onboarding_count,
             "onboarded": onboarded_count,
             "deltas": {
                 "total": f"Across {unique_jobs_count} position{'s' if unique_jobs_count != 1 else ''}",
                 "interview": f"{interview_pct}% of pipeline",
                 "offers": f"{accepted_count} accepted so far",
+                "onboarding": f"{onboarding_count} synced to MASSET",
                 "onboarded": f"{onboarded_this_month} active this month",
             },
         },
@@ -664,11 +675,11 @@ def get_applicant_detail_route(
     elif app.applicant_job_status == "rejected":
         stage_val = "Rejected"
         interview_status = "Rejected"
-    elif app.sync_masset == 1:
-        stage_val = "Onboarding"
-        interview_status = "Selected"
     elif app.issue_appointment_order == 1:
         stage_val = "Onboarded"
+        interview_status = "Selected"
+    elif app.sync_masset == 1:
+        stage_val = "Onboarding"
         interview_status = "Selected"
     elif app.offer_acceptance_status == "accepted":
         stage_val = "Offer Accepted"
@@ -718,7 +729,7 @@ def get_applicant_detail_route(
     metadata_dict = {
         "date_of_birth": (
             meta.date_of_birth.strftime("%Y-%m-%d")
-            if (meta and meta.date_of_birth)
+            if (meta and isinstance(meta.date_of_birth, date))
             else ""
         ),
         "personal_address": (
@@ -906,18 +917,36 @@ def get_applicant_detail_route(
             .scalar()
         )
 
+    def _coerce_datetime(value):
+        # MySQL can hand back an invalid/zero datetime (e.g. '0000-00-00 00:00:00')
+        # as a raw string instead of a datetime object; treat those as unset.
+        if isinstance(value, str):
+            for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
+                try:
+                    value = datetime.strptime(value, fmt)
+                    break
+                except ValueError:
+                    continue
+            else:
+                return None
+        # DB values are stored as naive UTC; convert to IST for display.
+        return to_ist(value)
+
     def _fmt_date(value):
-        if not value:
+        value = _coerce_datetime(value)
+        if not isinstance(value, date):
             return ""
         return value.strftime("%d-%m-%y")
 
     def _fmt_datetime(value):
-        if not value:
+        value = _coerce_datetime(value)
+        if not isinstance(value, date):
             return ""
         return value.strftime("%d-%m-%y %I:%M %p")
 
     def _fmt_ordinal_date(value):
-        if not value:
+        value = _coerce_datetime(value)
+        if not isinstance(value, date):
             return ""
         day = value.day
         suffix = "th" if 11 <= day % 100 <= 13 else {1: "st", 2: "nd", 3: "rd"}.get(day % 10, "th")
@@ -928,9 +957,9 @@ def get_applicant_detail_route(
         "screened": _fmt_datetime(screened_at),
         "interview": _fmt_datetime(interview_at),
         "offer": _fmt_date(latest_offer.offer_issued_date) if latest_offer else "",
-        "offer_accepted": _fmt_date(app.offer_accepted_on),
-        "onboarding": _fmt_datetime(app.masset_sync_success_on),
-        "onboarded": _fmt_datetime(app.masset_synced_at) if app.masset_status == 'onboarded' else "",
+        "offer_accepted": _fmt_datetime(app.offer_accepted_on),
+        "onboarding": _fmt_datetime(app.masset_synced_at),
+        "onboarded": _fmt_datetime(app.masset_sync_success_on) if app.masset_status == 'onboarded' else "",
         "rejected": (
             _fmt_datetime(app.updated_at)
             if stage_val in ("Rejected", "Pre Screen Reject")
@@ -948,7 +977,7 @@ def get_applicant_detail_route(
         "jobSkills": job_skills,
         "mss_app_no": app.mss_app_no,
         "user_id": user.user_id,
-        "appliedDate": app.created_at.strftime("%d-%m-%y") if app.created_at else "",
+        "appliedDate": _fmt_date(app.created_at),
         "exp": exp_str,
         "stage": stage_val,
         "interviewStatus": interview_status,
@@ -1086,7 +1115,6 @@ def get_job_post_by_id_route(
         except ValueError:
             raise HTTPException(status_code=400, detail="Invalid job identifier")
 
-    close_expired_job_posts(db)
     job_post = get_job_post_or_404(db, job_id=job_id)
     from app.models import Admins
     from sqlalchemy.orm import joinedload
@@ -1179,7 +1207,6 @@ def create_job_post_route(
         programme=form_data.programme,
         min_exp=form_data.min_exp,
         max_exp=form_data.max_exp,
-        closing_date=form_data.closing_date,
         job_description=form_data.job_description,
         skills_required=form_data.skills_required,
         education_qualification=form_data.education_qualification,
@@ -1211,7 +1238,6 @@ def update_job_post_route(
         programme=form_data.programme,
         min_exp=form_data.min_exp,
         max_exp=form_data.max_exp,
-        closing_date=form_data.closing_date,
         job_description=form_data.job_description,
         skills_required=form_data.skills_required,
         education_qualification=form_data.education_qualification,
@@ -1254,22 +1280,19 @@ def close_job_post_route(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You do not have permission to close this job post.",
         )
-    job_post = update_job_status(db=db, job_id=job_id, job_status=JobStatus.CLOSED)
+    job_post = update_job_status(
+        db=db, job_id=job_id, job_status=JobStatus.CLOSED, admin_id=admin_id
+    )
     return _serialize_job_post(job_post, db=db)
-
-
-class PublishJobRequest(BaseModel):
-    closing_date: Optional[date] = None
 
 
 @router.patch("/{job_id}/publish")
 def publish_job_post_route(
     job_id: int,
-    form_data: PublishJobRequest,
     db: Session = Depends(get_db),
     admin_id: int = Depends(_get_admin_id_from_token),
 ):
-    """Re-publishes a closed or draft job post, optionally extending its closing date."""
+    """Publishes a draft, or re-publishes a closed job post."""
     job_post = get_job_post_or_404(db, job_id=job_id)
     from app.models import Admins
     from sqlalchemy.orm import joinedload
@@ -1292,15 +1315,8 @@ def publish_job_post_route(
             detail="You do not have permission to publish this job post.",
         )
 
-    closing_date = form_data.closing_date
-    if not closing_date and job_post.closing_date and job_post.closing_date < date.today():
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="This job's closing date has already passed. Provide a new closing date to republish it.",
-        )
-
     job_post = update_job_status(
-        db=db, job_id=job_id, job_status=JobStatus.PUBLISH, closing_date=closing_date
+        db=db, job_id=job_id, job_status=JobStatus.PUBLISH, admin_id=admin_id
     )
     return _serialize_job_post(job_post, db=db)
 
@@ -1455,7 +1471,11 @@ def get_dashboard_stats(
     offer_accepted_count = base_q.filter(
         JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED
     ).count()
-    onboarding_count = onboarded_candidates
+    # Synced to Masset but not yet fully onboarded (issue_appointment_order == 1).
+    onboarding_count = base_q.filter(
+        JobApplicant.sync_masset == 1,
+        JobApplicant.issue_appointment_order != 1,
+    ).count()
     rejected_count = base_q.filter(
         JobApplicant.applicant_job_status == ApplicantJobStatus.REJECTED
     ).count()
@@ -1465,6 +1485,7 @@ def get_dashboard_stats(
         "total_applicants": total_applicants,
         "scheduled_interviews": scheduled_interviews,
         "masset_sync_pending": masset_sync_pending,
+        "onboarding_candidates": onboarding_count,
         "onboarded_candidates": onboarded_candidates,
         "funnel": [
             {"stage": "Prescreen Reject", "count": prescreen_reject_count, "color": "#E24B4A"},
@@ -1477,6 +1498,7 @@ def get_dashboard_stats(
                 "color": "#1D9E75",
             },
             {"stage": "Onboarding", "count": onboarding_count, "color": "#0891b2"},
+            {"stage": "Onboarded", "count": onboarded_candidates, "color": "#0F6E56"},
             {"stage": "Rejected", "count": rejected_count, "color": "#A32D2D"},
         ],
     }

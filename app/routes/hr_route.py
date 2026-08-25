@@ -39,6 +39,7 @@ def ats_pipeline(
         1 for c in candidates if c.get("stage") in ["Offer", "Offer Accepted"]
     )
     accepted_count = sum(1 for c in candidates if c.get("stage") == "Offer Accepted")
+    onboarding_count = sum(1 for c in candidates if c.get("stage") == "Onboarding")
 
     now = now_ist()
     current_month = now.month
@@ -62,11 +63,13 @@ def ats_pipeline(
         "total": total_count,
         "interview": interviewing_count,
         "offers": offers_count,
+        "onboarding": onboarding_count,
         "onboarded": sum(1 for c in candidates if c.get("stage") == "Onboarded"),
         "deltas": {
             "total": f"Across {unique_jobs_count} position{'s' if unique_jobs_count != 1 else ''}",
             "interview": f"{interview_pct}% of pipeline",
             "offers": f"{accepted_count} accepted so far",
+            "onboarding": f"{onboarding_count} synced to MASSET",
             "onboarded": f"{onboarded_this_month} active this month",
         },
     }

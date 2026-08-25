@@ -44,6 +44,9 @@
       --teal: #0F6E56;
       --teal-bg: #E1F5EE;
       --teal-text: #085041;
+      --cyan: #0891B2;
+      --cyan-bg: #CFFAFE;
+      --cyan-text: #155E75;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
       --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.04);
       --radius: 10px;
@@ -184,6 +187,8 @@
     .stat-card.sc-interview  .stat-icon { background: var(--amber-bg); color: var(--amber); }
     .stat-card.sc-offers     { border-top-color: var(--green); }
     .stat-card.sc-offers     .stat-icon { background: var(--green-bg); color: var(--green); }
+    .stat-card.sc-onboarding-progress { border-top-color: var(--cyan); }
+    .stat-card.sc-onboarding-progress .stat-icon { background: var(--cyan-bg); color: var(--cyan); }
     .stat-card.sc-onboarding { border-top-color: var(--teal); }
     .stat-card.sc-onboarding .stat-icon { background: var(--teal-bg); color: var(--teal); }
 
@@ -423,6 +428,11 @@
     .badge-onboarding {
       background: var(--teal-bg);
       color: var(--teal-text);
+    }
+
+    .badge-onboarding-progress {
+      background: #CFFAFE;
+      color: #155E75;
     }
 
     .badge-rejected {
@@ -820,6 +830,12 @@
           <div class="stat-label">Offers</div>
           <div class="stat-delta">21 accepted so far</div>
         </div>
+        <div class="stat-card sc-onboarding-progress">
+          <div class="stat-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">Onboarding</div>
+          <div class="stat-delta">Synced to MASSET</div>
+        </div>
         <div class="stat-card sc-onboarding">
           <div class="stat-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
@@ -847,6 +863,7 @@
           <option>Interview</option>
           <option>Offer</option>
           <option>Offer Accepted</option>
+          <option>Onboarding</option>
           <option>Onboarded</option>
           <option>Rejected</option>
         </select>
@@ -963,11 +980,13 @@
         document.querySelector('.sc-total .stat-value').textContent = data.stats.total;
         document.querySelector('.sc-interview .stat-value').textContent = data.stats.interview;
         document.querySelector('.sc-offers .stat-value').textContent = data.stats.offers;
+        document.querySelector('.sc-onboarding-progress .stat-value').textContent = data.stats.onboarding;
         document.querySelector('.sc-onboarding .stat-value').textContent = data.stats.onboarded;
 
         if (data.stats.deltas) {
           document.querySelector('.sc-total .stat-delta').textContent = data.stats.deltas.total;
           document.querySelector('.sc-offers .stat-delta').textContent = data.stats.deltas.offers;
+          document.querySelector('.sc-onboarding-progress .stat-delta').textContent = data.stats.deltas.onboarding;
           document.querySelector('.sc-onboarding .stat-delta').textContent = data.stats.deltas.onboarded;
         }
 
@@ -1002,6 +1021,7 @@
       { name: 'Interview', color: '#BA7517', bg: '#FAEEDA' },
       { name: 'Offer', color: '#534AB7', bg: '#EEEDFE' },
       { name: 'Offer Accepted', color: '#3B6D11', bg: '#EAF3DE' },
+      { name: 'Onboarding', color: '#155E75', bg: '#CFFAFE' },
       { name: 'Onboarded', color: '#0F6E56', bg: '#E1F5EE' },
       { name: 'Rejected', color: '#A32D2D', bg: '#FCEBEB' },
     ];
@@ -1033,6 +1053,7 @@
       const map = {
         'Prescreen Rejected': 'badge-rejected', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
         'Offer': 'badge-offer', 'Offer Accepted': 'badge-accepted',
+        'Onboarding': 'badge-onboarding-progress',
         'Onboarded': 'badge-onboarding', 'Rejected': 'badge-rejected',
         'Awaiting Offer': 'badge-offer'
       };
@@ -1082,7 +1103,7 @@
         let displayStage = c.stage;
         let showActions = true;
         
-        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarded', 'Rejected'];
+        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
         if (c.interviewStatus === 'Selected' && !advancedStages.includes(c.stage)) {
           displayStage = 'Awaiting Offer';
           showActions = false;
@@ -1331,14 +1352,9 @@
 
     /* ── Publish Closed Job modal ── */
     function publishJobModal(jobId, jobTitle) {
-      const today = new Date().toISOString().split('T')[0];
       showModal(`
     <div class="modal-title"><i class="ti ti-rocket" aria-hidden="true"></i> Publish Job Post</div>
     <p>Re-publish "<strong>${jobTitle}</strong>" so it becomes visible to candidates again.</p>
-    <div class="form-group">
-      <label>New Closing Date</label>
-      <input type="date" id="pubClosingDate" min="${today}">
-    </div>
     <div class="modal-actions">
       <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
       <button class="btn-primary" onclick="submitPublish(${jobId})"><i class="ti ti-rocket" aria-hidden="true"></i> Publish</button>
@@ -1346,15 +1362,12 @@
     }
 
     function submitPublish(jobId) {
-      const closingDate = document.getElementById('pubClosingDate').value;
-
       fetch(JOBS_API_BASE + `/jobs/${jobId}/publish`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({ closing_date: closingDate || null })
+        }
       })
       .then(async res => {
         if (!res.ok) {

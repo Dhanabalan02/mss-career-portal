@@ -1,25 +1,11 @@
 import uuid
-from datetime import date, datetime
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 from fastapi import HTTPException, status
 
 from sqlalchemy.orm import Session
 from app.core.logger import logger
 from app.models import JobPost, JobPreScreeningQuestion, JobStatus
-
-
-def close_expired_job_posts(db: Session) -> None:
-    """Auto-closes any published job posts whose closing date has passed."""
-
-    today = date.today()
-
-    (
-        db.query(JobPost)
-        .filter(JobPost.job_status == JobStatus.PUBLISH, JobPost.closing_date < today)
-        .update({JobPost.job_status: JobStatus.CLOSED}, synchronize_session=False)
-    )
-
-    db.commit()
 
 
 def get_job_post_or_404(db: Session, job_id: int) -> JobPost:
@@ -40,8 +26,6 @@ def get_job_post_or_404(db: Session, job_id: int) -> JobPost:
 
 def get_admin_job_posts(db: Session, admin_id: int) -> List[JobPost]:
     """Retrieves all job posts created by a specific admin (or all if HR)."""
-
-    close_expired_job_posts(db)
 
     from app.models import Admins
 
@@ -66,8 +50,6 @@ def get_published_job_posts(
 ) -> List[JobPost]:
     """Retrieves all published job posts, for the public candidate-facing site."""
 
-    close_expired_job_posts(db)
-
     query = db.query(JobPost).filter(JobPost.job_status == JobStatus.PUBLISH)
 
     if school_name:
@@ -79,8 +61,6 @@ def get_published_job_posts(
 
 def get_published_job_post_or_404(db: Session, job_id: int) -> JobPost:
     """Fetches a single published job post by its primary key or raises a 404."""
-
-    close_expired_job_posts(db)
 
     job_post = (
         db.query(JobPost)
@@ -112,7 +92,6 @@ def get_published_job_post_or_404(db: Session, job_id: int) -> JobPost:
 def create_job_post(
     db: Session,
     job_posted_by: int,
-    closing_date: Optional[date] = None,
     job_title: Optional[str] = None,
     department: Optional[str] = None,
     job_type: Optional[str] = None,
@@ -145,7 +124,6 @@ def create_job_post(
         programme=programme,
         min_exp=min_exp,
         max_exp=max_exp,
-        closing_date=closing_date,
         job_description=job_description,
         skills_required=skills_required,
         education_qualification=education_qualification,
@@ -184,7 +162,6 @@ def update_job_post(
     programme: Optional[str] = None,
     min_exp: Optional[str] = None,
     max_exp: Optional[str] = None,
-    closing_date: Optional[date] = None,
     job_description: Optional[str] = None,
     skills_required: Optional[str] = None,
     education_qualification: Optional[str] = None,
@@ -208,7 +185,6 @@ def update_job_post(
         "programme": programme,
         "min_exp": min_exp,
         "max_exp": max_exp,
-        "closing_date": closing_date,
         "job_description": job_description,
         "skills_required": skills_required,
         "education_qualification": education_qualification,
@@ -250,7 +226,7 @@ def update_job_status(
     db: Session,
     job_id: int,
     job_status: JobStatus,
-    closing_date: Optional[date] = None,
+    admin_id: Optional[int] = None,
 ) -> JobPost:
     """Sets a job post's status, used to mark a job post as closed, published, or as a draft."""
 
@@ -264,14 +240,16 @@ def update_job_status(
         if not job_post.uuid:
             import uuid
             job_post.uuid = str(uuid.uuid4())
-        if closing_date:
-            job_post.closing_date = closing_date
+        if previous_status == JobStatus.CLOSED:
+            job_post.reopen_job_by = admin_id
+            job_post.reopen_job_at = datetime.now()
         if previous_status != JobStatus.PUBLISH:
             job_post.published_at = datetime.now()
 
     if job_status == JobStatus.CLOSED:
 
-        job_post.closing_date = date.today()
+        job_post.closed_by = admin_id
+        job_post.closed_at = datetime.now()
 
     db.commit()
 
@@ -301,7 +279,6 @@ def clone_job_post(
         max_exp=original_job.max_exp,
         skills_required=original_job.skills_required,
         education_qualification=original_job.education_qualification,
-        closing_date=original_job.closing_date,
         additional_requirements=original_job.additional_requirements,
         job_status=JobStatus.PUBLISH if publish else JobStatus.DRAFT,
         uuid=str(uuid.uuid4()) if publish else None,

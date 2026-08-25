@@ -1208,7 +1208,7 @@
       } else if (normalizedStage === 'Rejected') {
         stages = ['Screened', 'Interview', 'Rejected'];
       } else {
-        stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+        stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded'];
       }
 
       const currentIdx = stages.indexOf(normalizedStage);
@@ -1219,6 +1219,7 @@
         'Interview': tracking.interview,
         'Offer': tracking.offer,
         'Offer Accepted': tracking.offer_accepted,
+        'Onboarding': tracking.onboarding,
         'Onboarded': tracking.onboarded,
         'Rejected': tracking.rejected
       };
@@ -1229,16 +1230,30 @@
         let bg = 'var(--c-surface2)';
         let sub = '';
         const isRejectStage = (stage === 'Pre Screen Reject' || stage === 'Rejected');
+        // The final stage of a successful path (Onboarded) is a completed
+        // outcome, not an in-progress one — show it as done, not "(Active)".
+        const isTerminalStage = idx === stages.length - 1 && !isRejectStage;
 
         if (idx < currentIdx) {
           dot = '✓';
           color = 'var(--c-green)';
           bg = 'var(--c-green-bg)';
         } else if (stage === normalizedStage) {
-          dot = isRejectStage ? '✕' : '●';
-          color = isRejectStage ? 'var(--c-red)' : 'var(--c-orange)';
-          bg = isRejectStage ? 'var(--c-red-bg)' : 'var(--c-orange-bg)';
-          sub = isRejectStage ? ' (Rejected)' : ' (Active)';
+          if (isRejectStage) {
+            dot = '✕';
+            color = 'var(--c-red)';
+            bg = 'var(--c-red-bg)';
+            sub = ' (Rejected)';
+          } else if (isTerminalStage) {
+            dot = '✓';
+            color = 'var(--c-green)';
+            bg = 'var(--c-green-bg)';
+          } else {
+            dot = '●';
+            color = 'var(--c-orange)';
+            bg = 'var(--c-orange-bg)';
+            sub = ' (Active)';
+          }
         }
 
         const stageDate = stageDateMap[stage] || (idx === 0 ? candidateData.appliedDate : '');
@@ -1512,9 +1527,6 @@
       if (candidateData.offer_letter_doc) {
         el.className = '';
         el.style.cssText = '';
-        const docName = candidateData.offer_letter_doc.split(/[\\/]/).pop();
-        const encodedDoc = encodeURIComponent(candidateData.offer_letter_doc);
-        const downloadUrl = JOBS_API_BASE + '/apply/download/' + encodedDoc;
         const offer = candidateData.offerDetails || {};
         const status = candidateData.offer_acceptance_status || 'pending';
 
@@ -1551,14 +1563,7 @@
             <div class="card-body" style="font-size:13px;color:var(--c-text2);line-height:1.6;">${offer.offer_remarks}</div>
           </div>` : ''}
         `;
-        document.getElementById('downloadOfferBtn').onclick = () => {
-          const a = document.createElement('a');
-          a.href = downloadUrl;
-          a.download = docName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        };
+        document.getElementById('downloadOfferBtn').onclick = downloadOfferPDF;
       } else if (candidateData.interviewStatus === 'Selected') {
         el.className = 'empty-state';
         el.innerHTML = `
@@ -1574,6 +1579,126 @@
           <div class="title">No Offer Generated Yet</div>
           <div class="body">Candidate is currently in the ${candidateData.stage} stage. An offer can be generated from the offer dashboard after final selection.</div>
         `;
+      }
+    }
+
+    function downloadOfferPDF() {
+      if (!candidateData || !candidateData.offer_letter_doc) return;
+      if (window.showToast) window.showToast('Generating PDF for ' + candidateData.name, 'success');
+
+      const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Offer Letter - ${candidateData.name}</title>
+  <style>
+    @page { size: letter; margin: 1in; }
+    * { box-sizing: border-box; }
+    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12pt; line-height: 1.6; color: #333333; margin: 0; padding: 0; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .offer-container { width: 100%; max-width: 100%; }
+    h1, h2, h3, h4 { color: #111111; font-weight: 600; margin-top: 0; }
+    p { margin-bottom: 1.2em; orphans: 3; widows: 3; }
+    @media print { body { margin: 0; } .no-print { display: none !important; } }
+  </style>
+</head>
+<body>
+  <div class="offer-container">
+    ${candidateData.offer_letter_doc}
+  </div>
+  <script>
+    window.addEventListener('load', function () {
+      setTimeout(function () { window.print(); }, 250);
+    });
+  <\\/script>
+</body>
+</html>`;
+
+      function fallbackPrint() {
+        const iframe = document.createElement('iframe');
+        iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;border:none;';
+        document.body.appendChild(iframe);
+
+        iframe.onload = function () {
+          setTimeout(function () {
+            if (document.body.contains(iframe)) document.body.removeChild(iframe);
+          }, 60000);
+        };
+
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        iframeDoc.open();
+        iframeDoc.write(htmlContent);
+        iframeDoc.close();
+      }
+
+      if (typeof html2pdf === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+        script.onload = () => {
+          generatePDF(candidateData);
+        };
+        script.onerror = () => {
+          console.warn('Failed to load html2pdf from CDN, falling back to print dialog.');
+          fallbackPrint();
+        };
+        document.head.appendChild(script);
+      } else {
+        generatePDF(candidateData);
+      }
+
+      function generatePDF(candidate) {
+        const pdfContent = `
+          <div class="pdf-content-wrapper">
+            <style>
+              .pdf-content-wrapper {
+                box-sizing: border-box;
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+                font-size: 12pt;
+                line-height: 1.6;
+                color: #333333;
+                width: 6.5in;
+                background-color: #ffffff;
+              }
+              .pdf-content-wrapper * {
+                box-sizing: border-box;
+              }
+              .offer-container {
+                width: 100%;
+                max-width: 100%;
+              }
+              .offer-container h1, .offer-container h2, .offer-container h3, .offer-container h4 {
+                color: #111111;
+                font-weight: 600;
+                margin-top: 0;
+              }
+              .offer-container p {
+                margin-bottom: 1.2em;
+                orphans: 3;
+                widows: 3;
+              }
+              .no-break {
+                page-break-inside: avoid;
+                break-inside: avoid;
+              }
+            </style>
+            <div class="offer-container">
+              ${candidate.offer_letter_doc}
+            </div>
+          </div>
+        `;
+
+        const opt = {
+          margin:       1,
+          filename:     `Offer_Letter_${candidate.name.replace(/\s+/g, '_')}.pdf`,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+          pagebreak:    { mode: ['css', 'legacy'] }
+        };
+
+        html2pdf().set(opt).from(pdfContent).save().catch(err => {
+          console.error('PDF generation error:', err);
+          fallbackPrint();
+        });
       }
     }
 

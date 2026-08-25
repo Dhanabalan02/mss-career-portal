@@ -34,6 +34,8 @@
         --teal-light: #ccfbf1;
         --orange: #c2410c;
         --orange-light: #ffedd5;
+        --cyan: #0891b2;
+        --cyan-light: #cffafe;
 
         --bg: #f0f2f7;
         --surface: #ffffff;
@@ -471,6 +473,10 @@
         border-top-color: var(--purple);
       }
 
+      .sc-onboarding {
+        border-top-color: var(--cyan);
+      }
+
       .sc-onboarded {
         border-top-color: var(--warning);
       }
@@ -603,6 +609,10 @@
         background: var(--teal);
       }
 
+      .col-dot-onboarding {
+        background: var(--cyan);
+      }
+
       .col-dot-onboarded {
         background: var(--warning);
       }
@@ -647,6 +657,11 @@
       .b-accepted {
         background: var(--teal-light);
         color: var(--teal);
+      }
+
+      .b-onboarding {
+        background: var(--cyan-light);
+        color: var(--cyan);
       }
 
       .b-onboarded {
@@ -2186,6 +2201,7 @@
         "Interview",
         "Offer",
         "Offer Accepted",
+        "Onboarding",
         "Onboarded",
       ];
 
@@ -2219,6 +2235,12 @@
           badge: "b-accepted",
           border: "#0d9488",
           av: ["#ccfbf1", "#0f766e"],
+        },
+        Onboarding: {
+          dot: "onboarding",
+          badge: "b-onboarding",
+          border: "#0891b2",
+          av: ["#cffafe", "#0e7490"],
         },
         Onboarded: {
           dot: "onboarded",
@@ -2261,6 +2283,11 @@
         "Offer Accepted": [
           { t: "Offer Extended", d: "10 days ago", s: "done" },
           { t: "Offer Accepted", d: "3 days ago", s: "done" },
+        ],
+        Onboarding: [
+          { t: "Offer Accepted", d: "10 days ago", s: "done" },
+          { t: "Synced to MASSET", d: "2 days ago", s: "done" },
+          { t: "Appointment Order", d: "Pending", s: "current" },
         ],
         Onboarded: [
           { t: "All Rounds Cleared", d: "20 days ago", s: "done" },
@@ -2382,12 +2409,15 @@
         const offers = data.filter(
           (c) => c.stage === "Offer" || c.stage === "Offer Accepted",
         ).length;
+        const onboarding = data.filter((c) => c.stage === "Onboarding").length;
         const onboarded = data.filter((c) => c.stage === "Onboarded").length;
 
         const deltaTotal = window.apiStats?.deltas?.total || "+3 this week";
         const deltaInterview = window.apiStats?.deltas?.interview || "+1 today";
         const deltaOffers =
           window.apiStats?.deltas?.offers || "Offer + Accepted";
+        const deltaOnboarding =
+          window.apiStats?.deltas?.onboarding || "Synced to MASSET";
         const deltaOnboarded = window.apiStats?.deltas?.onboarded || "On track";
 
         grid.innerHTML = `
@@ -2419,6 +2449,12 @@
       <div class="stat-value">${offers}</div>
       <div class="stat-label">Offers Extended</div>
       <div class="stat-delta">${deltaOffers}</div>
+    </div>
+    <div class="stat-card sc-onboarding" onclick="scrollToStage('Onboarding')">
+      <div class="stat-icon" style="background:var(--cyan-light);color:var(--cyan)"><i class="ti ti-refresh" aria-hidden="true"></i></div>
+      <div class="stat-value">${onboarding}</div>
+      <div class="stat-label">Onboarding</div>
+      <div class="stat-delta">${deltaOnboarding}</div>
     </div>
     <div class="stat-card sc-onboarded" onclick="scrollToStage('Onboarded')">
       <div class="stat-icon" style="background:var(--warning-light);color:var(--warning)"><i class="ti ti-user-check" aria-hidden="true"></i></div>
@@ -2545,13 +2581,13 @@
 
 
         // Action visibility
-        if (c.stage === "Offer Accepted") {
+        if (c.stage === "Offer Accepted" || c.stage === "Onboarding") {
           document.getElementById("secMoveStage").style.display = "none";
           document.getElementById("btnActionFeedback").style.display = "none";
           document.getElementById("btnActionHold").style.display = "none";
           document.getElementById("btnActionReject").style.display = "none";
           document.getElementById("btnActionScheduleNext").style.display = "none";
-          if (c.sync_masset === 1 || c.sync_masset === true) {
+          if (c.stage === "Onboarding" || c.sync_masset === 1 || c.sync_masset === true) {
             document.getElementById("btnActionSyncMasset").style.display = "none";
           } else {
             document.getElementById("btnActionSyncMasset").style.display = "flex";
@@ -2573,7 +2609,7 @@
           }
         }
 
-        const noActions = c.stage === "Onboarded" || (c.stage === "Offer Accepted" && (c.sync_masset === 1 || c.sync_masset === true));
+        const noActions = c.stage === "Onboarded" || c.stage === "Onboarding" || (c.stage === "Offer Accepted" && (c.sync_masset === 1 || c.sync_masset === true));
         if (noActions) {
           document.getElementById("tabHeaderActions").style.display = "none";
         } else {
@@ -2641,6 +2677,12 @@
             : false;
 
         if (currentStage === targetStage) return true;
+        // Dragging a card from Offer Accepted into Onboarding triggers the MASSET
+        // sync itself (see handleStageChangeRequest). Every other move into/out of
+        // Onboarding or Onboarded is system-driven and blocked from manual drag.
+        if (currentStage === "Offer Accepted" && targetStage === "Onboarding") return true;
+        if (targetStage === "Onboarding" || targetStage === "Onboarded") return false;
+        if (currentStage === "Onboarding") return false;
         if (targetStage === "Prescreen Rejected") {
           return currentStage === "Screened";
         }
@@ -2685,9 +2727,14 @@
 
       function handleStageChangeRequest(c, newStage) {
         if (!isStageMoveAllowed(c, newStage)) {
-          if (c.stage === "Onboarded" || newStage === "Onboarded") {
+          if (
+            c.stage === "Onboarded" ||
+            newStage === "Onboarded" ||
+            c.stage === "Onboarding" ||
+            newStage === "Onboarding"
+          ) {
             showToast(
-              "Onboarded status is auto-synced from MASSET after AO creation and cannot be changed manually",
+              "Onboarding/Onboarded status is auto-synced from MASSET and cannot be changed manually",
               "info",
             );
           } else if (c.stage === "Interview" && newStage === "Screened") {
@@ -2714,6 +2761,8 @@
         ) {
           pendingCandidateForInterview = c;
           document.getElementById("confirmScheduleModal").classList.add("open");
+        } else if (c.stage === "Offer Accepted" && newStage === "Onboarding") {
+          persistMassetSync(c);
         } else {
           persistStageChange(c, newStage);
         }
@@ -2746,6 +2795,42 @@
           if (activeId === candidate.id) {
             renderStagePills(prevStage);
           }
+        }
+      }
+
+      async function persistMassetSync(candidate) {
+        const prevStage = candidate.stage;
+        candidate.stage = "Onboarding";
+        renderKanban(getFiltered());
+        if (activeId === candidate.id) renderStagePills("Onboarding");
+        try {
+          const response = await fetch(
+            `${API_BASE}/hr/masset/${candidate.id}/sync`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${_token()}`,
+              },
+              body: JSON.stringify({}),
+            },
+          );
+          const data = await response.json();
+          if (response.ok && data.success) {
+            candidate.sync_masset = 1;
+            showToast(`${candidate.name} synced to MASSET and moved to Onboarding`, "success");
+            if (activeId === candidate.id) closeDrawer();
+          } else {
+            candidate.stage = prevStage;
+            renderKanban(getFiltered());
+            showToast(data.error || "Failed to sync with MASSET.", "danger");
+            if (activeId === candidate.id) renderStagePills(prevStage);
+          }
+        } catch (err) {
+          candidate.stage = prevStage;
+          renderKanban(getFiltered());
+          showToast("Network error, could not sync to MASSET.", "danger");
+          if (activeId === candidate.id) renderStagePills(prevStage);
         }
       }
 
@@ -3225,28 +3310,7 @@
       async function syncToMasset() {
         const c = candidates.find((x) => x.id === activeId);
         if (!c) return;
-
-        try {
-          const response = await fetch(`${API_BASE}/hr/masset/${c.id}/sync`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${_token()}`,
-            },
-            body: JSON.stringify({}),
-          });
-
-          const data = await response.json();
-          if (response.ok && data.success) {
-            showToast("Candidate successfully synced to MASSET!");
-            closeDrawer();
-            loadCandidates(); // Refresh ATS Pipeline
-          } else {
-            showToast(data.error || "Failed to sync with MASSET.", "danger");
-          }
-        } catch (error) {
-          showToast("Network error, could not sync to MASSET.", "danger");
-        }
+        await persistMassetSync(c);
       }
 
       function closeConfirmScheduleModal() {

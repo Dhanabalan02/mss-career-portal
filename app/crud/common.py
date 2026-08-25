@@ -69,7 +69,7 @@ _STAGE_ENUM_TO_LABEL = {
     "interview": "Interview",
     "offer": "Offer",
     "offer_accepted": "Offer Accepted",
-    "onboarding": "Offer Accepted",
+    "onboarding": "Onboarding",
     "onboarded": "Onboarded",
     "rejected": "Rejected",
 }
@@ -83,10 +83,11 @@ def compute_stage(app, has_interview: bool) -> str:
     if app.masset_status and app.masset_status.lower() == 'onboarded':
         return 'Onboarded'
 
-    # If a candidate is synced to Masset, they are onboarding.
-    if app.sync_masset:
-        return 'Offer Accepted'
-        
+    # If the candidate has been synced to Masset but isn't fully onboarded yet,
+    # they are in the Onboarding stage.
+    if app.sync_masset == 1:
+        return 'Onboarding'
+
     # If the candidate accepted the offer, they are in Offer Accepted stage.
     offer_status_val = app.offer_acceptance_status.value if hasattr(app.offer_acceptance_status, 'value') else str(app.offer_acceptance_status)
     if offer_status_val == "accepted":

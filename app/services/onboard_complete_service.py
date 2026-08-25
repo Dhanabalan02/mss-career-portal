@@ -66,11 +66,11 @@ class OnboardCompleteService:
                             },
                             {
                                 "type": "text",
-                                "text": reporting_to
+                                "text": date_of_joining
                             },
                             {
                                 "type": "text",
-                                "text": date_of_joining
+                                "text": reporting_to
                             }
                         ]
                     }

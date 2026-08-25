@@ -329,9 +329,6 @@
                                                         <!-- <div class="twm-jobs-amount">$2000 - $2500 <span>/ Month</span>
                                                         </div> -->
                                                     </div>
-                                                    <div class="twm-job-apllication-area">Last date to apply:
-                                                        <span class="twm-job-apllication-date" id="jdClosingDate">—</span>
-                                                    </div>
                                                 </div>
 
                                                 <div class="twm-job-self-bottom"><a class="site-button" id="jdApplyBtn"
@@ -1078,13 +1075,6 @@
                 }
             }
 
-            function formatDate(value) {
-                if (!value) return '—';
-                var d = new Date(value);
-                if (isNaN(d.getTime())) return value;
-                return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-            }
-
             function fillList(elementId, text) {
                 var el = document.getElementById(elementId);
                 if (!el) return;
@@ -1117,9 +1107,6 @@
 
                 var addressText = document.getElementById('jdAddressText');
                 if (addressText) addressText.textContent = job.school_name || job.department || 'The Madras Seva Sadan';
-
-                var closingEl = document.getElementById('jdClosingDate');
-                if (closingEl) closingEl.textContent = formatDate(job.closing_date);
 
                 var applyBtn = document.getElementById('jdApplyBtn');
                 if (applyBtn) {

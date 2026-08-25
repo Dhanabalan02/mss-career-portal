@@ -23,7 +23,7 @@ from app.crud.common import (
     compute_exp_str, compute_stage, compute_offer_status,
     get_latest_offer, get_latest_offers_map,
 )
-from app.crud.jobs_crud import close_expired_job_posts
+from app.core.timezone import utcnow
 
 
 def _format_date(d) -> str:
@@ -76,25 +76,40 @@ def check_and_update_expired_offers(db: Session):
 
 
 def _get_admin_job_filter(db: Session, admin_id: int):
-    from sqlalchemy import text
+    from sqlalchemy import func, or_, select, text
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
-    if not admin or not admin.unit_id:
+    if not admin:
         return JobPost.job_id == -1
 
-    result = db.execute(
-        text("SELECT unit_name FROM units WHERE id = :unit_id"),
-        {"unit_id": admin.unit_id},
-    ).fetchone()
-    school_name = result[0] if result and result[0] else ""
+    filters = []
+    if admin.unit_id:
+        result = db.execute(
+            text("SELECT unit_name FROM units WHERE id = :unit_id"),
+            {"unit_id": admin.unit_id},
+        ).fetchone()
+        school_name = result[0] if result and result[0] else ""
+        if school_name:
+            filters.append(JobPost.school_name == school_name)
 
-    if not school_name:
+    admin_email = (admin.email or "").strip().lower()
+    if admin_email:
+        filters.append(
+            select(JobInterviewSchedule.job_interview_id)
+            .where(
+                JobInterviewSchedule.job_id == JobPost.job_id,
+                func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email,
+            )
+            .correlate(JobPost)
+            .exists()
+        )
+
+    if not filters:
         return JobPost.job_id == -1
 
-    return JobPost.school_name == school_name
+    return or_(*filters)
 
 def get_school_dashboard(db: Session, admin_id: int) -> dict:
     check_and_update_expired_offers(db)
-    close_expired_job_posts(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
     admin_email = (admin.email or "").strip().lower() if admin else ""
@@ -199,7 +214,6 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
                 "type": j.job_type or "Full-time",
                 "vacancies": j.vacancy_count or 1,
                 "applicants": counts.get(j.job_id, 0),  # includes ALL statuses, rejected too
-                "closing_date": _format_date(j.closing_date),
                 "status": j.job_status.value.capitalize() if j.job_status else "Draft",
             })
 
@@ -278,7 +292,6 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
 
 
 def get_school_jobs(db: Session, admin_id: int) -> list:
-    close_expired_job_posts(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     rows = (
         db.query(JobPost)
@@ -289,6 +302,16 @@ def get_school_jobs(db: Session, admin_id: int) -> list:
     out = []
     for j in rows:
         applicant_count = db.query(JobApplicant).filter(JobApplicant.job_id == j.job_id).count()
+        interviewer_rows = (
+            db.query(JobInterviewSchedule.interviewer_name)
+            .filter(
+                JobInterviewSchedule.job_id == j.job_id,
+                JobInterviewSchedule.interviewer_name.isnot(None),
+                JobInterviewSchedule.interviewer_name != "",
+            )
+            .distinct()
+            .all()
+        )
         out.append({
             "job_id": j.job_id,
             "uuid": j.uuid,
@@ -297,15 +320,14 @@ def get_school_jobs(db: Session, admin_id: int) -> list:
             "dept": j.department or "",
             "type": j.job_type or "Full-time",
             "vacancies": j.vacancy_count or 1,
-            "closing_date": _format_date(j.closing_date),
             "applicants": applicant_count,
             "status": j.job_status.value.capitalize() if j.job_status else "Draft",
+            "interviewers": [name for (name,) in interviewer_rows],
         })
     return out
 
 
 def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[dict]:
-    close_expired_job_posts(db)
     job_filter = _get_admin_job_filter(db, admin_id)
     job = db.query(JobPost).filter(
         JobPost.job_id == job_id,
@@ -340,6 +362,8 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
             "is_required": True
         })
 
+    creator = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
+
     return {
         "job_id": job.job_id,
         "job_unique_id": f"JOB-{job.job_id}",
@@ -353,8 +377,9 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
         "description": job.job_description or "",
         "skills_required": job.skills_required or "",
         "education": job.education_qualification or "",
-        "closing_date": _format_date(job.closing_date),
         "status": job.job_status.value if job.job_status else "draft",
+        "published_date": _format_date(job.published_at),
+        "created_by_email": creator.email if creator else "",
         "applicants": applicant_count,
         "shortlisted": shortlisted_count,
         "interviews": interview_count,
@@ -405,7 +430,11 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
             last_iv = (
                 db.query(JobInterviewSchedule)
                 .filter(JobInterviewSchedule.job_applicant_id == app.job_applicant_id)
-                .order_by(JobInterviewSchedule.scheduled_date.desc()) # Grabbing latest interview
+                .order_by(
+                    JobInterviewSchedule.scheduled_date.desc(),
+                    JobInterviewSchedule.start_time.desc(),
+                    JobInterviewSchedule.job_interview_id.desc(),
+                )
                 .first()
             )
             if last_iv:
@@ -435,6 +464,7 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
             "exp": exp_str,
             "stage": stage,
             "interviewStatus": interview_status,
+            "interviewer": last_iv.interviewer_name if has_interview and last_iv else "",
             "avatar": get_initials(user.first_name, user.last_name),
             "color": color,
         })
@@ -515,7 +545,7 @@ def issue_offer(db: Session, admin_id: int, applicant_id: int, payload: dict) ->
         offered_salary=payload.get("offered_salary"),
         joining_date=payload.get("joining_date"),
         probation_period=payload.get("probation_period"),
-        offer_issued_date=payload.get("offer_issued_date") or date.today(),
+        offer_issued_date=payload.get("offer_issued_date") or utcnow(),
         offer_expiry_date=payload.get("offer_expiry_date"),
         offer_remarks=payload.get("offer_remarks", ""),
         offer_template=payload.get("offer_template", "standard"),
@@ -580,7 +610,11 @@ def update_offer_status(db: Session, admin_id: int, applicant_id: int, status: s
     if not new_status:
         return {"error": f"Unknown status: {status}"}
     app.offer_acceptance_status = new_status
-    if new_status == OfferAcceptanceStatus.EXPIRED:
+    if new_status == OfferAcceptanceStatus.ACCEPTED:
+        from app.models.job_applicant_model import ApplicantStage
+        app.applicant_stage = ApplicantStage.OFFER_ACCEPTED
+        app.offer_accepted_on = utcnow()
+    elif new_status == OfferAcceptanceStatus.EXPIRED:
         from app.models.job_applicant_model import ApplicantStage
         app.applicant_stage = ApplicantStage.REJECTED
     db.commit()

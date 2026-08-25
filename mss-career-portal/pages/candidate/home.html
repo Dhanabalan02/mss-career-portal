@@ -2106,13 +2106,6 @@
             });
         }
 
-        function formatDate(value) {
-            if (!value) return '';
-            var d = new Date(value);
-            if (isNaN(d.getTime())) return value;
-            return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-        }
-
         function getSchoolLogo(schoolName) {
             // 1. Safe-convert input to lowercase
             var school = String(schoolName || '').toLowerCase();
@@ -2153,7 +2146,6 @@
             var logo = getSchoolLogo(job.school_name);
             var jobType = escapeHtml(job.job_type || 'Full Time');
             var description = escapeHtml(job.job_description || '').slice(0, 150);
-            var closing = formatDate(job.closing_date);
             var detailUrl = '/mss-career-portal/job-description?uuid=' + encodeURIComponent(job.uuid || '') +
                 '&title=' + encodeURIComponent((job.job_title || '').replace(/ /g, '-')) +
                 '&unit=' + encodeURIComponent((job.school_name || job.department || '').replace(/ /g, '-'));
@@ -2244,8 +2236,6 @@
                 '<div></div>' +
                 ctaHtml +
                 '</div>' +
-                '<div style="font-family:\'Rubik\',sans-serif;font-size:0.72rem;color:#CBD5E1;margin-top:1rem;padding-top:1rem;border-top:1px solid #F1F5F9;display:flex;align-items:center;gap:4px;">' +
-                '<i class="feather-clock" style="font-size:0.7rem;"></i> ' + (closing ? 'Last date to apply: ' + escapeHtml(closing) : '') + '</div>' +
                 '</div></div>';
 
         }

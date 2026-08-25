@@ -1097,7 +1097,6 @@
                   <th>Department</th>
                   <th>Vacancies</th>
                   <th>Applicants</th>
-                  <th>Closing Date</th>
                   <th>Status</th>
                   <th style="width: 40px"></th>
                 </tr>
@@ -1105,7 +1104,7 @@
               <tbody id="recent-jobs-tbody">
                 <tr>
                   <td
-                    colspan="7"
+                    colspan="6"
                     style="
                       text-align: center;
                       padding: 32px;
@@ -1599,7 +1598,6 @@
         <td class="td-muted">${j.dept}</td>
         <td><strong>${j.vacancies}</strong></td>
         <td><span class="badge blue">${j.applicants} applied</span></td>
-        <td class="td-muted">${j.closing_date}</td>
         <td><span class="badge ${statusCls[j.status] || "gray"}"><span class="badge-dot"></span>${j.status}</span></td>
         <td>
             <a class="action-link"
@@ -1613,7 +1611,7 @@
                 .join("");
             } else {
               tbody.innerHTML =
-                '<tr><td colspan="7" style="text-align:center; padding:32px; color:var(--text-muted);">No Recent Job Posts Found</td></tr>';
+                '<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text-muted);">No Recent Job Posts Found</td></tr>';
             }
           }
 

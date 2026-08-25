@@ -1306,11 +1306,6 @@
             </div>
 
             <div>
-              <div class="stat-label">Closing Date</div>
-              <div id="jobClosingdate"></div>
-            </div>
-
-            <div>
               <div class="stat-label">Vacancies</div>
               <div id="jobVacancies">3</div>
             </div>
@@ -1318,6 +1313,16 @@
             <div>
               <div class="stat-label">Status</div>
               <span class="badge badge-accepted" id="jobStatus">Open</span>
+            </div>
+
+            <div>
+              <div class="stat-label">Published At</div>
+              <div id="jobPublishedAt">—</div>
+            </div>
+
+            <div>
+              <div class="stat-label">Created By</div>
+              <div id="jobCreatedBy">—</div>
             </div>
 
           </div>
@@ -1524,14 +1529,12 @@
         const dept = job.department;
         const type = job.job_type;
         const location = job.school_name;
-        const closing_date = job.closing_date;
 
         document.getElementById('jobSubtitle').textContent = `${dept} • ${type} • ${location}`;
 
         document.getElementById('jobDept').textContent = dept;
         document.getElementById('jobType').textContent = type;
-        document.getElementById('jobClosingdate').textContent = closing_date;
-        
+
         // Format experience
         let exp = 'N/A';
         if (job.min_exp || job.max_exp) {
@@ -1543,6 +1546,25 @@
         
         // Vacancies
         document.getElementById('jobVacancies').textContent = job.vacancy_count || 1;
+
+        // Published At
+        const publishedAtEl = document.getElementById('jobPublishedAt');
+        if (publishedAtEl) {
+          if (job.published_date) {
+            const d = new Date(job.published_date);
+            publishedAtEl.textContent = isNaN(d.getTime())
+              ? job.published_date
+              : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+          } else {
+            publishedAtEl.textContent = 'Not published yet';
+          }
+        }
+
+        // Created By
+        const createdByEl = document.getElementById('jobCreatedBy');
+        if (createdByEl) {
+          createdByEl.textContent = job.created_by_email || '—';
+        }
 
         // Render stats cards
         if (job.stats) {

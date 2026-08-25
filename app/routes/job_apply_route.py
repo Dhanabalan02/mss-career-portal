@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.timezone import to_ist
 from app.models import UserLoginLog, LoginStatus, Users, CandidateMetadata
 from app.crud.job_apply_crud import (
     create_job_application,
@@ -71,7 +72,7 @@ def _compute_current_stage(app, has_interview: bool = False) -> str:
         return "Onboarded"
 
     if app.sync_masset == 1:
-        return "Offer Accepted"
+        return "Onboarding"
 
     if app.offer_acceptance_status == "accepted":
         return "Offer Accepted"
@@ -107,11 +108,12 @@ def _compute_stage_dates(app, current_stage: str, earliest_interview=None, earli
 
     return {
         "applied": app.created_at,
-        "screened": app.updated_at if current_stage == "Screened" else None,
+        "screened": to_ist(app.updated_at) if current_stage == "Screened" else None,
         "interview": interview_at,
-        "offer": earliest_offer.created_at if earliest_offer else None,
-        "offer_accepted": app.offer_accepted_on,
-        "onboarded": app.masset_sync_success_on,
+        "offer": to_ist(earliest_offer.created_at) if earliest_offer else None,
+        "offer_accepted": to_ist(app.offer_accepted_on),
+        "onboarding": to_ist(app.masset_synced_at),
+        "onboarded": to_ist(app.masset_sync_success_on),
     }
 
 
@@ -125,7 +127,7 @@ def _serialize_application(app, has_interview: bool = False, earliest_interview=
         "cover_letter": app.cover_letter,
         "applicant_job_status": app.applicant_job_status,
         "offer_acceptance_status": getattr(app.offer_acceptance_status, 'value', app.offer_acceptance_status) if app.offer_acceptance_status else None,
-        "created_at": app.created_at,
+        "created_at": to_ist(app.created_at),
         "job_title": app.job.job_title if hasattr(app, 'job') and app.job else None,
         "school_name": app.job.school_name if hasattr(app, 'job') and app.job else None,
         "department": app.job.department if hasattr(app, 'job') and app.job else None,

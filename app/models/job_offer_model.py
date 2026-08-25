@@ -8,13 +8,6 @@ from app.core.timezone import utcnow
 
 
 class JobOffer(Base):
-    """
-    One row per offer issued to an applicant. A candidate can be offered more than
-    once against the same job_applicant_id (e.g. moved back to the Offer stage after
-    accepting, then re-offered) — each issuance creates a new row here rather than
-    overwriting the previous offer, so past offers stay visible in history. The most
-    recent row (highest job_offer_id) for a job_applicant_id is the current offer.
-    """
     __tablename__ = "job_offers"
 
     job_offer_id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -23,7 +16,7 @@ class JobOffer(Base):
     offered_salary: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
     joining_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     probation_period: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
-    offer_issued_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    offer_issued_date: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True)
     offer_expiry_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     offer_remarks: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     offer_template: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)

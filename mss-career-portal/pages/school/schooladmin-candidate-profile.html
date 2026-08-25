@@ -1157,7 +1157,7 @@
       } else if (stage === 'Rejected') {
         stages = ['Applied', 'Screened', 'Interview', 'Rejected'];
       } else {
-        stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
+        stages = ['Applied', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded'];
       }
 
       const currentIdx = stages.indexOf(stage);
@@ -1169,6 +1169,7 @@
         'Interview': tracking.interview,
         'Offer': tracking.offer,
         'Offer Accepted': tracking.offer_accepted,
+        'Onboarding': tracking.onboarding,
         'Onboarded': tracking.onboarded,
         'Rejected': tracking.rejected
       };
@@ -1179,16 +1180,30 @@
         let bg = 'var(--c-surface2)';
         let sub = '';
         const isRejectStage = (s === 'Pre Screen Reject' || s === 'Rejected');
+        // The final stage of a successful path (Onboarded) is a completed
+        // outcome, not an in-progress one — show it as done, not "(Active)".
+        const isTerminalStage = idx === stages.length - 1 && !isRejectStage;
 
         if (idx < currentIdx) {
           dot = '✓';
           color = 'var(--c-green)';
           bg = 'var(--c-green-bg)';
         } else if (s === stage) {
-          dot = isRejectStage ? '✕' : '●';
-          color = isRejectStage ? 'var(--c-red)' : 'var(--c-orange)';
-          bg = isRejectStage ? 'var(--c-red-bg)' : 'var(--c-orange-bg)';
-          sub = isRejectStage ? ' (Rejected)' : ' (Active)';
+          if (isRejectStage) {
+            dot = '✕';
+            color = 'var(--c-red)';
+            bg = 'var(--c-red-bg)';
+            sub = ' (Rejected)';
+          } else if (isTerminalStage) {
+            dot = '✓';
+            color = 'var(--c-green)';
+            bg = 'var(--c-green-bg)';
+          } else {
+            dot = '●';
+            color = 'var(--c-orange)';
+            bg = 'var(--c-orange-bg)';
+            sub = ' (Active)';
+          }
         }
 
         const stageDate = stageDateMap[s] || (idx === 0 ? candidateData.appliedDate : '');

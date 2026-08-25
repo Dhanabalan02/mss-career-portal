@@ -1079,7 +1079,6 @@
                 <th style="text-align:center;">Vacancies</th>
                 <th>Type</th>
                 <th>Status</th>
-                <th>Closing Date</th>
                 <th style="text-align:center;">Applicants</th>
                 <th>Actions</th>
               </tr>
@@ -1135,7 +1134,7 @@
       tbody.innerHTML = '';
 
       if (!jobs.length) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:36px;color:var(--text3);font-size:13px;">No job posts match your filters.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--text3);font-size:13px;">No job posts match your filters.</td></tr>`;
         document.getElementById('resultCount').textContent = 'No results';
         return;
       }
@@ -1156,7 +1155,6 @@
       <td style="text-align:center;font-weight:700;">${j.vacancies}</td>
       <td class="td-muted">${j.type}</td>
       <td><span class="badge ${meta.badge}"><span class="badge-dot"></span>${j.status}</span></td>
-      <td class="td-muted">${j.date || j.closing_date || ''}</td>
       <td style="text-align:center;"><span class="td-count">${j.applicants}</span></td>
       <td>
         <div class="table-actions">

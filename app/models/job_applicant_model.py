@@ -1,8 +1,8 @@
-from datetime import date, datetime
+from datetime import datetime
 from decimal import Decimal
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, List, Optional
-from sqlalchemy import Integer, String, Text, Numeric, Enum, Date, TIMESTAMP, func, ForeignKey
+from sqlalchemy import Integer, String, Text, Numeric, Enum, TIMESTAMP, func, ForeignKey
 from sqlalchemy.dialects.mysql import TINYINT as TinyInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
@@ -31,6 +31,7 @@ class ApplicantStage(str, PyEnum):
     INTERVIEW = "interview"
     OFFER = "offer"
     OFFER_ACCEPTED = "offer_accepted"
+    ONBOARDING = "onboarding"
     ONBOARDING_COMPLETED = "onboarded"
     REJECTED = "rejected"
 
@@ -65,7 +66,7 @@ class JobApplicant(Base):
         server_default="pending",
         nullable=True,
     )
-    offer_accepted_on: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    offer_accepted_on: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True)
 
     # MASSET sync fields
     sync_masset: Mapped[Optional[int]] = mapped_column(TinyInteger, server_default="0", nullable=True)

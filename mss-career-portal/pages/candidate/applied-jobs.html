@@ -172,6 +172,7 @@
         .jg-badge-teal   { background: #F0FDFA; color: #0D9488; border: 1px solid #99F6E4; }
         .jg-badge-amber  { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
         .jg-badge-green  { background: #F0FDF4; color: #15803D; border: 1px solid #BBF7D0; }
+        .jg-badge-cyan   { background: #ECFEFF; color: #0E7490; border: 1px solid #A5F3FC; }
         .jg-badge-red    { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
         .jg-badge-new    { background: linear-gradient(135deg,#10B981,#059669); color:#fff; border:none; }
 
@@ -459,10 +460,10 @@
 
                     var timelineEl = document.getElementById('trackStatusTimeline');
 
-                    var stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded'];
-                    var stageDateKeys = ['screened', 'interview', 'offer', 'offer_accepted', 'onboarded'];
+                    var stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded'];
+                    var stageDateKeys = ['screened', 'interview', 'offer', 'offer_accepted', 'onboarding', 'onboarded'];
                     var stageDates = myApp.stage_dates || {};
-                    var stageFeatherIcons = ['feather-file-text', 'feather-users', 'feather-briefcase', 'feather-thumbs-up', 'feather-check-circle'];
+                    var stageFeatherIcons = ['feather-file-text', 'feather-users', 'feather-briefcase', 'feather-thumbs-up', 'feather-refresh-cw', 'feather-check-circle'];
                     var currentStage = myApp.stage || 'Applied';
                     var isRejected = false;
                     var isOnHold = false;
@@ -600,6 +601,7 @@
                 if (s === 'interview')              return 'jg-badge-violet';
                 if (s === 'offer')                  return 'jg-badge-teal';
                 if (s === 'offer accepted')         return 'jg-badge-new';
+                if (s === 'onboarding')             return 'jg-badge-cyan';
                 if (s === 'onboarded')              return 'jg-badge-green';
                 if (s === 'on hold')                return 'jg-badge-amber';
                 if (s.indexOf('reject') !== -1)     return 'jg-badge-red';

@@ -1329,13 +1329,18 @@
             </div>
 
             <div>
-              <div class="stat-label">Closing Date</div>
+              <div class="stat-label">Status</div>
+              <span class="badge badge-accepted"></span>
+            </div>
+
+            <div>
+              <div class="stat-label">Published At</div>
               <div></div>
             </div>
 
             <div>
-              <div class="stat-label">Status</div>
-              <span class="badge badge-accepted"></span>
+              <div class="stat-label">Created By</div>
+              <div></div>
             </div>
           </div>
         </div>
@@ -1469,8 +1474,9 @@
           setField('Employment Type', j.type);
           setField('Experience', expRange);
           setField('Vacancies', j.vacancies);
-          setField('Closing Date', j.closing_date);
           setField('Status', j.status);
+          setField('Published At', j.published_date || 'Not published yet');
+          setField('Created By', j.created_by_email || '—');
 
           /* description content */
           if (j.description) {

@@ -107,8 +107,8 @@ def check_already_applied(db: Session, user_id: int, job_id: int) -> Optional[Jo
         JobApplicant.job_id == job_id
     ).first()
 
-from datetime import datetime, timezone
 from sqlalchemy.orm import Session
+from app.core.timezone import utcnow
 
 def respond_to_offer(db: Session, user_id: int, job_id: int, status_str: str) -> bool:
     app = db.query(JobApplicant).filter(
@@ -124,7 +124,7 @@ def respond_to_offer(db: Session, user_id: int, job_id: int, status_str: str) ->
     if status_lower == 'accepted':
         app.offer_acceptance_status = OfferAcceptanceStatus.ACCEPTED
         app.applicant_stage = ApplicantStage.OFFER_ACCEPTED
-        app.offer_accepted_on = datetime.now(timezone.utc).date() 
+        app.offer_accepted_on = utcnow()
         
     elif status_lower == 'rejected':
         app.offer_acceptance_status = OfferAcceptanceStatus.REJECTED

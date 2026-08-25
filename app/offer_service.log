@@ -25,3 +25,21 @@
 [2026-08-25 01:05:55] INFO in offer_service: [OFFER] Sent successfully status=200 body={'id': 'e3ced6a7-3c4a-4e2a-85f8-486de3562445'}
 [2026-08-25 01:05:55] INFO in school_admin_route: OfferService response for candidate_id=23: {'success': True, 'http_code': 200, 'response': {'id': 'e3ced6a7-3c4a-4e2a-85f8-486de3562445'}}
 [2026-08-25 01:05:55] INFO in school_admin_route: OfferService().issue_offer executed successfully
+[2026-08-25 10:53:19] INFO in school_admin_route: Initiating WhatsApp OfferService for candidate_id=23
+[2026-08-25 10:53:19] INFO in school_admin_route: Candidate phone resolved to: 9500755440
+[2026-08-25 10:53:19] INFO in school_admin_route: Offer document URL: https://stagecareer.themadrassevasadan.org/uploads/offer/offer_8_1787635398.html, Job Title: PYP Maths
+[2026-08-25 10:53:19] INFO in offer_service: [OFFER] issue_offer called with to=9500755440, candidate_name=Ramesh, job_title=PYP Maths, document_url=https://stagecareer.themadrassevasadan.org/uploads/offer/offer_8_1787635398.html, filename=Offer_Letter.pdf
+[2026-08-25 10:53:19] INFO in offer_service: [OFFER] Normalized WhatsApp number: +919500755440 (original: 9500755440)
+[2026-08-25 10:53:19] INFO in offer_service: [OFFER] Sending offer letter to=+919500755440 job=PYP Maths
+[2026-08-25 10:53:19] INFO in offer_service: [OFFER] Sent successfully status=200 body={'id': 'f8b5fe46-278b-4773-8020-0102068255fa'}
+[2026-08-25 10:53:19] INFO in school_admin_route: OfferService response for candidate_id=23: {'success': True, 'http_code': 200, 'response': {'id': 'f8b5fe46-278b-4773-8020-0102068255fa'}}
+[2026-08-25 10:53:19] INFO in school_admin_route: OfferService().issue_offer executed successfully
+[2026-08-25 10:59:46] INFO in school_admin_route: Initiating WhatsApp OfferService for candidate_id=23
+[2026-08-25 10:59:46] INFO in school_admin_route: Candidate phone resolved to: 9500755440
+[2026-08-25 10:59:46] INFO in school_admin_route: Offer document URL: https://stagecareer.themadrassevasadan.org/uploads/offer/offer_8_1787635786.html, Job Title: PYP Maths
+[2026-08-25 10:59:46] INFO in offer_service: [OFFER] issue_offer called with to=9500755440, candidate_name=Ramesh, job_title=PYP Maths, document_url=https://stagecareer.themadrassevasadan.org/uploads/offer/offer_8_1787635786.html, filename=Offer_Letter.pdf
+[2026-08-25 10:59:46] INFO in offer_service: [OFFER] Normalized WhatsApp number: +919500755440 (original: 9500755440)
+[2026-08-25 10:59:46] INFO in offer_service: [OFFER] Sending offer letter to=+919500755440 job=PYP Maths
+[2026-08-25 10:59:46] INFO in offer_service: [OFFER] Sent successfully status=200 body={'id': '7dc0aea0-f458-4c06-8de9-5c89b096072e'}
+[2026-08-25 10:59:46] INFO in school_admin_route: OfferService response for candidate_id=23: {'success': True, 'http_code': 200, 'response': {'id': '7dc0aea0-f458-4c06-8de9-5c89b096072e'}}
+[2026-08-25 10:59:46] INFO in school_admin_route: OfferService().issue_offer executed successfully

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Request, Header
 from app.core.html_helper import serve_html_with_base
@@ -89,7 +89,7 @@ class IssueOfferPayload(BaseModel):
     offered_salary: Optional[str] = None
     joining_date: Optional[date] = None
     probation_period: Optional[str] = None
-    offer_issued_date: Optional[date] = None
+    offer_issued_date: Optional[datetime] = None
     offer_expiry_date: Optional[date] = None
     offer_remarks: Optional[str] = None
     offer_template: Optional[str] = "standard"
@@ -280,6 +280,12 @@ def update_offer_status_via_webhook(
         raise HTTPException(status_code=400, detail=f"Unknown status: {payload.status}")
 
     app.offer_acceptance_status = new_status
+    if new_status == OfferAcceptanceStatus.ACCEPTED:
+        from app.models.job_applicant_model import ApplicantStage
+        from app.core.timezone import utcnow
+
+        app.applicant_stage = ApplicantStage.OFFER_ACCEPTED
+        app.offer_accepted_on = utcnow()
     db.commit()
     # --- Your Notification Dispatch Logic Stays Exactly The Same ---
     try:
@@ -354,7 +360,7 @@ def update_offer_status_route(
                     notification_type=f"offer_status_{payload.status.lower()}",
                     sender_user_id=candidate.user_id,
                     sender_type="candidate",
-                    redirect_url=build_candidate_profile_redirect_url("hr", app.job_applicant_id, candidate_name, job.job_title)
+                    redirect_url="/mss-career-portal/hr/masset-candidates"
                 )
 
                 # 2. Notify School Admins

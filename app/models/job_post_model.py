@@ -1,7 +1,7 @@
-from datetime import date, datetime
+from datetime import datetime
 from enum import Enum as PyEnum
 from typing import TYPE_CHECKING, Optional, List
-from sqlalchemy import Integer, String, Text, Date, Enum, TIMESTAMP, func, ForeignKey
+from sqlalchemy import Integer, String, Text, Enum, TIMESTAMP, DateTime, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models.base import Base
 
@@ -46,9 +46,7 @@ class JobPost(Base):
     skills_required: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     education_qualification: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    
-    closing_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
-    
+
     additional_requirements: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     job_status: Mapped[Optional[JobStatus]] = mapped_column(
@@ -73,7 +71,15 @@ class JobPost(Base):
     published_at: Mapped[Optional[datetime]] = mapped_column(
         TIMESTAMP, nullable=True
     )
-    
+
+    closed_by: Mapped[Optional[int]] = mapped_column(ForeignKey("admins.admin_id"), nullable=True)
+
+    closed_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
+    reopen_job_by: Mapped[Optional[int]] = mapped_column(ForeignKey("admins.admin_id"), nullable=True)
+
+    reopen_job_at: Mapped[Optional[datetime]] = mapped_column(DateTime, nullable=True)
+
     candidate_screening_answers : Mapped[List["CandidateScreeningAnswer"]] = relationship(back_populates="job_posts")
     job_interview_schedules : Mapped[List["JobInterviewSchedule"]] = relationship(back_populates="job_posts")
     job_pre_screening_questions : Mapped[List["JobPreScreeningQuestion"]] = relationship(

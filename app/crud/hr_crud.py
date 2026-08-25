@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import date, datetime
+from datetime import datetime
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 import requests
@@ -14,8 +14,7 @@ from app.models.candidate_experience_model import CandidateExperience
 from app.models.admin_model import Admins
 from app.models.unit_model import Units
 from app.crud.common import (
-    get_initials, get_color, parse_skills, compute_exp_str,
-    get_latest_offer, get_latest_offers_map,
+    get_initials, get_color, parse_skills, compute_exp_str, get_latest_offers_map,
 )
 from app.core.timezone import to_ist, now_ist
 
@@ -44,7 +43,22 @@ def _format_time(t) -> str:
         return str(t)
 
 
+def _coerce_datetime(value):
+    """Some columns (e.g. masset_synced_at) are stored as TEXT, so SQLAlchemy
+    hands back a raw string instead of a datetime object; parse it so
+    downstream to_ist()/strftime() calls work."""
+    if isinstance(value, str):
+        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S", "%Y-%m-%d"):
+            try:
+                return datetime.strptime(value, fmt)
+            except ValueError:
+                continue
+        return None
+    return value
+
+
 def _format_date(d) -> str:
+    d = _coerce_datetime(d)
     if not d:
         return ""
     try:
@@ -56,6 +70,7 @@ def _format_date(d) -> str:
 
 def _format_exact(dt) -> Optional[str]:
     """Formats a date/datetime as an exact, human-readable stamp (with time if available)."""
+    dt = _coerce_datetime(dt)
     if not dt:
         return None
     try:
@@ -70,7 +85,7 @@ def _format_exact(dt) -> Optional[str]:
 def build_dynamic_timeline(app, stage: str, latest_interview=None, latest_offer=None) -> list:
     applied_at = _format_exact(app.created_at) or "Recently"
 
-    stages = ['Prescreen Rejected', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarded']
+    stages = ['Prescreen Rejected', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded']
     try:
         current_idx = stages.index(stage)
     except ValueError:
@@ -84,7 +99,7 @@ def build_dynamic_timeline(app, stage: str, latest_interview=None, latest_offer=
         iv_date = latest_interview.rescheduled_date or latest_interview.scheduled_date
         iv_time = latest_interview.rescheduled_start_time or latest_interview.start_time
         if iv_date and iv_time:
-            interview_at = _format_exact(datetime.combine(iv_date, iv_time))
+            interview_at = datetime.combine(iv_date, iv_time).strftime("%d %b %Y, %I:%M %p")
         elif iv_date:
             interview_at = _format_exact(iv_date)
 
@@ -571,15 +586,8 @@ def get_masset_candidates(db: Session, admin_id: int) -> list:
     for idx, (app, user, job) in enumerate(rows):
         name = f"{user.first_name} {user.last_name}".strip()
         offer = latest_offer_map.get(app.job_applicant_id)
-        sync_val = app.masset_synced_at
-        if sync_val:
-            if isinstance(sync_val, str):
-                try:
-                    sync_val = datetime.strptime(sync_val.split(' ')[0].split('T')[0], "%Y-%m-%d")
-                except Exception:
-                    pass
-            last_sync = _format_date(sync_val)
-        else:
+        last_sync = _format_exact(app.masset_synced_at) if app.masset_synced_at else None
+        if not last_sync:
             last_sync = "Not synced"
 
         if last_sync == "Not synced":
@@ -653,9 +661,8 @@ def sync_masset(db: Session, admin_id: int, applicant_id: int) -> dict:
         logger.error(f"MASSET Sync Failed. Exact issue: {str(e)}", exc_info=True)
         return {"error": f"Failed to sync with MASSET platform: {str(e)}"}
     
-    # MASSET sync does not change the accepted offer stage.
     app.sync_masset = 1
-    app.applicant_stage = ApplicantStage.OFFER_ACCEPTED
+    app.applicant_stage = ApplicantStage.ONBOARDING
     app.masset_synced_at = datetime.utcnow()
     app.masset_synced_by = admin_id
     
@@ -801,7 +808,11 @@ def get_hr_reports(
     offer_accepted = base_q.filter(
         JobApplicant.offer_acceptance_status == OfferAcceptanceStatus.ACCEPTED
     ).count()
-    onboarded = base_q.filter(JobApplicant.sync_masset == 1).count()
+    onboarding = base_q.filter(
+        JobApplicant.sync_masset == 1,
+        JobApplicant.issue_appointment_order != 1,
+    ).count()
+    onboarded = base_q.filter(JobApplicant.issue_appointment_order == 1).count()
     interviewed = base_q.filter(
         JobApplicant.job_applicant_id.in_(
             db.query(JobInterviewSchedule.job_applicant_id).subquery()
@@ -817,7 +828,8 @@ def get_hr_reports(
         "Interview": interviewed,
         "Offer": offer_sent,
         "Offer Accepted": offer_accepted,
-        "Onboarding": onboarded,
+        "Onboarding": onboarding,
+        "Onboarded": onboarded,
         "Rejected": rejected,
     }
 
