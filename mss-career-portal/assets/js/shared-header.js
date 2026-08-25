@@ -689,7 +689,10 @@ function applyAuthUI() {
             '<div style="width:36px;height:36px;border-radius:50%;background:var(--primary-btn-color,#7b2cbf);color:#fff;display:flex;align-items:center;justify-content:center;font-family:\'Rubik\',sans-serif;font-weight:700;font-size:1rem;flex-shrink:0;">' + barInitial + '</div>' +
             '<div style="flex:1;min-width:0;">' +
               '<div style="font-family:\'Rubik\',sans-serif;font-size:0.85rem;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + (userName || userEmail) + '</div>' +
-              '<a href="/mss-career-portal/profile" style="font-family:\'Rubik\',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.65);text-decoration:none;">View Profile →</a>' +
+              '<div style="display:flex;gap:12px;margin-top:2px;">' +
+                '<a href="/mss-career-portal/profile" style="font-family:\'Rubik\',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.65);text-decoration:none;">View Profile →</a>' +
+                '<a href="/mss-career-portal/applied-jobs" style="font-family:\'Rubik\',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.65);text-decoration:none;">Applied Jobs →</a>' +
+              '</div>' +
             '</div>' +
             '<button onclick="mssLogout()" style="font-family:\'Rubik\',sans-serif;font-size:0.78rem;font-weight:600;color:#fff;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 12px;cursor:pointer;flex-shrink:0;">Logout</button>';
           container.appendChild(authBarEl);
