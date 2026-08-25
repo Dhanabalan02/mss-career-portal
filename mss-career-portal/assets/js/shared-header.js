@@ -331,7 +331,7 @@ var AUTH_API_BASE = window.AUTH_API_BASE;
 
 // Roles that belong to internal portals get redirected straight there on
 // login since they have no place on the public candidate-facing site.
-var HR_ROLES = ['hr_head', 'hr_admin', 'hr_team'];
+var HR_ROLES = ['hr_head', 'hr_admin', 'hr_team', 'hr_processor', 'hr_executive'];
 var SCHOOL_ADMIN_ROLE = 'school_admin';
 
 function getBaseUrl() {

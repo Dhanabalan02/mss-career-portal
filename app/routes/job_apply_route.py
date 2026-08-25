@@ -364,7 +364,7 @@ def respond_to_offer_route(
             poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
             if poster:
                 poster_role = poster.user_roles.role_name if poster.user_roles else ""
-                recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team"] else "schoolAdmin"
+                recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team", "hr_processor", "hr_executive"] else "schoolAdmin"
                 if recipient_type == "schoolAdmin":
                     create_notification(
                         db=db,

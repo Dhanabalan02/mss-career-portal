@@ -21,7 +21,7 @@ from app.core.timezone import to_ist, now_ist
 def _is_hr_role(db: Session, admin_id: int) -> bool:
     from sqlalchemy.orm import joinedload
     admin = db.query(Admins).options(joinedload(Admins.user_roles)).filter(Admins.admin_id == admin_id).first()
-    return admin is not None and admin.user_roles.role_name in {"hr_head", "hr_team", "hr_admin"}
+    return admin is not None and admin.user_roles.role_name in {"hr_head", "hr_team", "hr_admin", "hr_processor", "hr_executive"}
 
 def _days_ago(dt) -> int:
     if not dt:

@@ -24,7 +24,7 @@ def get_current_admin_id(authorization: Optional[str] = Header(default=None)) ->
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         admin_id = int(payload.get("sub", 0))
         role = payload.get("role")
-        if not admin_id or role not in ["hr_head", "hr_admin", "school_admin", "hr_team"]:
+        if not admin_id or role not in ["hr_head", "hr_admin", "school_admin", "hr_team", "hr_processor", "hr_executive"]:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Not authorized to perform this interview/HR task."

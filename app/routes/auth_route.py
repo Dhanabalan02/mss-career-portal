@@ -410,7 +410,7 @@ def _get_hr_id_from_token(authorization: Optional[str] = Header(default=None)) -
             detail="Missing or invalid Authorization header.",
         )
     token = authorization.split(" ", 1)[1]
-    hr_roles = {"hr_head", "hr_admin", "school_admin", "hr_team"}
+    hr_roles = {"hr_head", "hr_admin", "school_admin", "hr_team", "hr_processor", "hr_executive"}
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         admin_id = int(payload.get("sub", 0))

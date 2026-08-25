@@ -175,7 +175,7 @@ def notify_hr_users(
     from app.models.user_roles_model import UserRoles
 
     hr_admins = db.query(Admins).join(UserRoles).filter(
-        UserRoles.role_name.in_(["hr_head", "hr_admin", "hr_team"]),
+        UserRoles.role_name.in_(["hr_head", "hr_admin", "hr_team", "hr_processor", "hr_executive"]),
         Admins.is_active == 1
     ).all()
 

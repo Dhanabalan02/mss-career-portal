@@ -7,7 +7,7 @@ from app.core.security import verify_password, create_access_token, get_password
 
 OTP_VALIDITY_MINUTES = 10
 
-ADMIN_ROLES = {"hr_head", "hr_admin", "school_admin", "hr_team"}
+ADMIN_ROLES = {"hr_head", "hr_admin", "school_admin", "hr_team", "hr_processor", "hr_executive"}
 
 def authenticate_user_roles(
     db: Session,

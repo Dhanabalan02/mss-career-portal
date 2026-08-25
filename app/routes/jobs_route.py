@@ -377,6 +377,8 @@ def get_applicants_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     query = db.query(JobApplicant).join(JobPost, JobApplicant.job_id == JobPost.job_id)
@@ -604,6 +606,8 @@ def get_applicant_detail_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     query = (
@@ -1035,6 +1039,8 @@ def update_applicant_status_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     query = (
@@ -1129,6 +1135,8 @@ def get_job_post_by_id_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     if job_post.job_posted_by != admin_id and not is_hr:
@@ -1273,6 +1281,8 @@ def close_job_post_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     if job_post.job_posted_by != admin_id and not is_hr:
@@ -1307,6 +1317,8 @@ def publish_job_post_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     if job_post.job_posted_by != admin_id and not is_hr:
@@ -1343,6 +1355,8 @@ def clone_job_post_route(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     if original_job.job_posted_by != admin_id and not is_hr:
@@ -1400,6 +1414,8 @@ def get_dashboard_stats(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     base_q = db.query(JobApplicant).join(JobPost, JobApplicant.job_id == JobPost.job_id)
@@ -1522,6 +1538,8 @@ def get_dashboard_recent_applicants(
         "hr_head",
         "hr_team",
         "hr_admin",
+        "hr_processor",
+        "hr_executive",
     }
 
     query = (

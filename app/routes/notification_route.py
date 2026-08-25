@@ -30,7 +30,7 @@ def get_current_user_and_role(authorization: Optional[str] = Header(default=None
         # hr_head/hr_admin -> 'hr', school_admin -> 'schoolAdmin'
         # Fallback to the direct role string if it doesn't match these exactly
         recipient_type = role
-        if role in ["hr_head", "hr_admin", "hr", "hr_team"]:
+        if role in ["hr_head", "hr_admin", "hr", "hr_team", "hr_processor", "hr_executive"]:
             recipient_type = "hr"
         elif role in ["school_admin", "schoolAdmin"]:
             recipient_type = "schoolAdmin"

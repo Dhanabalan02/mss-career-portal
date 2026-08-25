@@ -38,7 +38,7 @@ def get_admin_job_posts(db: Session, admin_id: int) -> List[JobPost]:
         .first()
     )
 
-    if admin and admin.user_roles.role_name in {"hr_head", "hr_team", "hr_admin"}:
+    if admin and admin.user_roles.role_name in {"hr_head", "hr_team", "hr_admin", "hr_processor", "hr_executive"}:
 
         return db.query(JobPost).all()
 
