@@ -15,6 +15,7 @@ from app.models.admin_model import Admins
 from app.models.unit_model import Units
 from app.crud.common import (
     get_initials, get_color, parse_skills, compute_exp_str, get_latest_offers_map,
+    get_applicant_stage_label,
 )
 from app.core.timezone import to_ist, now_ist
 
@@ -85,9 +86,44 @@ def _format_exact(dt) -> Optional[str]:
 def build_dynamic_timeline(app, stage: str, latest_interview=None, latest_offer=None) -> list:
     applied_at = _format_exact(app.created_at) or "Recently"
 
-    stages = ['Prescreen Rejected', 'Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded']
+    # Rejected candidates (either at pre-screen, or later at Screened/Interview/Offer)
+    # get a short, terminal timeline instead of the full pipeline — the stages
+    # after rejection never happened, so they shouldn't be shown.
+    if stage in ('Prescreen Rejected', 'Rejected'):
+        tl = [{'t': 'Application Received', 'd': applied_at, 's': 'done', 'icon': 'ti-file-text'}]
+
+        if stage == 'Rejected':
+            # applicant_job_status overrides compute_stage() to 'Rejected' without
+            # clearing applicant_stage, so that column still tells us how far the
+            # candidate actually got before being rejected.
+            progressed = get_applicant_stage_label(app)
+            reached = {'Screened': 1, 'Interview': 2, 'Offer': 3}.get(progressed, 0)
+
+            if reached >= 1:
+                screened_at = _format_exact(app.updated_at)
+                tl.append({'t': 'Resume Screened', 'd': screened_at or 'Completed', 's': 'done', 'icon': 'ti-shield-check'})
+            if reached >= 2:
+                interview_at = None
+                if latest_interview:
+                    iv_date = latest_interview.rescheduled_date or latest_interview.scheduled_date
+                    iv_time = latest_interview.rescheduled_start_time or latest_interview.start_time
+                    if iv_date and iv_time:
+                        interview_at = datetime.combine(iv_date, iv_time).strftime("%d %b %Y, %I:%M %p")
+                    elif iv_date:
+                        interview_at = _format_exact(iv_date)
+                tl.append({'t': 'Interview Process', 'd': interview_at or 'Completed', 's': 'done', 'icon': 'ti-microphone-2'})
+            if reached >= 3:
+                offer_at = _format_exact(latest_offer.offer_issued_date) if latest_offer else None
+                tl.append({'t': 'Offer Extended', 'd': offer_at or 'Sent to Candidate', 's': 'done', 'icon': 'ti-file-invoice'})
+
+        rejected_at = _format_exact(app.updated_at) or 'Recently'
+        rejected_title = 'Application Rejected' if stage == 'Prescreen Rejected' else 'Candidate Rejected'
+        tl.append({'t': rejected_title, 'd': rejected_at, 's': 'rejected', 'icon': 'ti-circle-x'})
+        return tl
+
+    stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded']
     try:
-        current_idx = stages.index(stage)
+        current_idx = stages.index(stage) + 1
     except ValueError:
         current_idx = 0
 
@@ -967,7 +1003,13 @@ def get_pending_actions(db: Session, admin_id: int) -> dict:
     )
     if not is_hr:
         q_pre = q_pre.filter(JobPost.job_posted_by == admin_id)
-    pre_screen_count = q_pre.filter(JobApplicant.applicant_job_status.is_(None)).count()
+    # "Screened" also leaves applicant_job_status NULL, so also require the
+    # applicant to still be at the fresh/unstaged step (not yet screened),
+    # otherwise already-screened candidates keep re-appearing as pending.
+    pre_screen_count = q_pre.filter(
+        JobApplicant.applicant_job_status.is_(None),
+        JobApplicant.applicant_stage.is_(None),
+    ).count()
 
     q_int = (
         db.query(JobInterviewSchedule)

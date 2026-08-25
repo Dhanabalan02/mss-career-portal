@@ -136,12 +136,15 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .filter(job_filter)
         .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
         .filter(JobInterviewSchedule.scheduled_date >= date.today())
+        .filter(JobInterviewSchedule.status.in_([InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]))
         .order_by(JobInterviewSchedule.scheduled_date, JobInterviewSchedule.start_time)
     )
     upcoming_rows = upcoming_interviews_q.limit(10).all()
     upcoming_count = upcoming_interviews_q.count()
 
     # Build calendar data {YYYY-M-D: [{name, role, round, time, color}]}
+    # Only today/future, still-active interviews so the calendar stays in sync
+    # with the "Upcoming Interviews" stat above and never shows past interviews.
     INTERVIEW_COLORS = ['#2563eb', '#16a34a', '#7c3aed', '#ea580c', '#0891b2', '#d97706', '#dc2626']
     calendar_data: dict = {}
     all_iv_rows = (
@@ -151,6 +154,8 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .join(Users, JobApplicant.user_id == Users.user_id)
         .filter(job_filter)
         .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
+        .filter(JobInterviewSchedule.scheduled_date >= date.today())
+        .filter(JobInterviewSchedule.status.in_([InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]))
         .all()
     )
     for ci, (iv, user, job) in enumerate(all_iv_rows):

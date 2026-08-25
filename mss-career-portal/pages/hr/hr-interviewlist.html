@@ -2011,7 +2011,13 @@
     function renderUpcomingInterviews(data) {
       const container = document.getElementById('upcomingInterviewsList');
       if (!container) return;
-      const upcoming = data.filter(iv => iv.status === "Scheduled" || iv.status === "Rescheduled");
+      const todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
+      const upcoming = data.filter(iv => {
+        if (iv.status !== "Scheduled" && iv.status !== "Rescheduled") return false;
+        const d = parseCustomDate(iv.date);
+        return d && d >= todayDate;
+      });
       upcoming.sort((a, b) => {
         return parseCustomDateTime(a.date, a.time) - parseCustomDateTime(b.date, b.time);
       });

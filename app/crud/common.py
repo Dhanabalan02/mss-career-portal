@@ -75,6 +75,18 @@ _STAGE_ENUM_TO_LABEL = {
 }
 
 
+def get_applicant_stage_label(app) -> str:
+    """Returns the label for app.applicant_stage alone, ignoring the
+    job_status/masset overrides compute_stage() applies (e.g. a candidate
+    rejected mid-interview still has applicant_stage='interview' even though
+    compute_stage() reports 'Rejected')."""
+    if app.applicant_stage is None:
+        return 'Applied'
+    stage_val = app.applicant_stage.value if hasattr(app.applicant_stage, 'value') else str(app.applicant_stage)
+    stage_val_norm = stage_val.lower().strip().replace(" ", "_").replace("-", "_")
+    return _STAGE_ENUM_TO_LABEL.get(stage_val_norm, 'Applied')
+
+
 def compute_stage(app, has_interview: bool) -> str:
     from app.models.job_applicant_model import ApplicantJobStatus, OfferAcceptanceStatus
 

@@ -548,12 +548,6 @@
       border-color: #F7C1C1;
     }
 
-    .action-btn.purple {
-      background: var(--purple-bg);
-      color: var(--purple-text);
-      border-color: #D1CCF9;
-    }
-
     .job-closed-tag {
       display: inline-flex;
       align-items: center;
@@ -1139,7 +1133,6 @@
           </button>
           ${(showActions && (c.stage === 'Screened' || c.interviewStatus === 'Next Round') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
           ${canAction ? `<button class="action-btn red" title="Reject Candidate" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')"><i class="ti ti-x"></i></button>` : ''}
-          ${c.job_status === 'closed' ? `<button class="action-btn purple" title="Publish Job" onclick="event.stopPropagation(); publishJobModal(${c.job_id}, '${c.job.replace(/'/g, "\\'")}')"><i class="ti ti-rocket"></i></button>` : ''}
         </div>
       </td>`;
         tbody.appendChild(tr);
@@ -1347,43 +1340,6 @@
       .catch(err => {
         console.error(err);
         if (window.showToast) window.showToast('Error rejecting candidate.', 'error');
-      });
-    }
-
-    /* ── Publish Closed Job modal ── */
-    function publishJobModal(jobId, jobTitle) {
-      showModal(`
-    <div class="modal-title"><i class="ti ti-rocket" aria-hidden="true"></i> Publish Job Post</div>
-    <p>Re-publish "<strong>${jobTitle}</strong>" so it becomes visible to candidates again.</p>
-    <div class="modal-actions">
-      <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
-      <button class="btn-primary" onclick="submitPublish(${jobId})"><i class="ti ti-rocket" aria-hidden="true"></i> Publish</button>
-    </div>`);
-    }
-
-    function submitPublish(jobId) {
-      fetch(JOBS_API_BASE + `/jobs/${jobId}/publish`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        }
-      })
-      .then(async res => {
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.detail || 'Failed to publish job');
-        }
-        return res.json();
-      })
-      .then(() => {
-        if (window.showToast) window.showToast('Job post published successfully!', 'success');
-        document.querySelector('.modal-overlay').remove();
-        fetchApplicants();
-      })
-      .catch(err => {
-        console.error(err);
-        if (window.showToast) window.showToast(err.message || 'Error publishing job.', 'error');
       });
     }
 

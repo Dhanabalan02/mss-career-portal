@@ -47,8 +47,6 @@
       /* Status fills */
       --s-pending-bg: #dbeafe;
       --s-pending-tx: #1d4ed8;
-      --s-syncing-bg: #cffafe;
-      --s-syncing-tx: #0891b2;
       --s-ao-bg: #ffedd5;
       --s-ao-tx: #c2410c;
       --s-onboarding-bg: #ede9fe;
@@ -253,10 +251,6 @@
 
     .stat-pending {
       border-top-color: var(--accent);
-    }
-
-    .stat-syncing {
-      border-top-color: var(--cyan);
     }
 
     .stat-ao {
@@ -528,11 +522,6 @@
       color: var(--s-pending-tx);
     }
 
-    .status-syncing {
-      background: var(--s-syncing-bg);
-      color: var(--s-syncing-tx);
-    }
-
     .status-ao {
       background: var(--s-ao-bg);
       color: var(--s-ao-tx);
@@ -575,10 +564,6 @@
     }
 
     .status-onboarding::before {
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-
-    .status-syncing::before {
       animation: pulse 1.4s ease-in-out infinite;
     }
 
@@ -1203,15 +1188,6 @@
           <div class="stat-delta">Awaiting trigger</div>
         </div>
 
-        <!-- <div class="stat-card stat-syncing" id="sc-Syncing" onclick="filterStatus('Syncing')">
-          <div class="stat-icon" style="background:#cffafe;color:#06b6d4"><i class="ti ti-refresh"
-              aria-hidden="true"></i>
-          </div>
-          <div class="stat-value" id="sv-Syncing">8</div>
-          <div class="stat-label">Syncing</div>
-          <div class="stat-delta">In progress</div>
-        </div> -->
-
         <div class="stat-card stat-ao" id="sc-AO Pending" onclick="filterStatus('AO Pending')">
           <div class="stat-icon" style="background:#ffedd5;color:#f59e0b"><i class="ti ti-file-time"
               aria-hidden="true"></i></div>
@@ -1219,14 +1195,6 @@
           <div class="stat-label">AO Pending</div>
           <div class="stat-delta">Awaiting approval</div>
         </div>
-
-        <!-- <div class="stat-card stat-onboarding" id="sc-Onboarding" onclick="filterStatus('Onboarding')">
-          <div class="stat-icon" style="background:#ede9fe;color:#7c3aed"><i class="ti ti-user-plus"
-              aria-hidden="true"></i></div>
-          <div class="stat-value" id="sv-Onboarding">5</div>
-          <div class="stat-label">Onboarding</div>
-          <div class="stat-delta">Active onboarding</div>
-        </div> -->
 
         <div class="stat-card stat-onboarded" id="sc-Onboarded" onclick="filterStatus('Onboarded')">
           <div class="stat-icon" style="background:#dcfce7;color:#16a34a"><i class="ti ti-circle-check"
@@ -1260,7 +1228,6 @@
         <select class="filter-select" id="statusFilter" onchange="applyFilters()">
           <option value="">All Statuses</option>
           <option>Sync Pending</option>
-          <option>Syncing</option>
           <option>AO Pending</option>
           <option>Onboarded</option>
           <option>Sync Failed</option>
@@ -1369,9 +1336,9 @@
     };
 
     /* ── Helpers ── */
-    const PROGRESS_MAP = { 'Sync Pending': 10, 'Syncing': 35, 'AO Pending': 60, 'Onboarding': 80, 'Onboarded': 100, 'Sync Failed': 0 };
-    const STATUS_CLASS = { 'Sync Pending': 'status-pending', 'Syncing': 'status-syncing', 'AO Pending': 'status-ao', 'Onboarding': 'status-onboarding', 'Onboarded': 'status-onboarded', 'Sync Failed': 'status-failed' };
-    const PROGRESS_COLOR = s => s === 'Onboarded' ? '#16a34a' : s === 'Sync Failed' ? '#dc2626' : s === 'Syncing' ? '#06b6d4' : '#2563eb';
+    const PROGRESS_MAP = { 'Sync Pending': 10, 'AO Pending': 60, 'Onboarding': 80, 'Onboarded': 100, 'Sync Failed': 0 };
+    const STATUS_CLASS = { 'Sync Pending': 'status-pending', 'AO Pending': 'status-ao', 'Onboarding': 'status-onboarding', 'Onboarded': 'status-onboarded', 'Sync Failed': 'status-failed' };
+    const PROGRESS_COLOR = s => s === 'Onboarded' ? '#16a34a' : s === 'Sync Failed' ? '#dc2626' : '#2563eb';
 
     let activeStatus = '';
     let toastTimer = null;
@@ -1588,10 +1555,6 @@
         } else if (c.status === 'AO Pending') {
           steps.push({ icon: 'ti-check', state: 'done', title: 'Sync Completed', desc: `Synced on ${c.lastSync}` });
           steps.push({ icon: 'ti-clock', state: 'current', title: 'AO Generation', desc: 'Awaiting for AO generation' });
-          steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
-        } else if (c.status === 'Syncing') {
-          steps.push({ icon: 'ti-refresh', state: 'current', title: 'Syncing', desc: 'API request in progress' });
-          steps.push({ icon: 'ti-circle', state: 'pending', title: 'AO Generation', desc: 'Waiting for response' });
           steps.push({ icon: 'ti-circle', state: 'pending', title: 'Onboarding', desc: 'Not yet started' });
         } else if (c.status === 'Onboarding') {
           steps.push({ icon: 'ti-check', state: 'done', title: 'Sync Completed', desc: `Synced on ${c.lastSync}` });

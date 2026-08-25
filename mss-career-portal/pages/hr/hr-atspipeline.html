@@ -1190,6 +1190,12 @@
         color: var(--text-3);
       }
 
+      .tl-dot.rejected {
+        background: var(--danger);
+        border-color: var(--danger);
+        color: #fff;
+      }
+
       .tl-text {
         flex: 1;
       }
@@ -1221,6 +1227,11 @@
       .tl-badge.act {
         background: var(--primary-light);
         color: var(--primary);
+      }
+
+      .tl-badge.err {
+        background: var(--danger-light);
+        color: var(--danger);
       }
 
       /* Actions tab */
@@ -2523,15 +2534,7 @@
       }
 
       /* ── Drawer ── */
-      function openDrawer(event, id) {
-        if (preventClick) {
-          preventClick = false;
-          return;
-        }
-        const c = candidates.find((x) => x.id === id);
-        if (!c) return;
-        activeId = id;
-
+      function populateDrawer(c) {
         const [avBg, avFg] = STAGE_META[c.stage].av;
         const avEl = document.getElementById("dAvatar");
         avEl.textContent = initials(c.name);
@@ -2564,6 +2567,8 @@
           ? "done"
           : t.s === "current"
           ? "current"
+          : t.s === "rejected"
+          ? "rejected"
           : "pending"
       }">${iconHtml}</div>
       <div class="tl-text">
@@ -2571,6 +2576,7 @@
         <div class="tl-date">${t.d}</div>
         ${t.s === "done" ? '<span class="tl-badge ok">Completed</span>' : ""}
         ${t.s === "current" ? '<span class="tl-badge act">In Progress</span>' : ""}
+        ${t.s === "rejected" ? '<span class="tl-badge err">Rejected</span>' : ""}
       </div>
     </div>`;
           })
@@ -2615,6 +2621,18 @@
         } else {
           document.getElementById("tabHeaderActions").style.display = "flex";
         }
+      }
+
+      function openDrawer(event, id) {
+        if (preventClick) {
+          preventClick = false;
+          return;
+        }
+        const c = candidates.find((x) => x.id === id);
+        if (!c) return;
+        activeId = id;
+
+        populateDrawer(c);
 
         switchTab("overview");
         document.getElementById("drawer").classList.add("active");
@@ -2788,6 +2806,14 @@
             },
           );
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          // Pull the freshly computed timeline/flags for this candidate so the
+          // drawer (if open) reflects the new stage without a page refresh.
+          await fetchCandidatesFromServer();
+          renderKanban(getFiltered());
+          const fresh = candidates.find((x) => x.id === candidate.id);
+          if (fresh && activeId === candidate.id) {
+            populateDrawer(fresh);
+          }
         } catch (err) {
           candidate.stage = prevStage;
           renderKanban(getFiltered());
@@ -2819,6 +2845,8 @@
           if (response.ok && data.success) {
             candidate.sync_masset = 1;
             showToast(`${candidate.name} synced to MASSET and moved to Onboarding`, "success");
+            await fetchCandidatesFromServer();
+            renderKanban(getFiltered());
             if (activeId === candidate.id) closeDrawer();
           } else {
             candidate.stage = prevStage;
@@ -3113,6 +3141,28 @@
         document
           .querySelectorAll(".column")
           .forEach((col) => col.classList.remove("drag-over"));
+      }
+
+      /* ── Refresh candidate data (used after a stage change) without
+         touching the filter dropdowns, so an in-progress search/filter
+         and the open drawer's tab selection aren't disturbed. ── */
+      async function fetchCandidatesFromServer() {
+        try {
+          const res = await fetch(`${API_BASE}/hr/ats-pipeline`, {
+            headers: { Authorization: `Bearer ${_token()}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data.candidates)) {
+              candidates = data.candidates;
+              window.apiStats = data.stats || null;
+              return true;
+            }
+          }
+        } catch (e) {
+          /* keep existing data if refresh fails */
+        }
+        return false;
       }
 
       /* ── Init ── */

@@ -1431,7 +1431,9 @@ def get_dashboard_stats(
     # Total applicants
     total_applicants = base_q.count()
 
-    # Scheduled interviews (use enum value)
+    # Scheduled interviews (today or later, still active) — kept in sync with
+    # the "Upcoming Interviews" pending action and the dashboard calendar,
+    # which both exclude past interviews.
     scheduled_interviews_q = (
         db.query(JobInterviewSchedule)
         .join(JobPost, JobInterviewSchedule.job_id == JobPost.job_id)
@@ -1440,6 +1442,7 @@ def get_dashboard_stats(
                 [InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]
             )
         )
+        .filter(JobInterviewSchedule.scheduled_date >= date.today())
     )
     if not is_hr:
         scheduled_interviews_q = scheduled_interviews_q.filter(

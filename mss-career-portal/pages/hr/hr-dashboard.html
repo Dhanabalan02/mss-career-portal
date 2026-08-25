@@ -1206,7 +1206,15 @@
       })
         .then(res => res.json())
         .then(data => {
-          allInterviews = data.interviews || [];
+          // Only today/future, still-active interviews — keeps the calendar
+          // in sync with the "Scheduled Interviews" stat and Pending Actions,
+          // and past interviews never show up here.
+          const todayMidnight = new Date();
+          todayMidnight.setHours(0, 0, 0, 0);
+          allInterviews = (data.interviews || []).filter(ev => {
+            const evD = new Date(ev.date);
+            return !isNaN(evD) && evD >= todayMidnight && (ev.status === 'Scheduled' || ev.status === 'Rescheduled');
+          });
           renderCal(); // re-render once we have data
         })
         .catch(err => console.error("Error fetching interviews for calendar", err));

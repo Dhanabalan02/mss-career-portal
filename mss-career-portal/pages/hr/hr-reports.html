@@ -1362,8 +1362,8 @@
       // Generate current date for filename and report header
       const todayStr = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
       
-      const sDate = document.getElementById('filterStartDate').value;
-      const eDate = document.getElementById('filterEndDate').value;
+      const sDate = document.getElementById('startDate').value;
+      const eDate = document.getElementById('endDate').value;
       
       let periodStr = `Generated On: ${todayStr}`;
       if (sDate && eDate) {
