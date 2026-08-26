@@ -11,5 +11,6 @@ wheels/
 
 .env
 
+app/offer_service.log
 app/app.log
 uploads/
