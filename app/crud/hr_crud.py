@@ -1021,12 +1021,8 @@ def get_pending_actions(db: Session, admin_id: int) -> dict:
     )
     if not is_hr:
         q_pre = q_pre.filter(JobPost.job_posted_by == admin_id)
-    # "Screened" also leaves applicant_job_status NULL, so also require the
-    # applicant to still be at the fresh/unstaged step (not yet screened),
-    # otherwise already-screened candidates keep re-appearing as pending.
     pre_screen_count = q_pre.filter(
-        JobApplicant.applicant_job_status.is_(None),
-        JobApplicant.applicant_stage.is_(None),
+        JobApplicant.applicant_stage == ApplicantStage.PRESCREEN_REJECT,
     ).count()
 
     q_int = (

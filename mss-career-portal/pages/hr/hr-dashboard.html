@@ -1571,7 +1571,7 @@
         .then(r => r.json())
         .then(data => {
           const pendingActions = [
-            { icon: '<i class="ti ti-clipboard-list" aria-hidden="true"></i>', iconBg: '#E6F1FB', title: 'Pre-Screen Review', desc: data.pre_screen_count + ' applications pending review', url: '/mss-career-portal/hr/jobapplicants-list', count: data.pre_screen_count, countBg: '#378ADD' },
+            { icon: '<i class="ti ti-clipboard-list" aria-hidden="true"></i>', iconBg: '#E6F1FB', title: 'Pre-Screen Review', desc: data.pre_screen_count + ' applications prescreen rejected', url: '/mss-career-portal/hr/jobapplicants-list', count: data.pre_screen_count, countBg: '#378ADD' },
             { icon: '<i class="ti ti-calendar-event" aria-hidden="true"></i>', iconBg: '#FEF4E6', title: 'Upcoming Interviews', desc: data.interviews_count + ' interviews scheduled', url: '/mss-career-portal/hr/interviews', count: data.interviews_count, countBg: '#F59E0B' },
             { icon: '<i class="ti ti-refresh" aria-hidden="true"></i>', iconBg: '#E8E8E8', title: 'MASSET Sync', desc: data.masset_sync_count + ' profiles need syncing', url: '/mss-career-portal/hr/masset-candidates', count: data.masset_sync_count, countBg: '#6B7280' }
           ];

@@ -458,7 +458,7 @@ tbody tr:hover { background: var(--bg2); }
   <header class="page-header">
     <div>
       <div class="page-title">Job Applicants</div>
-      <div class="page-subtitle">247 total candidates across all positions</div>
+      <div class="page-subtitle"></div>
     </div>
   </header>
 
@@ -506,17 +506,6 @@ tbody tr:hover { background: var(--bg2); }
       <select class="filter-select" id="fJob" onchange="filterApplicants()">
         <option value="">All Job Posts</option>
       </select>
-      <select class="filter-select" id="fStage" onchange="filterApplicants()">
-        <option value="">All Stages</option>
-        <option>Applied</option>
-        <option>Screened</option>
-        <option>Interview</option>
-        <option>Offer</option>
-        <option>Offer Accepted</option>
-        <option>Onboarding</option>
-        <option>Onboarded</option>
-        <option>Rejected</option>
-      </select>
       <select class="filter-select" id="fExp" onchange="filterApplicants()">
         <option value="">All Experience</option>
         <option>0-3 yrs</option>
@@ -536,7 +525,7 @@ tbody tr:hover { background: var(--bg2); }
           <span class="table-title">All Applicants</span>
           <span id="selectedCount" style="font-size:12px;color:var(--text3);"></span>
         </div>
-        <span id="resultCount" style="font-size:12px;color:var(--text3);">247 candidates</span>
+        <span id="resultCount" style="font-size:12px;color:var(--text3);"></span>
       </div>
       <div class="table-scroll">
         <table>
@@ -589,7 +578,7 @@ function goToPage(pageNum, totalPages) {
 /* ── Stage chip config ── */
 let STAGE_CONFIG = [
   { name:'All',           count:0, color:'#444441', bg:'#F1EFE8' },
-  { name:'Applied',        count:0, color:'#534AB7', bg:'#EEEDFE' },
+  { name:'Prescreen Rejected', count:0, color:'#534AB7', bg:'#EEEDFE' },
   { name:'Screened',       count:0, color:'#185FA5', bg:'#E6F1FB' },
   { name:'Interview',      count:0, color:'#BA7517', bg:'#FAEEDA' },
   { name:'Offer',          count:0, color:'#534AB7', bg:'#EEEDFE' },
@@ -615,7 +604,6 @@ function renderChips() {
     chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${count}</span>`;
     chip.onclick = () => {
       activeStageFilter = s.name === 'All' ? '' : (activeStageFilter === s.name ? '' : s.name);
-      document.getElementById('fStage').value = activeStageFilter;
       renderChips();
       filterApplicants();
     };
@@ -627,7 +615,7 @@ renderChips();
 /* ── Helpers ── */
 function stageBadge(stage) {
   const map = {
-    'Applied':'badge-applied', 'Screened':'badge-screened', 'Interview':'badge-interview',
+    'Prescreen Rejected':'badge-rejected', 'Screened':'badge-screened', 'Interview':'badge-interview',
     'Offer':'badge-offer', 'Offer Accepted':'badge-accepted',
     'Onboarding':'badge-onboarding-progress',
     'Onboarded':'badge-onboarding', 'Rejected':'badge-rejected'
@@ -707,7 +695,7 @@ function renderApplicants(list) {
 function filterApplicants() {
   const q     = document.getElementById('searchInput').value.toLowerCase();
   const job   = document.getElementById('fJob').value;
-  const stage = document.getElementById('fStage').value || activeStageFilter;
+  const stage = activeStageFilter;
   CURRENT_LIST = CANDIDATES.filter(c =>
     (!q     || c.name.toLowerCase().includes(q) || c.job.toLowerCase().includes(q)) &&
     (!job   || c.job === job) &&
@@ -787,7 +775,7 @@ async function loadApplicants() {
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
     CANDIDATES = Array.isArray(data.applicants) ? data.applicants.map(c => {
-      c.stage = c.applicant_stage || c.stage || 'Applied';
+      c.stage = c.applicant_stage || c.stage || 'Prescreen Rejected';
       let expVal = null;
       if (Array.isArray(c.candidate_experience) && c.candidate_experience.length > 0) {
         expVal = c.candidate_experience[0].total_experience;

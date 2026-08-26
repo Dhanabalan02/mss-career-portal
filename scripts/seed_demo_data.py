@@ -51,7 +51,10 @@ from app.models import (
     CandidateMetadata,
     CandidateExperience,
     CandidateEducationDetail,
+    JobPreScreeningQuestion,
+    CandidateScreeningAnswer,
 )
+from app.models.candidate_screening_answer_model import CandidateStatus
 
 DEMO_EMAIL_DOMAIN = "demo.careerportal.local"
 random.seed(42)
@@ -244,8 +247,64 @@ def programme_for(unit_name: str, subject_key: str) -> str:
     return "Secondary"
 
 
+def ensure_prescreen_questions(db, job_id: int, subject: dict) -> list:
+    """Every job should carry a few pre-screening questions so applicants
+    have something real to answer. Idempotent: skips jobs that already have
+    any questions attached."""
+    existing = (
+        db.query(JobPreScreeningQuestion)
+        .filter(JobPreScreeningQuestion.job_id == job_id)
+        .order_by(JobPreScreeningQuestion.question_id)
+        .all()
+    )
+    if existing:
+        return existing
+
+    specs = [
+        (f"How many years of experience do you have teaching {subject['title'].replace(' Teacher', '')}?", subject["min_exp"]),
+        (f"Do you hold a {subject['degree']} or equivalent qualification?", "Yes"),
+        ("Are you available to join within 30 days of receiving an offer?", "Yes"),
+    ]
+    for question_text, expected_answer in specs:
+        db.add(
+            JobPreScreeningQuestion(
+                job_id=job_id,
+                question_text=question_text,
+                question_type="text",
+                expected_answer=expected_answer,
+            )
+        )
+    db.flush()
+    return (
+        db.query(JobPreScreeningQuestion)
+        .filter(JobPreScreeningQuestion.job_id == job_id)
+        .order_by(JobPreScreeningQuestion.question_id)
+        .all()
+    )
+
+
 def days_ago(n: int) -> datetime:
     return datetime.utcnow() - timedelta(days=n)
+
+
+def offer_letter_html(name: str, job_title: str, school: str, dept: str, salary: str, joining_date, probation: str, expiry) -> str:
+    fmt = lambda d: f"{d.day} {d.strftime('%b %Y')}"
+    return (
+        f'<div style="max-width: 600px; margin: 20px auto; text-align: left; '
+        f'border: 1px solid #d4d1cb; padding: 40px; border-radius: 8px; '
+        f'font-size: 16px; line-height: 1.8; background-color: #ffffff;">'
+        f"Dear <span class=\"ph\">{name}</span>,<br><br>\n"
+        f"We are pleased to offer you the position of <span class=\"ph\">{job_title}</span> "
+        f"at <span class=\"ph\">{school}</span>, under the <span class=\"ph\">{dept}</span> department.<br><br>\n"
+        f"This is a full-time position with a gross annual compensation of "
+        f"<span class=\"ph\">{salary}</span>. Your expected date of joining is "
+        f"<span class=\"ph\">{fmt(joining_date)}</span>. You will be subject to a "
+        f"probationary period of <span class=\"ph\">{probation}</span>.<br><br>\n"
+        f"Please confirm your acceptance by <span class=\"ph\">{fmt(expiry)}</span>. "
+        f"If you have any questions, feel free to reach out to our HR team.<br><br>\n"
+        f"We look forward to welcoming you to the team.<br><br>\n"
+        f"Warm regards,<br><strong>School Admin — TMSS</strong></div>"
+    )
 
 
 def name_pool(idx: int):
@@ -290,6 +349,7 @@ def seed_jobs(db, units, unit_admin_map, hr_admin_id):
                 .first()
             )
             if existing:
+                ensure_prescreen_questions(db, existing.job_id, subject)
                 jobs_by_subject[subject_key].append(
                     {"id": existing.job_id, "unit": unit, "status": existing.job_status}
                 )
@@ -335,6 +395,7 @@ def seed_jobs(db, units, unit_admin_map, hr_admin_id):
 
             db.add(job)
             db.flush()
+            ensure_prescreen_questions(db, job.job_id, subject)
             created += 1
             created_job_ids.append(job.job_id)
             jobs_by_subject[subject_key].append({"id": job.job_id, "unit": unit, "status": status})
@@ -503,6 +564,19 @@ def seed_candidates(db, jobs_by_subject, hr_admin_id, candidate_role_id):
             db.flush()
             applicant.mss_app_no = f"MSS-APP-{applicant.job_applicant_id}"
 
+            questions = ensure_prescreen_questions(db, job_entry["id"], subject)
+            for q in questions:
+                db.add(
+                    CandidateScreeningAnswer(
+                        candidate_id=user.user_id,
+                        job_id=job_entry["id"],
+                        question_id=q.question_id,
+                        answer=q.expected_answer or "Yes",
+                        candidate_status=CandidateStatus.SCREENED,
+                        created_at=applied_at,
+                    )
+                )
+
             _apply_stage(db, applicant, stage_name, job_entry, applied_at, hr_admin_id, subject)
 
             db.commit()
@@ -582,15 +656,27 @@ def _apply_stage(db, applicant, stage_name, job_entry, applied_at, hr_admin_id, 
     # Offer and beyond
     applicant.applicant_job_status = ApplicantJobStatus.SELECTED
     offer_issued_at = interview_at + timedelta(days=3)
+    joining_date = (offer_issued_at + timedelta(days=30)).date()
+    probation = random.choice(["3 months", "6 months"])
+    expiry_date = (offer_issued_at + timedelta(days=14)).date()
+    salary = f"₹{random.randint(28, 55)},000/month"
+
+    user = db.query(Users).filter(Users.user_id == applicant.user_id).first()
+    name = f"{user.first_name} {user.last_name}".strip() if user else "Candidate"
+
     offer = JobOffer(
         job_applicant_id=applicant.job_applicant_id,
-        offered_salary=f"₹{random.randint(28, 55)},000/month",
-        joining_date=(offer_issued_at + timedelta(days=30)).date(),
-        probation_period=random.choice(["3 months", "6 months"]),
+        offered_salary=salary,
+        joining_date=joining_date,
+        probation_period=probation,
         offer_issued_date=offer_issued_at,
-        offer_expiry_date=(offer_issued_at + timedelta(days=14)).date(),
+        offer_expiry_date=expiry_date,
         offer_remarks="Congratulations! We are pleased to offer you this position.",
         offer_template="standard",
+        offer_letter_doc=offer_letter_html(
+            name, subject["title"], job_entry["unit"].unit_name, subject["department"],
+            salary, joining_date, probation, expiry_date,
+        ),
         issued_by=hr_admin_id,
         is_draft=0,
         created_at=offer_issued_at,

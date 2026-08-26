@@ -1194,6 +1194,7 @@
         <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(normalizedStage)}">${normalizedStage}</span></span></div>
         <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${statusHtml}</span></div>
         <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
+        ${candidateData.reject_reason ? `<div class="info-row"><span class="info-label">Reject Reason</span><span class="info-value" style="color:var(--c-red);text-align:right;max-width:60%;">${candidateData.reject_reason}</span></div>` : ''}
       `;
 
       // Timeline / Stage History
@@ -1243,7 +1244,7 @@
             dot = '✕';
             color = 'var(--c-red)';
             bg = 'var(--c-red-bg)';
-            sub = ' (Rejected)';
+            sub = /reject/i.test(stage) ? '' : ' (Rejected)';
           } else if (isTerminalStage) {
             dot = '✓';
             color = 'var(--c-green)';
@@ -1467,19 +1468,6 @@
 
       if (candidateData.interviews && candidateData.interviews.length) {
         candidateData.interviews.forEach(item => {
-          const dateStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          const timeStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
-
-          let actionBtn = '';
-          if (item.status === 'scheduled' || item.status === 'rescheduled') {
-            actionBtn = `
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="btn btn-default btn-sm" onclick="rescheduleInterviewModal(${item.job_interview_id})">Reschedule</button>
-                <button class="btn btn-primary btn-sm" onclick="feedbackModal(${item.job_interview_id}, '${item.round}')">Submit Feedback</button>
-              </div>
-            `;
-          }
-
           let scoreBadge = '';
           let feedbackText = '';
           let outcomeBadge = '';
@@ -1501,8 +1489,6 @@
           let reasonText = '';
           if (item.status === 'cancelled' && item.cancelled_reason) {
             reasonText = `<div class="interview-feedback"><strong>Cancellation Reason:</strong> ${item.cancelled_reason}</div>`;
-          } else if (item.status === 'rescheduled' && item.reschedule_reason) {
-            reasonText = `<div class="interview-feedback"><strong>Reschedule Reason:</strong> ${item.reschedule_reason}</div>`;
           }
 
           const statusBadgeClass = item.status === 'completed' ? 'badge-green' : item.status === 'cancelled' ? 'badge-red' : 'badge-orange';
@@ -1510,14 +1496,7 @@
           listEl.innerHTML += `
             <div class="interview-card ${item.status === 'scheduled' ? 'active' : ''}" style="margin-bottom:15px; border: 1px solid var(--c-border); padding: 15px; border-radius: var(--radius-sm);">
               <div class="interview-top" style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div>
-                  <div class="interview-title" style="font-weight:700;font-size:14px;">${item.round}</div>
-                  <div class="interview-meta" style="font-size:12px;color:var(--c-text3);margin-top:3px;">
-                    ${dateStr} · ${timeStr} · Mode: ${item.mode.toUpperCase()} · Interviewer: ${item.interviewer || 'Not set'}
-                  </div>
-                  ${item.meeting_link ? `<div style="font-size:12px;margin-top:3px;">Link: <a href="${item.meeting_link}" target="_blank">${item.meeting_link}</a></div>` : ''}
-                  ${item.location ? `<div style="font-size:12px;margin-top:3px;">Location: ${item.location}</div>` : ''}
-                </div>
+                <div class="interview-title" style="font-weight:700;font-size:14px;">${item.round}</div>
                 <div style="text-align:right;">
                   <span class="badge ${statusBadgeClass}">${item.status.toUpperCase()}</span>
                   ${outcomeBadge}
@@ -1526,7 +1505,6 @@
               ${scoreBadge ? `<div class="score-grid" style="margin-top:10px;">${scoreBadge}</div>` : ''}
               ${feedbackText}
               ${reasonText}
-              ${actionBtn}
             </div>
           `;
         });

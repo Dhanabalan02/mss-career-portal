@@ -811,7 +811,7 @@
           <div class="stat-icon"><i class="ti ti-users" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
           <div class="stat-label">Total Applicants</div>
-          <div class="stat-delta">Across 5 positions</div>
+          <div class="stat-delta"></div>
         </div>
         <div class="stat-card sc-interview">
           <div class="stat-icon"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
@@ -822,19 +822,19 @@
           <div class="stat-icon"><i class="ti ti-send" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
           <div class="stat-label">Offers</div>
-          <div class="stat-delta">21 accepted so far</div>
+          <div class="stat-delta"></div>
         </div>
         <div class="stat-card sc-onboarding-progress">
           <div class="stat-icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
           <div class="stat-label">Onboarding</div>
-          <div class="stat-delta">Synced to MASSET</div>
+          <div class="stat-delta"></div>
         </div>
         <div class="stat-card sc-onboarding">
           <div class="stat-icon"><i class="ti ti-school" aria-hidden="true"></i></div>
           <div class="stat-value">0</div>
           <div class="stat-label">Onboarded</div>
-          <div class="stat-delta">Active this month</div>
+          <div class="stat-delta"></div>
         </div>
       </div>
 
@@ -844,17 +844,6 @@
           oninput="filterApplicants()">
         <select class="filter-select" id="fUnit" onchange="filterApplicants()">
           <option value="">All Units</option>
-        </select>
-        <select class="filter-select" id="fStage" onchange="filterApplicants()">
-          <option value="">All Stages</option>
-          <option>Prescreen Rejected</option>
-          <option>Screened</option>
-          <option>Interview</option>
-          <option>Offer</option>
-          <option>Offer Accepted</option>
-          <option>Onboarding</option>
-          <option>Onboarded</option>
-          <option>Rejected</option>
         </select>
         <select class="filter-select" id="fExp" onchange="filterApplicants()">
           <option value="">All Experience</option>
@@ -875,7 +864,7 @@
             <span class="table-title">All Applicants</span>
             <span id="selectedCount" style="font-size:12px;color:var(--text3);"></span>
           </div>
-          <span id="resultCount" style="font-size:12px;color:var(--text3);">247 candidates</span>
+          <span id="resultCount" style="font-size:12px;color:var(--text3);"></span>
         </div>
         <div class="table-scroll">
           <table>
@@ -947,7 +936,7 @@
     function fetchApplicants() {
       const q = document.getElementById('searchInput').value;
       const unit = document.getElementById('fUnit').value;
-      const stage = document.getElementById('fStage').value || activeStageFilter;
+      const stage = activeStageFilter;
       const exp = document.getElementById('fExp').value;
 
       const params = new URLSearchParams();
@@ -1029,7 +1018,6 @@
         chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${count}</span>`;
         chip.onclick = () => {
           activeStageFilter = s.name === 'All' ? '' : (activeStageFilter === s.name ? '' : s.name);
-          document.getElementById('fStage').value = activeStageFilter;
           fetchApplicants();
         };
         chipsEl.appendChild(chip);
@@ -1137,9 +1125,6 @@
 
     /* ── Filter ── */
     function filterApplicants() {
-      // Keep the stage chips in sync with the dropdown so a stale chip
-      // selection doesn't override "All Stages" when the dropdown is used.
-      activeStageFilter = document.getElementById('fStage').value;
       fetchApplicants();
     }
 

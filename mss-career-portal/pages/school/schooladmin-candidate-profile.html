@@ -1139,6 +1139,7 @@
         <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(candidateData.stage)}">${candidateData.stage}</span></span></div>
         <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${statusHtml}</span></div>
         <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
+        ${candidateData.reject_reason ? `<div class="info-row"><span class="info-label">Reject Reason</span><span class="info-value" style="color:var(--c-red);text-align:right;max-width:60%;">${candidateData.reject_reason}</span></div>` : ''}
       `;
 
       const timelineEl = document.getElementById('overviewTimeline');
@@ -1193,7 +1194,7 @@
             dot = '✕';
             color = 'var(--c-red)';
             bg = 'var(--c-red-bg)';
-            sub = ' (Rejected)';
+            sub = /reject/i.test(s) ? '' : ' (Rejected)';
           } else if (isTerminalStage) {
             dot = '✓';
             color = 'var(--c-green)';
@@ -1414,7 +1415,6 @@
 
       if (candidateData.interviews && candidateData.interviews.length) {
         candidateData.interviews.forEach(item => {
-          const formattedDate = item.scheduled_at ? new Date(item.scheduled_at).toLocaleString() : 'Date not set';
           const isCompleted = item.status === 'completed';
           const isCancelled = item.status === 'cancelled';
           const badgeColor = isCompleted ? 'badge-green' : (isCancelled ? 'badge-red' : 'badge-orange');
@@ -1430,17 +1430,18 @@
             `;
           }
 
+          let cancelHTML = '';
+          if (isCancelled && item.cancelled_reason) {
+            cancelHTML = `<div class="interview-feedback"><strong>Cancellation Reason:</strong> ${item.cancelled_reason}</div>`;
+          }
+
           listEl.innerHTML += `
             <div class="interview-card ${isCompleted ? '' : 'active'}">
               <div class="interview-top">
-                <div>
-                  <div class="interview-title">${item.round}</div>
-                  <div class="interview-meta">${formattedDate} · Mode: ${item.mode || '—'} · Interviewer: ${item.interviewer || '—'}</div>
-                  ${item.meeting_link ? `<div class="interview-meta">Meeting: <a href="${item.meeting_link}" target="_blank">${item.meeting_link}</a></div>` : ''}
-                  ${item.location ? `<div class="interview-meta">Location: ${item.location}</div>` : ''}
-                </div>
+                <div class="interview-title">${item.round}</div>
                 <span class="badge ${badgeColor}">${badgeText}</span>
               </div>
+              ${cancelHTML}
               ${remarksHTML}
             </div>
           `;

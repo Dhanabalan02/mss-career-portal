@@ -948,6 +948,7 @@ def get_applicant_detail_route(
 
     # Serialize interview history
     interviews_history = []
+    reject_reason = ""
     for item in interviews:
         sch_at = None
         end_at = None
@@ -967,6 +968,16 @@ def get_applicant_detail_route(
             .filter(InterviewRemark.job_interview_id == item.job_interview_id)
             .first()
         )
+        if remark and not reject_reason:
+            remark_status = (
+                remark.applicant_status.value
+                if hasattr(remark.applicant_status, "value")
+                else str(remark.applicant_status)
+            )
+            # `interviews` is ordered most-recent-first, so the first rejected
+            # remark found here is the candidate's latest rejection reason.
+            if remark_status == "rejected" and remark.remarks:
+                reject_reason = remark.remarks
         interviews_history.append(
             {
                 "job_interview_id": item.job_interview_id,
@@ -1082,6 +1093,7 @@ def get_applicant_detail_route(
         "exp": exp_str,
         "stage": stage_val,
         "interviewStatus": interview_status,
+        "reject_reason": reject_reason,
         "sync_masset": app.sync_masset,
         "offer_letter_doc": (latest_offer.offer_letter_doc if latest_offer else "") or "",
         "offer_acceptance_status": app.offer_acceptance_status or "",
