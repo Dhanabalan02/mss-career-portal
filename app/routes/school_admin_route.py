@@ -290,7 +290,11 @@ def update_offer_status_via_webhook(
     # --- Your Notification Dispatch Logic Stays Exactly The Same ---
     try:
         from app.models import JobPost
-        from app.crud.notification_crud import notify_hr_users, notify_school_admins
+        from app.crud.notification_crud import (
+            notify_hr_users,
+            notify_school_admins_for_unit,
+            build_candidate_profile_redirect_url,
+        )
 
         job = db.query(JobPost).filter(JobPost.job_id == app.job_id).first()
         if job:
@@ -306,13 +310,17 @@ def update_offer_status_via_webhook(
                 sender_type="candidate",
                 redirect_url="/mss-career-portal/hr/masset-candidates"
             )
-            notify_school_admins(
+            notify_school_admins_for_unit(
                 db=db,
+                unit_name=job.school_name,
                 title=f"Offer {status_cap}",
                 message=f"Offer status for candidate {candidate_name} ('{job.job_title}') has been updated to '{payload.status}' via WhatsApp.",
                 notification_type=f"offer_status_{payload.status.lower()}",
                 sender_user_id=candidate.user_id,
-                sender_type="candidate"
+                sender_type="candidate",
+                redirect_url=build_candidate_profile_redirect_url(
+                    "schoolAdmin", app.job_applicant_id, candidate_name, job.job_title
+                ),
             )
     except Exception as e:
         logger.error(f"Error creating notification events: {e}")

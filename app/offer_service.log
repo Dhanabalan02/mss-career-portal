@@ -43,3 +43,12 @@
 [2026-08-25 10:59:46] INFO in offer_service: [OFFER] Sent successfully status=200 body={'id': '7dc0aea0-f458-4c06-8de9-5c89b096072e'}
 [2026-08-25 10:59:46] INFO in school_admin_route: OfferService response for candidate_id=23: {'success': True, 'http_code': 200, 'response': {'id': '7dc0aea0-f458-4c06-8de9-5c89b096072e'}}
 [2026-08-25 10:59:46] INFO in school_admin_route: OfferService().issue_offer executed successfully
+[2026-08-26 15:53:47] INFO in school_admin_route: Initiating WhatsApp OfferService for candidate_id=26
+[2026-08-26 15:53:47] INFO in school_admin_route: Candidate phone resolved to: 9800000000
+[2026-08-26 15:53:47] INFO in school_admin_route: Offer document URL: https://stagecareer.themadrassevasadan.org/uploads/offer/offer_9_1787739827.html, Job Title: English Teacher
+[2026-08-26 15:53:47] INFO in offer_service: [OFFER] issue_offer called with to=9800000000, candidate_name=Arun, job_title=English Teacher, document_url=https://stagecareer.themadrassevasadan.org/uploads/offer/offer_9_1787739827.html, filename=Offer_Letter.pdf
+[2026-08-26 15:53:47] INFO in offer_service: [OFFER] Normalized WhatsApp number: +919800000000 (original: 9800000000)
+[2026-08-26 15:53:47] INFO in offer_service: [OFFER] Sending offer letter to=+919800000000 job=English Teacher
+[2026-08-26 15:53:48] INFO in offer_service: [OFFER] Sent successfully status=200 body={'id': 'c066d1a8-57f8-47b1-a491-ca524f7ee2f4'}
+[2026-08-26 15:53:48] INFO in school_admin_route: OfferService response for candidate_id=26: {'success': True, 'http_code': 200, 'response': {'id': 'c066d1a8-57f8-47b1-a491-ca524f7ee2f4'}}
+[2026-08-26 15:53:48] INFO in school_admin_route: OfferService().issue_offer executed successfully

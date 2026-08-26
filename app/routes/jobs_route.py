@@ -327,11 +327,41 @@ def get_public_job_post_by_id_route(job_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/public/by-uuid/{job_uuid}")
-def get_public_job_post_by_uuid_route(job_uuid: str, db: Session = Depends(get_db)):
-    """Retrieves a single published job post by its UUID. No authentication required."""
-    job_post = db.query(JobPost).filter(JobPost.uuid == job_uuid, JobPost.job_status == JobStatus.PUBLISH).first()
+def get_public_job_post_by_uuid_route(
+    job_uuid: str,
+    db: Session = Depends(get_db),
+    authorization: Optional[str] = Header(default=None),
+):
+    """Retrieve a published job, or a closed job for an authorized existing user."""
+    job_post = db.query(JobPost).filter(JobPost.uuid == job_uuid).first()
     if not job_post:
         raise HTTPException(status_code=404, detail="Job not found.")
+
+    if job_post.job_status != JobStatus.PUBLISH:
+        subject_id, role = _get_portal_identity_opt(authorization)
+        is_admin = role in {
+            "hr",
+            "hr_head",
+            "hr_team",
+            "hr_admin",
+            "hr_processor",
+            "hr_executive",
+            "schoolAdmin",
+            "school_admin",
+        }
+        is_existing_candidate = (
+            role == "candidate"
+            and db.query(JobApplicant)
+            .filter(
+                JobApplicant.job_id == job_post.job_id,
+                JobApplicant.user_id == subject_id,
+            )
+            .first()
+            is not None
+        )
+        if not is_admin and not is_existing_candidate:
+            raise HTTPException(status_code=404, detail="Job not found.")
+
     return _serialize_job_post(job_post, db=db)
 
 
@@ -349,6 +379,22 @@ def _get_candidate_id_from_token_opt(authorization: Optional[str] = Header(defau
         return user_id
     except:
         return None
+
+
+def _get_portal_identity_opt(authorization: Optional[str] = Header(default=None)):
+    """Return the authenticated portal subject and role when available."""
+    if not authorization or not authorization.startswith("Bearer "):
+        return None, None
+    try:
+        payload = jwt.decode(
+            authorization.split(" ", 1)[1],
+            settings.SECRET_KEY,
+            algorithms=["HS256"],
+        )
+        subject_id = int(payload.get("sub", 0))
+        return (subject_id, payload.get("role")) if subject_id else (None, None)
+    except (TypeError, ValueError, jwt.InvalidTokenError):
+        return None, None
 
 
 @router.post("/public/{job_id}/view")
@@ -396,6 +442,7 @@ class ApplicantStatusUpdateRequest(BaseModel):
 @router.get("/applicants")
 def get_applicants_route(
     job_id: Optional[int] = None,
+    unit: Optional[str] = None,
     stage: Optional[str] = None,
     search: Optional[str] = None,
     exp: Optional[str] = None,
@@ -432,6 +479,9 @@ def get_applicants_route(
 
     if job_id:
         query = query.filter(JobApplicant.job_id == job_id)
+
+    if unit:
+        query = query.filter(func.lower(JobPost.school_name) == unit.lower())
 
     all_applicants = query.all()
 
@@ -1291,6 +1341,30 @@ def create_job_post_route(
             else None
         ),
     )
+
+    if job_post.job_status == JobStatus.PUBLISH:
+        try:
+            from app.crud.notification_crud import (
+                build_school_job_redirect_url,
+                notify_school_admins_for_unit,
+            )
+
+            notify_school_admins_for_unit(
+                db=db,
+                unit_name=job_post.school_name,
+                title="New Job Published",
+                message=f"A new job, '{job_post.job_title}', has been published for your unit.",
+                notification_type="job_published",
+                sender_user_id=admin_id,
+                sender_type="hr",
+                redirect_url=build_school_job_redirect_url(
+                    job_post.uuid, job_post.job_title, job_post.school_name
+                ),
+            )
+        except Exception:
+            from app.core.logger import logger
+            logger.exception("Error creating job published notifications")
+
     return _serialize_job_post(job_post, db=db)
 
 
@@ -1395,6 +1469,29 @@ def publish_job_post_route(
     job_post = update_job_status(
         db=db, job_id=job_id, job_status=JobStatus.PUBLISH, admin_id=admin_id
     )
+
+    try:
+        from app.crud.notification_crud import (
+            build_school_job_redirect_url,
+            notify_school_admins_for_unit,
+        )
+
+        notify_school_admins_for_unit(
+            db=db,
+            unit_name=job_post.school_name,
+            title="New Job Published",
+            message=f"A new job, '{job_post.job_title}', has been published for your unit.",
+            notification_type="job_published",
+            sender_user_id=admin_id,
+            sender_type="hr",
+            redirect_url=build_school_job_redirect_url(
+                job_post.uuid, job_post.job_title, job_post.school_name
+            ),
+        )
+    except Exception:
+        from app.core.logger import logger
+        logger.exception("Error creating job published notifications")
+
     return _serialize_job_post(job_post, db=db)
 
 

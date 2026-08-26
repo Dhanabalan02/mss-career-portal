@@ -15,7 +15,7 @@ from app.models.admin_model import Admins
 from app.models.unit_model import Units
 from app.crud.common import (
     get_initials, get_color, parse_skills, compute_exp_str, get_latest_offers_map,
-    get_applicant_stage_label,
+    get_applicant_stage_label, compute_stage,
 )
 from app.core.timezone import to_ist, now_ist
 
@@ -394,6 +394,18 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
     app_record, job = row
     if not _is_hr_role(db, admin_id) and job.job_posted_by != admin_id:
         raise HTTPException(status_code=403, detail="Access denied")
+
+    current_stage = compute_stage(app_record, has_interview=False)
+    if current_stage == "Offer" and stage == "Offer Accepted":
+        raise HTTPException(
+            status_code=400,
+            detail="Offer Accepted is updated automatically after the candidate accepts the offer.",
+        )
+    if current_stage == "Offer" and stage == "Onboarding":
+        raise HTTPException(
+            status_code=400,
+            detail="The candidate must accept the offer before they can be synced to MASSET and moved to Onboarding.",
+        )
 
     previous_stage = app_record.applicant_stage
 

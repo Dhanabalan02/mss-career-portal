@@ -330,6 +330,10 @@ body>.sidebar:not(#portalSidebar) {
   font-weight: 500 !important;
   margin-top: 1px !important;
   display: block !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  line-height: 1.35 !important;
 }
 
 .portal-sidebar__close {

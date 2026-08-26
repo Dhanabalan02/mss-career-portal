@@ -399,6 +399,7 @@
           localStorage.setItem('admin_role', data.user_type);
           localStorage.setItem('user_type', data.user_type);
           localStorage.setItem('user_id', data.user_id);
+          localStorage.setItem('user_email', data.email || email);
 
           // Route to appropriate dashboard
           if (data.user_type === 'school_admin') {

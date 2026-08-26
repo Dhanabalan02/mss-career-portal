@@ -1696,7 +1696,7 @@
 
       const totalPages = Math.ceil(total / perPage) || 1;
       buildWindowedPagination(pg, {
-        total, perPage, currentPage: currentPageNum, maxButtons: 5,
+        total, perPage, currentPage: currentPageNum, maxButtons: 3,
         onPageChange: (page) => goToPage(page, totalPages)
       });
     }

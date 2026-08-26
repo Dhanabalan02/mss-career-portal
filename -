@@ -1,866 +1,295 @@
 
-    /* Tell portal-layout.js this is an HR session */
-    if (!localStorage.getItem('userRole')) localStorage.setItem('userRole', 'hr');
+    /* ── HR nav (portal-layout.js) ── */
+    localStorage.setItem('userRole', 'hr');
 
+    /* ── Candidate data (merged from original source) ── */
     /* ── API Configuration ── */
     const JOBS_API_BASE = (typeof AUTH_API_BASE !== 'undefined') ? AUTH_API_BASE : '';
     const token = localStorage.getItem('access_token');
-    const buildResumeUrl = (resumePath) => {
-      const apiBase = (JOBS_API_BASE || window.location.origin).replace(/\/+$/, '');
-      const filename = String(resumePath || '').split(/[\\/]/).pop();
-      return `${apiBase}/apply/download/${encodeURIComponent(filename)}`;
-    };
 
-    // Parse applicant ID — a notification deep link carries it as ?candidate_id=, which
-    // takes priority and is persisted to localStorage for the rest of the page's flows.
-    const _urlCandidateId = new URLSearchParams(window.location.search).get('candidate_id');
-    if (_urlCandidateId) localStorage.setItem('candidateId', _urlCandidateId);
-    const applicantId = _urlCandidateId || localStorage.getItem('candidateId');
-    let candidateData = null;
+    let activeStageFilter = '';
+    let applicantsData = [];
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
 
-    if (!applicantId) {
-      if (window.showToast) window.showToast('No candidate ID provided.', 'error');
-      window.location.href = '/mss-career-portal/hr/jobapplicants-list';
-    }
-
+    // Redirect to login if token is missing
     if (!token) {
       window.location.href = '/mss-career-portal/home';
     }
 
-    /* ── Tab switching ──────────────────────────────────────────── */
-    function switchTab(id, el) {
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
-      el.classList.add('active');
-      if (id === 'skills') renderSkillsChart();
+    /* ── Load Units into Filter Dropdown ── */
+    function loadUnitOptions() {
+      fetch(JOBS_API_BASE + '/auth/units')
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(units => {
+        const select = document.getElementById('fUnit');
+        select.innerHTML = '<option value="">All Units</option>';
+        units.forEach(u => {
+          const opt = document.createElement('option');
+          opt.value = u.unit_name;
+          opt.textContent = u.unit_name;
+          select.appendChild(opt);
+        });
+      })
+      .catch(err => console.error('Failed to load unit filter options:', err));
     }
 
-    /* ── Fetch Profile Details ── */
-    function fetchCandidateProfile() {
-      fetch(JOBS_API_BASE + '/jobs/applicants/' + applicantId, {
+    /* ── Fetch Applicants from API ── */
+    function fetchApplicants() {
+      const q = document.getElementById('searchInput').value;
+      const unit = document.getElementById('fUnit').value;
+      const stage = document.getElementById('fStage').value || activeStageFilter;
+      const exp = document.getElementById('fExp').value;
+
+      const params = new URLSearchParams();
+      if (unit) params.append('unit', unit);
+      if (stage) params.append('stage', stage);
+      if (q) params.append('search', q);
+      if (exp) params.append('exp', exp);
+
+      fetch(JOBS_API_BASE + '/jobs/applicants?' + params.toString(), {
         headers: { 'Authorization': 'Bearer ' + token }
       })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(data => {
-          candidateData = data;
-          renderHeader();
-          renderHero();
-          renderOverviewTab();
-          renderResumeTab();
-          renderSkillsTab();
-          renderPreScreeningTab();
-          renderInterviewsTab();
-          renderOfferTab();
-          renderMassetTab();
-        })
-        .catch(err => {
-          console.error('Failed to load candidate profile:', err);
-          if (window.showToast) window.showToast('Error loading candidate profile.', 'error');
-        });
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
+      .then(data => {
+        // Update stats card values
+        document.querySelector('.sc-total .stat-value').textContent = data.stats.total;
+        document.querySelector('.sc-interview .stat-value').textContent = data.stats.interview;
+        document.querySelector('.sc-offers .stat-value').textContent = data.stats.offers;
+        document.querySelector('.sc-onboarding-progress .stat-value').textContent = data.stats.onboarding;
+        document.querySelector('.sc-onboarding .stat-value').textContent = data.stats.onboarded;
+
+        if (data.stats.deltas) {
+          document.querySelector('.sc-total .stat-delta').textContent = data.stats.deltas.total;
+          document.querySelector('.sc-offers .stat-delta').textContent = data.stats.deltas.offers;
+          document.querySelector('.sc-onboarding-progress .stat-delta').textContent = data.stats.deltas.onboarding;
+          document.querySelector('.sc-onboarding .stat-delta').textContent = data.stats.deltas.onboarded;
+        }
+
+        // Update subtitle
+        const subtitle = document.getElementById('pageSubtitle');
+        if (subtitle) {
+          subtitle.textContent = `${data.stats.total} total candidates across all positions`;
+        }
+
+        // Render stage chips
+        renderStageChips(data.chips, data.stats.total);
+
+        // Render table rows
+        applicantsData = data.applicants;
+        currentPageNum = 1;
+        renderApplicants(applicantsData);
+      })
+      .catch(err => {
+        console.error('Failed to load applicants:', err);
+        const tbody = document.getElementById('applicantBody');
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3);">Unable to load candidates. Please try again.</td></tr>`;
+        }
+      });
     }
 
-    /* ── Rendering Functions ── */
+    /* ── Build stage chips dynamically ── */
+    const STAGE_CONFIG = [
+      { name: 'All', color: '#444441', bg: '#F1EFE8' },
+      { name: 'Prescreen Rejected', color: '#534AB7', bg: '#EEEDFE' },
+      { name: 'Screened', color: '#185FA5', bg: '#E6F1FB' },
+      { name: 'Interview', color: '#BA7517', bg: '#FAEEDA' },
+      { name: 'Offer', color: '#534AB7', bg: '#EEEDFE' },
+      { name: 'Offer Accepted', color: '#3B6D11', bg: '#EAF3DE' },
+      { name: 'Onboarding', color: '#155E75', bg: '#CFFAFE' },
+      { name: 'Onboarded', color: '#0F6E56', bg: '#E1F5EE' },
+      { name: 'Rejected', color: '#A32D2D', bg: '#FCEBEB' },
+    ];
 
-    function getStageBadgeClass(stage) {
+    function renderStageChips(chipsData, totalCount = 0) {
+      const chipsEl = document.getElementById('stageChips');
+      chipsEl.innerHTML = '';
+      STAGE_CONFIG.forEach(s => {
+        const count = s.name === 'All' ? totalCount : (chipsData[s.name] || 0);
+        const chip = document.createElement('button');
+        chip.className = 'stage-chip';
+        chip.dataset.stage = s.name;
+        chip.style.cssText = `background:${s.bg};color:${s.color};border-color:${s.color}30;`;
+        if ((s.name === 'All' && !activeStageFilter) || activeStageFilter === s.name) {
+          chip.style.outline = `2px solid ${s.color}`;
+        }
+        chip.innerHTML = `${s.name}<span class="chip-count" style="background:${s.color}25;color:${s.color};">${count}</span>`;
+        chip.onclick = () => {
+          activeStageFilter = s.name === 'All' ? '' : (activeStageFilter === s.name ? '' : s.name);
+          document.getElementById('fStage').value = activeStageFilter;
+          fetchApplicants();
+        };
+        chipsEl.appendChild(chip);
+      });
+    }
+
+    /* ── Helpers ── */
+    function stageBadge(stage) {
       const map = {
-        'Pre Screen Reject': 'badge-red', 'Screened': 'badge-purple', 'Interview': 'badge-orange',
-        'Offer': 'badge-blue', 'Offer Accepted': 'badge-green',
-        'Onboarding': 'badge-green', 'Onboarded': 'badge-green', 'Rejected': 'badge-red'
+        'Prescreen Rejected': 'badge-rejected', 'Screened': 'badge-screened', 'Interview': 'badge-interview',
+        'Offer': 'badge-offer', 'Offer Accepted': 'badge-accepted',
+        'Onboarding': 'badge-onboarding-progress',
+        'Onboarded': 'badge-onboarding', 'Rejected': 'badge-rejected',
+        'Awaiting Offer': 'badge-offer'
       };
-      return map[stage] || 'badge-gray';
+      return `<span class="badge ${map[stage] || ''}">${stage}</span>`;
     }
 
-    function getInterviewStatusBadgeClass(status) {
-      if (!status) return 'badge-gray';
-      const sLower = status.toLowerCase();
-      if (sLower === 'scheduled') return 'badge-orange';
-      if (sLower === 'completed') return 'badge-green';
-      if (sLower === 'pending') return 'badge-gray';
-      if (sLower === 'selected') return 'badge-green';
-      if (sLower === 'rejected') return 'badge-red';
-      if (sLower === 'hold' || sLower === 'on hold') return 'badge-orange';
-      if (sLower === 'next round' || sLower === 'next_round') return 'badge-purple';
-      return 'badge-gray';
+    function interviewStatusHtml(s) {
+      if (!s) return `<span style="color:var(--text3);">—</span>`;
+      const sLower = s.toLowerCase();
+      if (sLower === 'scheduled') return `<span class="interview-status status-scheduled"><span class="status-dot"></span>Scheduled</span>`;
+      if (sLower === 'completed') return `<span class="interview-status status-completed"><span class="status-dot"></span>Completed</span>`;
+      if (sLower === 'pending') return `<span class="interview-status status-pending"><span class="status-dot"></span>Pending</span>`;
+      if (sLower === 'selected') return `<span class="interview-status status-selected"><span class="status-dot"></span>Selected</span>`;
+      if (sLower === 'rejected') return `<span class="interview-status status-rejected"><span class="status-dot"></span>Rejected</span>`;
+      if (sLower === 'hold' || sLower === 'on hold') return `<span class="interview-status status-hold"><span class="status-dot"></span>${s}</span>`;
+      if (sLower === 'next_round' || sLower === 'next round') return `<span class="interview-status status-next-round"><span class="status-dot"></span>Next Round</span>`;
+      return `<span style="color:var(--text3);">${s}</span>`;
     }
 
-    function renderHeader() {
-
-      const actionsEl = document.getElementById('header-actions');
-      actionsEl.innerHTML = '';
-
-      // If the candidate status is Offer Accepted, Onboarding, Onboarded, or Rejected, hide the actions.
-      // The 'Offer' stage keeps Hold/Reject available (an issued-but-not-yet-accepted offer can still be pulled).
-      const hideActionsStages = ['Pre Screen Reject', 'Prescreen Rejected', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
-      const isSelected = candidateData.interviewStatus === 'Selected';
-      const isHold = candidateData.interviewStatus === 'Hold';
-      const isOfferStage = candidateData.stage === 'Offer';
-
-      const canSchedule = (candidateData.stage === 'Screened' || candidateData.interviewStatus === 'Next Round' || candidateData.interviewStatus === 'Cancelled') &&
-        !['Completed', 'Scheduled', 'Selected'].includes(candidateData.interviewStatus);
-
-      if (!hideActionsStages.includes(candidateData.stage) && (!isSelected || isOfferStage)) {
-        if (canSchedule) {
-          actionsEl.innerHTML += `<button class="btn btn-primary" onclick="scheduleInterviewModal(${candidateData.id}, '${candidateData.name}', ${candidateData.job_id})"><i class="ti ti-calendar-event"></i> Schedule Interview</button>`;
-        }
-        actionsEl.innerHTML += `<button class="btn btn-warn" onclick="holdCandidate()"><i class="ti ti-player-pause"></i> Put On Hold</button>`;
-        actionsEl.innerHTML += `<button class="btn btn-danger" onclick="rejectCandidate()"><i class="ti ti-circle-x"></i> Reject</button>`;
-      } else if (isSelected) {
-        actionsEl.innerHTML += `<span class="badge ${getStageBadgeClass(candidateData.stage)}" style="font-size: 14px; padding: 8px 12px;">Current Stage: ${candidateData.stage}</span>`;
-      }
+    function avatarGradient(name) {
+      const p = [
+        ['#6366f1', '#8b5cf6'], ['#3b82f6', '#06b6d4'], ['#10b981', '#0891b2'],
+        ['#f59e0b', '#ef4444'], ['#534AB7', '#185FA5'], ['#0F6E56', '#3B6D11'], ['#BA7517', '#A32D2D']
+      ];
+      return p[name.charCodeAt(0) % p.length].join(',');
     }
 
-    function renderHero() {
-      const initials = candidateData.name.split(' ').map(p => p[0]).join('').substring(0, 2).toUpperCase();
-      document.getElementById('hero-avatar').textContent = initials;
-      document.getElementById('hero-name').textContent = candidateData.name;
-      document.getElementById('hero-role-exp').textContent = `Applied for :- ${candidateData.job}`;
-      document.getElementById('hero-exp').textContent = `Total Experience :- ${candidateData.exp}`;
-
-      const metaEl = document.getElementById('hero-meta');
-      const meta = candidateData.metadata;
-      metaEl.innerHTML = `
-        <span><i class="ti ti-mail"></i> ${candidateData.email}</span>
-        <span><i class="ti ti-device-mobile"></i> ${candidateData.mobile}</span>
-        <span><i class="ti ti-map-pin"></i> ${meta.city ? (meta.city + ', ' + meta.state) : 'Location details not set'}</span>
-      `;
-
-      const badgesEl = document.getElementById('hero-badges');
-      badgesEl.innerHTML = `
-        <span class="badge ${getStageBadgeClass(candidateData.stage)}"><i class="ti ti-point-filled"></i> ${candidateData.stage}</span>
-        <span class="badge badge-gray">Application-ID: ${candidateData.mss_app_no}</span>
-      `;
-    }
-
-    function renderOverviewTab() {
-      // Stage Normalization
-      const stageMap = {
-        'prescreen-reject': 'Pre Screen Reject',
-        'screened': 'Screened',
-        'interview': 'Interview',
-        'offer': 'Offer',
-        'offer accepted': 'Offer Accepted',
-        'onboarding': 'Onboarding',
-        'onboarded': 'Onboarded',
-        'rejected': 'Rejected',
-        'awaiting offer': 'Offer'
-      };
-      
-      const normalizedStage = candidateData.stage ? (stageMap[candidateData.stage.toLowerCase()] || candidateData.stage): '';
-
-      // Quick stats
-      const statsEl = document.getElementById('overview-quick-stats');
-      const noticePeriod = (candidateData.experience && candidateData.experience.length > 0 && candidateData.experience[0].notice_period) ? candidateData.experience[0].notice_period : '—';
-      let statusHtml = '—';
-      if (candidateData.interviewStatus) {
-        statusHtml = `<span class="badge ${getInterviewStatusBadgeClass(candidateData.interviewStatus)}">${candidateData.interviewStatus}</span>`;
-      }
-
-      statsEl.innerHTML = `
-       <div class="info-row">
-          <span class="info-label">Applied Date</span>
-          <span class="info-value">
-            ${(candidateData.appliedDate)}
-          </span>
-        </div>
-
-        <div class="info-row"><span class="info-label">Current Stage</span><span class="info-value"><span class="badge ${getStageBadgeClass(normalizedStage)}">${normalizedStage}</span></span></div>
-        <div class="info-row"><span class="info-label">Interview Status</span><span class="info-value">${statusHtml}</span></div>
-        <div class="info-row"><span class="info-label">Notice Period</span><span class="info-value">${noticePeriod}</span></div>
-      `;
-
-      // Timeline / Stage History
-      const timelineEl = document.getElementById('overview-timeline');
-      timelineEl.innerHTML = '';
-
-      // Prescreen Reject / Rejected are terminal, alternate-path stages: only show them
-      // when that's the candidate's actual outcome, and only show stages actually reached.
-      let stages;
-      if (normalizedStage === 'Pre Screen Reject') {
-        stages = ['Pre Screen Reject'];
-      } else if (normalizedStage === 'Rejected') {
-        stages = ['Screened', 'Interview', 'Rejected'];
-      } else {
-        stages = ['Screened', 'Interview', 'Offer', 'Offer Accepted', 'Onboarding', 'Onboarded'];
-      }
-
-      const currentIdx = stages.indexOf(normalizedStage);
-      const tracking = candidateData.trackingDates || {};
-      const stageDateMap = {
-        'Pre Screen Reject': tracking.rejected || tracking.screened,
-        'Screened': tracking.screened,
-        'Interview': tracking.interview,
-        'Offer': tracking.offer,
-        'Offer Accepted': tracking.offer_accepted,
-        'Onboarding': tracking.onboarding,
-        'Onboarded': tracking.onboarded,
-        'Rejected': tracking.rejected
-      };
-
-      stages.forEach((stage, idx) => {
-        let dot = '●';
-        let color = 'var(--c-text3)';
-        let bg = 'var(--c-surface2)';
-        let sub = '';
-        const isRejectStage = (stage === 'Pre Screen Reject' || stage === 'Rejected');
-        // The final stage of a successful path (Onboarded) is a completed
-        // outcome, not an in-progress one — show it as done, not "(Active)".
-        const isTerminalStage = idx === stages.length - 1 && !isRejectStage;
-
-        if (idx < currentIdx) {
-          dot = '✓';
-          color = 'var(--c-green)';
-          bg = 'var(--c-green-bg)';
-        } else if (stage === normalizedStage) {
-          if (isRejectStage) {
-            dot = '✕';
-            color = 'var(--c-red)';
-            bg = 'var(--c-red-bg)';
-            sub = ' (Rejected)';
-          } else if (isTerminalStage) {
-            dot = '✓';
-            color = 'var(--c-green)';
-            bg = 'var(--c-green-bg)';
-          } else {
-            dot = '●';
-            color = 'var(--c-orange)';
-            bg = 'var(--c-orange-bg)';
-            sub = ' (Active)';
-          }
-        }
-
-        const stageDate = stageDateMap[stage] || (idx === 0 ? candidateData.appliedDate : '');
-
-        timelineEl.innerHTML += `
-          <div class="tl-item">
-            <div class="tl-dot" style="background:${bg};color:${color};">${dot}</div>
-            <div class="tl-body">
-              <div class="tl-title" style="color:${color};font-weight:700;">${stage}${sub}</div>
-              <div class="tl-meta">${idx <= currentIdx ? (stageDate || '') : ''}</div>
-            </div>
-          </div>
-        `;
-      });
-    }
-
-    function renderResumeTab() {
-      const viewer = document.getElementById('pdfViewerContainer');
-      const resume = candidateData.metadata.resume_doc;
-      const downloadBtn = document.getElementById('downloadResumeBtn');
-
-      const getFilename = (path) => {
-        if (!path) return '';
-        return path.split(/[\\/]/).pop();
-      };
-
-      if (resume) {
-        const resumeName = getFilename(resume);
-        const downloadUrl = buildResumeUrl(resume);
-
-        const doView = () => {
-          window.open(downloadUrl + '?inline=true', '_blank');
-        };
-
-        const doDownload = () => {
-          const a = document.createElement('a');
-          a.href = downloadUrl;
-          a.download = resumeName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        };
-
-        downloadBtn.onclick = doDownload;
-        downloadBtn.style.display = 'inline-flex';
-
-        viewer.innerHTML = `
-          <div class="pdf-viewer">
-            <div class="icon"><i class="ti ti-file-text"></i></div>
-            <div class="name">${resumeName}</div>
-            <div class="meta">PDF Document</div>
-            <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="inlineDownloadBtn">View Resume</button>
-          </div>
-        `;
-        document.getElementById('inlineDownloadBtn').onclick = doView;
-      } else {
-        downloadBtn.style.display = 'none';
-        viewer.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:30px;">No resume document uploaded.</div>`;
-      }
-
-      const docsEl = document.getElementById('allDocsList');
-      docsEl.innerHTML = '';
-      if (resume) {
-        const resumeName = getFilename(resume);
-        const downloadUrl = buildResumeUrl(resume);
-
-        docsEl.innerHTML += `
-          <div class="doc-item">
-            <div class="doc-icon" style="background:#fee2e2;"><i class="ti ti-file-text"></i></div>
-            <div class="doc-info">
-              <div class="doc-name">Resume (${resumeName})</div>
-              <div class="doc-size">PDF Document</div>
-            </div>
-            <button class="btn btn-default btn-sm" id="listDownloadBtn">⬇</button>
-          </div>
-        `;
-        document.getElementById('listDownloadBtn').onclick = () => {
-          const a = document.createElement('a');
-          a.href = downloadUrl;
-          a.download = resumeName;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        };
-      }
-      if (candidateData.metadata.cover_letter) {
-        docsEl.innerHTML += `
-          <div class="doc-item">
-            <div class="doc-icon" style="background:#dbeafe;"><i class="ti ti-notes"></i></div>
-            <div class="doc-info">
-              <div class="doc-name">Cover Letter</div>
-              <div class="doc-size">${candidateData.metadata.cover_letter}</div>
-            </div>
-          </div>
-        `;
-      }
-      if (docsEl.innerHTML === '') {
-        docsEl.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No documents attached.</div>`;
-      }
-    }
-
-    function renderSkillsTab() {
-      // Skills match
-      document.getElementById('skillsMatchBadge').textContent = 'Verified Skills';
-
-      // Experience timeline
-      const expEl = document.getElementById('experience-timeline');
-      expEl.innerHTML = '';
-      if (candidateData.experience && candidateData.experience.length) {
-        candidateData.experience.forEach(exp => {
-          expEl.innerHTML += `
-            <div class="tl-item">
-              <div class="tl-dot" style="background:#dbeafe;color:#2563eb;"><i class="ti ti-briefcase"></i></div>
-              <div class="tl-body">
-                <div class="tl-title">${exp.title}</div>
-                <div class="tl-sub">${exp.company} · ${exp.location || 'Location not specified'}</div>
-                <div class="tl-meta">${exp.start_date} – ${exp.end_date} (${exp.type})</div>
-                <div style="font-size:12px;color:var(--c-text2);margin-top:4px;">${exp.description || ''}</div>
-              </div>
-            </div>
-          `;
-        });
-      } else {
-        expEl.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No work history entries provided.</div>`;
-      }
-
-      // Education timeline
-      const eduEl = document.getElementById('education-timeline');
-      eduEl.innerHTML = '';
-      if (candidateData.education && candidateData.education.length) {
-        candidateData.education.forEach(edu => {
-          const score = edu.percentage ? `${edu.percentage}%` : (edu.cgpa ? `CGPA: ${edu.cgpa}` : '');
-          eduEl.innerHTML += `
-            <div class="tl-item">
-              <div class="tl-dot" style="background:#d1fae5;color:#16a34a;"><i class="ti ti-school"></i></div>
-              <div class="tl-body">
-                <div class="tl-title">${edu.degree} – ${edu.specialization}</div>
-                <div class="tl-sub">${edu.institution} (${edu.university})</div>
-                <div class="tl-meta">Graduated: ${edu.end_year} · ${score}</div>
-              </div>
-            </div>
-          `;
-        });
-      } else {
-        eduEl.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No education history entries provided.</div>`;
-      }
-    }
-
-    let skillsRendered = false;
-    function renderSkillsChart() {
-      if (skillsRendered) return;
-      skillsRendered = true;
-      const el = document.getElementById('skills-chart');
-
-      const candidateSkills = Array.isArray(candidateData.metadata.skills) ? candidateData.metadata.skills : [];
-      const requiredSkills = Array.isArray(candidateData.jobSkills) ? candidateData.jobSkills : [];
-      const normalizeSkill = skill => String(skill).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      const candidateSkillKeys = new Set(candidateSkills.map(normalizeSkill));
-      const matchedSkills = requiredSkills.filter(skill => candidateSkillKeys.has(normalizeSkill(skill)));
-      const missingSkills = requiredSkills.filter(skill => !candidateSkillKeys.has(normalizeSkill(skill)));
-      const matchPercent = requiredSkills.length ? Math.round((matchedSkills.length / requiredSkills.length) * 100) : 0;
-
-      document.getElementById('skillsMatchBadge').textContent = requiredSkills.length
-        ? `${matchPercent}% Match`
-        : 'No Job Skills';
-
-      if (!candidateSkills.length && !requiredSkills.length) {
-        el.innerHTML = `<div style="color:var(--c-text3);padding:10px;">No skills or job-specific requirements available.</div>`;
+    /* ── Render table ── */
+    function renderApplicants(list) {
+      const tbody = document.getElementById('applicantBody');
+      tbody.innerHTML = '';
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text3);">No candidates match your filters</td></tr>`;
+        document.getElementById('resultCount').textContent = '0 candidates';
+        const pg = document.getElementById('pagination');
+        if (pg) pg.style.display = 'none';
         return;
-      }
-
-      const skillTags = (skills, className, emptyText) => skills.length
-        ? skills.map(skill => `<span class="badge ${className}" style="margin:0 6px 6px 0;">${skill}</span>`).join('')
-        : `<span style="color:var(--c-text3);font-size:12px;">${emptyText}</span>`;
-
-      el.innerHTML = `
-        <div class="progress-wrap">
-          <div class="progress-label"><span>Job skill match</span><strong>${matchPercent}%</strong></div>
-          <div class="progress-bar"><div class="progress-fill" style="width:${matchPercent}%;background:var(--c-green)"></div></div>
-        </div>
-        <div style="margin-top:18px;"><div style="font-size:12px;font-weight:700;margin-bottom:8px;">Required skills</div>${skillTags(requiredSkills, 'badge-gray', 'No job-specific skills configured.')}</div>
-        <div style="margin-top:12px;"><div style="font-size:12px;font-weight:700;color:var(--c-green);margin-bottom:8px;">Matched skills (${matchedSkills.length})</div>${skillTags(matchedSkills, 'badge-green', 'No required skills matched.')}</div>
-        <div style="margin-top:12px;"><div style="font-size:12px;font-weight:700;color:var(--c-red);margin-bottom:8px;">Missing skills (${missingSkills.length})</div>${skillTags(missingSkills, 'badge-red', 'No missing required skills.')}</div>
-        <div style="margin-top:12px;"><div style="font-size:12px;font-weight:700;color:var(--c-accent);margin-bottom:8px;">Additional candidate skills</div>${skillTags(candidateSkills.filter(skill => !requiredSkills.some(required => normalizeSkill(required) === normalizeSkill(skill))), 'badge-blue', 'None')}</div>`;
-    }
-
-    function renderPreScreeningTab() {
-      const listEl = document.getElementById('prescreening-list');
-      listEl.innerHTML = '';
-
-      if (candidateData.screening && candidateData.screening.length) {
-        document.getElementById('prescreenScoreBadge').textContent = `Responses: ${candidateData.screening.length}`;
-        candidateData.screening.forEach(item => {
-          listEl.innerHTML += `
-            <div class="qa-block">
-              <div class="qa-q">${item.question}</div>
-              <div class="qa-a"><strong>Response:</strong> ${item.answer}</div>
-              ${item.expected_answer ? `<div class="qa-eval"><i class="ti ti-circle-check"></i> Expected Answer: ${item.expected_answer}</div>` : ''}
-            </div>
-          `;
-        });
       } else {
-        document.getElementById('prescreenScoreBadge').textContent = 'No responses';
-        listEl.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:40px;">No pre-screening questions were answered or required for this role.</div>`;
-      }
-    }
-
-    function renderInterviewsTab() {
-      const listEl = document.getElementById('interviews-list');
-      listEl.innerHTML = '';
-
-      if (candidateData.interviews && candidateData.interviews.length) {
-        candidateData.interviews.forEach(item => {
-          const dateStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          const timeStr = item.scheduled_at ? new Date(item.scheduled_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
-
-          let actionBtn = '';
-          if (item.status === 'scheduled' || item.status === 'rescheduled') {
-            actionBtn = `
-              <div style="display:flex;gap:8px;margin-top:10px;">
-                <button class="btn btn-default btn-sm" onclick="rescheduleInterviewModal(${item.job_interview_id})">Reschedule</button>
-                <button class="btn btn-primary btn-sm" onclick="feedbackModal(${item.job_interview_id}, '${item.round}')">Submit Feedback</button>
-              </div>
-            `;
-          }
-
-          let scoreBadge = '';
-          let feedbackText = '';
-          let outcomeBadge = '';
-          if (item.remarks) {
-            if (item.remarks.score) {
-              scoreBadge = `<div class="score-cell"><div class="score-num">${item.remarks.score}</div><div class="score-name">Interviewer Score</div></div>`;
-            }
-            if (item.remarks.remarks) {
-              feedbackText = `<div class="interview-feedback"><strong>Feedback:</strong> ${item.remarks.remarks}</div>`;
-            }
-            const outcome = item.remarks.applicant_status;
-            if (outcome) {
-              const outcomeLabels = { selected: 'Selected', rejected: 'Rejected', hold: 'On Hold', next_round: 'Next Round' };
-              const outcomeClasses = { selected: 'badge-green', rejected: 'badge-red', hold: 'badge-orange', next_round: 'badge-blue' };
-              outcomeBadge = `<span class="badge ${outcomeClasses[outcome] || 'badge-orange'}" style="margin-left:6px;">${outcomeLabels[outcome] || outcome}</span>`;
-            }
-          }
-
-          let reasonText = '';
-          if (item.status === 'cancelled' && item.cancelled_reason) {
-            reasonText = `<div class="interview-feedback"><strong>Cancellation Reason:</strong> ${item.cancelled_reason}</div>`;
-          } else if (item.status === 'rescheduled' && item.reschedule_reason) {
-            reasonText = `<div class="interview-feedback"><strong>Reschedule Reason:</strong> ${item.reschedule_reason}</div>`;
-          }
-
-          const statusBadgeClass = item.status === 'completed' ? 'badge-green' : item.status === 'cancelled' ? 'badge-red' : 'badge-orange';
-
-          listEl.innerHTML += `
-            <div class="interview-card ${item.status === 'scheduled' ? 'active' : ''}" style="margin-bottom:15px; border: 1px solid var(--c-border); padding: 15px; border-radius: var(--radius-sm);">
-              <div class="interview-top" style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div>
-                  <div class="interview-title" style="font-weight:700;font-size:14px;">${item.round}</div>
-                  <div class="interview-meta" style="font-size:12px;color:var(--c-text3);margin-top:3px;">
-                    ${dateStr} · ${timeStr} · Mode: ${item.mode.toUpperCase()} · Interviewer: ${item.interviewer || 'Not set'}
-                  </div>
-                  ${item.meeting_link ? `<div style="font-size:12px;margin-top:3px;">Link: <a href="${item.meeting_link}" target="_blank">${item.meeting_link}</a></div>` : ''}
-                  ${item.location ? `<div style="font-size:12px;margin-top:3px;">Location: ${item.location}</div>` : ''}
-                </div>
-                <div style="text-align:right;">
-                  <span class="badge ${statusBadgeClass}">${item.status.toUpperCase()}</span>
-                  ${outcomeBadge}
-                </div>
-              </div>
-              ${scoreBadge ? `<div class="score-grid" style="margin-top:10px;">${scoreBadge}</div>` : ''}
-              ${feedbackText}
-              ${reasonText}
-              ${actionBtn}
-            </div>
-          `;
-        });
-      } else {
-        listEl.innerHTML = `<div style="text-align:center;color:var(--c-text3);padding:40px;">No interviews have been scheduled yet.</div>`;
-      }
-    }
-
-    function getOfferStatusBadgeClass(status) {
-      const sLower = (status || '').toLowerCase();
-      if (sLower === 'accepted') return 'badge-green';
-      if (sLower === 'expired' || sLower === 'rejected') return 'badge-red';
-      return 'badge-orange'; // pending
-    }
-
-    function renderOfferTab() {
-      const el = document.getElementById('offer-tab-content');
-      if (candidateData.offer_letter_doc) {
-        el.className = '';
-        el.style.cssText = '';
-        const offer = candidateData.offerDetails || {};
-        const status = candidateData.offer_acceptance_status || 'pending';
-
-        el.innerHTML = `
-          <div class="grid-2">
-            <div class="card">
-              <div class="card-header"><span class="card-title"><i class="ti ti-file-text"></i> Offer Letter</span></div>
-              <div class="card-body">
-                <div class="pdf-viewer">
-                  <div class="icon"><i class="ti ti-file-text"></i></div>
-                  <div class="meta">PDF Document</div>
-                  <button class="btn btn-primary btn-sm" style="margin-top:10px;" id="downloadOfferBtn">Download Offer Letter</button>
-                </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">
-                <span class="card-title">Offer Summary</span>
-                <span class="badge ${getOfferStatusBadgeClass(status)}">${status.toUpperCase()}</span>
-              </div>
-              <div class="card-body">
-                <div class="info-row"><span class="info-label">Offered Salary</span><span class="info-value">${offer.offered_salary ? ('₹ ' + offer.offered_salary + ' LPA') : '—'}</span></div>
-                <div class="info-row"><span class="info-label">Joining Date</span><span class="info-value">${offer.joining_date || '—'}</span></div>
-                <div class="info-row"><span class="info-label">Probation Period</span><span class="info-value">${offer.probation_period || '—'}</span></div>
-                <div class="info-row"><span class="info-label">Offer Issued On</span><span class="info-value">${offer.offer_issued_date || '—'}</span></div>
-                <div class="info-row"><span class="info-label">Offer Expiry</span><span class="info-value">${offer.offer_expiry_date || '—'}</span></div>
-                ${status.toLowerCase() === 'accepted' ? `<div class="info-row"><span class="info-label">Accepted On</span><span class="info-value">${offer.offer_accepted_on || '—'}</span></div>` : ''}
-              </div>
-            </div>
-          </div>
-          ${offer.offer_remarks ? `
-          <div class="card" style="margin-top:20px;">
-            <div class="card-header"><span class="card-title">Offer Remarks</span></div>
-            <div class="card-body" style="font-size:13px;color:var(--c-text2);line-height:1.6;">${offer.offer_remarks}</div>
-          </div>` : ''}
-        `;
-        document.getElementById('downloadOfferBtn').onclick = downloadOfferPDF;
-      } else if (candidateData.interviewStatus === 'Selected') {
-        el.className = 'empty-state';
-        el.innerHTML = `
-          <div class="icon" style="color:var(--c-orange);"><i class="ti ti-hourglass-high" aria-hidden="true"></i></div>
-          <div class="title">Awaiting Offer</div>
-          <div class="body">${candidateData.name} has been <strong>selected</strong> for ${candidateData.job}. Awaiting Offer from the school admin.</div>
-          <span class="badge badge-orange" style="font-size:12.5px;padding:6px 12px;"><i class="ti ti-point-filled"></i> Offer Pending — School Admin Action</span>
-        `;
-      } else {
-        el.className = 'empty-state';
-        el.innerHTML = `
-          <div class="icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
-          <div class="title">No Offer Generated Yet</div>
-          <div class="body">Candidate is currently in the ${candidateData.stage} stage. An offer can be generated from the offer dashboard after final selection.</div>
-        `;
-      }
-    }
-
-    function downloadOfferPDF() {
-      if (!candidateData || !candidateData.offer_letter_doc) return;
-      if (window.showToast) window.showToast('Generating PDF for ' + candidateData.name, 'success');
-
-      const htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Offer Letter - ${candidateData.name}</title>
-  <style>
-    @page { size: letter; margin: 1in; }
-    * { box-sizing: border-box; }
-    body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 12pt; line-height: 1.6; color: #333333; margin: 0; padding: 0; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-    .offer-container { width: 100%; max-width: 100%; }
-    h1, h2, h3, h4 { color: #111111; font-weight: 600; margin-top: 0; }
-    p { margin-bottom: 1.2em; orphans: 3; widows: 3; }
-    @media print { body { margin: 0; } .no-print { display: none !important; } }
-  </style>
-</head>
-<body>
-  <div class="offer-container">
-    ${candidateData.offer_letter_doc}
-  </div>
-  <script>
-    window.addEventListener('load', function () {
-      setTimeout(function () { window.print(); }, 250);
-    });
-  <\\/script>
-</body>
-</html>`;
-
-      function fallbackPrint() {
-        const iframe = document.createElement('iframe');
-        iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:0;height:0;border:none;';
-        document.body.appendChild(iframe);
-
-        iframe.onload = function () {
-          setTimeout(function () {
-            if (document.body.contains(iframe)) document.body.removeChild(iframe);
-          }, 60000);
-        };
-
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.open();
-        iframeDoc.write(htmlContent);
-        iframeDoc.close();
-      }
-
-      if (typeof html2pdf === 'undefined') {
-        const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-        script.onload = () => {
-          generatePDF(candidateData);
-        };
-        script.onerror = () => {
-          console.warn('Failed to load html2pdf from CDN, falling back to print dialog.');
-          fallbackPrint();
-        };
-        document.head.appendChild(script);
-      } else {
-        generatePDF(candidateData);
-      }
-
-      function generatePDF(candidate) {
-        // Render into a real, attached-to-DOM element (not just an HTML string) so
-        // it has real layout/height before html2canvas captures it — capturing a
-        // detached string container is what was clipping the letter to one screen's
-        // worth of content instead of its full, possibly multi-page, height.
-        const wrapper = document.createElement('div');
-        wrapper.className = 'pdf-content-wrapper';
-        wrapper.style.cssText = 'position:fixed;top:0;left:-10000px;width:6.5in;background:#ffffff;box-sizing:border-box;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:12pt;line-height:1.6;color:#333333;';
-        wrapper.innerHTML = `
-          <style>
-            .pdf-content-wrapper * { box-sizing: border-box; }
-            .pdf-content-wrapper .offer-container { width: 100%; max-width: 100%; }
-            .pdf-content-wrapper .offer-container h1, .pdf-content-wrapper .offer-container h2,
-            .pdf-content-wrapper .offer-container h3, .pdf-content-wrapper .offer-container h4 {
-              color: #111111; font-weight: 600; margin-top: 0;
-            }
-            .pdf-content-wrapper .offer-container p { margin-bottom: 1.2em; orphans: 3; widows: 3; }
-            .pdf-content-wrapper .no-break { page-break-inside: avoid; break-inside: avoid; }
-          </style>
-          <div class="offer-container">${candidate.offer_letter_doc}</div>
-        `;
-        document.body.appendChild(wrapper);
-
-        const opt = {
-          margin:       1,
-          filename:     `Offer_Letter_${candidate.name.replace(/\s+/g, '_')}.pdf`,
-          image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true, scrollY: 0, windowHeight: wrapper.scrollHeight },
-          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-          pagebreak:    { mode: ['css', 'legacy'], avoid: '.no-break' }
-        };
-
-        html2pdf().set(opt).from(wrapper).save()
-          .catch(err => {
-            console.error('PDF generation error:', err);
-            fallbackPrint();
-          })
-          .finally(() => {
-            if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
-          });
-      }
-    }
-
-    function renderMassetTab() {
-      const el = document.getElementById('masset-tab-content');
-      if (candidateData.sync_masset === 1) {
-        el.className = 'card';
-        el.style.cssText = 'padding: 24px; border-radius: 12px;';
-        
-        const m = candidateData.massetDetails || {};
-        if (m.issue_appointment_order === 1) {
-          el.innerHTML = `
-            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 20px 0;">
-              <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(22, 163, 74, 0.1); color: var(--c-green); display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:16px;">
-                <i class="ti ti-circle-check"></i>
-              </div>
-              <h3 style="font-size: 18px; font-weight:700; color: var(--c-text1); margin-bottom:8px;">Appointment Order Generated</h3>
-              <p style="font-size: 14px; color: var(--c-text2); max-width: 400px; margin-bottom:16px;">
-                The candidate onboarding process has completed. An appointment order has been issued successfully.
-              </p>
-              <div style="background: var(--c-surface2); border: 1px solid var(--c-border); border-radius: 8px; padding: 12px 24px; display:inline-flex; flex-direction:column; gap:4px;">
-                <span style="font-size:12px; color: var(--c-text3); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">MASSET Employee ID</span>
-                <span style="font-size:18px; font-weight:700; color: var(--c-green); font-family: monospace;">${m.masset_employee_id || 'N/A'}</span>
-              </div>
-            </div>
-          `;
-        } else {
-          el.innerHTML = `
-            <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 20px 0;">
-              <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(217, 119, 6, 0.1); color: var(--c-orange); display:flex; align-items:center; justify-content:center; font-size:28px; margin-bottom:16px;">
-                <i class="ti ti-loader" style="animation: spin 2s linear infinite;"></i>
-              </div>
-              <h3 style="font-size: 18px; font-weight:700; color: var(--c-text1); margin-bottom:8px;">Awaiting Appointment Order</h3>
-              <p style="font-size: 14px; color: var(--c-text2); max-width: 400px; margin-bottom:16px;">
-                Awaiting for Appointment Order Generation in MASSET.
-              </p>
-              <span class="badge badge-orange" style="font-size:12px; padding:6px 16px;"><i class="ti ti-hourglass-high"></i> Sync Pending Approval</span>
-            </div>
-          `;
+        const pg = document.getElementById('pagination');
+        if (pg) {
+          buildPagination(list.length, itemsPerPage);
         }
-      } else {
-        el.className = 'empty-state';
-        const showMassetBtn = candidateData.stage === 'Offer Accepted';
-        el.innerHTML = `
-          <div class="icon"><i class="ti ti-refresh" aria-hidden="true"></i></div>
-          <div class="title">MASSET Sync Not Initiated</div>
-          <div class="body">MASSET database synchronization becomes available after candidate accepts the job offer.</div>
-          ${showMassetBtn ? `<button class="btn btn-primary" onclick="location.href='/mss-career-portal/hr/masset-candidates'">Open MASSET Dashboard</button>` : ''}
-        `;
       }
-    }
-
-    /* ── Modal Utility ── */
-    function openModal(htmlContent) {
-      // Remove any existing modal overlay first
-      const existing = document.querySelector('.modal-overlay');
-      if (existing) existing.remove();
-
-      const overlay = document.createElement('div');
-      overlay.className = 'modal-overlay';
-      overlay.innerHTML = `<div class="modal">${htmlContent}</div>`;
-
-      // Close on backdrop click
-      overlay.addEventListener('click', function (e) {
-        if (e.target === overlay) overlay.remove();
+      const startIdx = (currentPageNum - 1) * itemsPerPage;
+      const pageList = list.slice(startIdx, startIdx + itemsPerPage);
+      pageList.forEach((c, index) => {
+        let displayStage = c.stage;
+        let showActions = true;
+        
+        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
+        if (c.interviewStatus === 'Selected' && !advancedStages.includes(c.stage)) {
+          displayStage = 'Awaiting Offer';
+          showActions = false;
+        }
+        
+        const allowedStages = ['PreScreen-Reject', 'Interview', 'Screened'];
+        const canAction = showActions && allowedStages.includes(c.stage);
+        
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+      <td style="font-weight:600;color:var(--text2);"> ${startIdx + index + 1} </td>
+      <td>
+        <div class="td-flex">
+          <div class="avatar-sm" style="background:linear-gradient(135deg,${avatarGradient(c.name)});">${c.avatar}</div>
+          <div>
+            <div class="candidate-name">${c.name}</div>
+            <div class="candidate-id">${c.mss_app_no || 'APP-' + String(c.id).padStart(4, '0')}</div>
+          </div>
+        </div>
+      </td>
+      <td style="color:var(--text2);max-width:180px;">
+        <div>${c.job}</div>
+        ${c.job_status === 'closed' ? `<div class="job-closed-tag"><i class="ti ti-lock" aria-hidden="true"></i>Job Closed</div>` : ''}
+      </td>
+      <td style="color:var(--text3);">${c.unit || '—'}</td>
+      <td style="color:var(--text3);white-space:nowrap;">${c.appliedDate}</td>
+      <td style="font-weight:500;">${c.exp}</td>
+      <td>${stageBadge(displayStage)}</td>
+      <td>${interviewStatusHtml(c.interviewStatus)}</td>
+      <td style="text-align:center;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;">
+          <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); localStorage.setItem('candidateId', '${c.id}'); location.href='/mss-career-portal/hr/candidate-profile?name=' + encodeURIComponent('${c.name}') + '&job_title=' + encodeURIComponent('${c.job}')">
+              <i class="ti ti-user"></i>
+          </button>
+          ${(showActions && (c.stage === 'Screened' || c.interviewStatus === 'Next Round' || c.interviewStatus === 'Cancelled') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
+          ${canAction ? `<button class="action-btn red" title="Reject Candidate" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')"><i class="ti ti-x"></i></button>` : ''}
+        </div>
+      </td>`;
+        tbody.appendChild(tr);
       });
-
-      document.body.appendChild(overlay);
-
-      // Trap focus inside modal (accessibility)
-      const firstFocusable = overlay.querySelector('input, select, textarea, button');
-      if (firstFocusable) firstFocusable.focus();
+      document.getElementById('resultCount').textContent = `${list.length} candidate${list.length !== 1 ? 's' : ''}`;
     }
 
-
-    /* ── Interviewer dropdown loader ── */
-    function loadInterviewers(selectId) {
-      fetch(JOBS_API_BASE + '/auth/interviewers', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      })
-        .then(res => res.ok ? res.json() : Promise.reject(res))
-        .then(list => {
-          const sel = document.getElementById(selectId);
-          if (!sel) return;
-          if (!list.length) {
-            sel.innerHTML = '<option value="">No interviewers found (role_id=3)</option>';
-            return;
-          }
-          const selectedVal = sel.getAttribute('data-selected');
-          sel.innerHTML = list.map(i =>
-            `<option value="${i.name}" ${selectedVal === i.name ? 'selected' : ''}>${i.name} (${i.email})</option>`
-          ).join('');
-        })
-        .catch(() => {
-          const sel = document.getElementById(selectId);
-          if (sel) sel.innerHTML = '<option value="">Failed to load — type manually</option>';
-          // Swap to text input as fallback
-          const wrapper = sel ? sel.parentElement : null;
-          if (wrapper) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.id = selectId;
-            input.placeholder = 'Enter interviewer name';
-            wrapper.replaceChild(input, sel);
-          }
-        });
+    /* ── Filter ── */
+    function filterApplicants() {
+      // Keep the stage chips in sync with the dropdown so a stale chip
+      // selection doesn't override "All Stages" when the dropdown is used.
+      activeStageFilter = document.getElementById('fStage').value;
+      fetchApplicants();
     }
 
-    function loadSchoolAdmins(selectId) {
-      fetch(JOBS_API_BASE + '/job-interviews/school-admins', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      })
-        .then(res => res.ok ? res.json() : Promise.reject(res))
-        .then(list => {
-          const sel = document.getElementById(selectId);
-          if (!sel) return;
-          if (!list.length) {
-            sel.innerHTML = '<option value="">No school admins found (role_id=7)</option>';
-            return;
-          }
-          const selectedVal = sel.getAttribute('data-selected');
-          sel.innerHTML = '<option value="">Select an interviewer...</option>' + list.map(i => {
-            const unitDisplay = i.unit_name ? ` (Unit: ${i.unit_name})` : (i.unit_id ? ` (Unit ID: ${i.unit_id})` : '');
-            // For older records, interviewer_name might be string, but here we set value to email
-            return `<option value="${i.email}" ${selectedVal === i.email || selectedVal === i.name ? 'selected' : ''}>${i.email}${unitDisplay}</option>`;
-          }).join('');
-        })
-        .catch(() => {
-          const sel = document.getElementById(selectId);
-          if (sel) sel.innerHTML = '<option value="">Failed to load admins</option>';
-        });
+    /* ── Modal helper ── */
+    function showModal(html) {
+      const ov = document.createElement('div');
+      ov.className = 'modal-overlay';
+      ov.innerHTML = `<div class="modal-box">${html}</div>`;
+      ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
+      document.body.appendChild(ov);
     }
 
     /* ── Schedule Interview modal ── */
     function scheduleInterviewModal(applicantId, name, jobId) {
-      openModal(`
-    <div class="modal-header"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview</div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">Scheduling interview for <strong>${name}</strong></p>
-      <div class="form-grid">
-        <div class="form-group span2">
-          <label>Interview Round</label>
-          <input type="text" id="schRound">
+      showModal(`
+    <div class="modal-title"><i class="ti ti-calendar" aria-hidden="true"></i> Schedule Interview</div>
+    <p>Scheduling interview for <strong>${name}</strong></p>
+    <div class="form-grid">
+      <div class="form-group span2">
+        <label>Interview Round</label>
+        <input type="text" id="schRound">
+      </div>
+      <div class="form-group">
+        <label>Mode</label>
+        <select id="interviewMode" onchange="toggleInterviewModeField()">
+          <option value="online">Online</option>
+          <option value="offline">In-Person</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label><input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}" min="${new Date().toISOString().split('T')[0]}">
+      </div>
+      <div class="form-group span2" style="display:flex; flex-direction:row; gap:10px;">
+        <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+          <label>Start Time</label><input type="time" id="schTime" value="10:00">
         </div>
-        <div class="form-group">
-          <label>Mode</label>
-          <select id="interviewMode" onchange="toggleInterviewModeField()">
-            <option value="online">Online</option>
-            <option value="offline">In-Person</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Date</label>
-          <input type="date" id="schDate" value="${new Date().toISOString().split('T')[0]}" min="${new Date().toISOString().split('T')[0]}">
-        </div>
-        <div class="form-group span2" style="display:flex; flex-direction:row; gap:10px;">
-          <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
-            <label>Start Time</label><input type="time" id="schTime" value="10:00">
-          </div>
-          <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
-            <label>End Time</label><input type="time" id="schEndTime" value="11:00">
-          </div>
-        </div>
-        <div class="form-group span2" id="dynamicModeContainer">
-          <label id="modeLabel">Meeting Link</label>
-          <input type="text" id="modeInput" placeholder="Enter online meeting URL">
-        </div>
-        <div class="form-group span2">
-          <label>Interviewer</label>
-          <select id="schInterviewer">
-            <option value="">Loading interviewers…</option>
-          </select>
+        <div style="flex:1; display:flex; flex-direction:column; gap:5px;">
+          <label>End Time</label><input type="time" id="schEndTime" value="11:00">
         </div>
       </div>
+      <div class="form-group span2" id="dynamicModeContainer">
+        <label id="modeLabel">Meeting Link</label>
+        <input type="text" id="modeInput" placeholder="Enter online meeting URL">
+      </div>
+      <div class="form-group span2">
+        <label>Interviewer</label>
+        <select id="schInterviewer">
+          <option value="">Loading interviewers…</option>
+        </select>
+      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitSchedule(${applicantId}, ${jobId})"><i class="ti ti-calendar" aria-hidden="true"></i> Confirm Schedule</button>
+    <div class="modal-actions">
+      <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
+      <button class="btn-primary" onclick="submitSchedule(${applicantId}, ${jobId})"><i class="ti ti-calendar" aria-hidden="true"></i> Confirm Schedule</button>
     </div>`);
-      loadSchoolAdmins('schInterviewer');
+      loadInterviewers('schInterviewer');
     }
 
     function submitSchedule(applicantId, jobId) {
@@ -882,6 +311,7 @@
         return;
       }
 
+      // Combine date and time to ISO string
       const scheduledAtIso = `${schDate}T${schTime}:00`;
       const endTimeAtIso = `${schDate}T${schEndTime}:00`;
 
@@ -905,21 +335,127 @@
         },
         body: JSON.stringify(payload)
       })
-        .then(res => {
-          if (!res.ok) throw new Error('Failed to schedule interview');
-          return res.json();
-        })
-        .then(() => {
-          if (window.showToast) window.showToast('Interview scheduled successfully!', 'success');
-          document.querySelector('.modal-overlay').remove();
-          fetchCandidateProfile();
-        })
-        .catch(err => {
-          console.error(err);
-          if (window.showToast) window.showToast('Error scheduling interview: ' + err.message, 'error');
-        });
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to schedule interview');
+        return res.json();
+      })
+      .then(() => {
+        if (window.showToast) window.showToast('Interview scheduled successfully!', 'success');
+        document.querySelector('.modal-overlay').remove();
+        fetchApplicants();
+      })
+      .catch(err => {
+        console.error(err);
+        if (window.showToast) window.showToast('Error scheduling interview: ' + err.message, 'error');
+      });
     }
 
+    /* ── Interviewer dropdown loader ── */
+    function loadInterviewers(selectId) {
+      fetch(JOBS_API_BASE + '/job-interviews/school-admins', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      })
+      .then(res => res.ok ? res.json() : Promise.reject(res))
+      .then(list => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        if (!list.length) {
+          sel.innerHTML = '<option value="">No school admins found (role_id=7)</option>';
+          return;
+        }
+        sel.innerHTML = '<option value="">Select an interviewer...</option>' + list.map(i => {
+          const unitDisplay = i.unit_name ? ` (Unit: ${i.unit_name})` : (i.unit_id ? ` (Unit ID: ${i.unit_id})` : '');
+          return `<option value="${i.email}">${i.email}${unitDisplay}</option>`;
+        }).join('');
+      })
+      .catch(() => {
+        const sel = document.getElementById(selectId);
+        if (!sel) return;
+        const wrapper = sel.parentElement;
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.id = selectId;
+        input.placeholder = 'Enter interviewer name';
+        wrapper.replaceChild(input, sel);
+      });
+    }
+
+    /* ── Reject Candidate modal ── */
+    function rejectCandidateModal(applicantId, name) {
+      showModal(`
+    <div class="modal-title">Reject Candidate</div>
+    <p>You are about to reject <strong>${name}</strong> from this position.</p>
+    <div class="form-group">
+      <label>Rejection Reason *</label>
+      <select id="rejReason">
+        <option>Does not meet experience requirements</option>
+        <option>Qualification mismatch</option>
+        <option>Position filled</option>
+        <option>Better candidates selected</option>
+      </select>
+    </div>
+    <div class="form-group" style="margin-top:12px;">
+      <label>Additional Notes</label>
+      <textarea id="rejNotes" placeholder="Optional feedback…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="header-btn" onclick="document.querySelector('.modal-overlay').remove()">Cancel</button>
+      <button class="btn-danger" onclick="submitRejection(${applicantId})">Confirm Rejection</button>
+    </div>`);
+    }
+
+    function submitRejection(applicantId) {
+      const reason = document.getElementById('rejReason').value;
+      const notes = document.getElementById('rejNotes').value.trim();
+
+      fetch(JOBS_API_BASE + `/jobs/applicants/${applicantId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          status: 'rejected',
+          remarks: `${reason}. Notes: ${notes}`
+        })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Rejection request failed');
+        return res.json();
+      })
+      .then(() => {
+        if (window.showToast) window.showToast('Candidate rejected.', 'error');
+        document.querySelector('.modal-overlay').remove();
+        fetchApplicants();
+      })
+      .catch(err => {
+        console.error(err);
+        if (window.showToast) window.showToast('Error rejecting candidate.', 'error');
+      });
+    }
+
+    /* ── Init Page ── */
+    loadUnitOptions();
+    fetchApplicants();
+
+    /* ── Pagination ── */
+    function goToPage(pageNum, totalPages) {
+      currentPageNum = Math.min(Math.max(pageNum, 1), totalPages);
+      renderApplicants(applicantsData);
+    }
+
+    function buildPagination(total, perPage) {
+      const pg = document.getElementById('pagination');
+      if (!pg) return;
+
+      const totalPages = Math.ceil(total / perPage) || 1;
+      buildWindowedPagination(pg, {
+        total, perPage, currentPage: currentPageNum, maxButtons: 5,
+        onPageChange: (page) => goToPage(page, totalPages)
+      });
+    }
+    
+    // Handler function to toggle label and placeholder text
     function toggleInterviewModeField() {
       const mode = document.getElementById('interviewMode').value;
       const label = document.getElementById('modeLabel');
@@ -936,283 +472,4 @@
       }
     }
 
-
-    /* ── Reschedule Modal ── */
-    function rescheduleInterviewModal(interviewId) {
-      const interview = candidateData.interviews.find(iv => iv.job_interview_id === interviewId);
-      let initDate = new Date().toISOString().split('T')[0];
-      let initStart = "";
-      let initEnd = "";
-      let initInterviewer = "";
-      
-      if (interview) {
-        if (interview.scheduled_at) {
-          const schAt = interview.scheduled_at;
-          initDate = schAt.split('T')[0];
-          initStart = schAt.split('T')[1].substring(0, 5);
-        }
-        if (interview.end_time_at) {
-          initEnd = interview.end_time_at.split('T')[1].substring(0, 5);
-        }
-        if (interview.interviewer) {
-          initInterviewer = interview.interviewer;
-        }
-      }
-
-      openModal(`
-    <div class="modal-header">📅 Reschedule Interview</div>
-    <div class="modal-body">
-      <div class="form-grid">
-        <div class="form-group">
-          <label>New Date *</label>
-          <input type="date" id="reschDate" value="${initDate}">
-        </div>
-        <div class="form-group">
-          <label>New Start Time *</label>
-          <input type="time" id="reschstartTime" value="${initStart}">
-        </div>
-        <div class="form-group">
-          <label>New End Time *</label>
-          <input type="time" id="reschendTime" value="${initEnd}">
-        </div>
-        <div class="form-group">
-        <label>Interviewer (School Admin) *</label>
-        <select id="reschInterviewer" data-selected="${initInterviewer}">
-          <option value="">Loading interviewers…</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Reason for Rescheduling</label>
-        <textarea id="reschReason" placeholder="E.g., Interviewer unavailable..."></textarea>
-      </div>
-    </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitReschedule(${interviewId})">Confirm Reschedule</button>
-    </div>`);
-      loadSchoolAdmins('reschInterviewer');
-    }
-
-    function submitReschedule(interviewId) {
-      const dateVal = document.getElementById('reschDate').value;
-      const timeVal = document.getElementById('reschstartTime').value;
-      const endtimeVal = document.getElementById('reschendTime').value;
-      const interviewer = document.getElementById('reschInterviewer').value;
-      const reason = document.getElementById('reschReason').value.trim();
-
-      if (!dateVal || !timeVal || !endtimeVal) {
-        if (window.showToast) window.showToast('Please fill out all required fields.', 'error');
-        return;
-      }
-
-      const scheduledAtIso = `${dateVal}T${timeVal}:00`;
-      const endTimeIso = `${dateVal}T${endtimeVal}:00`;
-      fetch(JOBS_API_BASE + `/job-interviews/${interviewId}/reschedule`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-          scheduled_at: scheduledAtIso,
-          end_time_at: endTimeIso,
-          reschedule_reason: reason,
-          interviewer_name: interviewer
-        })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(() => {
-          if (window.showToast) window.showToast('Interview rescheduled!', 'success');
-          document.querySelector('.modal-overlay').remove();
-          fetchCandidateProfile();
-        })
-        .catch(err => {
-          console.error(err);
-          if (window.showToast) window.showToast('Failed to reschedule interview.', 'error');
-        });
-    }
-
-    /* ── Remarks Modal ── */
-    function feedbackModal(interviewId, roundName) {
-      openModal(`
-    <div class="modal-header">📝 Submit Interview Feedback – ${roundName}</div>
-    <div class="modal-body">
-      <div class="form-group" style="margin-bottom:12px;">
-        <label>Outcome / Recommendation *</label>
-        <select id="remStatus">
-          <option value="next_round">Proceed to Next Round</option>
-          <option value="selected">Select Candidate (Hire)</option>
-          <option value="hold">Put Candidate On Hold</option>
-          <option value="rejected">Reject Candidate</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Feedback Remarks *</label>
-        <textarea id="remRemarks" rows="4" placeholder="Enter detailed feedback remarks..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitFeedback(${interviewId})">Submit Remarks</button>
-    </div>`);
-    }
-
-    function submitFeedback(interviewId) {
-      const status = document.getElementById('remStatus').value;
-      const remarks = document.getElementById('remRemarks').value.trim();
-
-      if (!status || !remarks) {
-        if (window.showToast) window.showToast('Please fill out all required fields.', 'error');
-        return;
-      }
-
-      fetch(JOBS_API_BASE + `/job-interviews/${interviewId}/remarks`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-          applicant_status: status,
-          remarks: remarks
-        })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(() => {
-          if (window.showToast) window.showToast('Interview remarks saved!', 'success');
-          document.querySelector('.modal-overlay').remove();
-          fetchCandidateProfile();
-        })
-        .catch(err => {
-          console.error(err);
-          if (window.showToast) window.showToast('Failed to submit feedback.', 'error');
-        });
-    }
-
-    /* ── Hold Candidate ── */
-    function holdCandidate() {
-      openModal(`
-    <div class="modal-header">⏸ Put Candidate On Hold</div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">${candidateData.name} will be placed on hold.</p>
-      <div class="form-group" style="margin-bottom:12px;">
-        <label>Reason for Hold *</label>
-        <select id="holdReason">
-          <option>Waiting for budget approval</option>
-          <option>Position temporarily on hold</option>
-          <option>Other candidates being evaluated</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Remarks *</label>
-        <textarea id="holdRemarks" rows="3" placeholder="Add hold notes..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-      <button class="btn btn-warn" onclick="submitHold()">Put On Hold</button>
-    </div>`);
-    }
-
-    function submitHold() {
-      const reason = document.getElementById('holdReason').value;
-      const remarks = document.getElementById('holdRemarks').value.trim();
-
-      fetch(JOBS_API_BASE + `/jobs/applicants/${candidateData.id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-          status: 'hold',
-          remarks: `${reason}. Notes: ${remarks}`
-        })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(() => {
-          if (window.showToast) window.showToast('Candidate put on hold.', 'success');
-          document.querySelector('.modal-overlay').remove();
-          fetchCandidateProfile();
-        })
-        .catch(err => {
-          console.error(err);
-          if (window.showToast) window.showToast('Failed to put candidate on hold.', 'error');
-        });
-    }
-
-    /* ── Reject Candidate ── */
-    function rejectCandidate() {
-      openModal(`
-    <div class="modal-header"><i class="ti ti-circle-x" aria-hidden="true"></i> Reject Candidate</div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--c-text2);margin-bottom:16px;">${candidateData.name} will be marked as rejected.</p>
-      <div class="form-group" style="margin-bottom:12px;">
-        <label>Rejection Reason *</label>
-        <select id="rejReason">
-          <option>Does not meet requirements</option>
-          <option>Better candidate selected</option>
-          <option>Position filled</option>
-          <option>Candidate withdrew</option>
-        </select>
-      </div>
-      <div class="form-group" style="margin-bottom:12px;">
-        <label>Detailed Feedback</label>
-        <textarea id="rejNotes" rows="3" placeholder="Feedback notes..."></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-default" onclick="this.closest('.modal-overlay').remove()">Cancel</button>
-      <button class="btn btn-danger" onclick="submitRejection()">Confirm Rejection</button>
-    </div>`);
-    }
-
-    function submitRejection() {
-      const reason = document.getElementById('rejReason').value;
-      const notes = document.getElementById('rejNotes').value.trim();
-
-      fetch(JOBS_API_BASE + `/jobs/applicants/${candidateData.id}/status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify({
-          status: 'rejected',
-          remarks: `${reason}. Notes: ${notes}`
-        })
-      })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          return res.json();
-        })
-        .then(() => {
-          if (window.showToast) window.showToast('Candidate rejected.', 'error');
-          document.querySelector('.modal-overlay').remove();
-          fetchCandidateProfile();
-        })
-        .catch(err => {
-          console.error(err);
-          if (window.showToast) window.showToast('Failed to reject candidate.', 'error');
-        });
-    }
-
-    /* ── Mock Application Notes Saver ── */
-    function saveInternalNotes() {
-      const text = document.getElementById('appNotesText').value.trim();
-      if (window.showToast) window.showToast('Notes saved successfully!', 'success');
-    }
-
-    /* ── Fetch Profile on load ── */
-    fetchCandidateProfile();
   

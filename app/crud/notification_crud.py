@@ -18,6 +18,16 @@ def build_candidate_profile_redirect_url(role: str, job_applicant_id: int, name:
         f"?candidate_id={job_applicant_id}&name={quote(name or '')}&job_title={quote(job_title or '')}"
     )
 
+def build_school_job_redirect_url(job_uuid: str, job_title: str, unit: str) -> str:
+    from urllib.parse import quote
+
+    return (
+        "/mss-career-portal/school/job-detail"
+        f"?id={quote(str(job_uuid or ''), safe='')}"
+        f"&title={quote(job_title or '', safe='')}"
+        f"&unit={quote(unit or '', safe='')}"
+    )
+
 def get_user_notifications(db: Session, user_id: int, role: str):
     """
     Fetch all notifications for a specific user and role, ordered by created_at descending.
@@ -158,6 +168,50 @@ def notify_school_admin(
         sender_type=sender_type,
         redirect_url=redirect_url
     )
+
+def notify_school_admins_for_unit(
+    db: Session,
+    unit_name: str,
+    title: str,
+    message: str,
+    notification_type: str = "general",
+    sender_user_id: int = None,
+    sender_type: str = None,
+    redirect_url: str = None,
+) -> int:
+    """Send an in-app notification to active school admins assigned to a unit."""
+    from app.models.admin_model import Admins
+    from app.models.unit_model import Units
+    from app.models.user_roles_model import UserRoles
+    from sqlalchemy import func
+
+    if not unit_name:
+        return 0
+
+    school_admins = (
+        db.query(Admins)
+        .join(UserRoles)
+        .join(Units, Admins.unit_id == Units.id)
+        .filter(
+            UserRoles.role_name == "school_admin",
+            Admins.is_active == 1,
+            func.lower(func.trim(Units.unit_name)) == unit_name.strip().lower(),
+        )
+        .all()
+    )
+
+    for admin in school_admins:
+        notify_school_admin(
+            db=db,
+            admin_id=admin.admin_id,
+            title=title,
+            message=message,
+            notification_type=notification_type,
+            sender_user_id=sender_user_id,
+            sender_type=sender_type,
+            redirect_url=redirect_url,
+        )
+    return len(school_admins)
 
 def notify_hr_users(
     db: Session,

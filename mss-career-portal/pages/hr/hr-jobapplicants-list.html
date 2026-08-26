@@ -842,13 +842,8 @@
       <div class="filters-bar">
         <input class="search-input" type="text" id="searchInput" placeholder="Search candidates…"
           oninput="filterApplicants()">
-        <select class="filter-select" id="fJob" onchange="filterApplicants()">
-          <option value="">All Job Posts</option>
-          <option>Senior Mathematics Teacher</option>
-          <option>English Language Arts Teacher</option>
-          <option>School Counselor</option>
-          <option>Physical Education Instructor</option>
-          <option>Vice Principal – Academics</option>
+        <select class="filter-select" id="fUnit" onchange="filterApplicants()">
+          <option value="">All Units</option>
         </select>
         <select class="filter-select" id="fStage" onchange="filterApplicants()">
           <option value="">All Stages</option>
@@ -928,37 +923,35 @@
       window.location.href = '/mss-career-portal/home';
     }
 
-    /* ── Load Job Posts into Filter Dropdown ── */
-    function loadJobOptions() {
-      fetch(JOBS_API_BASE + '/jobs', {
-        headers: { 'Authorization': 'Bearer ' + token }
-      })
+    /* ── Load Units into Filter Dropdown ── */
+    function loadUnitOptions() {
+      fetch(JOBS_API_BASE + '/auth/units')
       .then(res => {
         if (!res.ok) throw new Error();
         return res.json();
       })
-      .then(jobs => {
-        const select = document.getElementById('fJob');
-        select.innerHTML = '<option value="">All Job Posts</option>';
-        jobs.forEach(job => {
+      .then(units => {
+        const select = document.getElementById('fUnit');
+        select.innerHTML = '<option value="">All Units</option>';
+        units.forEach(u => {
           const opt = document.createElement('option');
-          opt.value = job.job_id;
-          opt.textContent = job.job_title;
+          opt.value = u.unit_name;
+          opt.textContent = u.unit_name;
           select.appendChild(opt);
         });
       })
-      .catch(err => console.error('Failed to load jobs filter options:', err));
+      .catch(err => console.error('Failed to load unit filter options:', err));
     }
 
     /* ── Fetch Applicants from API ── */
     function fetchApplicants() {
       const q = document.getElementById('searchInput').value;
-      const jobId = document.getElementById('fJob').value;
+      const unit = document.getElementById('fUnit').value;
       const stage = document.getElementById('fStage').value || activeStageFilter;
       const exp = document.getElementById('fExp').value;
 
       const params = new URLSearchParams();
-      if (jobId) params.append('job_id', jobId);
+      if (unit) params.append('unit', unit);
       if (stage) params.append('stage', stage);
       if (q) params.append('search', q);
       if (exp) params.append('exp', exp);
@@ -1348,7 +1341,7 @@
     }
 
     /* ── Init Page ── */
-    loadJobOptions();
+    loadUnitOptions();
     fetchApplicants();
 
     /* ── Pagination ── */
@@ -1363,7 +1356,7 @@
 
       const totalPages = Math.ceil(total / perPage) || 1;
       buildWindowedPagination(pg, {
-        total, perPage, currentPage: currentPageNum, maxButtons: 5,
+        total, perPage, currentPage: currentPageNum, maxButtons: 3,
         onPageChange: (page) => goToPage(page, totalPages)
       });
     }

@@ -1019,13 +1019,22 @@
           <option>Closed</option>
         </select>
         <select class="filter-select" id="fDept" onchange="filterJobs()">
-          <option value="">All Departments</option>
-          <option>Teaching Staff</option>
-          <option>Administration</option>
-          <option>Physical Education</option>
-          <option>Arts &amp; Music</option>
-          <option>Sports Coaching</option>
-          <option>Support Staff</option>
+            <option value="">All Departments</option>
+            <option>Teaching</option>
+            <option>Admin</option>
+            <option>Marketing</option>
+            <option>Accounts</option>
+            <option>CSR</option>
+            <option>ISO</option>
+            <option>HR</option>
+            <option>Complaince</option>
+            <option>IT</option>
+            <option>Facility</option>
+            <option>Security & Maintenance</option>
+            <option>Stores</option>
+            <option>Technical</option>
+            <option>Art</option>
+            <option>Music</option>
         </select>
         <select class="filter-select" id="fType" onchange="filterJobs()">
           <option value="">All Types</option>
@@ -1240,42 +1249,10 @@
       if (!pg) return;
 
       const totalPages = Math.ceil(total / perPage) || 1;
-      pg.innerHTML = '';
-      pg.style.display = 'flex';
-
-      const prev = document.createElement('button');
-      prev.className = 'page-btn';
-      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
-      if (currentPageNum <= 1) {
-        prev.disabled = true;
-        prev.style.opacity = '0.4';
-        prev.style.cursor = 'default';
-      } else {
-        prev.onclick = () => goToPage(currentPageNum - 1, totalPages);
-      }
-      pg.appendChild(prev);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const b = document.createElement('button');
-        b.className = 'page-btn' + (i === currentPageNum ? ' active' : '');
-        b.textContent = i;
-        b.onclick = function () {
-          goToPage(i, totalPages);
-        };
-        pg.appendChild(b);
-      }
-
-      const next = document.createElement('button');
-      next.className = 'page-btn';
-      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
-      if (currentPageNum >= totalPages) {
-        next.disabled = true;
-        next.style.opacity = '0.4';
-        next.style.cursor = 'default';
-      } else {
-        next.onclick = () => goToPage(currentPageNum + 1, totalPages);
-      }
-      pg.appendChild(next);
+      buildWindowedPagination(pg, {
+        total, perPage, currentPage: currentPageNum, maxButtons: 3,
+        onPageChange: (page) => goToPage(page, totalPages)
+      });
     }
     
     function recalcJobStats() {

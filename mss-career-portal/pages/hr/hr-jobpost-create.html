@@ -1205,9 +1205,6 @@
             <a href="#">Job Posts</a>
             <span>›</span>
             <span style="color: var(--text2)">Create New</span>
-            <span style="margin-left: 6px">
-              <span class="status-chip chip-draft">Draft</span>
-            </span>
           </div>
           <div class="page-title">Create Job Post</div>
           <div class="page-subtitle">
@@ -2919,11 +2916,6 @@
       }
 
       function closeForm() {
-        const message = editJobId
-          ? "Discard unsaved changes and go back to the job list?"
-          : "Discard this job post and go back to the job list?";
-        if (!confirm(message)) return;
-        if (!editJobId) clearDraftState();
         window.location.href = "/mss-career-portal/hr/jobpost-list";
       }
 

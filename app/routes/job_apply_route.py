@@ -202,6 +202,15 @@ def apply_for_job_route(
     user_id: int = Depends(_get_candidate_id_from_token)
 ):
     """Submits a new job application."""
+    from app.models.job_post_model import JobPost, JobStatus
+
+    job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
+    if not job or job.job_status != JobStatus.PUBLISH:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This job is closed and no longer accepting applications.",
+        )
+
     # Check if already applied
     if check_already_applied(db, user_id=user_id, job_id=form_data.job_id):
         raise HTTPException(
@@ -224,7 +233,11 @@ def apply_for_job_route(
     try:
         from app.models.job_post_model import JobPost
         from app.models.user_model import Users
-        from app.crud.notification_crud import notify_hr_users, build_candidate_profile_redirect_url
+        from app.crud.notification_crud import (
+            notify_hr_users,
+            notify_school_admins_for_unit,
+            build_candidate_profile_redirect_url,
+        )
 
         job = db.query(JobPost).filter(JobPost.job_id == form_data.job_id).first()
         candidate = db.query(Users).filter(Users.user_id == user_id).first()
@@ -240,6 +253,18 @@ def apply_for_job_route(
                 sender_user_id=user_id,
                 sender_type="candidate",
                 redirect_url=build_candidate_profile_redirect_url("hr", application.job_applicant_id, candidate_name, job.job_title)
+            )
+            notify_school_admins_for_unit(
+                db=db,
+                unit_name=job.school_name,
+                title="New Job Application",
+                message=f"New application received from {candidate_name} for '{job.job_title}'.",
+                notification_type="new_application",
+                sender_user_id=user_id,
+                sender_type="candidate",
+                redirect_url=build_candidate_profile_redirect_url(
+                    "schoolAdmin", application.job_applicant_id, candidate_name, job.job_title
+                ),
             )
     except Exception as e:
         from app.core.logger import logger
@@ -349,8 +374,11 @@ def respond_to_offer_route(
     try:
         from app.models.job_post_model import JobPost
         from app.models.user_model import Users
-        from app.crud.notification_crud import notify_hr_users, create_notification, build_candidate_profile_redirect_url
-        from app.models.admin_model import Admins
+        from app.crud.notification_crud import (
+            notify_hr_users,
+            notify_school_admins_for_unit,
+            build_candidate_profile_redirect_url,
+        )
 
         job = db.query(JobPost).filter(JobPost.job_id == job_id).first()
         candidate = db.query(Users).filter(Users.user_id == user_id).first()
@@ -360,23 +388,19 @@ def respond_to_offer_route(
             candidate_name = f"{candidate.first_name} {candidate.last_name}".strip()
             status_cap = payload.status.capitalize()
 
-            # 1. Notify Job Poster (School Admin or HR)
-            poster = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
-            if poster:
-                poster_role = poster.user_roles.role_name if poster.user_roles else ""
-                recipient_type = "hr" if poster_role in ["hr_head", "hr_admin", "hr_team", "hr_processor", "hr_executive"] else "schoolAdmin"
-                if recipient_type == "schoolAdmin":
-                    create_notification(
-                        db=db,
-                        recipient_user_id=poster.admin_id,
-                        recipient_type=recipient_type,
-                        title=f"Offer {status_cap}",
-                        message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}'.",
-                        notification_type=f"offer_{payload.status.lower()}",
-                        sender_user_id=user_id,
-                        sender_type="candidate",
-                        redirect_url=build_candidate_profile_redirect_url("schoolAdmin", applied_app.job_applicant_id, candidate_name, job.job_title)
-                    )
+            # 1. Notify school admins assigned to the job's unit.
+            notify_school_admins_for_unit(
+                db=db,
+                unit_name=job.school_name,
+                title=f"Offer {status_cap}",
+                message=f"Candidate {candidate_name} has {payload.status} the offer for '{job.job_title}'.",
+                notification_type=f"offer_{payload.status.lower()}",
+                sender_user_id=user_id,
+                sender_type="candidate",
+                redirect_url=build_candidate_profile_redirect_url(
+                    "schoolAdmin", applied_app.job_applicant_id, candidate_name, job.job_title
+                ),
+            )
 
             # 2. Notify HR Users
             notify_hr_users(
@@ -386,7 +410,7 @@ def respond_to_offer_route(
                 notification_type=f"offer_{payload.status.lower()}",
                 sender_user_id=user_id,
                 sender_type="candidate",
-                redirect_url=build_candidate_profile_redirect_url("hr", applied_app.job_applicant_id, candidate_name, job.job_title)
+                redirect_url="/mss-career-portal/hr/masset-candidates"
             )
     except Exception as e:
         from app.core.logger import logger

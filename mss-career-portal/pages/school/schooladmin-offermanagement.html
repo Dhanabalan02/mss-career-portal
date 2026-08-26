@@ -2298,10 +2298,22 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
             // capturing a detached string container clipped the letter to one
             // screen's worth of content instead of its full, possibly
             // multi-page, height.
+            //
+            // The wrapper itself must stay in normal document flow (position:
+            // static). html2canvas in this bundle computes a 0-height capture for
+            // any element taken out of flow (position: fixed/absolute), which is
+            // what produced the blank/empty downloaded PDF — regardless of
+            // on-/off-screen offset. So the wrapper is kept static and instead
+            // nested inside a zero-size, clipped "capture root" that keeps it
+            // invisible and takes up no layout space.
+            const captureRoot = document.createElement("div");
+            captureRoot.style.cssText =
+              "position:fixed;top:0;left:0;width:0;height:0;overflow:hidden;";
+
             const wrapper = document.createElement("div");
             wrapper.className = "pdf-content-wrapper";
             wrapper.style.cssText =
-              'position:fixed;top:0;left:-10000px;width:6.5in;background:#ffffff;box-sizing:border-box;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14pt;line-height:1.8;color:#333333;';
+              'width:6.5in;background:#ffffff;box-sizing:border-box;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14pt;line-height:1.8;color:#333333;';
             wrapper.innerHTML = `
               <style>
                 .pdf-content-wrapper * { box-sizing: border-box; }
@@ -2315,7 +2327,8 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
               </style>
               <div class="offer-container">${candidate.offer_letter_doc}</div>
             `;
-            document.body.appendChild(wrapper);
+            captureRoot.appendChild(wrapper);
+            document.body.appendChild(captureRoot);
 
             const opt = {
               margin: 1,
@@ -2335,7 +2348,7 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
                 fallbackPrint();
               })
               .finally(() => {
-                if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+                if (document.body.contains(captureRoot)) document.body.removeChild(captureRoot);
               });
           }
         } else {

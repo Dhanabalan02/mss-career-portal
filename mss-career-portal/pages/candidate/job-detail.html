@@ -1111,6 +1111,8 @@
                 var applyBtn = document.getElementById('jdApplyBtn');
                 if (applyBtn) {
                     applyBtn.setAttribute('href', 'javascript:;');
+                    var isClosedJob = job.job_status && job.job_status !== 'publish';
+                    if (isClosedJob) applyBtn.style.display = 'none';
                     var token = localStorage.getItem('access_token');
                     var userType = localStorage.getItem('user_type');
                     if (token && userType === 'candidate') {
@@ -1171,20 +1173,26 @@
                                     }
                                 }
                             } else {
+                                if (!isClosedJob) {
+                                    applyBtn.onclick = function (event) {
+                                        window.handleApplyClick(event, job.job_id);
+                                    };
+                                }
+                            }
+                        })
+                        .catch(function() {
+                            if (!isClosedJob) {
                                 applyBtn.onclick = function (event) {
                                     window.handleApplyClick(event, job.job_id);
                                 };
                             }
-                        })
-                        .catch(function() {
+                        });
+                    } else {
+                        if (!isClosedJob) {
                             applyBtn.onclick = function (event) {
                                 window.handleApplyClick(event, job.job_id);
                             };
-                        });
-                    } else {
-                        applyBtn.onclick = function (event) {
-                            window.handleApplyClick(event, job.job_id);
-                        };
+                        }
                     }
                 }
 
@@ -1285,7 +1293,10 @@
 
                 if (urlUuid && urlUuid !== 'null' && urlUuid !== 'undefined') {
                     try {
-                        const response = await fetch(JOBS_API_BASE + '/jobs/public/by-uuid/' + encodeURIComponent(urlUuid));
+                        const detailToken = localStorage.getItem('access_token');
+                        const response = await fetch(JOBS_API_BASE + '/jobs/public/by-uuid/' + encodeURIComponent(urlUuid), {
+                            headers: detailToken ? { 'Authorization': 'Bearer ' + detailToken } : {}
+                        });
                         if (response.ok) {
                             const job = await response.json();
                             jobId = job.job_id;

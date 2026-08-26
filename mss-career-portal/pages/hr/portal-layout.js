@@ -130,6 +130,18 @@
   function getConfig() { return PORTAL_ROLES[getRole()]; }
   function getNotes() { return NOTIFICATIONS[getRole()]; }
 
+  // Admin logins (HR / School Admin) show their login email under the
+  // sidebar title in place of the generic role subtitle; candidates keep
+  // the role label since they aren't logged in with a portal admin account.
+  function sidebarSubtitleText(cfg) {
+    const role = getRole();
+    if (role === 'hr' || role === 'schoolAdmin') {
+      const email = localStorage.getItem('user_email');
+      if (email) return email;
+    }
+    return cfg.sidebarSubtitle || '';
+  }
+
   function currentPage() {
     return window.location.pathname.split('/').pop().split('?')[0].toLowerCase() || 'index.html';
   }
@@ -211,7 +223,7 @@
           <div class="portal-sidebar__logo">${cfg.sidebarLogo || 'M'}</div>
           <div>
             <div class="portal-sidebar__title">${cfg.sidebarTitle || 'Portal'}</div>
-            <span class="portal-sidebar__subtitle">${cfg.sidebarSubtitle || ''}</span>
+            <span class="portal-sidebar__subtitle" title="${sidebarSubtitleText(cfg)}">${sidebarSubtitleText(cfg)}</span>
           </div>
         </div>
         <button class="portal-sidebar__close" type="button"
@@ -241,8 +253,14 @@
     const cfg = getConfig();
     const nav = qs('#portalSidebar nav');
     const title = qs('#portalSidebar .portal-sidebar__title');
+    const subtitle = qs('#portalSidebar .portal-sidebar__subtitle');
     const logo = qs('#portalSidebar .portal-sidebar__logo');
     if (title) title.textContent = cfg.sidebarTitle;
+    if (subtitle) {
+      const subtitleText = sidebarSubtitleText(cfg);
+      subtitle.textContent = subtitleText;
+      subtitle.title = subtitleText;
+    }
     if (logo) logo.textContent = cfg.sidebarLogo;
     if (nav) nav.innerHTML = navLinks(cfg);
     markActiveLink();

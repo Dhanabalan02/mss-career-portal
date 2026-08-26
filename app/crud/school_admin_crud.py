@@ -76,12 +76,11 @@ def check_and_update_expired_offers(db: Session):
 
 
 def _get_admin_job_filter(db: Session, admin_id: int):
-    from sqlalchemy import func, or_, select, text
+    from sqlalchemy import text
     admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
     if not admin:
         return JobPost.job_id == -1
 
-    filters = []
     if admin.unit_id:
         result = db.execute(
             text("SELECT unit_name FROM units WHERE id = :unit_id"),
@@ -89,30 +88,13 @@ def _get_admin_job_filter(db: Session, admin_id: int):
         ).fetchone()
         school_name = result[0] if result and result[0] else ""
         if school_name:
-            filters.append(JobPost.school_name == school_name)
+            return JobPost.school_name == school_name
 
-    admin_email = (admin.email or "").strip().lower()
-    if admin_email:
-        filters.append(
-            select(JobInterviewSchedule.job_interview_id)
-            .where(
-                JobInterviewSchedule.job_id == JobPost.job_id,
-                func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email,
-            )
-            .correlate(JobPost)
-            .exists()
-        )
-
-    if not filters:
-        return JobPost.job_id == -1
-
-    return or_(*filters)
+    return JobPost.job_id == -1
 
 def get_school_dashboard(db: Session, admin_id: int) -> dict:
     check_and_update_expired_offers(db)
     job_filter = _get_admin_job_filter(db, admin_id)
-    admin = db.query(Admins).filter(Admins.admin_id == admin_id).first()
-    admin_email = (admin.email or "").strip().lower() if admin else ""
 
     from sqlalchemy import func
 
@@ -134,7 +116,6 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .join(JobApplicant, JobInterviewSchedule.job_applicant_id == JobApplicant.job_applicant_id)
         .join(Users, JobApplicant.user_id == Users.user_id)
         .filter(job_filter)
-        .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
         .filter(JobInterviewSchedule.scheduled_date >= date.today())
         .filter(JobInterviewSchedule.status.in_([InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]))
         .order_by(JobInterviewSchedule.scheduled_date, JobInterviewSchedule.start_time)
@@ -153,7 +134,6 @@ def get_school_dashboard(db: Session, admin_id: int) -> dict:
         .join(JobApplicant, JobInterviewSchedule.job_applicant_id == JobApplicant.job_applicant_id)
         .join(Users, JobApplicant.user_id == Users.user_id)
         .filter(job_filter)
-        .filter(func.lower(func.trim(JobInterviewSchedule.interviewer_name)) == admin_email)
         .filter(JobInterviewSchedule.scheduled_date >= date.today())
         .filter(JobInterviewSchedule.status.in_([InterviewStatus.SCHEDULED, InterviewStatus.RESCHEDULED]))
         .all()
