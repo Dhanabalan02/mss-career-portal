@@ -1125,7 +1125,7 @@
         <div class="card">
           <div class="card-header">
             <span class="card-title"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Pending Actions</span>
-            <span class="badge badge-red">5 items</span>
+            <span class="badge badge-red" id="pendingActionsBadge">0 items</span>
           </div>
           <div class="card-body" id="pendingList"></div>
         </div>
@@ -1575,6 +1575,10 @@
             { icon: '<i class="ti ti-calendar-event" aria-hidden="true"></i>', iconBg: '#FEF4E6', title: 'Upcoming Interviews', desc: data.interviews_count + ' interviews scheduled', url: '/mss-career-portal/hr/interviews', count: data.interviews_count, countBg: '#F59E0B' },
             { icon: '<i class="ti ti-refresh" aria-hidden="true"></i>', iconBg: '#E8E8E8', title: 'MASSET Sync', desc: data.masset_sync_count + ' profiles need syncing', url: '/mss-career-portal/hr/masset-candidates', count: data.masset_sync_count, countBg: '#6B7280' }
           ];
+          const totalPending = pendingActions.reduce((sum, a) => sum + (Number(a.count) || 0), 0);
+          const badgeEl = document.getElementById('pendingActionsBadge');
+          if (badgeEl) badgeEl.textContent = totalPending + (totalPending === 1 ? ' item' : ' items');
+
           const pendingEl = document.getElementById('pendingList');
           pendingEl.innerHTML = '';
           pendingActions.forEach(a => {

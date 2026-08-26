@@ -767,6 +767,82 @@
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
+  /* -- Shared windowed pagination -------------------------------
+     Renders Prev / [page numbers, capped to `maxButtons`] / Next
+     into `container`, sliding the visible window as the current
+     page moves instead of dumping every page number in the DOM. */
+  function buildWindowedPagination(container, opts) {
+    if (!container) return;
+    var total = opts.total || 0;
+    var perPage = opts.perPage || 10;
+    var currentPage = opts.currentPage || 1;
+    var maxButtons = opts.maxButtons || 5;
+    var onPageChange = opts.onPageChange || function () {};
+
+    var totalPages = Math.ceil(total / perPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    container.innerHTML = '';
+    container.style.display = 'flex';
+
+    function makeBtn(html, disabled, onClick, isActive) {
+      var b = document.createElement('button');
+      b.className = 'page-btn' + (isActive ? ' active' : '');
+      b.innerHTML = html;
+      if (disabled) {
+        b.disabled = true;
+        b.style.opacity = '0.4';
+        b.style.cursor = 'default';
+      } else {
+        b.onclick = onClick;
+      }
+      return b;
+    }
+
+    container.appendChild(makeBtn('<i class="ti ti-chevron-left" aria-hidden="true"></i>', currentPage <= 1, function () {
+      onPageChange(currentPage - 1);
+    }));
+
+    var half = Math.floor(maxButtons / 2);
+    var start = Math.max(1, currentPage - half);
+    var end = Math.min(totalPages, start + maxButtons - 1);
+    start = Math.max(1, Math.min(start, end - maxButtons + 1));
+
+    if (start > 1) {
+      container.appendChild(makeBtn('1', false, function () { onPageChange(1); }, currentPage === 1));
+      if (start > 2) {
+        var dots = document.createElement('span');
+        dots.className = 'page-ellipsis';
+        dots.style.cssText = 'display:flex;align-items:center;justify-content:center;width:24px;font-size:13px;color:var(--text3,#888);user-select:none;';
+        dots.textContent = '…';
+        container.appendChild(dots);
+      }
+    }
+
+    for (var i = start; i <= end; i++) {
+      (function (pageNum) {
+        container.appendChild(makeBtn(String(pageNum), false, function () { onPageChange(pageNum); }, pageNum === currentPage));
+      })(i);
+    }
+
+    if (end < totalPages) {
+      if (end < totalPages - 1) {
+        var dots2 = document.createElement('span');
+        dots2.className = 'page-ellipsis';
+        dots2.textContent = '…';
+        container.appendChild(dots2);
+      }
+      container.appendChild(makeBtn(String(totalPages), false, function () { onPageChange(totalPages); }, currentPage === totalPages));
+    }
+
+    container.appendChild(makeBtn('<i class="ti ti-chevron-right" aria-hidden="true"></i>', currentPage >= totalPages, function () {
+      onPageChange(currentPage + 1);
+    }));
+  }
+
+  window.buildWindowedPagination = buildWindowedPagination;
+
   /* -- Boot ---------------------------------------------------- */
   document.addEventListener('DOMContentLoaded', () => {
     ensurePortalStylesheet();

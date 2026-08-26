@@ -1325,6 +1325,31 @@
               <div id="jobCreatedBy">—</div>
             </div>
 
+            <div>
+              <div class="stat-label">Created At</div>
+              <div id="jobCreatedAt">—</div>
+            </div>
+
+            <div id="jobClosedByWrap" style="display:none;">
+              <div class="stat-label">Closed By</div>
+              <div id="jobClosedBy">—</div>
+            </div>
+
+            <div id="jobClosedAtWrap" style="display:none;">
+              <div class="stat-label">Closed At</div>
+              <div id="jobClosedAt">—</div>
+            </div>
+
+            <div id="jobReopenByWrap" style="display:none;">
+              <div class="stat-label">Reopened By</div>
+              <div id="jobReopenBy">—</div>
+            </div>
+
+            <div id="jobReopenAtWrap" style="display:none;">
+              <div class="stat-label">Reopened At</div>
+              <div id="jobReopenAt">—</div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -1564,6 +1589,34 @@
         const createdByEl = document.getElementById('jobCreatedBy');
         if (createdByEl) {
           createdByEl.textContent = job.created_by_email || '—';
+        }
+
+        // Audit info: created/closed/reopened — who and when
+        const formatAuditDate = (iso) => {
+          if (!iso) return '—';
+          const d = new Date(iso);
+          return isNaN(d.getTime()) ? iso : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+        };
+
+        const createdAtEl = document.getElementById('jobCreatedAt');
+        if (createdAtEl) createdAtEl.textContent = formatAuditDate(job.created_at);
+
+        const closedByWrap = document.getElementById('jobClosedByWrap');
+        const closedAtWrap = document.getElementById('jobClosedAtWrap');
+        if (job.closed_by_email || job.closed_at) {
+          if (closedByWrap) closedByWrap.style.display = '';
+          if (closedAtWrap) closedAtWrap.style.display = '';
+          document.getElementById('jobClosedBy').textContent = job.closed_by_email || '—';
+          document.getElementById('jobClosedAt').textContent = formatAuditDate(job.closed_at);
+        }
+
+        const reopenByWrap = document.getElementById('jobReopenByWrap');
+        const reopenAtWrap = document.getElementById('jobReopenAtWrap');
+        if (job.reopen_by_email || job.reopen_job_at) {
+          if (reopenByWrap) reopenByWrap.style.display = '';
+          if (reopenAtWrap) reopenAtWrap.style.display = '';
+          document.getElementById('jobReopenBy').textContent = job.reopen_by_email || '—';
+          document.getElementById('jobReopenAt').textContent = formatAuditDate(job.reopen_job_at);
         }
 
         // Render stats cards

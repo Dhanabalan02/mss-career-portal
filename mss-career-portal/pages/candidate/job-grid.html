@@ -1656,13 +1656,29 @@
                         return;
                     }
 
+                    var maxButtons = 5;
+                    var half = Math.floor(maxButtons / 2);
+                    var start = Math.max(1, currentPage - half);
+                    var end = Math.min(totalPages, start + maxButtons - 1);
+                    start = Math.max(1, Math.min(start, end - maxButtons + 1));
+
                     var html = '';
                     // Previous button
                     html += '<button class="jg-page-btn" ' + (currentPage === 1 ? 'disabled' : '') + ' onclick="window.goToJobPage(' + (currentPage - 1) + ')"><i class="feather-chevron-left"></i></button>';
 
-                    // Page numbers
-                    for (var i = 1; i <= totalPages; i++) {
+                    if (start > 1) {
+                        html += '<button class="jg-page-num ' + (currentPage === 1 ? 'active' : '') + '" onclick="window.goToJobPage(1)">1</button>';
+                        if (start > 2) html += '<span class="jg-page-ellipsis">&hellip;</span>';
+                    }
+
+                    // Page numbers (windowed)
+                    for (var i = start; i <= end; i++) {
                         html += '<button class="jg-page-num ' + (currentPage === i ? 'active' : '') + '" onclick="window.goToJobPage(' + i + ')">' + i + '</button>';
+                    }
+
+                    if (end < totalPages) {
+                        if (end < totalPages - 1) html += '<span class="jg-page-ellipsis">&hellip;</span>';
+                        html += '<button class="jg-page-num ' + (currentPage === totalPages ? 'active' : '') + '" onclick="window.goToJobPage(' + totalPages + ')">' + totalPages + '</button>';
                     }
 
                     // Next button

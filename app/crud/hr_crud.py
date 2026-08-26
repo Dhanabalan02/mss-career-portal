@@ -450,9 +450,15 @@ def update_candidate_stage(db: Session, admin_id: int, applicant_id: int, stage:
         )
         if latest_interview:
             from app.models.interview_remarks_model import InterviewRemark, ApplicantStatus
-            
+
+            if latest_interview.status == InterviewStatus.CANCELLED:
+                raise HTTPException(
+                    status_code=400,
+                    detail="The candidate's most recent interview was cancelled. Schedule and complete an interview before moving them to Offer.",
+                )
+
             latest_interview.status = InterviewStatus.COMPLETED
-            
+
             remark = (
                 db.query(InterviewRemark)
                 .filter(InterviewRemark.job_interview_id == latest_interview.job_interview_id)

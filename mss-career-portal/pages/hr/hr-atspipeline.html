@@ -2805,7 +2805,11 @@
               body: JSON.stringify(payload),
             },
           );
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          if (!res.ok) {
+            let detail = null;
+            try { detail = (await res.json()).detail; } catch (e) { /* ignore */ }
+            throw new Error(detail || `HTTP ${res.status}`);
+          }
           // Pull the freshly computed timeline/flags for this candidate so the
           // drawer (if open) reflects the new stage without a page refresh.
           await fetchCandidatesFromServer();
@@ -2817,7 +2821,7 @@
         } catch (err) {
           candidate.stage = prevStage;
           renderKanban(getFiltered());
-          showToast("Failed to save stage change", "danger");
+          showToast(err.message || "Failed to save stage change", "danger");
           if (activeId === candidate.id) {
             renderStagePills(prevStage);
           }

@@ -45,50 +45,66 @@ import re
 router = APIRouter(prefix="/jobs", tags=["Job Posts"])
 
 
-def format_experience(exp_records: List[CandidateExperience]) -> str:
-    def parse_experience_string(exp_str):
-        if not exp_str:
-            return 0, 0
-        exp_str = exp_str.strip()
-        
-        # Try parsing decimal values where "." represents separation of years and months
-        # e.g., "2.6 Years", "2.11 Years", "2.6"
-        if "." in exp_str:
-            try:
-                parts = exp_str.split(".")
-                years = int(re.search(r'\d+', parts[0]).group())
-                mo_match = re.search(r'\d+', parts[1])
-                if mo_match:
-                    months = int(mo_match.group())
-                    return years, months
-            except Exception:
-                pass
-                
-        years = 0
-        months = 0
+def _parse_experience_string(exp_str):
+    if not exp_str:
+        return 0, 0
+    exp_str = exp_str.strip()
+
+    # Try parsing decimal values where "." represents separation of years and months
+    # e.g., "2.6 Years", "2.11 Years", "2.6"
+    if "." in exp_str:
         try:
-            yr_match = re.search(r'(\d+)\s*(year|yr|y)', exp_str, re.IGNORECASE)
-            if yr_match:
-                years = int(yr_match.group(1))
-                
-            mo_match = re.search(r'(\d+)\s*(month|mon|mo|m)(?!e|a|i)', exp_str, re.IGNORECASE)
+            parts = exp_str.split(".")
+            years = int(re.search(r'\d+', parts[0]).group())
+            mo_match = re.search(r'\d+', parts[1])
             if mo_match:
-                months = int(mo_match.group(1))
-                
-            if not yr_match and not mo_match:
-                num_match = re.search(r'^\d+$', exp_str)
-                if num_match:
-                    years = int(num_match.group())
+                months = int(mo_match.group())
+                return years, months
         except Exception:
             pass
-            
-        return years, months
 
+    years = 0
+    months = 0
+    try:
+        yr_match = re.search(r'(\d+)\s*(year|yr|y)', exp_str, re.IGNORECASE)
+        if yr_match:
+            years = int(yr_match.group(1))
+
+        mo_match = re.search(r'(\d+)\s*(month|mon|mo|m)(?!e|a|i)', exp_str, re.IGNORECASE)
+        if mo_match:
+            months = int(mo_match.group(1))
+
+        if not yr_match and not mo_match:
+            num_match = re.search(r'^\d+$', exp_str)
+            if num_match:
+                years = int(num_match.group())
+    except Exception:
+        pass
+
+    return years, months
+
+
+def total_experience_years(exp_records: List[CandidateExperience]) -> float:
+    """Returns total experience as a numeric year count (e.g. 3.5), for range filtering."""
     total_years = 0
     total_months = 0
     for exp_rec in exp_records:
         if exp_rec.total_experience:
-            y, m = parse_experience_string(str(exp_rec.total_experience))
+            y, m = _parse_experience_string(str(exp_rec.total_experience))
+            total_years += y
+            total_months += m
+
+    total_years += total_months // 12
+    total_months = total_months % 12
+    return total_years + (total_months / 12)
+
+
+def format_experience(exp_records: List[CandidateExperience]) -> str:
+    total_years = 0
+    total_months = 0
+    for exp_rec in exp_records:
+        if exp_rec.total_experience:
+            y, m = _parse_experience_string(str(exp_rec.total_experience))
             total_years += y
             total_months += m
 
@@ -196,13 +212,39 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
     )
 
     created_by_email = None
+    closed_by_email = None
+    reopen_by_email = None
     if db:
         from app.models import Admins
+        from sqlalchemy.orm import joinedload
 
-        creator = (
-            db.query(Admins).filter(Admins.admin_id == job_post.job_posted_by).first()
-        )
-        created_by_email = creator.email if creator else None
+        admin_ids = {
+            aid
+            for aid in (job_post.job_posted_by, job_post.closed_by, job_post.reopen_job_by)
+            if aid
+        }
+        admins_by_id = {}
+        if admin_ids:
+            admins_by_id = {
+                a.admin_id: a
+                for a in db.query(Admins)
+                .options(joinedload(Admins.user_roles))
+                .filter(Admins.admin_id.in_(admin_ids))
+                .all()
+            }
+
+        creator = admins_by_id.get(job_post.job_posted_by)
+        # School Admin emails should never surface as the "Created By" of a job
+        # post — job creation is HR-only going forward, but legacy rows created
+        # by a School Admin should still not leak their email to the UI.
+        if creator and creator.user_roles and creator.user_roles.role_name != "school_admin":
+            created_by_email = creator.email
+
+        closer = admins_by_id.get(job_post.closed_by)
+        closed_by_email = closer.email if closer else None
+
+        reopener = admins_by_id.get(job_post.reopen_job_by)
+        reopen_by_email = reopener.email if reopener else None
 
     applicant_count = 0
     if db:
@@ -217,6 +259,7 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "uuid": job_post.uuid,
         "job_posted_by": job_post.job_posted_by,
         "created_by_email": created_by_email,
+        "created_at": job_post.created_at.isoformat() if job_post.created_at else None,
         "job_title": job_post.job_title,
         "department": job_post.department,
         "job_type": job_post.job_type,
@@ -234,8 +277,10 @@ def _serialize_job_post(job_post: JobPost, db: Optional[Session] = None) -> dict
         "is_clone": is_clone,
         "published_date": published_date,
         "closed_by": job_post.closed_by,
+        "closed_by_email": closed_by_email,
         "closed_at": job_post.closed_at.isoformat() if job_post.closed_at else None,
         "reopen_job_by": job_post.reopen_job_by,
+        "reopen_by_email": reopen_by_email,
         "reopen_job_at": job_post.reopen_job_at.isoformat() if job_post.reopen_job_at else None,
         "applicant_count": applicant_count,
         "views": job_post.views or 0,
@@ -477,6 +522,7 @@ def get_applicants_route(
         )
 
         exp_str = format_experience(exp_records)
+        total_experience = total_experience_years(exp_records)
 
         # Increment chip counts
         if stage_val in chip_counts:
@@ -529,6 +575,7 @@ def get_applicants_route(
                 "mss_app_no": app.mss_app_no,
                 "name": name,
                 "job": job_title,
+                "unit": job_post.school_name if job_post else "",
                 "job_status": job_status_val,
                 "appliedDate": (
                     app.created_at.strftime("%d-%m-%y")
@@ -1196,6 +1243,9 @@ def get_job_post_by_id_route(
     return job_details
 
 
+JOB_CREATION_ROLES = {"hr_head", "hr_processor", "hr_executive"}
+
+
 @router.post("/")
 def create_job_post_route(
     form_data: JobPostCreateRequest,
@@ -1203,6 +1253,21 @@ def create_job_post_route(
     admin_id: int = Depends(_get_admin_id_from_token),
 ):
     """Creates a new job post along with optional pre-screening questions."""
+    from app.models import Admins
+    from sqlalchemy.orm import joinedload
+
+    admin = (
+        db.query(Admins)
+        .options(joinedload(Admins.user_roles))
+        .filter(Admins.admin_id == admin_id)
+        .first()
+    )
+    if admin is None or admin.user_roles.role_name not in JOB_CREATION_ROLES:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You do not have permission to create job posts.",
+        )
+
     job_post = create_job_post(
         db=db,
         job_posted_by=admin_id,
@@ -1226,7 +1291,7 @@ def create_job_post_route(
             else None
         ),
     )
-    return _serialize_job_post(job_post)
+    return _serialize_job_post(job_post, db=db)
 
 
 @router.put("/{job_id}")

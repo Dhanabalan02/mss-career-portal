@@ -889,6 +889,7 @@
                 <th>SI NO</th>
                 <th>Candidate</th>
                 <th>Applied For</th>
+                <th>Unit</th>
                 <th>Applied Date</th>
                 <th>Experience</th>
                 <th>Current Stage</th>
@@ -1080,7 +1081,7 @@
       const tbody = document.getElementById('applicantBody');
       tbody.innerHTML = '';
       if (!list.length) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text3);">No candidates match your filters</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text3);">No candidates match your filters</td></tr>`;
         document.getElementById('resultCount').textContent = '0 candidates';
         const pg = document.getElementById('pagination');
         if (pg) pg.style.display = 'none';
@@ -1122,6 +1123,7 @@
         <div>${c.job}</div>
         ${c.job_status === 'closed' ? `<div class="job-closed-tag"><i class="ti ti-lock" aria-hidden="true"></i>Job Closed</div>` : ''}
       </td>
+      <td style="color:var(--text3);">${c.unit || '—'}</td>
       <td style="color:var(--text3);white-space:nowrap;">${c.appliedDate}</td>
       <td style="font-weight:500;">${c.exp}</td>
       <td>${stageBadge(displayStage)}</td>
@@ -1131,7 +1133,7 @@
           <button class="action-btn blue" title="Profile" onclick="event.stopPropagation(); localStorage.setItem('candidateId', '${c.id}'); location.href='/mss-career-portal/hr/candidate-profile?name=' + encodeURIComponent('${c.name}') + '&job_title=' + encodeURIComponent('${c.job}')">
               <i class="ti ti-user"></i>
           </button>
-          ${(showActions && (c.stage === 'Screened' || c.interviewStatus === 'Next Round') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Cancelled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
+          ${(showActions && (c.stage === 'Screened' || c.interviewStatus === 'Next Round' || c.interviewStatus === 'Cancelled') && c.interviewStatus !== 'Completed' && c.interviewStatus !== 'Scheduled' && c.interviewStatus !== 'Selected') ? `<button class="action-btn green" title="Schedule Interview" onclick="event.stopPropagation(); scheduleInterviewModal(${c.id}, '${c.name}', ${c.job_id})"><i class="ti ti-calendar-event"></i></button>` : ''}
           ${canAction ? `<button class="action-btn red" title="Reject Candidate" onclick="event.stopPropagation(); rejectCandidateModal(${c.id}, '${c.name}')"><i class="ti ti-x"></i></button>` : ''}
         </div>
       </td>`;
@@ -1142,7 +1144,9 @@
 
     /* ── Filter ── */
     function filterApplicants() {
-      // Re-trigger API fetch when dropdowns change
+      // Keep the stage chips in sync with the dropdown so a stale chip
+      // selection doesn't override "All Stages" when the dropdown is used.
+      activeStageFilter = document.getElementById('fStage').value;
       fetchApplicants();
     }
 
@@ -1358,42 +1362,10 @@
       if (!pg) return;
 
       const totalPages = Math.ceil(total / perPage) || 1;
-      pg.innerHTML = '';
-      pg.style.display = 'flex';
-
-      const prev = document.createElement('button');
-      prev.className = 'page-btn';
-      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
-      if (currentPageNum <= 1) {
-        prev.disabled = true;
-        prev.style.opacity = '0.4';
-        prev.style.cursor = 'default';
-      } else {
-        prev.onclick = () => goToPage(currentPageNum - 1, totalPages);
-      }
-      pg.appendChild(prev);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const b = document.createElement('button');
-        b.className = 'page-btn' + (i === currentPageNum ? ' active' : '');
-        b.textContent = i;
-        b.onclick = function () {
-          goToPage(i, totalPages);
-        };
-        pg.appendChild(b);
-      }
-
-      const next = document.createElement('button');
-      next.className = 'page-btn';
-      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
-      if (currentPageNum >= totalPages) {
-        next.disabled = true;
-        next.style.opacity = '0.4';
-        next.style.cursor = 'default';
-      } else {
-        next.onclick = () => goToPage(currentPageNum + 1, totalPages);
-      }
-      pg.appendChild(next);
+      buildWindowedPagination(pg, {
+        total, perPage, currentPage: currentPageNum, maxButtons: 5,
+        onPageChange: (page) => goToPage(page, totalPages)
+      });
     }
     
     // Handler function to toggle label and placeholder text

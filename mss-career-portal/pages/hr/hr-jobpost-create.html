@@ -1250,6 +1250,9 @@
             </svg>
             Publish Now
           </button>
+          <button class="btn btn-ghost" onclick="closeForm()" title="Close" aria-label="Close job post form" style="padding:9px;">
+            <i class="ti ti-x" aria-hidden="true"></i>
+          </button>
         </div>
       </div>
 
@@ -2172,7 +2175,10 @@
       }
 
       function saveDraftState() {
-        if (restoringDraft) return;
+        // Never persist edit-mode form state under the shared create-flow draft
+        // key — otherwise editing an existing job leaks its data into the next
+        // fresh "Create Job Post" visit.
+        if (restoringDraft || editJobId) return;
         try {
           localStorage.setItem(DRAFT_KEY, JSON.stringify(collectFormState()));
         } catch (e) {
@@ -2910,6 +2916,15 @@
 
       function saveDraft() {
         submitJobPost("draft");
+      }
+
+      function closeForm() {
+        const message = editJobId
+          ? "Discard unsaved changes and go back to the job list?"
+          : "Discard this job post and go back to the job list?";
+        if (!confirm(message)) return;
+        if (!editJobId) clearDraftState();
+        window.location.href = "/mss-career-portal/hr/jobpost-list";
       }
 
       function publishNow() {
@@ -3756,6 +3771,9 @@
         await Promise.all([initEduSelect(), initSkillSelect(), fetchUnits()]);
 
         if (editJobId) {
+          // Defensive: wipe any stale create-flow draft (e.g. saved before this
+          // fix shipped) so it can't leak into a later fresh "Create Job Post" visit.
+          clearDraftState();
           await loadJobPostToEdit();
         } else {
           const draftWasLoaded = loadDraftState();

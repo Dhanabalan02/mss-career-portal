@@ -400,7 +400,42 @@ def cancel_interview_route(
         job_interview_id=job_interview_id,
         cancelled_reason=form_data.cancelled_reason,
     )
-    
+
+    # A cancelled interview shouldn't leave the candidate stuck on the
+    # "Interview" stage — that blocks rescheduling (Job Applicants only offers
+    # "Schedule Interview" once the candidate is back at "Screened") and leaves
+    # ATS Pipeline showing them as still interviewing. If this was their only
+    # active/completed interview, drop them back to Screened so every surface
+    # (Job Applicants, Interview Management, ATS Pipeline) agrees on the stage.
+    try:
+        other_active_or_done = (
+            db.query(JobInterviewSchedule)
+            .filter(
+                JobInterviewSchedule.job_applicant_id == job_interview.job_applicant_id,
+                JobInterviewSchedule.job_interview_id != job_interview.job_interview_id,
+                JobInterviewSchedule.status.in_([
+                    InterviewStatus.SCHEDULED,
+                    InterviewStatus.RESCHEDULED,
+                    InterviewStatus.COMPLETED,
+                ]),
+            )
+            .first()
+        )
+        applicant = db.query(JobApplicant).filter(
+            JobApplicant.job_applicant_id == job_interview.job_applicant_id
+        ).first()
+        if (
+            not other_active_or_done
+            and applicant
+            and applicant.applicant_stage == ApplicantStage.INTERVIEW
+        ):
+            from app.crud.hr_crud import update_candidate_stage
+
+            update_candidate_stage(db, admin_id, applicant.job_applicant_id, "Screened")
+    except Exception as e:
+        from app.core.logger import logger
+        logger.error(f"Failed to reset applicant stage after interview cancellation: {e}")
+
     # Send Notifications
     try:
         from app.models import JobApplicant, JobPost, Users, Admins

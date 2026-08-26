@@ -2293,62 +2293,49 @@ Best regards,<br><strong>School Admin — TMSS</strong>`,
           }
 
           function generatePDF(candidate) {
-            const pdfContent = `
-            <div class="pdf-content-wrapper">
+            // Render into a real, attached-to-DOM element (not just an HTML string)
+            // so it has real layout/height before html2canvas captures it —
+            // capturing a detached string container clipped the letter to one
+            // screen's worth of content instead of its full, possibly
+            // multi-page, height.
+            const wrapper = document.createElement("div");
+            wrapper.className = "pdf-content-wrapper";
+            wrapper.style.cssText =
+              'position:fixed;top:0;left:-10000px;width:6.5in;background:#ffffff;box-sizing:border-box;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:14pt;line-height:1.8;color:#333333;';
+            wrapper.innerHTML = `
               <style>
-                .pdf-content-wrapper {
-                  box-sizing: border-box;
-                  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                  font-size: 14pt;
-                  line-height: 1.8;
-                  color: #333333;
-                  width: 6.5in;
-                  background-color: #ffffff;
+                .pdf-content-wrapper * { box-sizing: border-box; }
+                .pdf-content-wrapper .offer-container { width: 100%; max-width: 100%; }
+                .pdf-content-wrapper .offer-container h1, .pdf-content-wrapper .offer-container h2,
+                .pdf-content-wrapper .offer-container h3, .pdf-content-wrapper .offer-container h4 {
+                  color: #111111; font-weight: 600; margin-top: 0;
                 }
-                .pdf-content-wrapper * {
-                  box-sizing: border-box;
-                }
-                .offer-container {
-                  width: 100%;
-                  max-width: 100%;
-                }
-                .offer-container h1, .offer-container h2, .offer-container h3, .offer-container h4 {
-                  color: #111111;
-                  font-weight: 600;
-                  margin-top: 0;
-                }
-                .offer-container p {
-                  margin-bottom: 1.2em;
-                  orphans: 3;
-                  widows: 3;
-                }
-                .no-break {
-                  page-break-inside: avoid;
-                  break-inside: avoid;
-                }
+                .pdf-content-wrapper .offer-container p { margin-bottom: 1.2em; orphans: 3; widows: 3; }
+                .pdf-content-wrapper .no-break { page-break-inside: avoid; break-inside: avoid; }
               </style>
-              <div class="offer-container">
-                ${candidate.offer_letter_doc}
-              </div>
-            </div>
-          `;
+              <div class="offer-container">${candidate.offer_letter_doc}</div>
+            `;
+            document.body.appendChild(wrapper);
 
             const opt = {
               margin: 1,
               filename: `Offer_Letter_${candidate.name.replace(/\s+/g, "_")}.pdf`,
               image: { type: "jpeg", quality: 0.98 },
-              html2canvas: { scale: 2, useCORS: true },
+              html2canvas: { scale: 2, useCORS: true, scrollY: 0, windowHeight: wrapper.scrollHeight },
               jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-              pagebreak: { mode: ["css", "legacy"] },
+              pagebreak: { mode: ["css", "legacy"], avoid: ".no-break" },
             };
 
             html2pdf()
               .set(opt)
-              .from(pdfContent)
+              .from(wrapper)
               .save()
               .catch((err) => {
                 console.error("PDF generation error:", err);
                 fallbackPrint();
+              })
+              .finally(() => {
+                if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
               });
           }
         } else {

@@ -1569,6 +1569,8 @@
 
     /* ── Interview records (populated from API) ── */
     let interviews = [];
+    let currentPageNum = 1;
+    const itemsPerPage = 10;
 
     /* ── Helpers ── */
     function initials(name) { return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase(); }
@@ -1590,18 +1592,22 @@
       } else {
         const pg = document.getElementById('pagination');
         if (pg) {
-          buildPagination(data.length, 10);
+          buildPagination(data.length, itemsPerPage);
         }
       }
+      const totalPages = Math.ceil(data.length / itemsPerPage) || 1;
+      if (currentPageNum > totalPages) currentPageNum = totalPages;
+      const startIdx = (currentPageNum - 1) * itemsPerPage;
+      const pageData = data.slice(startIdx, startIdx + itemsPerPage);
       tbody.innerHTML = '';
-      data.forEach((iv, index) => {
+      pageData.forEach((iv, index) => {
         const sc = iv.status === 'Completed' ? 'pill-completed' : iv.status === 'Cancelled' ? 'pill-cancelled' : 'pill-scheduled';
         const [abg, aclr] = avatarColor(iv.candidate);
         const isActionDisabled = iv.status.toLowerCase() === 'cancelled' || iv.status.toLowerCase() === 'completed';
         const disableAttr = isActionDisabled ? 'disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;"' : '';
         tbody.innerHTML += `
       <tr>
-        <td style="font-weight:600;color:var(--text-sub, #666);">${index + 1}</td>
+        <td style="font-weight:600;color:var(--text-sub, #666);">${startIdx + index + 1}</td>
         <td>
           <div class="candidate-cell">
             <div class="avatar" style="background:${abg};color:${aclr};">${initials(iv.candidate)}</div>
@@ -1942,17 +1948,27 @@
 
 
     /* ── Filters ── */
-    function applyFilters() {
+    function getFilteredInterviews() {
       const s = document.getElementById('searchInput').value.toLowerCase();
-      const r = document.getElementById('roundFilter').value;
+      const r = document.getElementById('roundFilter').value.toLowerCase();
       const st = document.getElementById('statusFilter').value;
       const iv = document.getElementById('interviewerFilter').value;
-      renderTable(interviews.filter(i =>
+      return interviews.filter(i =>
         (!s || i.candidate.toLowerCase().includes(s)) &&
-        (!r || (i.round && i.round.startsWith(r))) &&
+        (!r || (i.round && i.round.toLowerCase().startsWith(r))) &&
         (!st || i.status === st) &&
         (!iv || i.interviewer === iv)
-      ));
+      );
+    }
+
+    function applyFilters() {
+      currentPageNum = 1;
+      renderTable(getFilteredInterviews());
+    }
+
+    function goToPage(pageNum) {
+      currentPageNum = pageNum;
+      renderTable(getFilteredInterviews());
     }
 
     document.getElementById('searchInput').addEventListener('input', applyFilters);
@@ -2086,33 +2102,10 @@
     function buildPagination(total, perPage) {
       const pg = document.getElementById('pagination');
       if (!pg) return;
-      
-      const totalPages = Math.ceil(total / perPage) || 1;
-      pg.innerHTML = '';
-      pg.style.display = 'flex';
-
-      const prev = document.createElement('button');
-      prev.className = 'page-btn';
-      prev.innerHTML = '<i class="ti ti-chevron-left" aria-hidden="true"></i>';
-      prev.onclick = () => { };
-      pg.appendChild(prev);
-
-      for (let i = 1; i <= totalPages; i++) {
-        const b = document.createElement('button');
-        b.className = 'page-btn' + (i === 1 ? ' active' : '');
-        b.textContent = i;
-        b.onclick = function () {
-          document.querySelectorAll('.page-btn').forEach(x => x.classList.remove('active'));
-          this.classList.add('active');
-        };
-        pg.appendChild(b);
-      }
-
-      const next = document.createElement('button');
-      next.className = 'page-btn';
-      next.innerHTML = '<i class="ti ti-chevron-right" aria-hidden="true"></i>';
-      next.onclick = () => { };
-      pg.appendChild(next);
+      buildWindowedPagination(pg, {
+        total, perPage, currentPage: currentPageNum, maxButtons: 5,
+        onPageChange: goToPage
+      });
     }
   </script>
 </body>
