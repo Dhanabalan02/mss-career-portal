@@ -2,7 +2,7 @@ from datetime import date
 from typing import Any, List, Optional
 
 import jwt
-from fastapi import APIRouter, Depends, Header, HTTPException, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
 from fastapi.responses import RedirectResponse
 from app.core.html_helper import serve_html_with_base
 from pydantic import BaseModel
@@ -439,11 +439,20 @@ class ApplicantStatusUpdateRequest(BaseModel):
     remarks: Optional[str] = None
 
 
+def _norm_interview_status(value: Optional[str]) -> str:
+    """Normalizes an interview-status string for comparison — case/whitespace
+    insensitive, and treats "Hold" and "On Hold" as the same value."""
+    return (value or "").strip().lower().replace("on hold", "hold")
+
+
 @router.get("/applicants")
 def get_applicants_route(
     job_id: Optional[int] = None,
     unit: Optional[str] = None,
     stage: Optional[str] = None,
+    # aliased + renamed so it doesn't collide with the per-applicant
+    # `interview_status` local variable computed inside the loop below.
+    interview_status_filter: Optional[str] = Query(default=None, alias="interview_status"),
     search: Optional[str] = None,
     exp: Optional[str] = None,
     db: Session = Depends(get_db),
@@ -539,8 +548,11 @@ def get_applicants_route(
         stage_val = compute_stage(app, len(interviews) > 0)
         interview_status = "Pending"
 
-
-        if len(interviews) > 0:
+        if app.applicant_job_status == "hold":
+            # Must win over the interview's own raw status — a hold placed
+            # after an interview was scheduled otherwise never surfaces here.
+            interview_status = "On Hold"
+        elif len(interviews) > 0:
             latest_int = interviews[0]
 
             # --- FETCHING DIRECTLY FROM INTERVIEW_REMARKS RELATIONSHIP ---
@@ -598,6 +610,8 @@ def get_applicants_route(
             ):
                 continue
         if stage and stage != stage_val:
+            continue
+        if interview_status_filter and _norm_interview_status(interview_status_filter) != _norm_interview_status(interview_status):
             continue
 
         # FIX: Changed exp_years to total_experience to resolve NameError crashes
@@ -791,6 +805,15 @@ def get_applicant_detail_route(
     elif app.issue_offer == 1:
         stage_val = "Offer"
         interview_status = "Selected"
+    elif app.applicant_job_status == "hold":
+        # A hold can be placed at any point in the pipeline, including after
+        # an interview has already been scheduled — it must win over the
+        # interview's own raw status, otherwise a held Interview-stage
+        # candidate silently shows "Scheduled"/"Completed" instead of "On
+        # Hold" (this branch used to sit after the interviews check below).
+        if len(interviews) > 0:
+            stage_val = "Interview"
+        interview_status = "On Hold"
     elif len(interviews) > 0:
         stage_val = "Interview"
         latest_int = interviews[0]
@@ -816,8 +839,6 @@ def get_applicant_detail_route(
                 if hasattr(latest_int.status, "value")
                 else str(latest_int.status).capitalize()
             )
-    elif app.applicant_job_status == "hold":
-        interview_status = "On Hold"
     elif app.applicant_job_status == "selected":
         interview_status = "Selected"
 
@@ -1815,6 +1836,12 @@ def get_dashboard_recent_applicants(
 
         elif app.issue_offer == 1:
             interview_status = "Selected"
+
+        elif app.applicant_job_status == "hold":
+            # Must win over the interview's own raw status — a hold placed
+            # after an interview was scheduled otherwise never surfaces here
+            # (this list had no hold handling at all before).
+            interview_status = "On Hold"
 
         elif has_interview:
             iv = latest_iv[app.job_applicant_id]

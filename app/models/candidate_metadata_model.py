@@ -35,7 +35,9 @@ class CandidateMetadata(Base):
     skills: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     
     languages: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    
+
+    linkedin_url: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+
     resume_doc: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     resume_uploaded_at: Mapped[Optional[datetime]] = mapped_column(TIMESTAMP, nullable=True)

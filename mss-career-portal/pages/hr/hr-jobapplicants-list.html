@@ -852,6 +852,12 @@
           <option>6-10 yrs</option>
           <option>10+ yrs</option>
         </select>
+        <select class="filter-select" id="fInterviewStatus" onchange="filterApplicants()">
+          <option value="">All Interview Statuses</option>
+          <option value="Selected">Selected</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Hold">Hold</option>
+        </select>
       </div>
 
       <!-- Stage chips -->
@@ -938,12 +944,14 @@
       const unit = document.getElementById('fUnit').value;
       const stage = activeStageFilter;
       const exp = document.getElementById('fExp').value;
+      const interviewStatus = document.getElementById('fInterviewStatus').value;
 
       const params = new URLSearchParams();
       if (unit) params.append('unit', unit);
       if (stage) params.append('stage', stage);
       if (q) params.append('search', q);
       if (exp) params.append('exp', exp);
+      if (interviewStatus) params.append('interview_status', interviewStatus);
 
       fetch(JOBS_API_BASE + '/jobs/applicants?' + params.toString(), {
         headers: { 'Authorization': 'Bearer ' + token }
@@ -1078,9 +1086,13 @@
       pageList.forEach((c, index) => {
         let displayStage = c.stage;
         let showActions = true;
-        
-        const advancedStages = ['Offer', 'Offer Accepted', 'Onboarding', 'Onboarded', 'Rejected'];
-        if (c.interviewStatus === 'Selected' && !advancedStages.includes(c.stage)) {
+
+        // "Awaiting Offer" only makes sense once a candidate has actually been
+        // marked Selected during their Interview stage — restricting to
+        // stage === 'Interview' (rather than "any stage that isn't advanced
+        // yet") stops it from overriding an unrelated Prescreen Rejected or
+        // Screened badge whenever interviewStatus happens to read 'Selected'.
+        if (c.interviewStatus === 'Selected' && c.stage === 'Interview') {
           displayStage = 'Awaiting Offer';
           showActions = false;
         }

@@ -513,6 +513,12 @@ tbody tr:hover { background: var(--bg2); }
         <option>6-10 yrs</option>
         <option>10+ yrs</option>
       </select>
+      <select class="filter-select" id="fInterviewStatus" onchange="filterApplicants()">
+        <option value="">All Interview Statuses</option>
+        <option value="Selected">Selected</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Hold">Hold</option>
+      </select>
     </div>
 
     <!-- Stage chips -->
@@ -692,14 +698,20 @@ function renderApplicants(list) {
 }
 
 /* ── Filter ── */
+function normInterviewStatus(s) {
+  return String(s || '').trim().toLowerCase().replace('on hold', 'hold');
+}
+
 function filterApplicants() {
   const q     = document.getElementById('searchInput').value.toLowerCase();
   const job   = document.getElementById('fJob').value;
   const stage = activeStageFilter;
+  const iStatus = document.getElementById('fInterviewStatus').value;
   CURRENT_LIST = CANDIDATES.filter(c =>
     (!q     || c.name.toLowerCase().includes(q) || c.job.toLowerCase().includes(q)) &&
     (!job   || c.job === job) &&
-    (!stage || c.stage === stage)
+    (!stage || c.stage === stage) &&
+    (!iStatus || normInterviewStatus(c.interviewStatus) === normInterviewStatus(iStatus))
   );
   currentPageNum = 1;
   const totalPages = Math.ceil(CURRENT_LIST.length / itemsPerPage) || 1;

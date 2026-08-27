@@ -1342,6 +1342,26 @@
               <div class="stat-label">Created By</div>
               <div></div>
             </div>
+
+            <div id="jobClosedByWrap" style="display:none;">
+              <div class="stat-label">Closed By</div>
+              <div id="jobClosedBy">—</div>
+            </div>
+
+            <div id="jobClosedAtWrap" style="display:none;">
+              <div class="stat-label">Closed At</div>
+              <div id="jobClosedAt">—</div>
+            </div>
+
+            <div id="jobReopenByWrap" style="display:none;">
+              <div class="stat-label">Reopened By</div>
+              <div id="jobReopenBy">—</div>
+            </div>
+
+            <div id="jobReopenAtWrap" style="display:none;">
+              <div class="stat-label">Reopened At</div>
+              <div id="jobReopenAt">—</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1477,6 +1497,31 @@
           setField('Status', j.status);
           setField('Published At', j.published_date || 'Not published yet');
           setField('Created By', j.created_by_email || '—');
+
+          /* Closed / Reopened audit info — hidden unless the job actually has them */
+          const formatAuditDate = (iso) => {
+            if (!iso) return '—';
+            const d = new Date(iso);
+            return isNaN(d.getTime()) ? iso : d.toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' });
+          };
+
+          const closedByWrap = document.getElementById('jobClosedByWrap');
+          const closedAtWrap = document.getElementById('jobClosedAtWrap');
+          if (j.closed_by_email || j.closed_at) {
+            if (closedByWrap) closedByWrap.style.display = '';
+            if (closedAtWrap) closedAtWrap.style.display = '';
+            document.getElementById('jobClosedBy').textContent = j.closed_by_email || '—';
+            document.getElementById('jobClosedAt').textContent = formatAuditDate(j.closed_at);
+          }
+
+          const reopenByWrap = document.getElementById('jobReopenByWrap');
+          const reopenAtWrap = document.getElementById('jobReopenAtWrap');
+          if (j.reopen_by_email || j.reopen_job_at) {
+            if (reopenByWrap) reopenByWrap.style.display = '';
+            if (reopenAtWrap) reopenAtWrap.style.display = '';
+            document.getElementById('jobReopenBy').textContent = j.reopen_by_email || '—';
+            document.getElementById('jobReopenAt').textContent = formatAuditDate(j.reopen_job_at);
+          }
 
           /* description content */
           if (j.description) {

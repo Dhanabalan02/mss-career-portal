@@ -50,6 +50,7 @@ class JobApplicationRequest(BaseModel):
     resume_doc: Optional[str] = None
     cover_letter: Optional[str] = None
     mobile_number: Optional[str] = None
+    linkedin_url: Optional[str] = None
     screening_answers: Optional[List[ScreeningAnswerRequest]] = None
 
 
@@ -226,6 +227,7 @@ def apply_for_job_route(
         mobile=form_data.mobile_number,
         resume_doc=form_data.resume_doc,
         cover_letter=form_data.cover_letter,
+        linkedin_url=form_data.linkedin_url,
         screening_answers=[ans.model_dump() for ans in form_data.screening_answers] if form_data.screening_answers else None
     )
     

@@ -1493,10 +1493,18 @@
 
           const statusBadgeClass = item.status === 'completed' ? 'badge-green' : item.status === 'cancelled' ? 'badge-red' : 'badge-orange';
 
+          const displayAt = (item.status === 'rescheduled' && item.rescheduled_at) ? item.rescheduled_at : item.scheduled_at;
+          const formattedDate = displayAt
+            ? new Date(displayAt).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : 'Date not set';
+
           listEl.innerHTML += `
             <div class="interview-card ${item.status === 'scheduled' ? 'active' : ''}" style="margin-bottom:15px; border: 1px solid var(--c-border); padding: 15px; border-radius: var(--radius-sm);">
               <div class="interview-top" style="display:flex;justify-content:space-between;align-items:flex-start;">
-                <div class="interview-title" style="font-weight:700;font-size:14px;">${item.round}</div>
+                <div>
+                  <div class="interview-title" style="font-weight:700;font-size:14px;">${item.round}</div>
+                  <div class="interview-meta" style="font-size:12px;color:var(--c-text3);margin-top:3px;">${formattedDate}</div>
+                </div>
                 <div style="text-align:right;">
                   <span class="badge ${statusBadgeClass}">${item.status.toUpperCase()}</span>
                   ${outcomeBadge}

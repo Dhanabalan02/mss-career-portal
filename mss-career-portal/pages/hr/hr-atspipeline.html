@@ -2429,7 +2429,6 @@
           window.apiStats?.deltas?.offers || "Offer + Accepted";
         const deltaOnboarding =
           window.apiStats?.deltas?.onboarding || "Synced to MASSET";
-        const deltaOnboarded = window.apiStats?.deltas?.onboarded || "On track";
 
         grid.innerHTML = `
     <div class="stat-card sc-total" onclick="scrollToStage(null)">
@@ -2471,7 +2470,6 @@
       <div class="stat-icon" style="background:var(--warning-light);color:var(--warning)"><i class="ti ti-user-check" aria-hidden="true"></i></div>
       <div class="stat-value">${onboarded}</div>
       <div class="stat-label">Onboarded</div>
-      <div class="stat-delta">${deltaOnboarded}</div>
     </div>`;
       }
 

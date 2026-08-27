@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from app.models import JobApplicant, CandidateScreeningAnswer, JobPreScreeningQuestion
+from app.models import JobApplicant, CandidateScreeningAnswer, JobPreScreeningQuestion, CandidateMetadata
 from app.models.candidate_screening_answer_model import CandidateStatus
 from app.models.job_applicant_model import ApplicantJobStatus, ApplicantStage, OfferAcceptanceStatus
 from app.core.logger import logger
@@ -16,10 +16,11 @@ def create_job_application(
     mobile: Optional[str] = None,  # Added mobile parameter
     resume_doc: Optional[str] = None,
     cover_letter: Optional[str] = None,
+    linkedin_url: Optional[str] = None,
     screening_answers: Optional[List[dict]] = None
 ) -> JobApplicant:
     """Creates a new job application record and backfills the user's mobile number if missing."""
-    
+
     # --- 1. Check and Update User Mobile Number ---
     if mobile:
         user = db.query(Users).filter(Users.user_id == user_id).first()
@@ -27,6 +28,18 @@ def create_job_application(
         if user and not user.mobile:
             user.mobile = mobile
             db.add(user) # Schedules the user record for update
+
+    # --- 1b. Store LinkedIn URL on the candidate's profile ---
+    # Not tied to any one application — upsert onto candidate_metadata,
+    # without overwriting a value the candidate already has on file.
+    if linkedin_url:
+        meta = db.query(CandidateMetadata).filter(CandidateMetadata.user_id == user_id).first()
+        if meta:
+            if not meta.linkedin_url:
+                meta.linkedin_url = linkedin_url
+                db.add(meta)
+        else:
+            db.add(CandidateMetadata(user_id=user_id, linkedin_url=linkedin_url))
 
     # --- 2. Create Job Application ---
     db_applicant = JobApplicant(

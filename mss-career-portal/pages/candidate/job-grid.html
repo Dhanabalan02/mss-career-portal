@@ -352,22 +352,22 @@
                                         <div class="jg-select-wrap">
                                             <select id="f-cat" class="jg-select" onchange="applyFilters()">
                                                 <option value="">All Categories</option>
-                                                    <option>Accounts</option>
-                                                    <option>Admin</option>
-                                                    <option>Art</option>
-                                                    <option>CSR</option>
-                                                    <option>Complaince</option>
-                                                    <option>Facility</option>
-                                                    <option>HR</option>
-                                                    <option>ISO</option>
-                                                    <option>IT</option>
-                                                    <option>Marketing</option>
-                                                    <option>Music</option>
-                                                    <option>Security & Maintenance</option>
-                                                    <option>Stores</option>
-                                                    <option>Teaching</option>
-                                                    <option>Technical</option>
-                                                </select>
+                                                <option>Accounts</option>
+                                                <option>Admin</option>
+                                                <option>Art</option>
+                                                <option>Complaince</option>
+                                                <option>CSR</option>
+                                                <option>Facility</option>
+                                                <option>HR</option>
+                                                <option>ISO</option>
+                                                <option>IT</option>
+                                                <option>Marketing</option>
+                                                <option>Music</option>
+                                                <option>Security & Maintenance</option>
+                                                <option>Stores</option>
+                                                <option>Teaching</option>
+                                                <option>Technical</option>
+                                            </select>
                                             <i class="feather-chevron-down jg-select-icon"></i>
                                         </div>
                                     </div>
@@ -393,9 +393,9 @@
                                         <div class="jg-select-wrap">
                                             <select id="f-location" class="jg-select" onchange="applyFilters()">
                                                 <option value="">All Campuses</option>
-                                                <option>Chetpet</option>
-                                                <option>T. Nagar</option>
-                                                <option>Tambaram</option>
+                                                <option value="Chetpet">Chetpet</option>
+                                                <option value="T.Nagar">T. Nagar</option>
+                                                <option value="Tambaram">Tambaram</option>
                                             </select>
                                             <i class="feather-chevron-down jg-select-icon"></i>
                                         </div>
@@ -1656,7 +1656,7 @@
                         return;
                     }
 
-                    var maxButtons = 5;
+                    var maxButtons = 3;
                     var half = Math.floor(maxButtons / 2);
                     var start = Math.max(1, currentPage - half);
                     var end = Math.min(totalPages, start + maxButtons - 1);
@@ -1704,7 +1704,11 @@
 
                         var matchesKeyword = !kw || jobText.indexOf(kw) !== -1;
                         var matchesUnit = !unit || school.indexOf(unit) !== -1 || (school !== '' && unit.indexOf(school) !== -1);
-                        var matchesCategory = !cat || department.indexOf(cat) !== -1 || (department !== '' && cat.indexOf(department) !== -1);
+                        // Exact match, not substring: the category dropdown is a closed
+                        // list of exact values, and substring matching produced false
+                        // positives (e.g. filtering "IT" also matched "Facility" and
+                        // "Security & Maintenance", both of which contain "it").
+                        var matchesCategory = !cat || department === cat;
                         var jobLocStr = String(job.location || '').toLowerCase();
                         var matchesLocation = !loc || jobLocStr.indexOf(loc) !== -1;
 

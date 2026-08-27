@@ -247,10 +247,29 @@ def programme_for(unit_name: str, subject_key: str) -> str:
     return "Secondary"
 
 
+EXPERIENCE_BUCKETS = ["Less than 1 year", "1-2 years", "3-5 years", "6+ years"]
+
+
+def experience_bucket(min_exp) -> str:
+    try:
+        n = int(str(min_exp).strip())
+    except (TypeError, ValueError):
+        n = 2
+    if n <= 0:
+        return EXPERIENCE_BUCKETS[0]
+    if n <= 2:
+        return EXPERIENCE_BUCKETS[1]
+    if n <= 5:
+        return EXPERIENCE_BUCKETS[2]
+    return EXPERIENCE_BUCKETS[3]
+
+
 def ensure_prescreen_questions(db, job_id: int, subject: dict) -> list:
     """Every job should carry a few pre-screening questions so applicants
     have something real to answer. Idempotent: skips jobs that already have
-    any questions attached."""
+    any questions attached. Mirrors how hr-jobpost-create.html itself builds
+    questions: boolean questions carry options=["Yes","No"]; mcq questions
+    carry the real choice list, with expected_answer one of those choices."""
     existing = (
         db.query(JobPreScreeningQuestion)
         .filter(JobPreScreeningQuestion.job_id == job_id)
@@ -261,17 +280,33 @@ def ensure_prescreen_questions(db, job_id: int, subject: dict) -> list:
         return existing
 
     specs = [
-        (f"How many years of experience do you have teaching {subject['title'].replace(' Teacher', '')}?", subject["min_exp"]),
-        (f"Do you hold a {subject['degree']} or equivalent qualification?", "Yes"),
-        ("Are you available to join within 30 days of receiving an offer?", "Yes"),
+        {
+            "question_text": f"How many years of experience do you have teaching {subject['title'].replace(' Teacher', '')}?",
+            "question_type": "mcq",
+            "options": list(EXPERIENCE_BUCKETS),
+            "expected_answer": experience_bucket(subject["min_exp"]),
+        },
+        {
+            "question_text": f"Do you hold a {subject['degree']} or equivalent qualification?",
+            "question_type": "boolean",
+            "options": ["Yes", "No"],
+            "expected_answer": "Yes",
+        },
+        {
+            "question_text": "Are you available to join within 30 days of receiving an offer?",
+            "question_type": "boolean",
+            "options": ["Yes", "No"],
+            "expected_answer": "Yes",
+        },
     ]
-    for question_text, expected_answer in specs:
+    for spec in specs:
         db.add(
             JobPreScreeningQuestion(
                 job_id=job_id,
-                question_text=question_text,
-                question_type="text",
-                expected_answer=expected_answer,
+                question_text=spec["question_text"],
+                question_type=spec["question_type"],
+                options=spec["options"],
+                expected_answer=spec["expected_answer"],
             )
         )
     db.flush()

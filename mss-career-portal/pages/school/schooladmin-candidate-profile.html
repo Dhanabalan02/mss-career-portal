@@ -1435,10 +1435,18 @@
             cancelHTML = `<div class="interview-feedback"><strong>Cancellation Reason:</strong> ${item.cancelled_reason}</div>`;
           }
 
+          const displayAt = (item.status === 'rescheduled' && item.rescheduled_at) ? item.rescheduled_at : item.scheduled_at;
+          const formattedDate = displayAt
+            ? new Date(displayAt).toLocaleString(undefined, { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+            : 'Date not set';
+
           listEl.innerHTML += `
             <div class="interview-card ${isCompleted ? '' : 'active'}">
               <div class="interview-top">
-                <div class="interview-title">${item.round}</div>
+                <div>
+                  <div class="interview-title">${item.round}</div>
+                  <div class="interview-meta">${formattedDate}</div>
+                </div>
                 <span class="badge ${badgeColor}">${badgeText}</span>
               </div>
               ${cancelHTML}

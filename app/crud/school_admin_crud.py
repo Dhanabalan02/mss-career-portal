@@ -348,6 +348,8 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
         })
 
     creator = db.query(Admins).filter(Admins.admin_id == job.job_posted_by).first()
+    closer = db.query(Admins).filter(Admins.admin_id == job.closed_by).first() if job.closed_by else None
+    reopener = db.query(Admins).filter(Admins.admin_id == job.reopen_job_by).first() if job.reopen_job_by else None
 
     return {
         "job_id": job.job_id,
@@ -365,6 +367,10 @@ def get_school_job_detail(db: Session, admin_id: int, job_id: int)-> Optional[di
         "status": job.job_status.value if job.job_status else "draft",
         "published_date": _format_date(job.published_at),
         "created_by_email": creator.email if creator else "",
+        "closed_by_email": closer.email if closer else None,
+        "closed_at": job.closed_at.isoformat() if job.closed_at else None,
+        "reopen_by_email": reopener.email if reopener else None,
+        "reopen_job_at": job.reopen_job_at.isoformat() if job.reopen_job_at else None,
         "applicants": applicant_count,
         "shortlisted": shortlisted_count,
         "interviews": interview_count,
@@ -411,7 +417,11 @@ def get_school_applicants(db: Session, admin_id: int) -> list:
         
         # --- NEW INTERVIEW STATUS LOGIC ---
         interview_status = "Pending"
-        if has_interview:
+        if app.applicant_job_status == "hold":
+            # Must win over the interview's own raw status — a hold placed
+            # after an interview was scheduled otherwise never surfaces here.
+            interview_status = "On Hold"
+        elif has_interview:
             last_iv = (
                 db.query(JobInterviewSchedule)
                 .filter(JobInterviewSchedule.job_applicant_id == app.job_applicant_id)
